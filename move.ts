@@ -1,5 +1,3 @@
-
-
 import { Type } from './typemon.ts'
 
 export enum DamageCategory {
