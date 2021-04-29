@@ -1,10 +1,10 @@
 import {
-  NATURE_STAT_MOD,
+  NATURE_STAT_EFFECT,
   MAX_TYPEMON_STAT_STAGE,
   MIN_TYPEMON_STAT_STAGE,
   DEFAULT_TYPEMON_LEVEL,
   MAX_TYPEMON_IV,
-} from "./config.ts";
+} from "./constants.ts";
 
 export type Type = {
   weaknesses: Type[];
@@ -281,8 +281,8 @@ export class Typemon {
     const natureBuff =
       Math.floor(this.nature(considerStatStages) / 5) === statIndex - 1;
     const natureNerf = this.nature(considerStatStages) % 5 === statIndex - 1;
-    if (natureBuff && !natureNerf) val *= 1 + NATURE_STAT_MOD;
-    if (natureNerf && !natureBuff) val *= 1 - NATURE_STAT_MOD;
+    if (natureBuff && !natureNerf) val *= 1 + NATURE_STAT_EFFECT;
+    if (natureNerf && !natureBuff) val *= 1 - NATURE_STAT_EFFECT;
     val = Math.floor(val);
 
     if (considerStatStages) {
