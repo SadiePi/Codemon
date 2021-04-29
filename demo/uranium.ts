@@ -69,18 +69,8 @@ const SpeciesNucleon: T.Species = {
   //footprint: Footprint,
   //typedexColor: TypedexColor,
   baseFriendship: 35,
-  baseHP: 70,
-  baseAttack: 55,
-  baseDefense: 85,
-  baseSpecialAttack: 115,
-  baseSpecialDefense: 115,
-  baseSpeed: 90,
-  HPEVYield: 0,
-  attackEVYield: 0,
-  defenseEVYield: 0,
-  specialAttackEVYield: 1,
-  specialDefenseEVYield: 1,
-  speedEVYield: 0,
+  baseStats: [70, 55, 85, 90, 115, 115],
+  evYields: [0, 0, 0, 0, 1, 1]
   //learnset: Learnset
 };
 
