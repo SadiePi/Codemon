@@ -1,9 +1,10 @@
-type Item = {
+interface Item {
     name: string;
-    //graphics: Image
+    description: string;
+    //graphics: Graphics
 }
 
-type Ball = Item & {
-    catchRate: number;
-    
+//deno-lint-ignore no-empty-interface
+interface Ball extends Item {
+    //catchRate: (battle, target, source) => number;
 }

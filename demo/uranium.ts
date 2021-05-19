@@ -75,5 +75,5 @@ const SpeciesNucleon: T.Species = {
 };
 
 // Define an individual Nucleon named Nuke
-const nuke = new T.Typemon({ species: SpeciesNucleon, name: "Nuke" });
+const nuke = new T.Codemon({ species: SpeciesNucleon, name: "Nuke" });
 console.log(`${nuke}`);

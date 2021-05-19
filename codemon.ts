@@ -1,28 +1,17 @@
 import {
   NATURE_STAT_EFFECT,
-  MAX_TYPEMON_STAT_STAGE,
-  MIN_TYPEMON_STAT_STAGE,
-  DEFAULT_TYPEMON_LEVEL,
-  MAX_TYPEMON_IV,
+  MAX_CODEMON_STAT_STAGE,
+  MIN_CODEMON_STAT_STAGE,
+  DEFAULT_CODEMON_LEVEL,
+  MAX_CODEMON_IV,
 } from "./constants.ts";
-
-export type Type = {
-  weaknesses: Type[];
-  resistances: Type[];
-  immunities: Type[];
-};
-
-export const TypeNone: Type = {
-  weaknesses: [],
-  resistances: [],
-  immunities: [],
-};
+import { Type } from "./move.ts";
 
 // WIP
 // deno-lint-ignore ban-types
 export type Ability = {
   //onMoveSelection?:(...)=>void
-  //beforeMoveExecution?:(move: Move, target: Typemon, battle: Battle)=>void;
+  //beforeMoveExecution?:(move: Move, target: Codemon, battle: Battle)=>void;
   //afterMoveExecution?:(...)=>void;
   //beforeItemUse?:(...)=>void
   //afterItemUse?:(...)=>void
@@ -35,13 +24,15 @@ export type Ability = {
   //abilityNullifications?: Ability[]
 };
 
-// deno-lint-ignore ban-types
-export type StatusEffect = {};
+// WIP
+// deno-lint-ignore no-empty-interface
+export interface StatusEffect {}
 
-export type Sex = {
+// WIP
+export interface Sex {
   //symbol: Image;
   name: string;
-};
+}
 export const SexMale = {
   name: "Male",
 };
@@ -111,16 +102,18 @@ export enum Stat {
   Evasion = 7
 }
 
-// deno-lint-ignore ban-types
-export type LevelUpReport = {
+// WIP
+// deno-lint-ignore no-empty-interface
+export interface LevelUpReport {
   // TODO
-};
+}
 
-export type AddExpReport = {
+// WIP
+export interface AddExpReport {
   levelUps: Array<LevelUpReport>;
-};
+}
 
-export type Species = {
+export interface Species {
   // Normal species definition information
   name: string;
   //graphics: Graphics
@@ -138,26 +131,26 @@ export type Species = {
   experienceGroup: ExperienceGroup;
   //bodyStyle: BodyStyle
   //footprint: Footprint
-  //typedexColor: TypedexColor
+  //CodexColor: CodexColor
   baseFriendship: number;
   baseStats: [number|undefined, number|undefined, number|undefined, number|undefined, number|undefined, number|undefined];
   evYields: [number|undefined, number|undefined, number|undefined, number|undefined, number|undefined, number|undefined];
   //learnset: Learnset;
 
   // Calculation overrides
-  setName?: (self: Typemon, newName: string) => string;
-  getName?: (self: Typemon, storedName: string) => string;
-  setSex?: (self: Typemon, newSex: Sex) => Sex;
-  getSex?: (self: Typemon, storedSex: Sex) => Sex;
+  setName?: (self: Codemon, newName: string) => string;
+  getName?: (self: Codemon, storedName: string) => string;
+  setSex?: (self: Codemon, newSex: Sex) => Sex;
+  getSex?: (self: Codemon, storedSex: Sex) => Sex;
   getStat?: (
-    self: Typemon,
+    self: Codemon,
     stat: Stat,
     normalValue: number,
     considerBattleStatus: boolean
   ) => number;
-};
+}
 
-export type TypemonOptions = {
+export interface CodemonOptions {
   species: Species;
   name?: string;
   sex?: Sex;
@@ -165,16 +158,14 @@ export type TypemonOptions = {
   nature?: Nature;
   ivs?: [number|undefined, number|undefined, number|undefined, number|undefined, number|undefined, number|undefined];
   evs?: [number|undefined, number|undefined, number|undefined, number|undefined, number|undefined, number|undefined];
-  //move1?: Move;
-  //move2?: Move;
-  //move3?: Move;
-  //move4?: Move;
-};
+  //moves: Move[]
+}
 
-export class Typemon {
+// TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
+export class Codemon {
   public species: Species;
 
-  constructor(options: TypemonOptions) {
+  constructor(options: CodemonOptions) {
     // TODO enfore sane values
     this.species = options.species;
     this.name = options.name || this.species.name;
@@ -183,7 +174,7 @@ export class Typemon {
         ? SexMale
         : SexFemale;
     this._level = 0;
-    this.levelUp(options.level || DEFAULT_TYPEMON_LEVEL);
+    this.levelUp(options.level || DEFAULT_CODEMON_LEVEL);
     this._exp = this.species.experienceGroup(this._level);
     this._expToNextLevel = this.species.experienceGroup(this._level + 1);
     this.originalNature = this.temporaryNature =
@@ -193,7 +184,7 @@ export class Typemon {
     this._evs = [0, 0, 0, 0, 0, 0];
     this._statStages = [0, 0, 0, 0, 0, 0, 0];
     for (let i = 0; i < 6; i++) {
-      this._ivs[i] = options.ivs?.[i] ?? Math.random() * MAX_TYPEMON_IV;
+      this._ivs[i] = options.ivs?.[i] ?? Math.floor(Math.random() * MAX_CODEMON_IV);
       this._evs[i] = options.evs?.[i] ?? 0;
     }
 
@@ -286,7 +277,7 @@ export class Typemon {
     val = Math.floor(val);
 
     if (considerStatStages) {
-      val *= Typemon.StatStageMultiplier(this._statStages[statIndex], 2);
+      val *= Codemon.StatStageMultiplier(this._statStages[statIndex], 2);
       val = Math.floor(val);
     }
     return this.species.getStat?.(this, stat, val, considerStatStages) || val;
@@ -314,8 +305,8 @@ export class Typemon {
       throw RangeError(`Given Stat ${stat} does not have a stage`);
     this._statStages[stat] += modification;
     this._statStages[stat] = Math.max(
-      MIN_TYPEMON_STAT_STAGE,
-      Math.min(this._statStages[stat], MAX_TYPEMON_STAT_STAGE)
+      MIN_CODEMON_STAT_STAGE,
+      Math.min(this._statStages[stat], MAX_CODEMON_STAT_STAGE)
     );
   }
 

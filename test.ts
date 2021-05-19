@@ -1,5 +1,5 @@
 import * as T from "./standard.ts";
-// T will contain everything for Typemon
+// T will contain everything for Codemon
 
 const bulbasaur: T.Species = {
   name: "Bulbasaur",
@@ -18,7 +18,7 @@ const bulbasaur: T.Species = {
   experienceGroup: T.expGroupMedSlow,
   //bodyStyle: BodyStyle,
   //footprint: Footprint,
-  //typedexColor: TypedexColor,
+  //coedexColor: CodexColor,
   baseFriendship: 70,
   baseStats: [45, 49, 49, 45, 65, 65],
   evYields: [0, 0, 0, 0, 1, 0]
@@ -77,18 +77,18 @@ const garchomp: T.Species = {
   //learnset: Learnset
 };
 
-const b = new T.Typemon({
+const b = new T.Codemon({
   species: bulbasaur,
   name: "Bulby",
   ivs: [undefined, 30, undefined, undefined, undefined, undefined],
   level: 100,
 });
 
-const m = new T.Typemon({
+const m = new T.Codemon({
   species: mew,
 });
 
-const g = new T.Typemon({
+const g = new T.Codemon({
   species: garchomp,
   name: "Noam Chompy",
   sex: T.SexFemale,

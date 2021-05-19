@@ -1,2 +1,2 @@
-export * from './typemon.ts'
+export * from './codemon.ts'
 export * from './move.ts'
