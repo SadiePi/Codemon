@@ -1,4 +1,4 @@
-import * as T from "../standard.ts";
+import * as T from "../src/standard.ts";
 
 // Define the Nuclear type and its relationship to other types
 let TypeNuclear = T.TypeNone;

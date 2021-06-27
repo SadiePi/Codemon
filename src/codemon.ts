@@ -99,7 +99,7 @@ export enum Stat {
   SpecialAttack = 4,
   SpecialDefense = 5,
   Accuracy = 6,
-  Evasion = 7
+  Evasion = 7,
 }
 
 // WIP
@@ -133,8 +133,22 @@ export interface Species {
   //footprint: Footprint
   //CodexColor: CodexColor
   baseFriendship: number;
-  baseStats: [number|undefined, number|undefined, number|undefined, number|undefined, number|undefined, number|undefined];
-  evYields: [number|undefined, number|undefined, number|undefined, number|undefined, number|undefined, number|undefined];
+  baseStats: [
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined
+  ];
+  evYields: [
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined
+  ];
   //learnset: Learnset;
 
   // Calculation overrides
@@ -156,8 +170,22 @@ export interface CodemonOptions {
   sex?: Sex;
   level?: number;
   nature?: Nature;
-  ivs?: [number|undefined, number|undefined, number|undefined, number|undefined, number|undefined, number|undefined];
-  evs?: [number|undefined, number|undefined, number|undefined, number|undefined, number|undefined, number|undefined];
+  ivs?: [
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined
+  ];
+  evs?: [
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined,
+    number | undefined
+  ];
   //moves: Move[]
 }
 
@@ -168,23 +196,24 @@ export class Codemon {
   constructor(options: CodemonOptions) {
     // TODO enfore sane values
     this.species = options.species;
-    this.name = options.name || this.species.name;
+    this.name = options.name ?? this.species.name;
     this.sex =
-      options.sex || Math.random() < this.species.sexRatio
+      options.sex ?? Math.random() < this.species.sexRatio
         ? SexMale
         : SexFemale;
     this._level = 0;
-    this.levelUp(options.level || DEFAULT_CODEMON_LEVEL);
+    this.levelUp(options.level ?? DEFAULT_CODEMON_LEVEL);
     this._exp = this.species.experienceGroup(this._level);
     this._expToNextLevel = this.species.experienceGroup(this._level + 1);
     this.originalNature = this.temporaryNature =
-      options.nature || (Math.floor(Math.random() * 25) as Nature);
+      options.nature ?? (Math.floor(Math.random() * 25) as Nature);
 
     this._ivs = [0, 0, 0, 0, 0, 0];
     this._evs = [0, 0, 0, 0, 0, 0];
     this._statStages = [0, 0, 0, 0, 0, 0, 0];
     for (let i = 0; i < 6; i++) {
-      this._ivs[i] = options.ivs?.[i] ?? Math.floor(Math.random() * MAX_CODEMON_IV);
+      this._ivs[i] =
+        options.ivs?.[i] ?? Math.floor(Math.random() * MAX_CODEMON_IV);
       this._evs[i] = options.evs?.[i] ?? 0;
     }
 
@@ -197,17 +226,17 @@ export class Codemon {
     return this.species.getName?.(this, this._name) ?? this._name;
   }
   public set name(name: string) {
-    name = name || this.species.name;
+    name = name ?? this.species.name;
     this._name = this.species.setName?.(this, name) ?? name;
   }
 
   // Sex
   protected _sex: Sex = { name: "Initialization error" };
   public get sex() {
-    return this.species.getSex?.(this, this._sex) || this._sex;
+    return this.species.getSex?.(this, this._sex) ?? this._sex;
   }
   public set sex(sex: Sex) {
-    this._sex = this.species.setSex?.(this, sex) || sex;
+    this._sex = this.species.setSex?.(this, sex) ?? sex;
   }
 
   // Level & Exp
@@ -261,12 +290,12 @@ export class Codemon {
     const statIndex = stat as number; // This is just to prevent `this.species.baseStats[stat]` from throwing a stupid error
     if (statIndex >= 6)
       throw RangeError(`Given Stat ${stat} does not have a computable value`);
-    
+
     let val =
       2 * (this.species.baseStats[statIndex] ?? -1) +
       this._ivs[statIndex] +
       Math.floor(this._evs[statIndex] / 4);
-    val = Math.floor(val * this.level / 100);
+    val = Math.floor((val * this.level) / 100);
     val += stat == Stat.MaxHP ? this.level + 10 : 5;
 
     const natureBuff =
@@ -280,10 +309,12 @@ export class Codemon {
       val *= Codemon.StatStageMultiplier(this._statStages[statIndex], 2);
       val = Math.floor(val);
     }
-    return this.species.getStat?.(this, stat, val, considerStatStages) || val;
+    return this.species.getStat?.(this, stat, val, considerStatStages) ?? val;
   }
 
-  public stats(considerStatStages: boolean): [number, number, number, number, number, number] {
+  public stats(
+    considerStatStages: boolean
+  ): [number, number, number, number, number, number] {
     return [
       this.stat(Stat.MaxHP, considerStatStages),
       this.stat(Stat.Attack, considerStatStages),
@@ -291,7 +322,7 @@ export class Codemon {
       this.stat(Stat.Speed, considerStatStages),
       this.stat(Stat.SpecialAttack, considerStatStages),
       this.stat(Stat.SpecialDefense, considerStatStages),
-    ]
+    ];
   }
 
   public stage(stat: Stat) {
@@ -351,12 +382,15 @@ export class Codemon {
       false
     )} (${this.IV(Stat.Defense)}, ${this.EV(
       Stat.Defense
-    )})\nSpecial Attack: ${this.stat(Stat.SpecialAttack, false)} (${
-      this.IV(Stat.SpecialAttack)
-    }, ${this.EV(Stat.SpecialAttack)}); Special Defense: ${this.stat(Stat.SpecialDefense,
+    )})\nSpecial Attack: ${this.stat(Stat.SpecialAttack, false)} (${this.IV(
+      Stat.SpecialAttack
+    )}, ${this.EV(Stat.SpecialAttack)}); Special Defense: ${this.stat(
+      Stat.SpecialDefense,
       false
-    )} (${this.IV(Stat.SpecialDefense)}, ${
-      this.EV(Stat.SpecialDefense)
-    }); Speed: ${this.stat(Stat.Speed,false)} (${this.IV(Stat.Speed)}, ${this.EV(Stat.Speed)})`;
+    )} (${this.IV(Stat.SpecialDefense)}, ${this.EV(
+      Stat.SpecialDefense
+    )}); Speed: ${this.stat(Stat.Speed, false)} (${this.IV(
+      Stat.Speed
+    )}, ${this.EV(Stat.Speed)})`;
   }
 }

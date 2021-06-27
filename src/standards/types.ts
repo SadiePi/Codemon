@@ -1,9 +1,9 @@
-import { Type, TypeNone } from "../core.ts";
+import { Type, TypeNone } from "../index.ts";
 
 // Apparently there isn't a better way to do this in Typescript
 export let TypeNormal: Type = TypeNone;
 export let TypeFighting: Type = TypeNone;
-export let TypeFlying: Type = TypeNone;
+export let TypeFlying: Type = TypeNone; 
 export let TypePoison: Type = TypeNone;
 export let TypeGround: Type = TypeNone;
 export let TypeRock: Type = TypeNone;
