@@ -81,7 +81,7 @@ export class Move {
     this.PPBoosts = 0;
   }
 
-  public UsePP(pp: number): boolean {
+  public UsePP(pp: number = 1): boolean {
     if (this.currentPP >= pp) {
       this.currentPP -= pp;
       return true;
@@ -123,6 +123,7 @@ export class Move {
     return crit < 1/24;
   }
 
+  // refactoring to do here, should be on Codemon as "RecieveMove"
   public Use(user: Codemon, target: Codemon, multipleTargets: boolean): MoveReport {
     const r: MoveReport = {damage:0,criticalHit:false};
 
