@@ -1,7 +1,7 @@
-import * as T from "../src/standard.ts";
+import * as T from "../src/standard.ts"
 
 // Define the Nuclear type and its relationship to other types
-let TypeNuclear = T.TypeNone;
+let TypeNuclear = T.TypeNone
 TypeNuclear = {
   weaknesses: [
     T.TypeNormal,
@@ -25,7 +25,7 @@ TypeNuclear = {
   ],
   resistances: [TypeNuclear],
   immunities: [],
-};
+}
 const nuclearWeaknesses = [
   T.TypeNormal,
   T.TypeFire,
@@ -44,11 +44,11 @@ const nuclearWeaknesses = [
   T.TypeDark,
   T.TypeFairy,
   T.TypePoison,
-];
+]
 nuclearWeaknesses.forEach((type) => {
-  type.weaknesses.push(TypeNuclear);
-});
-T.TypeSteel.resistances.push(TypeNuclear);
+  type.weaknesses.push(TypeNuclear)
+})
+T.TypeSteel.resistances.push(TypeNuclear)
 
 // Define the Nucleon species
 const SpeciesNucleon: T.Species = {
@@ -70,10 +70,10 @@ const SpeciesNucleon: T.Species = {
   //typedexColor: TypedexColor,
   baseFriendship: 35,
   baseStats: [70, 55, 85, 90, 115, 115],
-  evYields: [0, 0, 0, 0, 1, 1]
+  evYields: [0, 0, 0, 0, 1, 1],
   //learnset: Learnset
-};
+}
 
 // Define an individual Nucleon named Nuke
-const nuke = new T.Codemon({ species: SpeciesNucleon, name: "Nuke" });
-console.log(`${nuke}`);
+const nuke = new T.Codemon({ species: SpeciesNucleon, name: "Nuke" })
+console.log(`${nuke}`)

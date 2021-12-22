@@ -1,8 +1,10 @@
+// temporarily...
+// deno-lint-ignore-file no-empty-interface
 interface Item {
-  name: string;
-  description: string;
-  price: number;
-  isKeyItem: boolean;
+  name: string
+  description: string
+  price: number
+  isKeyItem: boolean
   // graphics: Graphics;
 }
 
@@ -15,4 +17,4 @@ interface Ball extends Item {
   //catchRate: (battle, target, source) => number;
 }
 
-export type Inventory = Item[];
+export type Inventory = Item[]
