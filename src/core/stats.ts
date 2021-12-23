@@ -12,19 +12,16 @@ export type UnvaluedStat = "Accuracy" | "Evasion"
 export type Stat = ValuedStat | UnvaluedStat
 
 interface IUnvaluedStatEntry {
-  stat: Stat
   stage?: number
 }
 
 class UnvaluedStatEntry {
-  public readonly stat: Stat
   private _stage: number
   get stage() {
     return this._stage
   }
 
-  constructor(args: IUnvaluedStatEntry) {
-    this.stat = args.stat
+  constructor(public readonly stat: Stat, args: IUnvaluedStatEntry) {
     this._stage = args?.stage ?? 0
   }
 
@@ -51,22 +48,20 @@ class UnvaluedStatEntry {
 }
 
 interface IValuedStatEntry {
-  self: Codemon
-  stat: Stat
   stage?: number
-  baseValue: number
   individualValue?: number
   effortValue?: number
 }
 class ValuedStatEntry extends UnvaluedStatEntry {
-  public self: Codemon
-  public baseValue: number
   public individualValue: number
   public effortValue: number
-  constructor(args: IValuedStatEntry) {
-    super(args)
-    this.self = args.self
-    this.baseValue = args.baseValue
+  constructor(
+    public readonly stat: Stat,
+    public readonly self: Codemon,
+    public baseValue: number,
+    args: IValuedStatEntry
+  ) {
+    super(stat, args)
     this.individualValue =
       args.individualValue ?? Math.floor(Math.random() * C.codemon.stats.maxIV)
     this.effortValue = args.effortValue ?? 0
@@ -95,8 +90,8 @@ class ValuedStatEntry extends UnvaluedStatEntry {
 
 class HPStatEntry extends ValuedStatEntry {
   public current
-  constructor(args: IValuedStatEntry) {
-    super(args)
+  constructor(self: Codemon, baseValue: number, args: IValuedStatEntry) {
+    super("HP", self, baseValue, args)
     this.current = this.value()
   }
 
@@ -121,6 +116,16 @@ type _StatSet = {
   [S in UnvaluedStat]: UnvaluedStatEntry
 }
 
+export type IStats = {
+  [S in UnvaluedStat]?: { stage?: number }
+} & {
+  [S in ValuedStat]?: {
+    stage?: number
+    individualValue?: number
+    effortValue?: number
+  }
+}
+
 export type IStatSet = { self: Codemon } & {
   [S in ValuedStat]?: IValuedStatEntry
 } & {
@@ -141,51 +146,31 @@ export class StatSet implements _StatSet {
     const base = args.self.species.baseStats
 
     // Feels like there should be a better way to do this
-    this.HP = new HPStatEntry({
-      self: args.self,
-      stat: "HP",
-      baseValue: base.HP,
-      ...args.HP,
-    })
-    this.Attack = new ValuedStatEntry({
-      self: args.self,
-      stat: "Attack",
-      baseValue: base.Attack,
+    this.HP = new HPStatEntry(args.self, base.HP, { ...args.HP })
+    this.Attack = new ValuedStatEntry("Attack", args.self, base.Attack, {
       ...args.Attack,
     })
-    this.Defense = new ValuedStatEntry({
-      self: args.self,
-      stat: "Defense",
-      baseValue: base.Defense,
+    this.Defense = new ValuedStatEntry("Defense", args.self, base.Defense, {
       ...args.Defense,
     })
-    this.SpecialAttack = new ValuedStatEntry({
-      self: args.self,
-      stat: "SpecialAttack",
-      baseValue: base.SpecialAttack,
-      ...args.SpecialAttack,
-    })
-    this.SpecialDefense = new ValuedStatEntry({
-      self: args.self,
-      stat: "SpecialDefense",
-      baseValue: base.SpecialDefense,
-      ...args.SpecialDefense,
-    })
-    this.Speed = new ValuedStatEntry({
-      self: args.self,
-      stat: "Speed",
-      baseValue: base.Speed,
+    this.SpecialAttack = new ValuedStatEntry(
+      "SpecialAttack",
+      args.self,
+      base.SpecialAttack,
+      { ...args.SpecialAttack }
+    )
+    this.SpecialDefense = new ValuedStatEntry(
+      "SpecialDefense",
+      args.self,
+      base.SpecialDefense,
+      { ...args.SpecialDefense }
+    )
+    this.Speed = new ValuedStatEntry("Speed", args.self, base.Speed, {
       ...args.Speed,
     })
 
-    this.Accuracy = new UnvaluedStatEntry({
-      stat: "Accuracy",
-      ...args.Accuracy,
-    })
-    this.Evasion = new UnvaluedStatEntry({
-      stat: "Evasion",
-      ...args.Evasion,
-    })
+    this.Accuracy = new UnvaluedStatEntry("Accuracy", { ...args.Accuracy })
+    this.Evasion = new UnvaluedStatEntry("Evasion", { ...args.Evasion })
   }
 }
 

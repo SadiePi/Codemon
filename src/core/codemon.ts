@@ -2,8 +2,8 @@ import Experience from "./experience.ts"
 import { MoveReport, MoveUsage } from "./move.ts"
 import { getRandomNature, Nature } from "./nature.ts"
 import { Female, Male, Sex } from "./sex.ts"
-import Species from "./species.ts"
-import { IStatSet, StatSet } from "./stats.ts"
+import { Species } from "./species.ts"
+import { IStats, StatSet } from "./stats.ts"
 
 export interface ICodemon {
   species: Species
@@ -11,7 +11,7 @@ export interface ICodemon {
   sex?: Sex
   level?: number
   nature?: Nature
-  stats?: IStatSet
+  stats?: IStats
   //moves: Move[]
 }
 

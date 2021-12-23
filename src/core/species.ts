@@ -5,7 +5,7 @@ import { Type } from "./move.ts"
 import { Sex } from "./sex.ts"
 import { BaseStats, EVYields } from "./stats.ts"
 
-interface Species {
+export interface Species {
   // Normal species definition information
   name: string
   //graphics: Graphics
@@ -39,6 +39,5 @@ interface Species {
     stat: Stat,
     normalValue: number,
     considerBattleStatus: boolean
-  ) => number
+  ) => number // TODO use this
 }
-export default Species
