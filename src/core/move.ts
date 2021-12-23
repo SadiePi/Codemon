@@ -1,18 +1,7 @@
 import C from "./config.ts"
 import { Codemon } from "./codemon.ts"
 import { ValuedStat } from "./stats.ts"
-
-export interface Type {
-  weaknesses: Type[]
-  resistances: Type[]
-  immunities: Type[]
-}
-
-export const TypeNone: Type = {
-  weaknesses: [],
-  resistances: [],
-  immunities: [],
-}
+import { Type } from "./type.ts"
 
 export enum DamageCategory {
   Physical,

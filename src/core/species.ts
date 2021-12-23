@@ -1,7 +1,7 @@
 import { Stat } from "./stats.ts"
 import { Codemon } from "./codemon.ts"
 import { ExperienceGroup } from "./experience.ts"
-import { Type } from "./move.ts"
+import { Type } from "./type.ts"
 import { Sex } from "./sex.ts"
 import { BaseStats, EVYields } from "./stats.ts"
 

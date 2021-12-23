@@ -179,5 +179,5 @@ export type BaseStats = {
 }
 
 export type EVYields = {
-  [S in ValuedStat]: number
+  [S in ValuedStat]?: number
 }

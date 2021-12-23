@@ -1,140 +1,161 @@
-import { Type, TypeNone } from "../index.ts";
+import { Type, None } from "../core/type.ts"
 
 // Apparently there isn't a better way to do this in Typescript
-export let TypeNormal: Type = TypeNone;
-export let TypeFighting: Type = TypeNone;
-export let TypeFlying: Type = TypeNone; 
-export let TypePoison: Type = TypeNone;
-export let TypeGround: Type = TypeNone;
-export let TypeRock: Type = TypeNone;
-export let TypeBug: Type = TypeNone;
-export let TypeGhost: Type = TypeNone;
-export let TypeSteel: Type = TypeNone;
-export let TypeFire: Type = TypeNone;
-export let TypeWater: Type = TypeNone;
-export let TypeGrass: Type = TypeNone;
-export let TypeElectric: Type = TypeNone;
-export let TypePsychic: Type = TypeNone;
-export let TypeIce: Type = TypeNone;
-export let TypeDragon: Type = TypeNone;
-export let TypeDark: Type = TypeNone;
-export let TypeFairy: Type = TypeNone;
+let Normal: Type = None
+let Fighting: Type = None
+let Flying: Type = None
+let Poison: Type = None
+let Ground: Type = None
+let Rock: Type = None
+let Bug: Type = None
+let Ghost: Type = None
+let Steel: Type = None
+let Fire: Type = None
+let Water: Type = None
+let Grass: Type = None
+let Electric: Type = None
+let Psychic: Type = None
+let Ice: Type = None
+let Dragon: Type = None
+let Dark: Type = None
+let Fairy: Type = None
 
-TypeNormal = {
-  weaknesses: [TypeFighting],
+export default {
+  Normal,
+  Fighting,
+  Flying,
+  Poison,
+  Ground,
+  Rock,
+  Bug,
+  Ghost,
+  Steel,
+  Fire,
+  Water,
+  Grass,
+  Electric,
+  Psychic,
+  Ice,
+  Dragon,
+  Dark,
+  Fairy,
+}
+
+Normal = {
+  weaknesses: [Fighting],
   resistances: [],
-  immunities: [TypeGhost],
-};
+  immunities: [Ghost],
+}
 
-TypeFighting = {
-  weaknesses: [TypeFlying, TypePsychic, TypeFairy],
-  resistances: [TypeRock, TypeBug],
+Fighting = {
+  weaknesses: [Flying, Psychic, Fairy],
+  resistances: [Rock, Bug],
   immunities: [],
-};
+}
 
-TypeFlying = {
-  weaknesses: [TypeRock, TypeElectric, TypeIce],
-  resistances: [TypeFighting, TypeBug, TypeGrass],
-  immunities: [TypeGround],
-};
+Flying = {
+  weaknesses: [Rock, Electric, Ice],
+  resistances: [Fighting, Bug, Grass],
+  immunities: [Ground],
+}
 
-TypePoison = {
-  weaknesses: [TypeGround, TypePsychic],
-  resistances: [TypeFighting, TypePoison, TypeBug, TypeGrass, TypeFairy],
+Poison = {
+  weaknesses: [Ground, Psychic],
+  resistances: [Fighting, Poison, Bug, Grass, Fairy],
   immunities: [],
-};
+}
 
-TypeGround = {
-  weaknesses: [TypeWater, TypeGrass, TypeIce],
-  resistances: [TypePoison, TypeRock],
-  immunities: [TypeElectric],
-};
+Ground = {
+  weaknesses: [Water, Grass, Ice],
+  resistances: [Poison, Rock],
+  immunities: [Electric],
+}
 
-TypeRock = {
-  weaknesses: [TypeFighting, TypeGround, TypeSteel, TypeWater, TypeGrass],
-  resistances: [TypeNormal, TypeFlying, TypePoison, TypeFire],
+Rock = {
+  weaknesses: [Fighting, Ground, Steel, Water, Grass],
+  resistances: [Normal, Flying, Poison, Fire],
   immunities: [],
-};
+}
 
-TypeBug = {
-  weaknesses: [TypeFlying, TypeRock, TypeFire],
-  resistances: [TypeFighting, TypeGround, TypeGrass],
+Bug = {
+  weaknesses: [Flying, Rock, Fire],
+  resistances: [Fighting, Ground, Grass],
   immunities: [],
-};
+}
 
-TypeGhost = {
-  weaknesses: [TypeGhost, TypeDark],
-  resistances: [TypePoison, TypeBug],
-  immunities: [TypeNormal, TypeFighting],
-};
+Ghost = {
+  weaknesses: [Ghost, Dark],
+  resistances: [Poison, Bug],
+  immunities: [Normal, Fighting],
+}
 
-TypeSteel = {
-  weaknesses: [TypeFighting, TypeGround, TypeFire],
+Steel = {
+  weaknesses: [Fighting, Ground, Fire],
   resistances: [
-    TypeNormal,
-    TypeFlying,
-    TypeRock,
-    TypeBug,
-    TypeSteel,
-    TypeGrass,
-    TypePsychic,
-    TypeIce,
-    TypeDragon,
-    TypeFairy,
+    Normal,
+    Flying,
+    Rock,
+    Bug,
+    Steel,
+    Grass,
+    Psychic,
+    Ice,
+    Dragon,
+    Fairy,
   ], // jfc
-  immunities: [TypePoison],
-};
+  immunities: [Poison],
+}
 
-TypeFire = {
-  weaknesses: [TypeGround, TypeRock, TypeWater],
-  resistances: [TypeBug, TypeSteel, TypeFire, TypeGrass, TypeIce, TypeFairy],
+Fire = {
+  weaknesses: [Ground, Rock, Water],
+  resistances: [Bug, Steel, Fire, Grass, Ice, Fairy],
   immunities: [],
-};
+}
 
-TypeWater = {
-    weaknesses: [TypeGrass, TypeElectric],
-    resistances: [TypeSteel,TypeFire,TypeWater],
-    immunities: []
-};
-
-TypeGrass = {
-  weaknesses: [TypeFlying, TypePoison, TypeBug, TypeFire, TypeIce],
-  resistances: [TypeGround, TypeWater, TypeGrass, TypeElectric],
+Water = {
+  weaknesses: [Grass, Electric],
+  resistances: [Steel, Fire, Water],
   immunities: [],
-};
+}
 
-TypeElectric = {
-  weaknesses: [TypeGround],
-  resistances: [TypeFlying, TypeSteel, TypeElectric],
+Grass = {
+  weaknesses: [Flying, Poison, Bug, Fire, Ice],
+  resistances: [Ground, Water, Grass, Electric],
   immunities: [],
-};
+}
 
-TypePsychic = {
-    weaknesses: [TypeBug,TypeGhost,TypeDark],
-    resistances: [TypeFighting,TypePsychic],
-    immunities: []
-};
-
-TypeIce = {
-    weaknesses: [TypeFighting,TypeRock,TypeSteel,TypeFire],
-    resistances: [TypeIce],
-    immunities: []
-};
-
-TypeDragon = {
-  weaknesses: [TypeIce, TypeDragon, TypeFairy],
-  resistances: [TypeFire, TypeWater, TypeGrass, TypeElectric],
+Electric = {
+  weaknesses: [Ground],
+  resistances: [Flying, Steel, Electric],
   immunities: [],
-};
+}
 
-TypeDark = {
-  weaknesses: [TypeFighting, TypeBug, TypeFairy],
-  resistances: [TypeGhost, TypeDark],
-  immunities: [TypePsychic],
-};
+Psychic = {
+  weaknesses: [Bug, Ghost, Dark],
+  resistances: [Fighting, Psychic],
+  immunities: [],
+}
 
-TypeFairy = {
-  weaknesses: [TypePoison, TypeSteel],
-  resistances: [TypeFighting, TypeBug, TypeDark],
-  immunities: [TypeDragon],
-};
+Ice = {
+  weaknesses: [Fighting, Rock, Steel, Fire],
+  resistances: [Ice],
+  immunities: [],
+}
+
+Dragon = {
+  weaknesses: [Ice, Dragon, Fairy],
+  resistances: [Fire, Water, Grass, Electric],
+  immunities: [],
+}
+
+Dark = {
+  weaknesses: [Fighting, Bug, Fairy],
+  resistances: [Ghost, Dark],
+  immunities: [Psychic],
+}
+
+Fairy = {
+  weaknesses: [Poison, Steel],
+  resistances: [Fighting, Bug, Dark],
+  immunities: [Dragon],
+}

@@ -21,3 +21,12 @@ export const fluctuating = function (l: number) {
   if (l <= 100) return (Math.pow(l, 3) * (l / 2 + 32)) / 50
   return Number.POSITIVE_INFINITY
 }
+
+export default {
+  slow,
+  medSlow,
+  medFast,
+  fast,
+  erratic,
+  fluctuating,
+}
