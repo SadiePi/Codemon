@@ -1,8 +1,6 @@
-// deno-lint-ignore-file no-unused-vars
-
-import { Species } from "../core/index.ts"
-import Type from "./types.ts"
-import Exp from "./experience.ts"
+import { Species } from "../core/index.ts";
+import Type from "./types.ts";
+import Exp from "./experience.ts";
 import Experience from "./experience.ts";
 
 export const Bulbasaur: Species = {
@@ -25,9 +23,8 @@ export const Bulbasaur: Species = {
     Speed: 45,
   },
   evYields: { SpecialAttack: 1 },
-}
+};
 // ivysaur, venusaur, ...
-
 
 export const Garchomp: Species = {
   name: "Garchomp",
@@ -64,9 +61,9 @@ export const Garchomp: Species = {
     Speed: 0,
   },
   //learnset: Learnset
-}
+};
 
 export default {
   Bulbasaur,
-  Garchomp
-}
+  Garchomp,
+};
