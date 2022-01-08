@@ -152,8 +152,8 @@ export class Move {
 
     const stats: [PermanentStat, PermanentStat] =
       this.info.damageCategory === DamageCategory.Physical
-        ? ["Attack" as PermanentStat, "Defense" as PermanentStat]
-        : ["SpecialAttack" as PermanentStat, "SpecialDefense" as PermanentStat];
+        ? [PermanentStat.Attack, PermanentStat.Defense]
+        : [PermanentStat.SpecialAttack, PermanentStat.SpecialDefense];
 
     // TODO fix?
     ret.base *= self.stats[stats[0]].value(
