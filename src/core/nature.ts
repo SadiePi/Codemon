@@ -1,9 +1,16 @@
-import { Stat } from "./stats.ts"
-//import { BiMap } from "https://deno.land/x/rimbu@0.6.9/bimap/mod.ts"
+import { PermanentStat } from "./stats.ts";
 
-export type Nature = [buff: Stat, nerf: Stat]
-//export const Natures = BiMap.empty<string, Nature>()
-export const Natures = new Map<Nature, string>()
-export function getRandomNature() {
-  return [...Natures.keys()][Math.floor(Math.random() * Natures.size)]
+export interface Nature {
+  name: string;
+  buff: PermanentStat;
+  nerf: PermanentStat;
 }
+
+const nats: Record<string, Nature> = {};
+
+export function getRandomNature(): Nature {
+  const vals = Object.values(nats);
+  return vals[(vals.length * Math.random()) << 0];
+}
+
+export default nats;

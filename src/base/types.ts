@@ -20,27 +20,6 @@ let Dragon: Type = None
 let Dark: Type = None
 let Fairy: Type = None
 
-export default {
-  Normal,
-  Fighting,
-  Flying,
-  Poison,
-  Ground,
-  Rock,
-  Bug,
-  Ghost,
-  Steel,
-  Fire,
-  Water,
-  Grass,
-  Electric,
-  Psychic,
-  Ice,
-  Dragon,
-  Dark,
-  Fairy,
-}
-
 Normal = {
   weaknesses: [Fighting],
   resistances: [],
@@ -159,3 +138,24 @@ Fairy = {
   resistances: [Fighting, Bug, Dark],
   immunities: [Dragon],
 }
+
+export default {
+  Normal,
+  Fighting,
+  Flying,
+  Poison,
+  Ground,
+  Rock,
+  Bug,
+  Ghost,
+  Steel,
+  Fire,
+  Water,
+  Grass,
+  Electric,
+  Psychic,
+  Ice,
+  Dragon,
+  Dark,
+  Fairy,
+} as {[name: string]: Type}

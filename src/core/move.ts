@@ -1,6 +1,6 @@
 import C from "./config.ts"
 import { Codemon } from "./codemon.ts"
-import { ValuedStat } from "./stats.ts"
+import { PermanentStat, Stat } from "./stats.ts"
 import { Type } from "./type.ts"
 
 export enum DamageCategory {
@@ -73,8 +73,8 @@ export class PPScheme {
     return true
   }
 
-  public Restore(pp: number | "All"): number {
-    if (pp === "All") pp = this.max - this.current
+  public Restore(pp: number): number {
+    pp = pp ?? this.max - this.current
     const prev = this.current
     this.current += pp
     if (this.current > this.max) this.current = this.max
@@ -150,10 +150,10 @@ export class Move {
     // TODO apply effective power, not base
     ret.base *= this.info.basePower
 
-    const stats: [ValuedStat, ValuedStat] =
+    const stats: [PermanentStat, PermanentStat] =
       this.info.damageCategory === DamageCategory.Physical
-        ? ["Attack", "Defense"]
-        : ["SpecialAttack", "SpecialDefense"]
+        ? ["Attack" as PermanentStat, "Defense" as PermanentStat]
+        : ["SpecialAttack" as PermanentStat, "SpecialDefense" as PermanentStat]
 
     // TODO fix?
     ret.base *= self.stats[stats[0]].value(

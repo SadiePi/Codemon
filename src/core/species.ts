@@ -1,43 +1,42 @@
-import { Stat } from "./stats.ts"
-import { Codemon } from "./codemon.ts"
-import { ExperienceGroup } from "./experience.ts"
-import { Type } from "./type.ts"
-import { Sex } from "./sex.ts"
-import { BaseStats, EVYields } from "./stats.ts"
+import { Stat } from "./stats.ts";
+import { Codemon } from "./codemon.ts";
+import { ExperienceGroup } from "./experience.ts";
+import { Type } from "./type.ts";
+import { Sex } from "./sex.ts";
+import { BaseStats, EVYields } from "./stats.ts";
+import { Nature } from "./nature.ts";
 
 export interface Species {
   // Normal species definition information
-  name: string
+  name: string;
   //graphics: Graphics
-  type1: Type
-  type2?: Type
+  types: Type[];
   //ability1: Ability
   //ability2?: Ability
   //specialAbility: Ability
-  sexRatio: number
-  catchRate: number
-  eggCycles: number
-  height: number
-  weight: number
-  baseExperienceYield: number
-  experienceGroup: ExperienceGroup
+  sexRatio: number;
+  catchRate: number;
+  eggCycles: number;
+  height: number;
+  weight: number;
+  baseExperienceYield: number;
+  experienceGroup: ExperienceGroup;
   //bodyStyle: BodyStyle
   //footprint: Footprint
   //CodexColor: CodexColor
-  baseFriendship: number
-  baseStats: BaseStats
-  evYields: EVYields
+  baseFriendship: number;
+  baseStats: BaseStats;
+  evYields: EVYields;
   //learnset: Learnset;
 
   // Calculation overrides
-  setName?: (self: Codemon, newName: string) => string
-  getName?: (self: Codemon, storedName: string) => string
-  setSex?: (self: Codemon, newSex: Sex) => Sex
-  getSex?: (self: Codemon, storedSex: Sex) => Sex
-  getStat?: (
+  overrideName?: (self: Codemon, inputName: string) => string;
+  overrideSex?: (self: Codemon, inputSex: Sex) => Sex;
+  overrideStatValue?: (
     self: Codemon,
     stat: Stat,
-    normalValue: number,
+    inputStat: number,
     considerBattleStatus: boolean
-  ) => number // TODO use this
+  ) => number; // TODO use this
+  overrideNature?: (self: Codemon, inputNature: Nature) => Nature;
 }
