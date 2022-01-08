@@ -12,7 +12,7 @@ export const Bulbasaur: Species = {
   height: 0.7,
   weight: 6.9,
   baseExperienceYield: 64,
-  experienceGroup: Exp.medSlow,
+  experienceGroup: Exp.MedSlow,
   baseFriendship: 70,
   baseStats: {
     HP: 45,
