@@ -53,12 +53,7 @@ export const Garchomp: Species = {
     Speed: 102,
   },
   evYields: {
-    HP: 0,
-    Attack: 0,
-    Defense: 0,
-    SpecialAttack: 0,
-    SpecialDefense: 0,
-    Speed: 0,
+    Attack: 3,
   },
   //learnset: Learnset
 };
