@@ -1,17 +1,16 @@
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
-import Base from "../src/base/index.ts";
-import { Codemon, Female } from "../src/core/index.ts";
+import C, { Codemon, Female } from "../src/base/index.ts";
 
 Deno.test({
   name: "https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2",
   fn: () => {
     const chompy = new Codemon({
-      species: Base.Species.Garchomp,
+      species: C.Species.Garchomp,
       name: "Noam Chompy",
       sex: Female,
       level: 78,
-      nature: Base.Nature.Adamant,
+      nature: C.Nature.Adamant,
       stats: {
         HP: {
           individualValue: 24,
