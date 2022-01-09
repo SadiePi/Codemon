@@ -17,7 +17,7 @@ interface IBattleStatEntry {
   stage?: number;
 }
 
-class BattleStatEntry {
+export class BattleStatEntry {
   private _stage: number;
   get stage() {
     return this._stage;
@@ -54,7 +54,7 @@ interface IPermanentStatEntry {
   individualValue?: number;
   effortValue?: number;
 }
-class ParmanentStatEntry extends BattleStatEntry {
+export class ParmanentStatEntry extends BattleStatEntry {
   public individualValue: number;
   public effortValue: number;
   constructor(
@@ -91,7 +91,7 @@ class ParmanentStatEntry extends BattleStatEntry {
   }
 }
 
-class HPStatEntry extends ParmanentStatEntry {
+export class HPStatEntry extends ParmanentStatEntry {
   public current;
   constructor(self: Codemon, baseValue: number, args: IPermanentStatEntry) {
     super("HP" as Stat, self, baseValue, args);
