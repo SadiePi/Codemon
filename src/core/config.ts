@@ -16,4 +16,4 @@ export default {
       statEffect: 0.1,
     },
   },
-}
+};

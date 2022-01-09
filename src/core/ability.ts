@@ -1,6 +1,6 @@
 export type Ability = {
-  name: string
-  description: string
+  name: string;
+  description: string;
   //onMoveSelection?:(...)=>void
   //beforeMoveExecution?:(move: Move, target: Codemon, battle: Battle)=>void;
   //afterMoveExecution?:(...)=>void;
@@ -13,4 +13,4 @@ export type Ability = {
   //beforeWeatherEffect?: (...)=>void
   //afterWeatherEffect?: (...)=>void
   //abilityNullifications?: Ability[]
-}
+};

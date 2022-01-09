@@ -1,7 +1,7 @@
-import C, { Codemon, Species } from "../src/base/index.ts"
+import C, { Codemon, Species } from "../src/base/index.ts";
 
 // Define the Nuclear type and its relationship to other types
-let TypeNuclear = C.Types.INIT
+let TypeNuclear = C.Types.INIT;
 TypeNuclear = {
   weaknesses: [
     C.Types.Normal,
@@ -25,8 +25,8 @@ TypeNuclear = {
   ],
   resistances: [TypeNuclear],
   immunities: [],
-}
-;[
+};
+[
   C.Types.Normal,
   C.Types.Fire,
   C.Types.Fighting,
@@ -45,9 +45,9 @@ TypeNuclear = {
   C.Types.Fairy,
   C.Types.Poison,
 ].forEach((type) => {
-  type.weaknesses.push(TypeNuclear)
-})
-C.Types.Steel.resistances.push(TypeNuclear)
+  type.weaknesses.push(TypeNuclear);
+});
+C.Types.Steel.resistances.push(TypeNuclear);
 
 // Define the Nucleon species
 const SpeciesNucleon: Species = {
@@ -80,8 +80,8 @@ const SpeciesNucleon: Species = {
     SpecialDefense: 1,
   },
   //learnset: Learnset
-}
+};
 
 // Define an individual Nucleon named Nuke
-const nuke = new Codemon({ species: SpeciesNucleon, name: "Nuke" })
-console.log(`${nuke.stats.HP.value()}`)
+const nuke = new Codemon({ species: SpeciesNucleon, name: "Nuke" });
+console.log(`${nuke.stats.HP.value()}`);
