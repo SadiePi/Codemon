@@ -1,61 +1,59 @@
-import * as T from "../src/standards/index.ts"
+import C, { Codemon, Species } from "../src/base/index.ts"
 
 // Define the Nuclear type and its relationship to other types
-let TypeNuclear = T.TypeNone
+let TypeNuclear = C.Types.INIT
 TypeNuclear = {
   weaknesses: [
-    T.TypeNormal,
-    T.TypeFire,
-    T.TypeFighting,
-    T.TypeWater,
-    T.TypeFlying,
-    T.TypeGrass,
-    T.TypeElectric,
-    T.TypeGround,
-    T.TypePsychic,
-    T.TypeRock,
-    T.TypeIce,
-    T.TypeBug,
-    T.TypeDragon,
-    T.TypeGhost,
-    T.TypeDark,
-    T.TypeSteel,
-    T.TypeFairy,
-    T.TypePoison,
+    C.Types.Normal,
+    C.Types.Fire,
+    C.Types.Fighting,
+    C.Types.Water,
+    C.Types.Flying,
+    C.Types.Grass,
+    C.Types.Electric,
+    C.Types.Ground,
+    C.Types.Psychic,
+    C.Types.Rock,
+    C.Types.Ice,
+    C.Types.Bug,
+    C.Types.Dragon,
+    C.Types.Ghost,
+    C.Types.Dark,
+    C.Types.Steel,
+    C.Types.Fairy,
+    C.Types.Poison,
   ],
   resistances: [TypeNuclear],
   immunities: [],
 }
-const nuclearWeaknesses = [
-  T.TypeNormal,
-  T.TypeFire,
-  T.TypeFighting,
-  T.TypeWater,
-  T.TypeFlying,
-  T.TypeGrass,
-  T.TypeElectric,
-  T.TypeGround,
-  T.TypePsychic,
-  T.TypeRock,
-  T.TypeIce,
-  T.TypeBug,
-  T.TypeDragon,
-  T.TypeGhost,
-  T.TypeDark,
-  T.TypeFairy,
-  T.TypePoison,
-]
-nuclearWeaknesses.forEach((type) => {
+;[
+  C.Types.Normal,
+  C.Types.Fire,
+  C.Types.Fighting,
+  C.Types.Water,
+  C.Types.Flying,
+  C.Types.Grass,
+  C.Types.Electric,
+  C.Types.Ground,
+  C.Types.Psychic,
+  C.Types.Rock,
+  C.Types.Ice,
+  C.Types.Bug,
+  C.Types.Dragon,
+  C.Types.Ghost,
+  C.Types.Dark,
+  C.Types.Fairy,
+  C.Types.Poison,
+].forEach((type) => {
   type.weaknesses.push(TypeNuclear)
 })
-T.TypeSteel.resistances.push(TypeNuclear)
+C.Types.Steel.resistances.push(TypeNuclear)
 
 // Define the Nucleon species
-const SpeciesNucleon: T.Species = {
+const SpeciesNucleon: Species = {
   name: "Nucleon",
   //graphics: Graphics,
-  type1: TypeNuclear,
-  type2: T.TypeNone,
+  types: [TypeNuclear],
   //normalAbility1: AbilityAtomize,
   //specialAbility: AbilityGeigerSense,
   sexRatio: 7 / 8,
@@ -64,16 +62,26 @@ const SpeciesNucleon: T.Species = {
   height: 0.7,
   weight: 21.5,
   baseExperienceYield: 184,
-  experienceGroup: T.expGroupMedFast,
+  experienceGroup: C.Experience.MedFast,
   //bodyStyle: BodyStyle,
   //footprint: Footprint,
   //typedexColor: TypedexColor,
   baseFriendship: 35,
-  baseStats: [70, 55, 85, 90, 115, 115],
-  evYields: [0, 0, 0, 0, 1, 1],
+  baseStats: {
+    HP: 70,
+    Attack: 55,
+    Defense: 85,
+    SpecialAttack: 115,
+    SpecialDefense: 115,
+    Speed: 90,
+  },
+  evYields: {
+    SpecialAttack: 1,
+    SpecialDefense: 1,
+  },
   //learnset: Learnset
 }
 
 // Define an individual Nucleon named Nuke
-const nuke = new T.Codemon({ species: SpeciesNucleon, name: "Nuke" })
-console.log(`${nuke}`)
+const nuke = new Codemon({ species: SpeciesNucleon, name: "Nuke" })
+console.log(`${nuke.stats.HP.value()}`)
