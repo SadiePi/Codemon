@@ -1,5 +1,5 @@
 import C from "./config.ts";
-import { Codemon } from "./codemon.ts";
+import Codemon from "./codemon.ts";
 import { PermanentStat } from "./stats.ts";
 import { Type } from "./type.ts";
 
@@ -152,8 +152,8 @@ export class Move {
 
     const stats: [PermanentStat, PermanentStat] =
       this.info.damageCategory === DamageCategory.Physical
-        ? [PermanentStat.Attack, PermanentStat.Defense]
-        : [PermanentStat.SpecialAttack, PermanentStat.SpecialDefense];
+        ? ["Attack", "Defense"]
+        : ["SpecialAttack", "SpecialDefense"];
 
     // TODO fix?
     ret.base *= self.stats[stats[0]].value(

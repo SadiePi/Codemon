@@ -1,131 +1,129 @@
-import { PermanentStat } from "../core/stats.ts";
 import Natures from "../core/nature.ts";
 
-const PS = PermanentStat;
 const Hardy = (Natures.Hardy = {
   name: "Hardy",
-  buff: PS.Attack,
-  nerf: PS.Attack,
+  buff: "Attack",
+  nerf: "Attack",
 });
 const Lonely = (Natures.Lonely = {
   name: "Lonely",
-  buff: PS.Attack,
-  nerf: PS.Defense,
+  buff: "Attack",
+  nerf: "Defense",
 });
 const Brave = (Natures.Brave = {
   name: "Brave",
-  buff: PS.Attack,
-  nerf: PS.Speed,
+  buff: "Attack",
+  nerf: "Speed",
 });
 const Adamant = (Natures.Adamant = {
   name: "Adamant",
-  buff: PS.Attack,
-  nerf: PS.SpecialAttack,
+  buff: "Attack",
+  nerf: "SpecialAttack",
 });
 const Naughty = (Natures.Naughty = {
   name: "Naughty",
-  buff: PS.Attack,
-  nerf: PS.SpecialDefense,
+  buff: "Attack",
+  nerf: "SpecialDefense",
 });
 const Bold = (Natures.Bold = {
   name: "Bold",
-  buff: PS.Defense,
-  nerf: PS.Attack,
+  buff: "Defense",
+  nerf: "Attack",
 });
 const Docile = (Natures.Docile = {
   name: "Docile",
-  buff: PS.Defense,
-  nerf: PS.Defense,
+  buff: "Defense",
+  nerf: "Defense",
 });
 const Relaxed = (Natures.Relaxed = {
   name: "Relaxed",
-  buff: PS.Defense,
-  nerf: PS.Speed,
+  buff: "Defense",
+  nerf: "Speed",
 });
 const Impish = (Natures.Impish = {
   name: "Impish",
-  buff: PS.Defense,
-  nerf: PS.SpecialAttack,
+  buff: "Defense",
+  nerf: "SpecialAttack",
 });
 const Lax = (Natures.Lax = {
   name: "Lax",
-  buff: PS.Defense,
-  nerf: PS.SpecialDefense,
+  buff: "Defense",
+  nerf: "SpecialDefense",
 });
 const Timid = (Natures.Timid = {
   name: "Timid",
-  buff: PS.Speed,
-  nerf: PS.Attack,
+  buff: "Speed",
+  nerf: "Attack",
 });
 const Hasty = (Natures.Hasty = {
   name: "Hasty",
-  buff: PS.Speed,
-  nerf: PS.Defense,
+  buff: "Speed",
+  nerf: "Defense",
 });
 const Serious = (Natures.Serious = {
   name: "Serious",
-  buff: PS.Speed,
-  nerf: PS.Speed,
+  buff: "Speed",
+  nerf: "Speed",
 });
 const Jolly = (Natures.Jolly = {
   name: "Jolly",
-  buff: PS.Speed,
-  nerf: PS.SpecialAttack,
+  buff: "Speed",
+  nerf: "SpecialAttack",
 });
 const Naive = (Natures.Naive = {
   name: "Naive",
-  buff: PS.Speed,
-  nerf: PS.SpecialDefense,
+  buff: "Speed",
+  nerf: "SpecialDefense",
 });
 const Modest = (Natures.Modest = {
   name: "Modest",
-  buff: PS.SpecialAttack,
-  nerf: PS.Attack,
+  buff: "SpecialAttack",
+  nerf: "Attack",
 });
 const Mild = (Natures.Mild = {
   name: "Mild",
-  buff: PS.SpecialAttack,
-  nerf: PS.Defense,
+  buff: "SpecialAttack",
+  nerf: "Defense",
 });
 const Quiet = (Natures.Quiet = {
   name: "Quiet",
-  buff: PS.SpecialAttack,
-  nerf: PS.Speed,
+  buff: "SpecialAttack",
+  nerf: "Speed",
 });
 const Bashful = (Natures.Bashful = {
   name: "Bashful",
-  buff: PS.SpecialAttack,
-  nerf: PS.SpecialAttack,
+  buff: "SpecialAttack",
+  nerf: "SpecialAttack",
 });
 const Rash = (Natures.Rash = {
   name: "Rash",
-  buff: PS.SpecialAttack,
-  nerf: PS.SpecialDefense,
+  buff: "SpecialAttack",
+  nerf: "SpecialDefense",
 });
 const Calm = (Natures.Calm = {
   name: "Calm",
-  buff: PS.SpecialDefense,
-  nerf: PS.Attack,
+  buff: "SpecialDefense",
+  nerf: "Attack",
 });
 const Gentle = (Natures.Gentle = {
   name: "Gentle",
-  buff: PS.SpecialDefense,
-  nerf: PS.Defense,
+  buff: "SpecialDefense",
+  nerf: "Defense",
 });
 const Sassy = (Natures.Sassy = {
   name: "Sassy",
-  buff: PS.SpecialDefense,
-  nerf: PS.Speed,
+  buff: "SpecialDefense",
+  nerf: "Speed",
 });
 const Careful = (Natures.Careful = {
   name: "Careful",
-  buff: PS.SpecialDefense,
-  nerf: PS.SpecialAttack,
+  buff: "SpecialDefense",
+  nerf: "SpecialAttack",
 });
 const Quirky = (Natures.Quirky = {
   name: "Quirky",
-  buff: PS.SpecialDefense,
-  nerf: PS.SpecialDefense,
+  buff: "SpecialDefense",
+  nerf: "SpecialDefense",
 });
 
 export default {

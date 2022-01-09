@@ -1,18 +1,16 @@
-import { Codemon } from "./codemon.ts";
+import Codemon from "./codemon.ts";
 import C from "./config.ts";
 
-export enum PermanentStat {
-  HP = "HP",
-  Attack = "Attack",
-  Defense = "Defense",
-  SpecialAttack = "SpecialAttack",
-  SpecialDefense = "SpecialDefense",
-  Speed = "Speed",
-}
-export enum BattleStat {
-  Accuracy = "Accuracy",
-  Evasion = "Evasion",
-}
+export type PermanentStat =
+  | "HP"
+  | "Attack"
+  | "Defense"
+  | "SpecialAttack"
+  | "SpecialDefense"
+  | "Speed";
+
+export type BattleStat = "Accuracy" | "Evasion";
+
 export type Stat = PermanentStat | BattleStat;
 
 interface IBattleStatEntry {
@@ -145,47 +143,32 @@ export class StatSet implements Stats {
 
     // Feels like there should be a better way to do this
     this.HP = new HPStatEntry(args.self, base.HP, { ...args.HP });
-    this.Attack = new ParmanentStatEntry(
-      "Attack" as Stat,
-      args.self,
-      base.Attack,
-      {
-        ...args.Attack,
-      }
-    );
-    this.Defense = new ParmanentStatEntry(
-      "Defense" as Stat,
-      args.self,
-      base.Defense,
-      {
-        ...args.Defense,
-      }
-    );
+    this.Attack = new ParmanentStatEntry("Attack", args.self, base.Attack, {
+      ...args.Attack,
+    });
+    this.Defense = new ParmanentStatEntry("Defense", args.self, base.Defense, {
+      ...args.Defense,
+    });
     this.SpecialAttack = new ParmanentStatEntry(
-      "SpecialAttack" as Stat,
+      "SpecialAttack",
       args.self,
       base.SpecialAttack,
       { ...args.SpecialAttack }
     );
     this.SpecialDefense = new ParmanentStatEntry(
-      "SpecialDefense" as Stat,
+      "SpecialDefense",
       args.self,
       base.SpecialDefense,
       { ...args.SpecialDefense }
     );
-    this.Speed = new ParmanentStatEntry(
-      "Speed" as Stat,
-      args.self,
-      base.Speed,
-      {
-        ...args.Speed,
-      }
-    );
+    this.Speed = new ParmanentStatEntry("Speed", args.self, base.Speed, {
+      ...args.Speed,
+    });
 
-    this.Accuracy = new BattleStatEntry("Accuracy" as Stat, {
+    this.Accuracy = new BattleStatEntry("Accuracy", {
       ...args.Accuracy,
     });
-    this.Evasion = new BattleStatEntry("Evasion" as Stat, { ...args.Evasion });
+    this.Evasion = new BattleStatEntry("Evasion", { ...args.Evasion });
   }
 }
 

@@ -99,3 +99,4 @@ export class Codemon {
     return ret as MoveReport;
   }
 }
+export default Codemon;
