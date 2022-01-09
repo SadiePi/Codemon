@@ -5,6 +5,7 @@ import C, { Codemon, Female } from "../src/base/index.ts";
 Deno.test({
   name: "https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2",
   fn: () => {
+    console.log();
     const chompy = new Codemon({
       species: C.Species.Garchomp,
       name: "Noam Chompy",
@@ -38,6 +39,8 @@ Deno.test({
         },
       },
     });
+    chompy.stats.Defense.modifyStage(2);
+    console.log(chompy.toString());
     assertEquals(chompy.stats.HP.value(), 289);
     assertEquals(chompy.stats.Attack.value(false), 278);
     assertEquals(chompy.stats.Defense.value(false), 193);
