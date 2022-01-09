@@ -4,7 +4,7 @@ export interface Type {
   immunities: Type[]
 }
 
-export const None: Type = {
+export const INIT: Type = {
   weaknesses: [],
   resistances: [],
   immunities: [],
