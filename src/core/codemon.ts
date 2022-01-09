@@ -98,5 +98,55 @@ export class Codemon {
 
     return ret as MoveReport;
   }
+
+  public toString() {
+    const identity = `Level ${this.experience.level}, ${this.nature.name}, ${
+      this.sex.name
+    } ${this.species.name}${
+      this.name === this.species.name ? "" : " named " + this.name
+    }`;
+
+    // TODO make this stat.toString()
+    const stats =
+      `HP: ${this.stats.HP.current}/${this.stats.HP.value()}, ` +
+      `Attack: ${this.stats.Attack.value(true)}${
+        this.stats.Attack.stage === 0
+          ? ""
+          : ` (${this.stats.Attack.value(false)})`
+      }, ` +
+      `Defense: ${this.stats.Defense.value(true)}${
+        this.stats.Defense.stage === 0
+          ? ""
+          : ` (${this.stats.Defense.value(false)})`
+      }, ` +
+      `Speed: ${this.stats.Speed.value(true)}${
+        this.stats.Speed.stage === 0
+          ? ""
+          : ` (${this.stats.Speed.value(false)})`
+      }\n` +
+      `Special Attack: ${this.stats.SpecialAttack.value(true)}${
+        this.stats.SpecialAttack.stage === 0
+          ? ""
+          : ` (${this.stats.SpecialAttack.value(false)})`
+      }, ` +
+      `Special Defense: ${this.stats.SpecialDefense.value(true)}${
+        this.stats.SpecialDefense.stage === 0
+          ? ""
+          : ` (${this.stats.SpecialDefense.value(false)})`
+      }` +
+      `${
+        this.stats.Evasion.stage ? ", Evasion: " + this.stats.Evasion.stage : ""
+      }` +
+      `${
+        this.stats.Accuracy.stage
+          ? ", Accuracy: " + this.stats.Accuracy.stage
+          : ""
+      }`;
+
+    // TODO make this move.toString()
+    const moves = "";
+
+    return [identity, stats, moves].join("\n");
+  }
 }
 export default Codemon;
