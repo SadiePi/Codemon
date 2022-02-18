@@ -140,7 +140,6 @@ Fairy = {
 };
 
 export default {
-  INIT,
   Normal,
   Fighting,
   Flying,
