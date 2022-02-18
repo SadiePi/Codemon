@@ -54,7 +54,7 @@ interface IPermanentStatEntry {
   individualValue?: number;
   effortValue?: number;
 }
-export class ParmanentStatEntry extends BattleStatEntry {
+export class PermanentStatEntry extends BattleStatEntry {
   public individualValue: number;
   public effortValue: number;
   constructor(
@@ -90,14 +90,14 @@ export class ParmanentStatEntry extends BattleStatEntry {
   }
 }
 
-export class HPStatEntry extends ParmanentStatEntry {
+export class HPStatEntry extends PermanentStatEntry {
   public current;
   constructor(self: Codemon, args: IPermanentStatEntry) {
     super("HP" as Stat, self, args);
     this.current = this.value();
   }
 
-  public value(considerStage: boolean=false) {
+  public value(considerStage: boolean = false) {
     let val =
       2 * this.self.species.baseStats[this.stat as PermanentStat] +
       this.individualValue +
@@ -115,7 +115,7 @@ export class HPStatEntry extends ParmanentStatEntry {
 }
 
 type Stats = {
-  [S in PermanentStat]: ParmanentStatEntry;
+  [S in PermanentStat]: PermanentStatEntry;
 } & {
   [S in BattleStat]: BattleStatEntry;
 };
@@ -128,11 +128,11 @@ export type IStats = {
 
 export class StatSet implements Stats {
   public HP: HPStatEntry;
-  public Attack: ParmanentStatEntry;
-  public Defense: ParmanentStatEntry;
-  public SpecialAttack: ParmanentStatEntry;
-  public SpecialDefense: ParmanentStatEntry;
-  public Speed: ParmanentStatEntry;
+  public Attack: PermanentStatEntry;
+  public Defense: PermanentStatEntry;
+  public SpecialAttack: PermanentStatEntry;
+  public SpecialDefense: PermanentStatEntry;
+  public Speed: PermanentStatEntry;
 
   public Accuracy: BattleStatEntry;
   public Evasion: BattleStatEntry;
@@ -142,23 +142,19 @@ export class StatSet implements Stats {
 
     // Feels like there should be a better way to do this
     this.HP = new HPStatEntry(args.self, { ...args.HP });
-    this.Attack = new ParmanentStatEntry("Attack", args.self, {
+    this.Attack = new PermanentStatEntry("Attack", args.self, {
       ...args.Attack,
     });
-    this.Defense = new ParmanentStatEntry("Defense", args.self, {
+    this.Defense = new PermanentStatEntry("Defense", args.self, {
       ...args.Defense,
     });
-    this.SpecialAttack = new ParmanentStatEntry(
-      "SpecialAttack",
-      args.self,
-      { ...args.SpecialAttack }
-    );
-    this.SpecialDefense = new ParmanentStatEntry(
-      "SpecialDefense",
-      args.self,
-      { ...args.SpecialDefense }
-    );
-    this.Speed = new ParmanentStatEntry("Speed", args.self, {
+    this.SpecialAttack = new PermanentStatEntry("SpecialAttack", args.self, {
+      ...args.SpecialAttack,
+    });
+    this.SpecialDefense = new PermanentStatEntry("SpecialDefense", args.self, {
+      ...args.SpecialDefense,
+    });
+    this.Speed = new PermanentStatEntry("Speed", args.self, {
       ...args.Speed,
     });
 
