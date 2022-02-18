@@ -9,38 +9,17 @@ export enum DamageCategory {
   Status,
 }
 
+// eg move.targetingCategory = TC.All | TC.NonAdjacent | TC.Foes
 export enum TargetingCategory {
-  Any,
-  AnyAllyIncludingSelf,
-  AnyAllyExcludingSelf,
-  AnyFoe,
-
-  AnyAdjacent,
-  AnyAdjacentAllyIncludingSelf,
-  AnyAdjacentAllyExcludingSelf,
-  AnyAdjacentFoe,
-
-  AnyNonAdjacent,
-  AnyNonAdjacentAlly,
-  AnyNonAdjacentFoe,
-
-  All,
-  AllAlliesIncludingSelf,
-  AllAlliesExcludingSelf,
-  AllFoes,
-
-  AllAdjacent,
-  AllAdjacentAlliesIncludingSelf,
-  AllAdjacentAlliesExcludingSelf,
-  AllAdjacentFoes,
-
-  AllNonAdjacent,
-  AllNonAdjacentAllies,
-  AllNonAdjacentFoes,
-
-  Self,
-  None, // weather changing moves, etc
+  None = 0,
+  Self = 1 << 0,
+  Ally = 1 << 1,
+  Foe = 1 << 2,
+  Adjacent = 1 << 3,
+  NonAdjacent = 1 << 4,
+  All = 1 << 5, // target all that match other filters instead of one
 }
+export const TC = TargetingCategory; // for convenience
 
 export interface IMove {
   name: string;
