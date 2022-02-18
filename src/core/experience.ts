@@ -26,10 +26,10 @@ export default class Experience {
     this.level = args.level ?? 0;
     this.points = args.points ?? 0;
 
+    // apply defaults if not both defined
     if (!this.level && !this.points) this.level = C.codemon.stats.defaultLevel;
-    if (this.level && !this.points) this.points = this.group(this.level); // TODO: Add random exp
-    if (!this.level && this.points)
-      while (this.group(this.level) < this.points) this.level++;
+    if (!this.points) this.points = this.group(this.level); // TODO: Add random exp
+    if (!this.level) while (this.group(this.level) < this.points) this.level++;
   }
 
   public levelUp(levels = 1) {
