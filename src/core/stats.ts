@@ -69,7 +69,7 @@ export class ParmanentStatEntry extends BattleStatEntry {
     this.effortValue = args.effortValue ?? 0;
   }
 
-  public value(considerStage: boolean) {
+  public value(considerStage: boolean = false) {
     let val =
       2 * this.baseValue +
       this.individualValue +
@@ -98,7 +98,7 @@ export class HPStatEntry extends ParmanentStatEntry {
     this.current = this.value();
   }
 
-  public value() {
+  public value(considerStage: boolean=false) {
     let val =
       2 * this.baseValue +
       this.individualValue +
