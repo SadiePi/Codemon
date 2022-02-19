@@ -2,6 +2,7 @@ import C from "./config.ts";
 import Codemon from "./codemon.ts";
 import { PermanentStat } from "./stats.ts";
 import { Type } from "./type.ts";
+import Types from "../base/types.ts";
 
 export enum DamageCategory {
   Physical,
@@ -99,16 +100,16 @@ export interface MoveReport {
 export class Move {
   public PP: PPScheme;
 
-  constructor(public info: IMove) {
-    this.PP = info.ppScheme ?? new PPScheme(info.basePP);
+  constructor(public args: IMove) {
+    this.PP = args.ppScheme ?? new PPScheme(args.basePP);
   }
 
   // TODO: Complete this; it's only the rudimentary random check
   public TryCriticalHit(): boolean {
     const crit = Math.random();
-    if (this.info.criticalHitStage >= 3) return true;
-    if (this.info.criticalHitStage == 2) return crit < 1 / 2;
-    if (this.info.criticalHitStage == 1) return crit < 1 / 8;
+    if (this.args.criticalHitStage >= 3) return true;
+    if (this.args.criticalHitStage == 2) return crit < 1 / 2;
+    if (this.args.criticalHitStage == 1) return crit < 1 / 8;
     return crit < 1 / 24;
   }
 
@@ -127,10 +128,10 @@ export class Move {
     ret.base = (2 * self.experience.level) / 5 + 2;
 
     // TODO apply effective power, not base
-    ret.base *= this.info.basePower;
+    ret.base *= this.args.basePower;
 
     const stats: [PermanentStat, PermanentStat] =
-      this.info.damageCategory === DamageCategory.Physical
+      this.args.damageCategory === DamageCategory.Physical
         ? ["Attack", "Defense"]
         : ["SpecialAttack", "SpecialDefense"];
 
