@@ -111,7 +111,6 @@ export class Codemon {
 
     const stats = this.stats.toString();
 
-    // TODO make this move.toString()
     const moves = this.moves
       .map((m, i) => i + 1 + ". " + m.toString())
       .join("\n");
