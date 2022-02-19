@@ -17,13 +17,21 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
   - [x] Stats
   - [ ] Affection
 - [x] Species info
+  - [x] Types
   - [ ] Abilities
   - [ ] Learnsets
-  - [ ] Physiology
+  - [x] Basic physiology
+  - [ ] Advanced physiology
+  - [x] Experience groups
+  - [x] Lambda overrides
 - [x] Moves
+  - [x] Usage and reciept
+  - [ ] Advanced targeting
+  - [ ] PP schemes
   - [ ] Status effects
   - [ ] Battle consideration
   - [x] Critical hits
+  - [x] Lambda overrides
 - [ ] Battles
 - [ ] Items
 - [ ] CLI
@@ -31,8 +39,13 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
 
 ## TODOs
 
+- Improve structure (always)
 - Documentation and style consistency
 - Enforce sane values
+
+- Add more base stuff
+- Types
+  - Automated initialization system
 - Stats
   - Utilize Species.overrideStatValue
 - Moves
