@@ -4,10 +4,3 @@ export interface Type {
   resistances: Type[];
   immunities: Type[];
 }
-
-export const INIT: Type = {
-  name: "!!! INIT !!!",
-  weaknesses: [],
-  resistances: [],
-  immunities: [],
-};
