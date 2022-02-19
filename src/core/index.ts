@@ -9,3 +9,4 @@ export * from "./sex.ts";
 export * from "./species.ts";
 export * from "./stats.ts";
 export * from "./status.ts";
+export * from "./type.ts";
