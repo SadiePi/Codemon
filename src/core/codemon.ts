@@ -1,5 +1,5 @@
 import Experience from "./experience.ts";
-import { MoveReport, MoveUsage } from "./move.ts";
+import { IMoves, Move, MoveReport, MoveUsage } from "./move.ts";
 import { getRandomNature, Nature } from "./nature.ts";
 import { Female, Male, Sex } from "./sex.ts";
 import { Species } from "./species.ts";
@@ -12,7 +12,7 @@ export interface ICodemon {
   level?: number;
   nature?: Nature;
   stats?: IStats;
-  //moves: Move[]
+  moves: IMoves; // TODO: default moves from learnset
 }
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
@@ -20,6 +20,7 @@ export class Codemon {
   public species: Species;
   public experience: Experience;
   public stats: StatSet;
+  public moves: Move[];
 
   constructor(options: ICodemon) {
     // TODO enfore sane values
@@ -37,6 +38,7 @@ export class Codemon {
       options.nature ?? getRandomNature();
 
     this.stats = new StatSet({ self: this, ...options.stats });
+    this.moves = options.moves?.map((m) => new Move({ self: this, info: m }));
   }
 
   // Name
@@ -84,15 +86,16 @@ export class Codemon {
   public RecieveMove(from: Codemon, move: MoveUsage): MoveReport {
     // TODO apply abilities etc to move
     const ret: Partial<MoveReport> = { usage: move };
-    ret.damage =
+    ret.damage = Math.floor(
       move.base *
-      move.multitarget *
-      move.weather *
-      move.critical *
-      move.random *
-      move.stab *
-      move.type *
-      move.other;
+        move.multitarget *
+        move.weather *
+        move.critical *
+        move.random *
+        move.stab *
+        move.type *
+        move.other
+    );
 
     this.stats.HP.current -= ret.damage;
 
@@ -106,47 +109,14 @@ export class Codemon {
       this.name === this.species.name ? "" : " named " + this.name
     }`;
 
-    // TODO make this stat.toString()
-    const stats =
-      `HP: ${this.stats.HP.current}/${this.stats.HP.value()}, ` +
-      `Attack: ${this.stats.Attack.value(true)}${
-        this.stats.Attack.stage === 0
-          ? ""
-          : ` (${this.stats.Attack.value(false)})`
-      }, ` +
-      `Defense: ${this.stats.Defense.value(true)}${
-        this.stats.Defense.stage === 0
-          ? ""
-          : ` (${this.stats.Defense.value(false)})`
-      }, ` +
-      `Speed: ${this.stats.Speed.value(true)}${
-        this.stats.Speed.stage === 0
-          ? ""
-          : ` (${this.stats.Speed.value(false)})`
-      }\n` +
-      `Special Attack: ${this.stats.SpecialAttack.value(true)}${
-        this.stats.SpecialAttack.stage === 0
-          ? ""
-          : ` (${this.stats.SpecialAttack.value(false)})`
-      }, ` +
-      `Special Defense: ${this.stats.SpecialDefense.value(true)}${
-        this.stats.SpecialDefense.stage === 0
-          ? ""
-          : ` (${this.stats.SpecialDefense.value(false)})`
-      }` +
-      `${
-        this.stats.Evasion.stage ? ", Evasion: " + this.stats.Evasion.stage : ""
-      }` +
-      `${
-        this.stats.Accuracy.stage
-          ? ", Accuracy: " + this.stats.Accuracy.stage
-          : ""
-      }`;
+    const stats = this.stats.toString();
 
     // TODO make this move.toString()
-    const moves = "";
+    const moves = this.moves
+      .map((m, i) => i + 1 + ". " + m.toString())
+      .join("\n");
 
-    return [identity, stats, moves].join("\n");
+    return [identity, stats, moves].join("\n-----\n");
   }
 }
 export default Codemon;
