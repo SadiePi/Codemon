@@ -1,4 +1,4 @@
-import { Type, INIT } from "../core/type.ts";
+import { Type } from "../core/index.ts";
 
 // Apparently there isn't a better way to do this in Typescript
 // TODO: Make an automated system for doing this
