@@ -27,12 +27,19 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
 - [ ] Battles
 - [ ] Items
 - [ ] CLI
-- [ ] Documentation & consistent style
-- [ ] Modularity
+- [ ] Module loading
 
 ## TODOs
+
+- Documentation and style consistency
+- Enforce sane values
 - Stats
   - Utilize Species.overrideStatValue
-- Critical hits
-  - Fix crit stage implementation, currently totally wrong
-  - Consider user affection
+- Moves
+  - Critical hits
+    - Fix crit stage implementation, currently totally wrong
+    - Consider user affection
+  - Use
+    - Replace multitarget param with check to TargetingCategory
+    - Consider current battle
+    - Use effective power instead of base
