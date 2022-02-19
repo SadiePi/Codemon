@@ -47,6 +47,10 @@ export class BattleStatEntry {
       ? (this.stage + effect) / effect
       : effect / (this.stage + effect);
   }
+
+  public toString() {
+    return `${this.stat}: ${this.stage}`;
+  }
 }
 
 interface IPermanentStatEntry {
@@ -88,6 +92,12 @@ export class PermanentStatEntry extends BattleStatEntry {
     }
     return val;
   }
+
+  public toString() {
+    return `${this.stat}: ${this.value(true)} (${this.stage}|${
+      this.effortValue
+    }|${this.individualValue})`;
+  }
 }
 
 export class HPStatEntry extends PermanentStatEntry {
@@ -112,6 +122,12 @@ export class HPStatEntry extends PermanentStatEntry {
   }
 
   // TODO err on stage operations
+
+  public toString() {
+    return `${this.stat}: ${this.value()}/${this.current} (${
+      this.effortValue
+    }|${this.individualValue})`;
+  }
 }
 
 type Stats = {
@@ -162,6 +178,23 @@ export class StatSet implements Stats {
       ...args.Accuracy,
     });
     this.Evasion = new BattleStatEntry("Evasion", { ...args.Evasion });
+  }
+
+  public toString() {
+    return (
+      [
+        this.HP,
+        this.Attack,
+        this.Defense,
+        this.SpecialAttack,
+        this.SpecialDefense,
+        this.Speed,
+      ]
+        .map((s) => s.toString())
+        .join("\n") +
+      "\n" +
+      [this.Accuracy, this.Evasion].map((s) => s.toString()).join(", ")
+    );
   }
 }
 
