@@ -3,24 +3,24 @@ import { Type } from "../core/index.ts";
 // Apparently there isn't a better way to do this in Typescript
 // TODO: Make an automated system for doing this
 
-export let Normal: Type = {} as Type;
-export let Fighting: Type = {} as Type;
-export let Flying: Type = {} as Type;
-export let Poison: Type = {} as Type;
-export let Ground: Type = {} as Type;
-export let Rock: Type = {} as Type;
-export let Bug: Type = {} as Type;
-export let Ghost: Type = {} as Type;
-export let Steel: Type = {} as Type;
-export let Fire: Type = {} as Type;
-export let Water: Type = {} as Type;
-export let Grass: Type = {} as Type;
-export let Electric: Type = {} as Type;
-export let Psychic: Type = {} as Type;
-export let Ice: Type = {} as Type;
-export let Dragon: Type = {} as Type;
-export let Dark: Type = {} as Type;
-export let Fairy: Type = {} as Type;
+export let Normal = {} as Type;
+export let Fighting = {} as Type;
+export let Flying = {} as Type;
+export let Poison = {} as Type;
+export let Ground = {} as Type;
+export let Rock = {} as Type;
+export let Bug = {} as Type;
+export let Ghost = {} as Type;
+export let Steel = {} as Type;
+export let Fire = {} as Type;
+export let Water = {} as Type;
+export let Grass = {} as Type;
+export let Electric = {} as Type;
+export let Psychic = {} as Type;
+export let Ice = {} as Type;
+export let Dragon = {} as Type;
+export let Dark = {} as Type;
+export let Fairy = {} as Type;
 
 Normal.name = "Normal";
 Normal.weaknesses = [Fighting];
