@@ -15,7 +15,6 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
   - [x] Experience
   - [x] Natures
   - [x] Stats
-    - Utilize Species.overrideStatValue
   - [ ] Affection
 - [x] Species info
   - [ ] Abilities
@@ -25,10 +24,15 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
   - [ ] Status effects
   - [ ] Battle consideration
   - [x] Critical hits
-    - Fix crit stage implementation
-    - Consider affection
 - [ ] Battles
 - [ ] Items
 - [ ] CLI
 - [ ] Documentation & consistent style
 - [ ] Modularity
+
+## TODOs
+- Stats
+  - Utilize Species.overrideStatValue
+- Critical hits
+  - Fix crit stage implementation, currently totally wrong
+  - Consider user affection
