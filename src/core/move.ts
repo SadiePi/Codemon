@@ -39,26 +39,32 @@ export interface IMove {
 
 export class PPScheme {
   private base: number;
-  private current: number;
-  private max: number;
+  private _current: number;
+  public get current() {
+    return this._current;
+  }
+  private _max: number;
+  public get max() {
+    return this._max;
+  }
   private boosts = 0;
 
   constructor(base: number) {
-    this.base = this.max = this.current = base;
+    this.base = this._max = this._current = base;
   }
 
   public Use(pp = 1): boolean {
-    if (this.current < pp) return false;
-    this.current -= pp;
+    if (this._current < pp) return false;
+    this._current -= pp;
     return true;
   }
 
   public Restore(pp: number): number {
-    pp = pp ?? this.max - this.current;
-    const prev = this.current;
-    this.current += pp;
-    if (this.current > this.max) this.current = this.max;
-    return this.current - prev;
+    pp = pp ?? this._max - this._current;
+    const prev = this._current;
+    this._current += pp;
+    if (this._current > this._max) this._current = this._max;
+    return this._current - prev;
   }
 
   public CanBoost(): boolean {
@@ -69,8 +75,8 @@ export class PPScheme {
     if (!this.CanBoost()) return 0;
     this.boosts++;
     const change = this.base * C.codemon.moves.ppBoostMultiplier;
-    this.max += change;
-    this.current += change;
+    this._max += change;
+    this._current += change;
     return change;
   }
 }
