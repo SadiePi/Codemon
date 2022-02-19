@@ -1,6 +1,5 @@
 import { Species } from "../core/index.ts";
 import Type from "./types.ts";
-import Exp from "./experience.ts";
 import Experience from "./experience.ts";
 
 export const Bulbasaur: Species = {
@@ -12,7 +11,7 @@ export const Bulbasaur: Species = {
   height: 0.7,
   weight: 6.9,
   baseExperienceYield: 64,
-  experienceGroup: Exp.MedSlow,
+  experienceGroup: Experience.MedSlow,
   baseFriendship: 70,
   baseStats: {
     HP: 45,
