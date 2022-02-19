@@ -1,161 +1,127 @@
 import { Type, INIT } from "../core/type.ts";
 
 // Apparently there isn't a better way to do this in Typescript
-let Normal: Type = INIT;
-let Fighting: Type = INIT;
-let Flying: Type = INIT;
-let Poison: Type = INIT;
-let Ground: Type = INIT;
-let Rock: Type = INIT;
-let Bug: Type = INIT;
-let Ghost: Type = INIT;
-let Steel: Type = INIT;
-let Fire: Type = INIT;
-let Water: Type = INIT;
-let Grass: Type = INIT;
-let Electric: Type = INIT;
-let Psychic: Type = INIT;
-let Ice: Type = INIT;
-let Dragon: Type = INIT;
-let Dark: Type = INIT;
-let Fairy: Type = INIT;
+// TODO: Make an automated system for doing this
 
-Normal = {
-  name: "Normal",
-  weaknesses: [Fighting],
-  resistances: [],
-  immunities: [Ghost],
-};
+export let Normal: Type = {} as Type;
+export let Fighting: Type = {} as Type;
+export let Flying: Type = {} as Type;
+export let Poison: Type = {} as Type;
+export let Ground: Type = {} as Type;
+export let Rock: Type = {} as Type;
+export let Bug: Type = {} as Type;
+export let Ghost: Type = {} as Type;
+export let Steel: Type = {} as Type;
+export let Fire: Type = {} as Type;
+export let Water: Type = {} as Type;
+export let Grass: Type = {} as Type;
+export let Electric: Type = {} as Type;
+export let Psychic: Type = {} as Type;
+export let Ice: Type = {} as Type;
+export let Dragon: Type = {} as Type;
+export let Dark: Type = {} as Type;
+export let Fairy: Type = {} as Type;
 
-Fighting = {
-  name: "Fighting",
-  weaknesses: [Flying, Psychic, Fairy],
-  resistances: [Rock, Bug],
-  immunities: [],
-};
+Normal.name = "Normal";
+Normal.weaknesses = [Fighting];
+Normal.resistances = [];
+Normal.immunities = [Ghost];
 
-Flying = {
-  name: "Flying",
-  weaknesses: [Rock, Electric, Ice],
-  resistances: [Fighting, Bug, Grass],
-  immunities: [Ground],
-};
+Fighting.name = "Fighting";
+Fighting.weaknesses = [Flying, Psychic, Fairy];
+Fighting.resistances = [Rock, Bug];
+Fighting.immunities = [];
 
-Poison = {
-  name: "Poison",
-  weaknesses: [Ground, Psychic],
-  resistances: [Fighting, Poison, Bug, Grass, Fairy],
-  immunities: [],
-};
+Flying.name = "Flying";
+Flying.weaknesses = [Rock, Electric, Ice];
+Flying.resistances = [Fighting, Bug, Grass];
+Flying.immunities = [Ground];
 
-Ground = {
-  name: "Ground",
-  weaknesses: [Water, Grass, Ice],
-  resistances: [Poison, Rock],
-  immunities: [Electric],
-};
+Poison.name = "Poison";
+Poison.weaknesses = [Ground, Psychic];
+Poison.resistances = [Fighting, Poison, Bug, Grass, Fairy];
+Poison.immunities = [];
 
-Rock = {
-  name: "Rock",
-  weaknesses: [Fighting, Ground, Steel, Water, Grass],
-  resistances: [Normal, Flying, Poison, Fire],
-  immunities: [],
-};
+Ground.name = "Ground";
+Ground.weaknesses = [Water, Grass, Ice];
+Ground.resistances = [Poison, Rock];
+Ground.immunities = [Electric];
 
-Bug = {
-  name: "Bug",
-  weaknesses: [Flying, Rock, Fire],
-  resistances: [Fighting, Ground, Grass],
-  immunities: [],
-};
+Rock.name = "Rock";
+Rock.weaknesses = [Fighting, Ground, Steel, Water, Grass];
+Rock.resistances = [Normal, Flying, Poison, Fire];
+Rock.immunities = [];
 
-Ghost = {
-  name: "Ghost",
-  weaknesses: [Ghost, Dark],
-  resistances: [Poison, Bug],
-  immunities: [Normal, Fighting],
-};
+Bug.name = "Bug";
+Bug.weaknesses = [Flying, Rock, Fire];
+Bug.resistances = [Fighting, Ground, Grass];
+Bug.immunities = [];
 
-Steel = {
-  name: "Steel",
-  weaknesses: [Fighting, Ground, Fire],
-  resistances: [
-    Normal,
-    Flying,
-    Rock,
-    Bug,
-    Steel,
-    Grass,
-    Psychic,
-    Ice,
-    Dragon,
-    Fairy,
-  ], // jfc
-  immunities: [Poison],
-};
+Ghost.name = "Ghost";
+Ghost.weaknesses = [Ghost, Dark];
+Ghost.resistances = [Poison, Bug];
+Ghost.immunities = [Normal, Fighting];
 
-Fire = {
-  name: "Fire",
-  weaknesses: [Ground, Rock, Water],
-  resistances: [Bug, Steel, Fire, Grass, Ice, Fairy],
-  immunities: [],
-};
+Steel.name = "Steel";
+Steel.weaknesses = [Fighting, Ground, Fire];
+Steel.resistances = [
+  Normal,
+  Flying,
+  Rock,
+  Bug,
+  Steel,
+  Grass,
+  Psychic,
+  Ice,
+  Dragon,
+  Fairy,
+]; // jfc
+Steel.immunities = [Poison];
 
-Water = {
-  name: "Water",
-  weaknesses: [Grass, Electric],
-  resistances: [Steel, Fire, Water],
-  immunities: [],
-};
+Fire.name = "Fire";
+Fire.weaknesses = [Ground, Rock, Water];
+Fire.resistances = [Bug, Steel, Fire, Grass, Ice, Fairy];
+Fire.immunities = [];
 
-Grass = {
-  name: "Grass",
-  weaknesses: [Flying, Poison, Bug, Fire, Ice],
-  resistances: [Ground, Water, Grass, Electric],
-  immunities: [],
-};
+Water.name = "Water";
+Water.weaknesses = [Grass, Electric];
+Water.resistances = [Steel, Fire, Water];
+Water.immunities = [];
 
-Electric = {
-  name: "Electric",
-  weaknesses: [Ground],
-  resistances: [Flying, Steel, Electric],
-  immunities: [],
-};
+Grass.name = "Grass";
+Grass.weaknesses = [Flying, Poison, Bug, Fire, Ice];
+Grass.resistances = [Ground, Water, Grass, Electric];
+Grass.immunities = [];
 
-Psychic = {
-  name: "Psychic",
-  weaknesses: [Bug, Ghost, Dark],
-  resistances: [Fighting, Psychic],
-  immunities: [],
-};
+Electric.name = "Electric";
+Electric.weaknesses = [Ground];
+Electric.resistances = [Flying, Steel, Electric];
+Electric.immunities = [];
 
-Ice = {
-  name: "Ice",
-  weaknesses: [Fighting, Rock, Steel, Fire],
-  resistances: [Ice],
-  immunities: [],
-};
+Psychic.name = "Psychic";
+Psychic.weaknesses = [Bug, Ghost, Dark];
+Psychic.resistances = [Fighting, Psychic];
+Psychic.immunities = [];
 
-Dragon = {
-  name: "Dragon",
-  weaknesses: [Ice, Dragon, Fairy],
-  resistances: [Fire, Water, Grass, Electric],
-  immunities: [],
-};
+Ice.name = "Ice";
+Ice.weaknesses = [Fighting, Rock, Steel, Fire];
+Ice.resistances = [Ice];
+Ice.immunities = [];
 
-Dark = {
-  name: "Dark",
-  weaknesses: [Fighting, Bug, Fairy],
-  resistances: [Ghost, Dark],
-  immunities: [Psychic],
-};
+Dragon.name = "Dragon";
+Dragon.weaknesses = [Ice, Dragon, Fairy];
+Dragon.resistances = [Fire, Water, Grass, Electric];
+Dragon.immunities = [];
 
-Fairy = {
-  name: "Fairy",
-  weaknesses: [Poison, Steel],
-  resistances: [Fighting, Bug, Dark],
-  immunities: [Dragon],
-};
+Dark.name = "Dark";
+Dark.weaknesses = [Fighting, Bug, Fairy];
+Dark.resistances = [Ghost, Dark];
+Dark.immunities = [Psychic];
+
+Fairy.name = "Fairy";
+Fairy.weaknesses = [Poison, Steel];
+Fairy.resistances = [Fighting, Bug, Dark];
+Fairy.immunities = [Dragon];
 
 export default {
   Normal,
