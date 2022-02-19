@@ -26,8 +26,8 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
   - [x] Lambda overrides
 - [x] Moves
   - [x] Usage and reciept
-  - [ ] Advanced targeting
-  - [ ] PP schemes
+  - [x] Advanced targeting
+  - [x] PP schemes
   - [ ] Status effects
   - [ ] Battle consideration
   - [x] Critical hits
