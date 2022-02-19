@@ -3,11 +3,7 @@ import Codemon from "./codemon.ts";
 import { PermanentStat } from "./stats.ts";
 import { Type } from "./type.ts";
 
-export enum DamageCategory {
-  Physical,
-  Special,
-  Status,
-}
+export type DamageCategory = "Physical" | "Special" | "Status";
 
 // eg move.targetingCategory = TC.All | TC.NonAdjacent | TC.Foes
 export enum TargetingCategory {
@@ -54,7 +50,10 @@ export class PPScheme {
   public get max() {
     return this._max;
   }
-  private boosts = 0;
+  private _boosts = 0;
+  public get boosts() {
+    return this._boosts;
+  }
 
   constructor(base: number) {
     this.base = this._max = this._current = base;
@@ -75,12 +74,12 @@ export class PPScheme {
   }
 
   public CanBoost(): boolean {
-    return this.boosts < C.codemon.moves.maxPPBoosts;
+    return this._boosts < C.codemon.moves.maxPPBoosts;
   }
 
   public Boost(): number {
     if (!this.CanBoost()) return 0;
-    this.boosts++;
+    this._boosts++;
     const change = this.base * C.codemon.moves.ppBoostMultiplier;
     this._max += change;
     this._current += change;
@@ -143,7 +142,7 @@ export class Move {
   ): MoveUsage {
     const ret: MoveUsage = {} as MoveUsage;
     const stats: [PermanentStat, PermanentStat] =
-      this.info.damageCategory === DamageCategory.Physical
+      this.info.damageCategory === "Physical"
         ? ["Attack", "Defense"]
         : ["SpecialAttack", "SpecialDefense"];
 
@@ -183,4 +182,10 @@ export class Move {
 
     return ret.info.overrideMoveUsage?.(this, target, multitarget, ret) ?? ret;
   }
+
+  public toString() {
+    return `${this.info.name} - ${this.info.type.name}/${this.info.damageCategory} - ${this.PP.current}/${this.PP.max} (${this.PP.boosts})`;
+  }
 }
+
+export type IMoves = MoveInfo[];
