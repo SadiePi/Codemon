@@ -28,9 +28,6 @@ export class BattleStatEntry {
   }
 
   public modifyStage(modification: number) {
-    if (this.stat === "HP")
-      throw RangeError(`Stat ${this.stat} does not have a stage`);
-
     this._stage += modification;
     this._stage = Math.max(
       C.codemon.stats.minStage,
@@ -121,7 +118,17 @@ export class HPStatEntry extends PermanentStatEntry {
     return val;
   }
 
-  // TODO err on stage operations
+  public modifyStage(modification: number) {
+    throw new Error(`Stat ${this.stat} does not have a stage`);
+  }
+
+  public resetStage() {
+    throw new Error(`Stat ${this.stat} does not have a stage`);
+  }
+
+  public stageMultiplier(effect: number): number {
+    throw new Error(`Stat ${this.stat} does not have a stage`);
+  }
 
   public toString() {
     return `${this.stat}: ${this.value()}/${this.current} (${
