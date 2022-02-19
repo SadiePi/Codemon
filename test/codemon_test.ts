@@ -32,4 +32,10 @@ export const chompy = new Codemon({
       effortValue: 23,
     },
   },
+  moves: [C.Moves.Tackle],
+});
+
+Deno.test("chompy", () => {
+  console.log();
+  console.log(chompy.toString());
 });
