@@ -3,7 +3,7 @@ import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 import C, { Codemon, Female } from "../src/base/index.ts";
 
 Deno.test({
-  name: "https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2",
+  name: "Bulbapedia/Stat - Example 2",
   fn: () => {
     console.log();
     const chompy = new Codemon({
