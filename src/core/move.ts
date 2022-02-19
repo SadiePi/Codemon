@@ -29,7 +29,7 @@ export interface MoveInfo {
   makesContact: boolean;
   criticalHitStage: number;
   damageCategory: DamageCategory;
-  targetingCategory: TargetingCategory; // TODO: Feels like this could be better
+  targetingCategory: TargetingCategory;
   criticalHitProbabilityMultiplier: number;
 
   overrideMoveUsage?: (
