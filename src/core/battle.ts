@@ -7,19 +7,10 @@ async function sleep(ms: number) {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-class WildBattle {
+export class WildBattle {
   constructor(public left: Codemon, public right: Codemon) {}
   public async play() {
     console.log("Playing battle:", this);
     await sleep(5000);
   }
 }
-
-Deno.test({
-  name: "WildBattle",
-  fn: async () => {
-    const bulby = new Codemon({ species: C.Species.Bulbasaur });
-    const chompy = new Codemon({ species: C.Species.Garchomp });
-    await new WildBattle(bulby, chompy).play();
-  },
-});
