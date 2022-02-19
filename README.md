@@ -8,19 +8,19 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
 
 (Currently, [X] means at least in a testable state)
 
-[X] Codemon
-[X] Species info
-[X] Stats
-[ ] Abilities
-[X] Natures
-[X] Sexes
-[ ] Status effects
-[X] Experience
-[X] Moves
-[ ] Items
-[ ] Battles
-[ ] Graphics
-[ ] World map
+- [x] Codemon
+- [x] Species info
+- [x] Stats
+- [ ] Abilities
+- [x] Natures
+- [x] Sexes
+- [ ] Status effects
+- [x] Experience
+- [x] Moves
+- [ ] Items
+- [ ] Battles
+- [ ] Graphics
+- [ ] World map
 
 ## TODO
 
