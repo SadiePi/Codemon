@@ -2,7 +2,6 @@ import C from "./config.ts";
 import Codemon from "./codemon.ts";
 import { PermanentStat } from "./stats.ts";
 import { Type } from "./type.ts";
-import Types from "../base/types.ts";
 
 export enum DamageCategory {
   Physical,
@@ -22,11 +21,11 @@ export enum TargetingCategory {
 }
 export const TC = TargetingCategory; // for convenience
 
-export interface IMove {
+export interface MoveInfo {
   name: string;
   type: Type;
   basePP: number;
-  recoil?: IMove;
+  recoil?: MoveInfo;
   priority: number;
   ppScheme?: PPScheme;
   basePower: number; // TODO: Add Battle parameter
@@ -36,6 +35,13 @@ export interface IMove {
   damageCategory: DamageCategory;
   targetingCategory: TargetingCategory; // TODO: Feels like this could be better
   criticalHitProbabilityMultiplier: number;
+
+  overrideMoveUsage?: (
+    move: Move,
+    target: Codemon,
+    multitarget: boolean,
+    moveUsage: MoveUsage
+  ) => MoveUsage;
 }
 
 export class PPScheme {
@@ -84,7 +90,7 @@ export class PPScheme {
 
 export interface MoveUsage {
   user: Codemon;
-  move: IMove;
+  info: MoveInfo;
   base: number;
   multitarget: number;
   weather: number;
@@ -104,20 +110,29 @@ export interface MoveReport {
   // inflictedStatuses
 }
 
-export class Move {
-  public PP: PPScheme;
+export interface IMove {
+  self: Codemon;
+  info: MoveInfo;
+}
 
-  constructor(private self: Codemon, public args: IMove) {
-    this.PP = args.ppScheme ?? new PPScheme(args.basePP);
+export class Move {
+  public info: MoveInfo;
+  public PP: PPScheme;
+  private self: Codemon;
+
+  constructor(args: IMove) {
+    this.info = args.info;
+    this.self = args.self;
+    this.PP = this.info.ppScheme ?? new PPScheme(this.info.basePP);
   }
 
   // TODO: Complete this; it's only the rudimentary random check
   public TryCriticalHit(): boolean {
     const crit = Math.random();
     const aff = 1; // TODO: this.self.affection == max ? 1/2 : 1
-    if (this.args.criticalHitStage >= 3) return true;
-    if (this.args.criticalHitStage == 2) return crit < (1 / 2) * aff;
-    if (this.args.criticalHitStage == 1) return crit < (1 / 8) * aff;
+    if (this.info.criticalHitStage >= 3) return true;
+    if (this.info.criticalHitStage == 2) return crit < (1 / 2) * aff;
+    if (this.info.criticalHitStage == 1) return crit < (1 / 8) * aff;
     return crit < 1 / 24;
   }
 
@@ -128,18 +143,18 @@ export class Move {
   ): MoveUsage {
     const ret: MoveUsage = {} as MoveUsage;
     const stats: [PermanentStat, PermanentStat] =
-      this.args.damageCategory === DamageCategory.Physical
+      this.info.damageCategory === DamageCategory.Physical
         ? ["Attack", "Defense"]
         : ["SpecialAttack", "SpecialDefense"];
 
     ret.user = this.self;
-    ret.move = this.args;
+    ret.info = this.info;
     ret.critical = this.TryCriticalHit()
       ? C.codemon.moves.criticalMultiplier
       : 1;
 
     ret.base = (2 * this.self.experience.level) / 5 + 2;
-    ret.base *= this.args.basePower; // TODO apply effective power, not base
+    ret.base *= ret.info.basePower; // TODO apply effective power, not base
     // TODO fix?
     ret.base *= this.self.stats[stats[0]].value(
       ret.critical != 1 && this.self.stats[stats[0]].stage > 0
@@ -152,13 +167,13 @@ export class Move {
     ret.multitarget = multitarget ? 0.75 : 1; // TODO battle.multitargetDamageMultipler : 1
     ret.weather = 1; // TODO check battle weather
     ret.random = 0.85 + Math.random() * 0.15;
-    ret.stab = this.self.species.types.includes(this.args.type) ? 1.5 : 1;
+    ret.stab = this.self.species.types.includes(ret.info.type) ? 1.5 : 1;
 
     ret.type = 1;
     target.species.types.forEach((t) => {
-      if (t.immunities.includes(this.args.type)) ret.type *= 0;
-      else if (t.resistances.includes(this.args.type)) ret.type /= 2;
-      else if (t.weaknesses.includes(this.args.type)) ret.type *= 2;
+      if (t.immunities.includes(ret.info.type)) ret.type *= 0;
+      else if (t.resistances.includes(ret.info.type)) ret.type /= 2;
+      else if (t.weaknesses.includes(ret.info.type)) ret.type *= 2;
     });
 
     ret.other = 1;
@@ -166,6 +181,6 @@ export class Move {
 
     // TODO apply self's abilities etc
 
-    return ret;
+    return ret.info.overrideMoveUsage?.(this, target, multitarget, ret) ?? ret;
   }
 }
