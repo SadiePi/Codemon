@@ -131,7 +131,7 @@ export class HPStatEntry extends PermanentStatEntry {
   }
 
   public toString() {
-    return `${this.stat}: ${this.value()}/${this.current} (${
+    return `${this.stat}: ${this.current}/${this.value()} (${
       this.effortValue
     }|${this.individualValue})`;
   }
