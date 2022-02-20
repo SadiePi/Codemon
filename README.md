@@ -26,13 +26,14 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
   - [x] Lambda overrides
 - [x] Moves
   - [x] Usage and reciept
-  - [ ] Advanced targeting
-  - [ ] PP schemes
+  - [x] Advanced targeting
+  - [x] PP schemes
   - [ ] Status effects
   - [ ] Battle consideration
   - [x] Critical hits
   - [x] Lambda overrides
 - [ ] Battles
+  - [x] Wild vs wild
 - [ ] Items
 - [ ] CLI
 - [ ] Module loading
@@ -56,3 +57,5 @@ Yes, I know about Pokémon Essentials, but this is being designed to work in mor
     - Replace multitarget param with check to TargetingCategory
     - Consider current battle
     - Use effective power instead of base
+- Battles
+  - More customizability
