@@ -97,7 +97,7 @@ export class Codemon {
         move.other
     );
 
-    this.stats.HP.current -= ret.damage;
+    this.stats.hp.current -= ret.damage;
 
     return ret as MoveReport;
   }

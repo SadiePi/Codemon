@@ -7,14 +7,14 @@ Deno.test({
   fn: () => {
     console.log();
 
-    chompy.stats.Defense.modifyStage(2);
+    chompy.stats.defense.modifyStage(2);
     console.log(chompy.toString());
-    assertEquals(chompy.stats.HP.value(), 289);
-    assertEquals(chompy.stats.Attack.value(false), 278);
-    assertEquals(chompy.stats.Defense.value(false), 193);
-    assertEquals(chompy.stats.SpecialAttack.value(false), 135);
-    assertEquals(chompy.stats.SpecialDefense.value(false), 171);
-    assertEquals(chompy.stats.Speed.value(false), 171);
-    chompy.stats.Defense.resetStage();
+    assertEquals(chompy.stats.hp.value(), 289);
+    assertEquals(chompy.stats.attack.value(false), 278);
+    assertEquals(chompy.stats.defense.value(false), 193);
+    assertEquals(chompy.stats.specialAttack.value(false), 135);
+    assertEquals(chompy.stats.specialDefense.value(false), 171);
+    assertEquals(chompy.stats.speed.value(false), 171);
+    chompy.stats.defense.resetStage();
   },
 });

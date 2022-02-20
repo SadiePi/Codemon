@@ -14,14 +14,14 @@ export const Bulbasaur: Species = {
   experienceGroup: Experience.MedSlow,
   baseFriendship: 70,
   baseStats: {
-    HP: 45,
-    Attack: 49,
-    Defense: 49,
-    SpecialAttack: 65,
-    SpecialDefense: 65,
-    Speed: 45,
+    hp: 45,
+    attack: 49,
+    defense: 49,
+    specialAttack: 65,
+    specialDefense: 65,
+    speed: 45,
   },
-  evYields: { SpecialAttack: 1 },
+  evYields: { specialAttack: 1 },
 };
 // ivysaur, venusaur, ...
 
@@ -44,15 +44,15 @@ export const Garchomp: Species = {
   //typedexColor: TypedexColor,
   baseFriendship: 70,
   baseStats: {
-    HP: 108,
-    Attack: 130,
-    Defense: 95,
-    SpecialAttack: 80,
-    SpecialDefense: 85,
-    Speed: 102,
+    hp: 108,
+    attack: 130,
+    defense: 95,
+    specialAttack: 80,
+    specialDefense: 85,
+    speed: 102,
   },
   evYields: {
-    Attack: 3,
+    attack: 3,
   },
   //learnset: Learnset
 };

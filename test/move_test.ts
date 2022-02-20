@@ -27,12 +27,12 @@ Deno.test("Tackle basic info", () => {
 Deno.test("Tackle usage", () => {
   console.log();
 
-  console.log(chompy.stats.HP.current);
+  console.log(chompy.stats.hp.current);
   console.log(chompy.moves);
   const mu = chompy.moves[0].Use(chompy, false);
   mu.random = 0.85;
   console.log(mu);
-  const ur = chompy.RecieveMove(chompy, mu);
+  const ur = chompy.RecieveMove(mu);
   console.log(ur.damage);
-  console.log(chompy.stats.HP.current);
+  console.log(chompy.stats.hp.current);
 });

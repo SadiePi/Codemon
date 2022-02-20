@@ -7,27 +7,27 @@ export const chompy = new Codemon({
   level: 78,
   nature: C.Nature.Adamant,
   stats: {
-    HP: {
+    hp: {
       individualValue: 24,
       effortValue: 74,
     },
-    Attack: {
+    attack: {
       individualValue: 12,
       effortValue: 190,
     },
-    Defense: {
+    defense: {
       individualValue: 30,
       effortValue: 91,
     },
-    SpecialAttack: {
+    specialAttack: {
       individualValue: 16,
       effortValue: 48,
     },
-    SpecialDefense: {
+    specialDefense: {
       individualValue: 23,
       effortValue: 84,
     },
-    Speed: {
+    speed: {
       individualValue: 5,
       effortValue: 23,
     },

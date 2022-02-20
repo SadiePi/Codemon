@@ -143,8 +143,8 @@ export class Move {
     const ret: MoveUsage = {} as MoveUsage;
     const stats: [PermanentStat, PermanentStat] =
       this.info.damageCategory === "Physical"
-        ? ["Attack", "Defense"]
-        : ["SpecialAttack", "SpecialDefense"];
+        ? ["attack", "defense"]
+        : ["specialAttack", "specialDefense"];
 
     ret.user = this.self;
     ret.info = this.info;

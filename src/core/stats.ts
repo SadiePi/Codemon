@@ -2,14 +2,14 @@ import Codemon from "./codemon.ts";
 import C from "./config.ts";
 
 export type PermanentStat =
-  | "HP"
-  | "Attack"
-  | "Defense"
-  | "SpecialAttack"
-  | "SpecialDefense"
-  | "Speed";
+  | "hp"
+  | "attack"
+  | "defense"
+  | "specialAttack"
+  | "specialDefense"
+  | "speed";
 
-export type BattleStat = "Accuracy" | "Evasion";
+export type BattleStat = "accuracy" | "evasion";
 
 export type Stat = PermanentStat | BattleStat;
 
@@ -100,7 +100,7 @@ export class PermanentStatEntry extends BattleStatEntry {
 export class HPStatEntry extends PermanentStatEntry {
   public current;
   constructor(self: Codemon, args: IPermanentStatEntry) {
-    super("HP" as Stat, self, args);
+    super("hp" as Stat, self, args);
     this.current = this.value();
   }
 
@@ -150,57 +150,57 @@ export type IStats = {
 };
 
 export class StatSet implements Stats {
-  public HP: HPStatEntry;
-  public Attack: PermanentStatEntry;
-  public Defense: PermanentStatEntry;
-  public SpecialAttack: PermanentStatEntry;
-  public SpecialDefense: PermanentStatEntry;
-  public Speed: PermanentStatEntry;
+  public hp: HPStatEntry;
+  public attack: PermanentStatEntry;
+  public defense: PermanentStatEntry;
+  public specialAttack: PermanentStatEntry;
+  public specialDefense: PermanentStatEntry;
+  public speed: PermanentStatEntry;
 
-  public Accuracy: BattleStatEntry;
-  public Evasion: BattleStatEntry;
+  public accuracy: BattleStatEntry;
+  public evasion: BattleStatEntry;
 
   constructor(args: IStats & { self: Codemon }) {
     const base = args.self.species.baseStats;
 
     // Feels like there should be a better way to do this
-    this.HP = new HPStatEntry(args.self, { ...args.HP });
-    this.Attack = new PermanentStatEntry("Attack", args.self, {
-      ...args.Attack,
+    this.hp = new HPStatEntry(args.self, { ...args.hp });
+    this.attack = new PermanentStatEntry("attack", args.self, {
+      ...args.attack,
     });
-    this.Defense = new PermanentStatEntry("Defense", args.self, {
-      ...args.Defense,
+    this.defense = new PermanentStatEntry("defense", args.self, {
+      ...args.defense,
     });
-    this.SpecialAttack = new PermanentStatEntry("SpecialAttack", args.self, {
-      ...args.SpecialAttack,
+    this.specialAttack = new PermanentStatEntry("specialAttack", args.self, {
+      ...args.specialAttack,
     });
-    this.SpecialDefense = new PermanentStatEntry("SpecialDefense", args.self, {
-      ...args.SpecialDefense,
+    this.specialDefense = new PermanentStatEntry("specialDefense", args.self, {
+      ...args.specialDefense,
     });
-    this.Speed = new PermanentStatEntry("Speed", args.self, {
-      ...args.Speed,
+    this.speed = new PermanentStatEntry("speed", args.self, {
+      ...args.speed,
     });
 
-    this.Accuracy = new BattleStatEntry("Accuracy", {
-      ...args.Accuracy,
+    this.accuracy = new BattleStatEntry("accuracy", {
+      ...args.accuracy,
     });
-    this.Evasion = new BattleStatEntry("Evasion", { ...args.Evasion });
+    this.evasion = new BattleStatEntry("evasion", { ...args.evasion });
   }
 
   public toString() {
     return (
       [
-        this.HP,
-        this.Attack,
-        this.Defense,
-        this.SpecialAttack,
-        this.SpecialDefense,
-        this.Speed,
+        this.hp,
+        this.attack,
+        this.defense,
+        this.specialAttack,
+        this.specialDefense,
+        this.speed,
       ]
         .map((s) => s.toString())
         .join("\n") +
       "\n" +
-      [this.Accuracy, this.Evasion].map((s) => s.toString()).join(", ")
+      [this.accuracy, this.evasion].map((s) => s.toString()).join(", ")
     );
   }
 }

@@ -2,128 +2,128 @@ import Natures from "../core/nature.ts";
 
 const Hardy = (Natures.Hardy = {
   name: "Hardy",
-  buff: "Attack",
-  nerf: "Attack",
+  buff: "attack",
+  nerf: "attack",
 });
 const Lonely = (Natures.Lonely = {
   name: "Lonely",
-  buff: "Attack",
-  nerf: "Defense",
+  buff: "attack",
+  nerf: "defense",
 });
 const Brave = (Natures.Brave = {
   name: "Brave",
-  buff: "Attack",
-  nerf: "Speed",
+  buff: "attack",
+  nerf: "speed",
 });
 const Adamant = (Natures.Adamant = {
   name: "Adamant",
-  buff: "Attack",
-  nerf: "SpecialAttack",
+  buff: "attack",
+  nerf: "specialAttack",
 });
 const Naughty = (Natures.Naughty = {
   name: "Naughty",
-  buff: "Attack",
-  nerf: "SpecialDefense",
+  buff: "attack",
+  nerf: "specialDefense",
 });
 const Bold = (Natures.Bold = {
   name: "Bold",
-  buff: "Defense",
-  nerf: "Attack",
+  buff: "defense",
+  nerf: "attack",
 });
 const Docile = (Natures.Docile = {
   name: "Docile",
-  buff: "Defense",
-  nerf: "Defense",
+  buff: "defense",
+  nerf: "defense",
 });
 const Relaxed = (Natures.Relaxed = {
   name: "Relaxed",
-  buff: "Defense",
-  nerf: "Speed",
+  buff: "defense",
+  nerf: "speed",
 });
 const Impish = (Natures.Impish = {
   name: "Impish",
-  buff: "Defense",
-  nerf: "SpecialAttack",
+  buff: "defense",
+  nerf: "specialAttack",
 });
 const Lax = (Natures.Lax = {
   name: "Lax",
-  buff: "Defense",
-  nerf: "SpecialDefense",
+  buff: "defense",
+  nerf: "specialDefense",
 });
 const Timid = (Natures.Timid = {
   name: "Timid",
-  buff: "Speed",
-  nerf: "Attack",
+  buff: "speed",
+  nerf: "attack",
 });
 const Hasty = (Natures.Hasty = {
   name: "Hasty",
-  buff: "Speed",
-  nerf: "Defense",
+  buff: "speed",
+  nerf: "defense",
 });
 const Serious = (Natures.Serious = {
   name: "Serious",
-  buff: "Speed",
-  nerf: "Speed",
+  buff: "speed",
+  nerf: "speed",
 });
 const Jolly = (Natures.Jolly = {
   name: "Jolly",
-  buff: "Speed",
-  nerf: "SpecialAttack",
+  buff: "speed",
+  nerf: "specialAttack",
 });
 const Naive = (Natures.Naive = {
   name: "Naive",
-  buff: "Speed",
-  nerf: "SpecialDefense",
+  buff: "speed",
+  nerf: "specialDefense",
 });
 const Modest = (Natures.Modest = {
   name: "Modest",
-  buff: "SpecialAttack",
-  nerf: "Attack",
+  buff: "specialAttack",
+  nerf: "attack",
 });
 const Mild = (Natures.Mild = {
   name: "Mild",
-  buff: "SpecialAttack",
-  nerf: "Defense",
+  buff: "specialAttack",
+  nerf: "defense",
 });
 const Quiet = (Natures.Quiet = {
   name: "Quiet",
-  buff: "SpecialAttack",
-  nerf: "Speed",
+  buff: "specialAttack",
+  nerf: "speed",
 });
 const Bashful = (Natures.Bashful = {
   name: "Bashful",
-  buff: "SpecialAttack",
-  nerf: "SpecialAttack",
+  buff: "specialAttack",
+  nerf: "specialAttack",
 });
 const Rash = (Natures.Rash = {
   name: "Rash",
-  buff: "SpecialAttack",
-  nerf: "SpecialDefense",
+  buff: "specialAttack",
+  nerf: "specialDefense",
 });
 const Calm = (Natures.Calm = {
   name: "Calm",
-  buff: "SpecialDefense",
-  nerf: "Attack",
+  buff: "specialDefense",
+  nerf: "attack",
 });
 const Gentle = (Natures.Gentle = {
   name: "Gentle",
-  buff: "SpecialDefense",
-  nerf: "Defense",
+  buff: "specialDefense",
+  nerf: "defense",
 });
 const Sassy = (Natures.Sassy = {
   name: "Sassy",
-  buff: "SpecialDefense",
-  nerf: "Speed",
+  buff: "specialDefense",
+  nerf: "speed",
 });
 const Careful = (Natures.Careful = {
   name: "Careful",
-  buff: "SpecialDefense",
-  nerf: "SpecialAttack",
+  buff: "specialDefense",
+  nerf: "specialAttack",
 });
 const Quirky = (Natures.Quirky = {
   name: "Quirky",
-  buff: "SpecialDefense",
-  nerf: "SpecialDefense",
+  buff: "specialDefense",
+  nerf: "specialDefense",
 });
 
 export default {
