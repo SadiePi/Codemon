@@ -83,7 +83,7 @@ export class Codemon {
   }
 
   // deno-lint-ignore no-unused-vars
-  public RecieveMove(from: Codemon, move: MoveUsage): MoveReport {
+  public RecieveMove(move: MoveUsage): MoveReport {
     // TODO apply abilities etc to move
     const ret: Partial<MoveReport> = { usage: move };
     ret.damage = Math.floor(
