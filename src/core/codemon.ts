@@ -1,3 +1,5 @@
+import { Battle } from "./battle.ts";
+import { Action } from "./battle.ts";
 import Experience from "./experience.ts";
 import { IMoves, Move, MoveReport, MoveUsage } from "./move.ts";
 import { getRandomNature, Nature } from "./nature.ts";
@@ -38,7 +40,8 @@ export class Codemon {
       options.nature ?? getRandomNature();
 
     this.stats = new StatSet({ self: this, ...options.stats });
-    this.moves = options.moves?.map((m) => new Move({ self: this, info: m }));
+    this.moves =
+      options.moves?.map((m) => new Move({ self: this, info: m })) ?? [];
   }
 
   // Name
@@ -102,6 +105,18 @@ export class Codemon {
     return ret as MoveReport;
   }
 
+  public Act(battle: Battle): Action<"move"> {
+    const selfIndex = battle.combatants.indexOf(this) - 1;
+    return {
+      type: "move",
+      actor: this,
+      params: {
+        move: this.moves[0],
+        target: [battle.combatants.at(battle.combatants.indexOf(this) - 1)!],
+      },
+    };
+  }
+
   public toString() {
     const identity = `Level ${this.experience.level}, ${this.nature.name}, ${
       this.sex.name
@@ -115,7 +130,7 @@ export class Codemon {
       .map((m, i) => i + 1 + ". " + m.toString())
       .join("\n");
 
-    return [identity, stats, moves].join("\n-----\n");
+    return [identity, stats, moves].join("\n-----\n") + "\n";
   }
 }
 export default Codemon;

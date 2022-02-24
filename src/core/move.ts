@@ -21,7 +21,7 @@ export interface MoveInfo {
   name: string;
   type: Type;
   basePP: number;
-  recoil?: MoveInfo;
+  recoilFactor?: number;
   priority: number;
   ppScheme?: PPScheme;
   basePower: number; // TODO: Add Battle parameter
@@ -117,11 +117,11 @@ export interface IMove {
 export class Move {
   public info: MoveInfo;
   public PP: PPScheme;
-  private self: Codemon;
+  public user: Codemon;
 
   constructor(args: IMove) {
     this.info = args.info;
-    this.self = args.self;
+    this.user = args.self;
     this.PP = this.info.ppScheme ?? new PPScheme(this.info.basePP);
   }
 
@@ -146,27 +146,27 @@ export class Move {
         ? ["attack", "defense"]
         : ["specialAttack", "specialDefense"];
 
-    ret.user = this.self;
+    ret.user = this.user;
     ret.info = this.info;
     ret.critical = this.TryCriticalHit()
       ? C.codemon.moves.criticalMultiplier
       : 1;
 
-    ret.base = (2 * this.self.experience.level) / 5 + 2;
+    ret.base = (2 * this.user.experience.level) / 5 + 2;
     ret.base *= ret.info.basePower; // TODO apply effective power, not base
     // TODO fix?
-    ret.base *= this.self.stats[stats[0]].value(
-      ret.critical != 1 && this.self.stats[stats[0]].stage > 0
+    ret.base *= this.user.stats[stats[0]].value(
+      ret.critical != 1 && this.user.stats[stats[0]].stage > 0
     );
-    ret.base /= this.self.stats[stats[1]].value(
-      ret.critical != 1 && this.self.stats[stats[1]].stage < 0
+    ret.base /= this.user.stats[stats[1]].value(
+      ret.critical != 1 && this.user.stats[stats[1]].stage < 0
     );
     ret.base = ret.base / 50 + 2;
 
     ret.multitarget = multitarget ? 0.75 : 1; // TODO battle.multitargetDamageMultipler : 1
     ret.weather = 1; // TODO check battle weather
     ret.random = 0.85 + Math.random() * 0.15;
-    ret.stab = this.self.species.types.includes(ret.info.type) ? 1.5 : 1;
+    ret.stab = this.user.species.types.includes(ret.info.type) ? 1.5 : 1;
 
     ret.type = 1;
     target.species.types.forEach((t) => {
