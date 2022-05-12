@@ -28,20 +28,17 @@ export class Codemon {
     // TODO enfore sane values
     this.species = options.species;
     this.name = options.name ?? this.species.name;
-    this.sex =
-      options.sex ?? Math.random() < this.species.sexRatio ? Male : Female;
+    this.sex = options.sex ?? Math.random() < this.species.sexRatio ? Male : Female;
 
     this.experience = new Experience({
       group: options.species.experienceGroup,
       level: options.level,
     });
 
-    this._originalNature = this.temporaryNature =
-      options.nature ?? getRandomNature();
+    this._originalNature = this.temporaryNature = options.nature ?? getRandomNature();
 
     this.stats = new StatSet({ self: this, ...options.stats });
-    this.moves =
-      options.moves?.map((m) => new Move({ self: this, info: m })) ?? [];
+    this.moves = options.moves?.map(m => new Move({ self: this, info: m })) ?? [];
   }
 
   // Name
@@ -66,17 +63,11 @@ export class Codemon {
   // Stats & Nature
   private _originalNature: Nature;
   public get originalNature() {
-    return (
-      this.species.overrideNature?.(this, this._originalNature) ??
-      this._originalNature
-    );
+    return this.species.overrideNature?.(this, this._originalNature) ?? this._originalNature;
   }
   private temporaryNature: Nature;
   public get nature() {
-    return (
-      this.species.overrideNature?.(this, this.temporaryNature) ??
-      this.temporaryNature
-    );
+    return this.species.overrideNature?.(this, this.temporaryNature) ?? this.temporaryNature;
   }
   public set nature(value: Nature) {
     this.temporaryNature = this.species.overrideNature?.(this, value) ?? value;
@@ -90,14 +81,7 @@ export class Codemon {
     // TODO apply abilities etc to move
     const ret: Partial<MoveReport> = { usage: move };
     ret.damage = Math.floor(
-      move.base *
-        move.multitarget *
-        move.weather *
-        move.critical *
-        move.random *
-        move.stab *
-        move.type *
-        move.other
+      move.base * move.multitarget * move.weather * move.critical * move.random * move.stab * move.type * move.other
     );
 
     this.stats.hp.current -= ret.damage;
@@ -117,20 +101,17 @@ export class Codemon {
     };
   }
 
-  public toString() {
-    const identity = `Level ${this.experience.level}, ${this.nature.name}, ${
-      this.sex.name
-    } ${this.species.name}${
+  public toString(short: boolean = false) {
+    const identity = `Level ${this.experience.level}, ${this.nature.name}, ${this.sex.name} ${this.species.name}${
       this.name === this.species.name ? "" : " named " + this.name
     }`;
+    if (short) return identity;
 
     const stats = this.stats.toString();
 
-    const moves = this.moves
-      .map((m, i) => i + 1 + ". " + m.toString())
-      .join("\n");
+    const moves = this.moves.map((m, i) => i + 1 + ". " + m.toString()).join("\n");
 
-    return [identity, stats, moves].join("\n-----\n") + "\n";
+    return `-------------\n${identity}\n--- Stats ---\n${stats}\n--- Moves ---\n${moves}\n-------------\n`;
   }
 }
 export default Codemon;
