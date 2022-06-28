@@ -27,7 +27,6 @@ export class Codemon {
     this.species = options.species;
     this.name = options.name ?? this.species.name;
     this.sex = options.sex ?? (Math.random() < this.species.sexRatio ? Male : Female);
-    console.log(this.sex);
 
     this.experience = new Experience({
       group: options.species.experienceGroup,
