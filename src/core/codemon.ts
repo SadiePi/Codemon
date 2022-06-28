@@ -1,7 +1,5 @@
-import { Battle } from "./battle.ts";
-import { Action } from "./battle.ts";
 import Experience from "./experience.ts";
-import { IMoves, Move, MoveReport, MoveUsage } from "./move.ts";
+import { IMoves, Move, MoveReciept, MoveUsage } from "./move.ts";
 import { getRandomNature, Nature } from "./nature.ts";
 import { Female, Male, Sex } from "./sex.ts";
 import { Species } from "./species.ts";
@@ -29,6 +27,7 @@ export class Codemon {
     this.species = options.species;
     this.name = options.name ?? this.species.name;
     this.sex = options.sex ?? (Math.random() < this.species.sexRatio ? Male : Female);
+    console.log(this.sex);
 
     this.experience = new Experience({
       group: options.species.experienceGroup,
@@ -76,17 +75,19 @@ export class Codemon {
     this.nature = this.originalNature;
   }
 
-  // deno-lint-ignore no-unused-vars
-  public RecieveMove(move: MoveUsage): MoveReport {
+  public RecieveMove(move: MoveUsage): MoveReciept {
     // TODO apply abilities etc to move
-    const ret: Partial<MoveReport> = { usage: move };
-    ret.damage = Math.floor(
-      move.base * move.multitarget * move.weather * move.critical * move.random * move.stab * move.type * move.other
-    );
+    const ret: Partial<MoveReciept> = { usage: move, target: this };
+    ret.damage = Math.floor(move.base * move.multitarget * move.critical * move.random * move.stab * move.other);
 
     this.stats.hp.current -= ret.damage;
+    if (this.stats.hp.current <= 0) {
+      ret.damage += this.stats.hp.current;
+      this.stats.hp.current = 0;
+      ret.fainted = true;
+    } else ret.fainted = false;
 
-    return ret as MoveReport;
+    return ret as MoveReciept;
   }
 
   public toString(short = false) {

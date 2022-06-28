@@ -1,31 +1,13 @@
-import C, { Codemon } from "../src/base/index.ts";
-import { Battle } from "../src/core/battle.ts";
+import C, { Codemon, TraditionalBattle } from "../src/base/index.ts";
+import { chompy } from "../test/common.ts";
 
-/*Deno.test({
-  name: "WildBattle",
-  fn: async () => {*/
-console.log();
 const bulby = new Codemon({
   species: C.Species.Bulbasaur,
   name: "Bulby",
   moves: [C.Moves.Tackle],
-  level: 25,
+  level: 1000,
 });
-const chompy = new Codemon({
-  species: C.Species.Garchomp,
-  name: "Chompy",
-  moves: [C.Moves.Tackle],
-  stats: {
-    hp: {
-      effortValue: 80,
-    },
-    defense: {
-      individualValue: 10,
-      effortValue: 50,
-    },
-  },
-  level: 15,
-});
+
 const glass = new Codemon({
   species: C.Species.Bulbasaur,
   name: "Glass Cannon",
@@ -37,13 +19,19 @@ const glass = new Codemon({
       effortValue: 255,
     },
     attack: {
-      individualValue: 31,
+      individualValue: 255000,
       effortValue: 255,
     },
   },
 });
 
-new Battle({ combatants: [bulby, chompy, glass] }).play();
-/*},
+Deno.test({
+  name: "Traditional Battle",
+  fn: async () => {
+    const battle = new TraditionalBattle([bulby, chompy, glass]);
+    battle.consoleInterface();
+    const { winner } = await battle.runBattle();
+    console.log();
+    console.log(winner ? `${winner.name} won!` : "It's a draw!");
+  },
 });
-*/

@@ -1,5 +1,5 @@
 import C from "./config.ts";
-import Codemon from "./codemon.ts";
+import Combatant from "./codemon.ts";
 import { PermanentStat } from "./stats.ts";
 import { Type } from "./type.ts";
 
@@ -32,12 +32,7 @@ export interface MoveInfo {
   targetingCategory: TargetingCategory;
   criticalHitProbabilityMultiplier: number;
 
-  overrideMoveUsage?: (
-    move: Move,
-    target: Codemon,
-    multitarget: boolean,
-    moveUsage: MoveUsage
-  ) => MoveUsage;
+  overrideMoveUsage?: (move: Move, targets: Combatant[], moveUsage: MoveUsage) => MoveUsage;
 }
 
 export class PPScheme {
@@ -88,7 +83,7 @@ export class PPScheme {
 }
 
 export interface MoveUsage {
-  user: Codemon;
+  user: Combatant;
   info: MoveInfo;
   base: number;
   multitarget: number;
@@ -101,23 +96,23 @@ export interface MoveUsage {
   recoil: MoveUsage;
 }
 
-export interface MoveReport {
-  user: Codemon;
-  target: Codemon;
+export interface MoveReciept {
   usage: MoveUsage;
+  target: Combatant;
   damage: number;
-  // inflictedStatuses
+  fainted: boolean;
+  // inflictedStatuses, etc
 }
 
 export interface IMove {
-  self: Codemon;
+  self: Combatant;
   info: MoveInfo;
 }
 
 export class Move {
   public info: MoveInfo;
   public PP: PPScheme;
-  public user: Codemon;
+  public user: Combatant;
 
   constructor(args: IMove) {
     this.info = args.info;
@@ -135,52 +130,41 @@ export class Move {
     return crit < 1 / 24;
   }
 
-  public Use(
-    target: Codemon,
-    multitarget: boolean // TODO replace with check of TargetingCategory
-    //battle: Battle
-  ): MoveUsage {
+  public Use(targets: Combatant[]): MoveUsage {
     const ret: MoveUsage = {} as MoveUsage;
     const stats: [PermanentStat, PermanentStat] =
-      this.info.damageCategory === "Physical"
-        ? ["attack", "defense"]
-        : ["specialAttack", "specialDefense"];
+      this.info.damageCategory === "Physical" ? ["attack", "defense"] : ["specialAttack", "specialDefense"];
 
     ret.user = this.user;
     ret.info = this.info;
-    ret.critical = this.TryCriticalHit()
-      ? C.codemon.moves.criticalMultiplier
-      : 1;
+    ret.critical = this.TryCriticalHit() ? C.codemon.moves.criticalMultiplier : 1;
 
     ret.base = (2 * this.user.experience.level) / 5 + 2;
     ret.base *= ret.info.basePower; // TODO apply effective power, not base
     // TODO fix?
-    ret.base *= this.user.stats[stats[0]].value(
-      ret.critical != 1 && this.user.stats[stats[0]].stage > 0
-    );
-    ret.base /= this.user.stats[stats[1]].value(
-      ret.critical != 1 && this.user.stats[stats[1]].stage < 0
-    );
+    ret.base *= this.user.stats[stats[0]].value(ret.critical != 1 && this.user.stats[stats[0]].stage > 0);
+    ret.base /= this.user.stats[stats[1]].value(ret.critical != 1 && this.user.stats[stats[1]].stage < 0);
     ret.base = ret.base / 50 + 2;
 
-    ret.multitarget = multitarget ? 0.75 : 1; // TODO battle.multitargetDamageMultipler : 1
-    ret.weather = 1; // TODO check battle weather
+    ret.multitarget = targets.length === 1 ? 1 : 0.75; // TODO battle.multitargetDamageMultipler : 1
+    //ret.weather = 1; // TODO check battle weather
     ret.random = 0.85 + Math.random() * 0.15;
     ret.stab = this.user.species.types.includes(ret.info.type) ? 1.5 : 1;
 
+    /* TODO move this to Codemon.RecieveMove
     ret.type = 1;
-    target.species.types.forEach((t) => {
+    target.species.types.forEach(t => {
       if (t.immunities.includes(ret.info.type)) ret.type *= 0;
       else if (t.resistances.includes(ret.info.type)) ret.type /= 2;
       else if (t.weaknesses.includes(ret.info.type)) ret.type *= 2;
-    });
+    });*/
 
     ret.other = 1;
     ret.recoil = {} as MoveUsage;
 
     // TODO apply self's abilities etc
 
-    return ret.info.overrideMoveUsage?.(this, target, multitarget, ret) ?? ret;
+    return ret.info.overrideMoveUsage?.(this, targets, ret) ?? ret;
   }
 
   public toString() {

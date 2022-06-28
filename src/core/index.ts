@@ -1,4 +1,5 @@
 export * from "./ability.ts";
+export * from "./battle.ts";
 export * from "./codemon.ts";
 export * from "./config.ts";
 export * from "./experience.ts";
