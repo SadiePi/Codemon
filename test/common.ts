@@ -1,6 +1,6 @@
 import C, { Codemon, Female } from "../src/base/index.ts";
 
-export const chompy = new Codemon({
+export const iChompy = {
   species: C.Species.Garchomp,
   name: "Noam Chompy",
   sex: Female,
@@ -33,4 +33,6 @@ export const chompy = new Codemon({
     },
   },
   moves: [C.Moves.Tackle],
-});
+};
+
+export const chompy = new Codemon(iChompy);

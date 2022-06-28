@@ -1,34 +1,34 @@
 import C, { Codemon, TraditionalBattle } from "../src/base/index.ts";
-import { chompy } from "../test/common.ts";
+import { chompy } from "./common.ts";
 
 const bulby = new Codemon({
   species: C.Species.Bulbasaur,
   name: "Bulby",
   moves: [C.Moves.Tackle],
-  level: 1000,
+  level: 120,
 });
 
-const glass = new Codemon({
-  species: C.Species.Bulbasaur,
-  name: "Glass Cannon",
-  moves: [C.Moves.Tackle],
-  level: 2,
-  stats: {
-    speed: {
-      individualValue: 31,
-      effortValue: 255,
-    },
-    attack: {
-      individualValue: 255000,
-      effortValue: 255,
-    },
-  },
-});
+// const glass = new Codemon({
+//   species: C.Species.Bulbasaur,
+//   name: "Glass Cannon",
+//   moves: [C.Moves.Tackle],
+//   level: 2,
+//   stats: {
+//     speed: {
+//       individualValue: 31,
+//       effortValue: 255,
+//     },
+//     attack: {
+//       individualValue: 255,
+//       effortValue: 255,
+//     },
+//   },
+// });
 
 Deno.test({
   name: "Traditional Battle",
   fn: async () => {
-    const battle = new TraditionalBattle([bulby, chompy, glass]);
+    const battle = new TraditionalBattle([chompy, bulby]);
     battle.consoleInterface();
     const { winner } = await battle.runBattle();
     console.log();

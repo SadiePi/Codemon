@@ -163,9 +163,8 @@ export class TraditionalBattle extends Battle<TEvents, TActions, TResult> {
       await new Promise(resolve => setTimeout(resolve, 1000));
     });
 
-    this.on("beforeAction", action => {
+    this.on("beforeAction", _action => {
       console.log();
-      console.log(action.actor.toString(true));
     });
 
     this.on("beforeMoveUsage", (move, targets) => {
