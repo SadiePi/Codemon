@@ -32,11 +32,6 @@ export interface Species {
   // Calculation overrides
   overrideName?: (self: Codemon, inputName: string) => string;
   overrideSex?: (self: Codemon, inputSex: Sex) => Sex;
-  overrideStatValue?: (
-    self: Codemon,
-    stat: Stat,
-    inputStat: number,
-    considerBattleStatus: boolean
-  ) => number; // TODO use this
+  overrideStatValue?: (self: Codemon, stat: Stat, inputStat: number, considerBattleStatus: boolean) => number; // TODO use this
   overrideNature?: (self: Codemon, inputNature: Nature) => Nature;
 }

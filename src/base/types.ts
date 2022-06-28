@@ -3,24 +3,24 @@ import { Type } from "../core/index.ts";
 // Apparently there isn't a better way to do this in Typescript
 // TODO: Make an automated system for doing this
 
-export let Normal = {} as Type;
-export let Fighting = {} as Type;
-export let Flying = {} as Type;
-export let Poison = {} as Type;
-export let Ground = {} as Type;
-export let Rock = {} as Type;
-export let Bug = {} as Type;
-export let Ghost = {} as Type;
-export let Steel = {} as Type;
-export let Fire = {} as Type;
-export let Water = {} as Type;
-export let Grass = {} as Type;
-export let Electric = {} as Type;
-export let Psychic = {} as Type;
-export let Ice = {} as Type;
-export let Dragon = {} as Type;
-export let Dark = {} as Type;
-export let Fairy = {} as Type;
+export const Normal = {} as Type;
+export const Fighting = {} as Type;
+export const Flying = {} as Type;
+export const Poison = {} as Type;
+export const Ground = {} as Type;
+export const Rock = {} as Type;
+export const Bug = {} as Type;
+export const Ghost = {} as Type;
+export const Steel = {} as Type;
+export const Fire = {} as Type;
+export const Water = {} as Type;
+export const Grass = {} as Type;
+export const Electric = {} as Type;
+export const Psychic = {} as Type;
+export const Ice = {} as Type;
+export const Dragon = {} as Type;
+export const Dark = {} as Type;
+export const Fairy = {} as Type;
 
 Normal.name = "Normal";
 Normal.weaknesses = [Fighting];
@@ -64,18 +64,7 @@ Ghost.immunities = [Normal, Fighting];
 
 Steel.name = "Steel";
 Steel.weaknesses = [Fighting, Ground, Fire];
-Steel.resistances = [
-  Normal,
-  Flying,
-  Rock,
-  Bug,
-  Steel,
-  Grass,
-  Psychic,
-  Ice,
-  Dragon,
-  Fairy,
-]; // jfc
+Steel.resistances = [Normal, Flying, Rock, Bug, Steel, Grass, Psychic, Ice, Dragon, Fairy]; // jfc
 Steel.immunities = [Poison];
 
 Fire.name = "Fire";

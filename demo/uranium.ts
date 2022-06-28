@@ -1,31 +1,30 @@
-import C, { Codemon, Species } from "../src/base/index.ts";
+import C, { Codemon, Species, Type } from "../src/base/index.ts";
 
 // Define the Nuclear type and its relationship to other types
-let TypeNuclear = C.Types.INIT;
-TypeNuclear = {
-  weaknesses: [
-    C.Types.Normal,
-    C.Types.Fire,
-    C.Types.Fighting,
-    C.Types.Water,
-    C.Types.Flying,
-    C.Types.Grass,
-    C.Types.Electric,
-    C.Types.Ground,
-    C.Types.Psychic,
-    C.Types.Rock,
-    C.Types.Ice,
-    C.Types.Bug,
-    C.Types.Dragon,
-    C.Types.Ghost,
-    C.Types.Dark,
-    C.Types.Steel,
-    C.Types.Fairy,
-    C.Types.Poison,
-  ],
-  resistances: [TypeNuclear],
-  immunities: [],
-};
+const TypeNuclear = {} as Type;
+TypeNuclear.weaknesses = [
+  C.Types.Normal,
+  C.Types.Fire,
+  C.Types.Fighting,
+  C.Types.Water,
+  C.Types.Flying,
+  C.Types.Grass,
+  C.Types.Electric,
+  C.Types.Ground,
+  C.Types.Psychic,
+  C.Types.Rock,
+  C.Types.Ice,
+  C.Types.Bug,
+  C.Types.Dragon,
+  C.Types.Ghost,
+  C.Types.Dark,
+  C.Types.Steel,
+  C.Types.Fairy,
+  C.Types.Poison,
+];
+TypeNuclear.resistances = [TypeNuclear];
+TypeNuclear.immunities = [];
+
 [
   C.Types.Normal,
   C.Types.Fire,
@@ -44,7 +43,7 @@ TypeNuclear = {
   C.Types.Dark,
   C.Types.Fairy,
   C.Types.Poison,
-].forEach((type) => {
+].forEach(type => {
   type.weaknesses.push(TypeNuclear);
 });
 C.Types.Steel.resistances.push(TypeNuclear);
@@ -68,20 +67,20 @@ const SpeciesNucleon: Species = {
   //typedexColor: TypedexColor,
   baseFriendship: 35,
   baseStats: {
-    HP: 70,
-    Attack: 55,
-    Defense: 85,
-    SpecialAttack: 115,
-    SpecialDefense: 115,
-    Speed: 90,
+    hp: 70,
+    attack: 55,
+    defense: 85,
+    specialAttack: 115,
+    specialDefense: 115,
+    speed: 90,
   },
   evYields: {
-    SpecialAttack: 1,
-    SpecialDefense: 1,
+    specialAttack: 1,
+    specialDefense: 1,
   },
   //learnset: Learnset
 };
 
 // Define an individual Nucleon named Nuke
-const nuke = new Codemon({ species: SpeciesNucleon, name: "Nuke" });
-console.log(`${nuke.stats.HP.value()}`);
+const nuke = new Codemon({ species: SpeciesNucleon, name: "Nuke", moves: [C.Moves.Tackle] });
+console.log(`${nuke.stats.hp.value()}`);

@@ -28,7 +28,7 @@ export class Codemon {
     // TODO enfore sane values
     this.species = options.species;
     this.name = options.name ?? this.species.name;
-    this.sex = options.sex ?? Math.random() < this.species.sexRatio ? Male : Female;
+    this.sex = options.sex ?? (Math.random() < this.species.sexRatio ? Male : Female);
 
     this.experience = new Experience({
       group: options.species.experienceGroup,
@@ -89,29 +89,17 @@ export class Codemon {
     return ret as MoveReport;
   }
 
-  public Act(battle: Battle): Action<"move"> {
-    const selfIndex = battle.combatants.indexOf(this) - 1;
-    return {
-      type: "move",
-      actor: this,
-      params: {
-        move: this.moves[0],
-        target: [battle.combatants.at(battle.combatants.indexOf(this) - 1)!],
-      },
-    };
-  }
-
-  public toString(short: boolean = false) {
+  public toString(short = false) {
     const identity = `Level ${this.experience.level}, ${this.nature.name}, ${this.sex.name} ${this.species.name}${
       this.name === this.species.name ? "" : " named " + this.name
     }`;
-    if (short) return identity;
+    if (short) return identity + ` (${this.stats.hp.current}/${this.stats.hp.value()})`;
 
     const stats = this.stats.toString();
 
     const moves = this.moves.map((m, i) => i + 1 + ". " + m.toString()).join("\n");
 
-    return `-------------\n${identity}\n--- Stats ---\n${stats}\n--- Moves ---\n${moves}\n-------------\n`;
+    return `--- Codemon ---\n${identity}\n--- Stats ---\n${stats}\n--- Moves ---\n${moves}\n-------------`;
   }
 }
 export default Codemon;

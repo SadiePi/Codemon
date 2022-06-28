@@ -1,12 +1,10 @@
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
 
-import { chompy } from "./codemon_test.ts";
+import { chompy } from "./common.ts";
 
 Deno.test({
   name: "Bulbapedia/Stat - Example 2",
   fn: () => {
-    console.log();
-
     chompy.stats.defense.modifyStage(2);
     console.log(chompy.toString());
     assertEquals(chompy.stats.hp.value(), 289);

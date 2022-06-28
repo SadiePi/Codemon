@@ -1,13 +1,7 @@
-import Codemon from "./codemon.ts";
+import Combatant from "./codemon.ts";
 import C from "./config.ts";
 
-export type PermanentStat =
-  | "hp"
-  | "attack"
-  | "defense"
-  | "specialAttack"
-  | "specialDefense"
-  | "speed";
+export type PermanentStat = "hp" | "attack" | "defense" | "specialAttack" | "specialDefense" | "speed";
 
 export type BattleStat = "accuracy" | "evasion";
 
@@ -29,10 +23,7 @@ export class BattleStatEntry {
 
   public modifyStage(modification: number) {
     this._stage += modification;
-    this._stage = Math.max(
-      C.codemon.stats.minStage,
-      Math.min(this._stage, C.codemon.stats.maxStage)
-    );
+    this._stage = Math.max(C.codemon.stats.minStage, Math.min(this._stage, C.codemon.stats.maxStage));
   }
 
   public resetStage() {
@@ -40,9 +31,7 @@ export class BattleStatEntry {
   }
 
   public stageMultiplier(effect: number): number {
-    return this.stage > 0
-      ? (this.stage + effect) / effect
-      : effect / (this.stage + effect);
+    return this.stage > 0 ? (this.stage + effect) / effect : effect / (this.stage + effect);
   }
 
   public toString() {
@@ -58,18 +47,13 @@ interface IPermanentStatEntry {
 export class PermanentStatEntry extends BattleStatEntry {
   public individualValue: number;
   public effortValue: number;
-  constructor(
-    public readonly stat: Stat,
-    public readonly self: Codemon,
-    args: IPermanentStatEntry
-  ) {
+  constructor(public readonly stat: Stat, public readonly self: Combatant, args: IPermanentStatEntry) {
     super(stat, args);
-    this.individualValue =
-      args.individualValue ?? Math.floor(Math.random() * C.codemon.stats.maxIV);
+    this.individualValue = args.individualValue ?? Math.floor(Math.random() * C.codemon.stats.maxIV);
     this.effortValue = args.effortValue ?? 0;
   }
 
-  public value(considerStage: boolean = false) {
+  public value(considerStage = false) {
     let val =
       2 * this.self.species.baseStats[this.stat as PermanentStat] +
       this.individualValue +
@@ -91,34 +75,29 @@ export class PermanentStatEntry extends BattleStatEntry {
   }
 
   public toString() {
-    return `${this.stat}: ${this.value(true)} (${this.stage}|${
-      this.effortValue
-    }|${this.individualValue})`;
+    return `${this.stat}: ${this.value(true)} (${this.stage}|${this.effortValue}|${this.individualValue})`;
   }
 }
 
 export class HPStatEntry extends PermanentStatEntry {
   public current;
-  constructor(self: Codemon, args: IPermanentStatEntry) {
+  constructor(self: Combatant, args: IPermanentStatEntry) {
     super("hp" as Stat, self, args);
     this.current = this.value();
   }
 
-  public value(considerStage: boolean = false) {
+  public value(_considerStage = false) {
     let val =
       2 * this.self.species.baseStats[this.stat as PermanentStat] +
       this.individualValue +
       Math.floor(this.effortValue / 4);
-    val =
-      Math.floor((val * this.self.experience.level) / 100) +
-      this.self.experience.level +
-      10;
+    val = Math.floor((val * this.self.experience.level) / 100) + this.self.experience.level + 10;
 
     val = Math.floor(val);
     return val;
   }
 
-  public modifyStage(modification: number) {
+  public modifyStage(_modification: number) {
     throw new Error(`Stat ${this.stat} does not have a stage`);
   }
 
@@ -126,14 +105,12 @@ export class HPStatEntry extends PermanentStatEntry {
     throw new Error(`Stat ${this.stat} does not have a stage`);
   }
 
-  public stageMultiplier(effect: number): number {
+  public stageMultiplier(_effect: number): number {
     throw new Error(`Stat ${this.stat} does not have a stage`);
   }
 
   public toString() {
-    return `${this.stat}: ${this.current}/${this.value()} (${
-      this.effortValue
-    }|${this.individualValue})`;
+    return `${this.stat}: ${this.current}/${this.value()} (${this.effortValue}|${this.individualValue})`;
   }
 }
 
@@ -160,9 +137,7 @@ export class StatSet implements Stats {
   public accuracy: BattleStatEntry;
   public evasion: BattleStatEntry;
 
-  constructor(args: IStats & { self: Codemon }) {
-    const base = args.self.species.baseStats;
-
+  constructor(args: IStats & { self: Combatant }) {
     // Feels like there should be a better way to do this
     this.hp = new HPStatEntry(args.self, { ...args.hp });
     this.attack = new PermanentStatEntry("attack", args.self, {
@@ -189,18 +164,11 @@ export class StatSet implements Stats {
 
   public toString() {
     return (
-      [
-        this.hp,
-        this.attack,
-        this.defense,
-        this.specialAttack,
-        this.specialDefense,
-        this.speed,
-      ]
-        .map((s) => s.toString())
+      [this.hp, this.attack, this.defense, this.specialAttack, this.specialDefense, this.speed]
+        .map(s => s.toString())
         .join("\n") +
       "\n" +
-      [this.accuracy, this.evasion].map((s) => s.toString()).join(", ")
+      [this.accuracy, this.evasion].map(s => s.toString()).join(", ")
     );
   }
 }
