@@ -5,11 +5,13 @@ import { Female, Male, Sex } from "./sex.ts";
 import { Species } from "./species.ts";
 import { IStats, StatSet } from "./stats.ts";
 
+type RangeOrExact = number | [number, number];
+
 export interface ICodemon {
   species: Species;
   name?: string;
   sex?: Sex;
-  level?: number;
+  level?: RangeOrExact;
   nature?: Nature;
   stats?: IStats;
   moves: IMoves; // TODO: default moves from learnset
@@ -46,7 +48,9 @@ export class Codemon {
 
     this.experience = new Experience({
       group: options.species.experienceGroup,
-      level: options.level,
+      level: Array.isArray(options.level)
+        ? options.level[0] + Math.floor(Math.random() * (options.level[1] - options.level[0]))
+        : options.level,
     });
 
     this._originalNature = this.temporaryNature = options.nature ?? getRandomNature();
