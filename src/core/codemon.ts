@@ -15,6 +15,22 @@ export interface ICodemon {
   moves: IMoves; // TODO: default moves from learnset
 }
 
+type SpawnBankEntry = [options: ICodemon, weight: number];
+export type SpawnBank = [SpawnBankEntry, ...SpawnBankEntry[]];
+export function spawn(from: ICodemon | SpawnBank): Codemon {
+  if (Array.isArray(from)) {
+    const totalWeight = from.reduce((acc, entry) => acc + entry[1], 0);
+    const random = Math.random() * totalWeight;
+    let acc = 0;
+    for (const entry of from) {
+      acc += entry[1];
+      if (acc >= random) return new Codemon(entry[0]);
+    }
+    throw new Error("Spawn failed");
+  }
+  return new Codemon(from);
+}
+
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
 export class Codemon {
   public species: Species;
