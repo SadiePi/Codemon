@@ -1,130 +1,130 @@
-import Natures from "../core/nature.ts";
+import { Nature } from "../core/nature.ts";
 
-const Hardy = (Natures.Hardy = {
+const Hardy: Nature = {
   name: "Hardy",
   buff: "attack",
   nerf: "attack",
-});
-const Lonely = (Natures.Lonely = {
+};
+const Lonely: Nature = {
   name: "Lonely",
   buff: "attack",
   nerf: "defense",
-});
-const Brave = (Natures.Brave = {
+};
+const Brave: Nature = {
   name: "Brave",
   buff: "attack",
   nerf: "speed",
-});
-const Adamant = (Natures.Adamant = {
+};
+const Adamant: Nature = {
   name: "Adamant",
   buff: "attack",
   nerf: "specialAttack",
-});
-const Naughty = (Natures.Naughty = {
+};
+const Naughty: Nature = {
   name: "Naughty",
   buff: "attack",
   nerf: "specialDefense",
-});
-const Bold = (Natures.Bold = {
+};
+const Bold: Nature = {
   name: "Bold",
   buff: "defense",
   nerf: "attack",
-});
-const Docile = (Natures.Docile = {
+};
+const Docile: Nature = {
   name: "Docile",
   buff: "defense",
   nerf: "defense",
-});
-const Relaxed = (Natures.Relaxed = {
+};
+const Relaxed: Nature = {
   name: "Relaxed",
   buff: "defense",
   nerf: "speed",
-});
-const Impish = (Natures.Impish = {
+};
+const Impish: Nature = {
   name: "Impish",
   buff: "defense",
   nerf: "specialAttack",
-});
-const Lax = (Natures.Lax = {
+};
+const Lax: Nature = {
   name: "Lax",
   buff: "defense",
   nerf: "specialDefense",
-});
-const Timid = (Natures.Timid = {
+};
+const Timid: Nature = {
   name: "Timid",
   buff: "speed",
   nerf: "attack",
-});
-const Hasty = (Natures.Hasty = {
+};
+const Hasty: Nature = {
   name: "Hasty",
   buff: "speed",
   nerf: "defense",
-});
-const Serious = (Natures.Serious = {
+};
+const Serious: Nature = {
   name: "Serious",
   buff: "speed",
   nerf: "speed",
-});
-const Jolly = (Natures.Jolly = {
+};
+const Jolly: Nature = {
   name: "Jolly",
   buff: "speed",
   nerf: "specialAttack",
-});
-const Naive = (Natures.Naive = {
+};
+const Naive: Nature = {
   name: "Naive",
   buff: "speed",
   nerf: "specialDefense",
-});
-const Modest = (Natures.Modest = {
+};
+const Modest: Nature = {
   name: "Modest",
   buff: "specialAttack",
   nerf: "attack",
-});
-const Mild = (Natures.Mild = {
+};
+const Mild: Nature = {
   name: "Mild",
   buff: "specialAttack",
   nerf: "defense",
-});
-const Quiet = (Natures.Quiet = {
+};
+const Quiet: Nature = {
   name: "Quiet",
   buff: "specialAttack",
   nerf: "speed",
-});
-const Bashful = (Natures.Bashful = {
+};
+const Bashful: Nature = {
   name: "Bashful",
   buff: "specialAttack",
   nerf: "specialAttack",
-});
-const Rash = (Natures.Rash = {
+};
+const Rash: Nature = {
   name: "Rash",
   buff: "specialAttack",
   nerf: "specialDefense",
-});
-const Calm = (Natures.Calm = {
+};
+const Calm: Nature = {
   name: "Calm",
   buff: "specialDefense",
   nerf: "attack",
-});
-const Gentle = (Natures.Gentle = {
+};
+const Gentle: Nature = {
   name: "Gentle",
   buff: "specialDefense",
   nerf: "defense",
-});
-const Sassy = (Natures.Sassy = {
+};
+const Sassy: Nature = {
   name: "Sassy",
   buff: "specialDefense",
   nerf: "speed",
-});
-const Careful = (Natures.Careful = {
+};
+const Careful: Nature = {
   name: "Careful",
   buff: "specialDefense",
   nerf: "specialAttack",
-});
-const Quirky = (Natures.Quirky = {
+};
+const Quirky: Nature = {
   name: "Quirky",
   buff: "specialDefense",
   nerf: "specialDefense",
-});
+};
 
 export default {
   Hardy,

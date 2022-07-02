@@ -1,4 +1,5 @@
 import { PermanentStat } from "./stats.ts";
+import C from "../base/index.ts";
 
 export interface Nature {
   name: string;
@@ -6,11 +7,7 @@ export interface Nature {
   nerf: PermanentStat;
 }
 
-const nats: Record<string, Nature> = {};
-
 export function getRandomNature(): Nature {
-  const vals = Object.values(nats);
-  return vals[(vals.length * Math.random()) << 0];
+  const nats = Object.values(C.Nature);
+  return nats[(nats.length * Math.random()) << 0];
 }
-
-export default nats;
