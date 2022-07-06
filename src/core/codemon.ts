@@ -19,14 +19,14 @@ export interface ICodemon {
 
 type SpawnBankEntry = [options: ICodemon, weight: number];
 export type SpawnBank = [SpawnBankEntry, ...SpawnBankEntry[]];
-export function spawn(from: ICodemon | SpawnBank): Codemon {
+export function spawn(from: ICodemon | SpawnBank, random?: number): Codemon {
   if (Array.isArray(from)) {
     const totalWeight = from.reduce((acc, entry) => acc + entry[1], 0);
-    const random = Math.random() * totalWeight;
-    let acc = 0;
+    const randomWeight = (random ?? Math.random()) * totalWeight;
+    let weight = 0;
     for (const entry of from) {
-      acc += entry[1];
-      if (acc >= random) return new Codemon(entry[0]);
+      weight += entry[1];
+      if (weight >= randomWeight) return new Codemon(entry[0]);
     }
     throw new Error("Spawn failed");
   }
