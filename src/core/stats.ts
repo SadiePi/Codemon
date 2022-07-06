@@ -22,8 +22,10 @@ export class BattleStatEntry {
   }
 
   public modifyStage(modification: number) {
+    const old = this._stage;
     this._stage += modification;
     this._stage = Math.max(C.codemon.stats.minStage, Math.min(this._stage, C.codemon.stats.maxStage));
+    return this._stage - old;
   }
 
   public resetStage() {
@@ -97,34 +99,15 @@ export class HPStatEntry extends PermanentStatEntry {
     return val;
   }
 
-  public modifyStage(_modification: number) {
-    throw new Error(`Stat ${this.stat} does not have a stage`);
-  }
-
-  public resetStage() {
-    throw new Error(`Stat ${this.stat} does not have a stage`);
-  }
-
-  public stageMultiplier(_effect: number): number {
-    throw new Error(`Stat ${this.stat} does not have a stage`);
-  }
-
   public toString() {
     return `${this.stat}: ${this.current}/${this.value()} (${this.effortValue}|${this.individualValue})`;
   }
 }
 
-type Stats = {
-  [S in PermanentStat]: PermanentStatEntry;
-} & {
-  [S in BattleStat]: BattleStatEntry;
-};
+type Stats = Record<PermanentStat, PermanentStatEntry> & Record<BattleStat, BattleStatEntry>;
 
-export type IStats = {
-  [S in PermanentStat]?: IPermanentStatEntry;
-} & {
-  [S in BattleStat]?: IBattleStatEntry;
-};
+export type IStats = Partial<Record<PermanentStat, IPermanentStatEntry>> &
+  Partial<Record<BattleStat, IBattleStatEntry>>;
 
 export class StatSet implements Stats {
   public hp: HPStatEntry;
@@ -173,10 +156,6 @@ export class StatSet implements Stats {
   }
 }
 
-export type BaseStats = {
-  [S in PermanentStat]: number;
-};
-
-export type EVYields = {
-  [S in PermanentStat]?: number;
-};
+export type BaseStats = Record<PermanentStat, number>;
+export type EVYields = Partial<Record<PermanentStat, number>>;
+export type StageMods = Partial<Record<Exclude<Stat, "hp">, number>>;

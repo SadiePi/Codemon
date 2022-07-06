@@ -1,4 +1,5 @@
 import { Species } from "../core/index.ts";
+import Moves from "./moves.ts";
 import Type from "./types.ts";
 import Experience from "./experience.ts";
 
@@ -22,6 +23,21 @@ export const Bulbasaur: Species = {
     speed: 45,
   },
   evYields: { specialAttack: 1 },
+  learnset: {
+    1: [Moves.Tackle, Moves.Growl],
+    3: [Moves.VineWhip],
+    6: [Moves.Growth],
+    9: [Moves.LeechSeed],
+    12: [Moves.RazorLeaf],
+    15: [Moves.PoisonPowder, Moves.SleepPowder],
+    18: [Moves.SeedBomb],
+    21: [Moves.TakeDown],
+    24: [Moves.SweetScent],
+    27: [Moves.Synthesis],
+    30: [Moves.WorrySeed],
+    33: [Moves.DoubleEdge],
+    36: [Moves.SolarBeam],
+  },
 };
 // ivysaur, venusaur, ...
 
@@ -54,7 +70,43 @@ export const Garchomp: Species = {
   evYields: {
     attack: 3,
   },
-  //learnset: Learnset
+  learnset: {
+    evolution: [
+      /*Moves.Crunch*/
+    ],
+    1: [
+      /*Moves.Crunch,*/
+      /*Moves.DualChop,*/
+      /*Moves.SandTomb,*/
+      /*Moves.Tackle,*/
+      /*Moves.SandAttack,*/
+      /*Moves.DragonBreath*/
+    ],
+    18: [
+      /*Moves.Bulldoze*/
+    ],
+    27: [
+      /*Moves.Bite*/
+    ],
+    34: [
+      /*Moves.Slash*/
+    ],
+    42: [
+      /*Moves.DragonClaw*/
+    ],
+    52: [
+      /*Moves.Dig*/
+    ],
+    62: [
+      /*Moves.Sandstorm*/
+    ],
+    72: [
+      /*Moves.TakeDown*/
+    ],
+    82: [
+      /*Moves.DragonRush*/
+    ],
+  },
 };
 
 export default {

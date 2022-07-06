@@ -1,6 +1,6 @@
 import C from "./config.ts";
 import Combatant from "./codemon.ts";
-import { PermanentStat } from "./stats.ts";
+import { PermanentStat, StageMods } from "./stats.ts";
 import { Type } from "./type.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
@@ -25,12 +25,13 @@ export interface MoveInfo {
   priority: number;
   ppScheme?: PPScheme;
   basePower: number; // TODO: Add Battle parameter
+  stageMods?: StageMods;
+  description: string;
   baseAccuracy: number;
   makesContact: boolean;
   criticalHitStage: number;
   damageCategory: DamageCategory;
   targetingCategory: TargetingCategory;
-  criticalHitProbabilityMultiplier: number;
 
   overrideMoveUsage?: (move: Move, targets: Combatant[], moveUsage: MoveUsage) => MoveUsage;
 }
@@ -94,6 +95,7 @@ export interface MoveUsage {
   type: number;
   other: number;
   recoil: MoveUsage;
+  stageMods?: StageMods;
 }
 
 export interface MoveReciept {
@@ -101,6 +103,8 @@ export interface MoveReciept {
   target: Combatant;
   damage: number;
   fainted: boolean;
+  typeBoost: number;
+  stageMods?: StageMods;
   // inflictedStatuses, etc
 }
 
@@ -151,14 +155,6 @@ export class Move {
     ret.random = 0.85 + Math.random() * 0.15;
     ret.stab = this.user.species.types.includes(ret.info.type) ? 1.5 : 1;
 
-    /* TODO move this to Codemon.RecieveMove
-    ret.type = 1;
-    target.species.types.forEach(t => {
-      if (t.immunities.includes(ret.info.type)) ret.type *= 0;
-      else if (t.resistances.includes(ret.info.type)) ret.type /= 2;
-      else if (t.weaknesses.includes(ret.info.type)) ret.type *= 2;
-    });*/
-
     ret.other = 1;
     ret.recoil = {} as MoveUsage;
 
@@ -171,5 +167,3 @@ export class Move {
     return `${this.info.name} - ${this.info.type.name}/${this.info.damageCategory} - ${this.PP.current}/${this.PP.max} (${this.PP.boosts})`;
   }
 }
-
-export type IMoves = MoveInfo[];

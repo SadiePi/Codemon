@@ -1,6 +1,6 @@
 import { Stat } from "./stats.ts";
 import Codemon from "./codemon.ts";
-import { ExperienceGroup } from "./experience.ts";
+import { ExperienceGroup, LearnSet } from "./experience.ts";
 import { Type } from "./type.ts";
 import { Sex } from "./sex.ts";
 import { BaseStats, EVYields } from "./stats.ts";
@@ -27,7 +27,7 @@ export interface Species {
   baseFriendship: number;
   baseStats: BaseStats;
   evYields: EVYields;
-  //learnset: Learnset;
+  learnset: LearnSet;
 
   // Calculation overrides
   overrideName?: (self: Codemon, inputName: string) => string;
