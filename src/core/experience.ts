@@ -32,20 +32,18 @@ export default class Experience {
     if (!this.level) while (this.group(this.level) < this.points) this.level++;
   }
 
-  public levelUp(levels = 1) {
+  public levelUp(levels = 1): LevelUpReport {
     this.level += levels;
     this.points = this.group(this.level);
+    return {};
   }
 
-  public addExp(exp: number): boolean {
-    let levelup = false;
-    while (exp > this.group(this.level) - this.points) {
-      levelup = true;
-      this.level += 1;
-      exp -= this.group(this.level) - this.points;
-      this.points = this.group(this.level);
-    }
+  public addExp(exp: number): AddExpReport {
     this.points += exp;
-    return levelup;
+    const levelUps: LevelUpReport[] = [];
+    while (this.group(this.level) < this.points) {
+      levelUps.push(this.levelUp());
+    }
+    return { levelUps };
   }
 }
