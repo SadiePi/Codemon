@@ -19,19 +19,19 @@ export const TC = TargetingCategory; // for convenience
 
 export interface MoveInfo {
   name: string;
-  type: Type;
-  basePP: number;
-  recoilFactor?: number;
-  priority: number;
-  ppScheme?: PPScheme;
-  basePower: number; // TODO: Add Battle parameter
-  stageMods?: StageMods;
   description: string;
-  baseAccuracy: number;
-  makesContact: boolean;
-  criticalHitStage: number;
+  type: Type;
   damageCategory: DamageCategory;
+  basePP: number;
+  basePower: number; // TODO: Add Battle parameter
+  baseAccuracy: number;
   targetingCategory: TargetingCategory;
+  makesContact: boolean;
+  recoilFactor?: number;
+  priority?: number;
+  ppScheme?: PPScheme;
+  stageMods?: StageMods;
+  criticalHitStage?: number;
 
   overrideMoveUsage?: (move: Move, targets: Combatant[], moveUsage: MoveUsage) => MoveUsage;
 }
@@ -127,10 +127,11 @@ export class Move {
   // TODO: Complete this; it's only the rudimentary random check
   public TryCriticalHit(): boolean {
     const crit = Math.random();
+    const stage = this.info.criticalHitStage ?? 0;
     const aff = 1; // TODO: this.self.affection == max ? 1/2 : 1
-    if (this.info.criticalHitStage >= 3) return true;
-    if (this.info.criticalHitStage == 2) return crit < (1 / 2) * aff;
-    if (this.info.criticalHitStage == 1) return crit < (1 / 8) * aff;
+    if (stage >= 3) return true;
+    if (stage == 2) return crit < (1 / 2) * aff;
+    if (stage == 1) return crit < (1 / 8) * aff;
     return crit < 1 / 24;
   }
 
