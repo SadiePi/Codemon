@@ -111,24 +111,3 @@ Fairy.name = "Fairy";
 Fairy.weaknesses = [Poison, Steel];
 Fairy.resistances = [Fighting, Bug, Dark];
 Fairy.immunities = [Dragon];
-
-export default {
-  Normal,
-  Fighting,
-  Flying,
-  Poison,
-  Ground,
-  Rock,
-  Bug,
-  Ghost,
-  Steel,
-  Fire,
-  Water,
-  Grass,
-  Electric,
-  Psychic,
-  Ice,
-  Dragon,
-  Dark,
-  Fairy,
-};

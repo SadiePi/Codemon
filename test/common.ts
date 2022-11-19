@@ -1,6 +1,6 @@
-import C, { Codemon, Female } from "../src/base/index.ts";
+import C, { Female, ICodemon, TraditionalBattle } from "../src/base/index.ts";
 
-export const iChompy = {
+export const iChompy: ICodemon<TraditionalBattle> = {
   species: C.Species.Garchomp,
   name: "Noam Chompy",
   sex: Female,
@@ -32,7 +32,32 @@ export const iChompy = {
       effortValue: 23,
     },
   },
-  moves: [C.Moves.Tackle],
 };
 
-export const chompy = new Codemon(iChompy);
+export const iBigBoi: ICodemon<TraditionalBattle> = {
+  species: C.Species.Garchomp,
+  name: "Big Boi",
+  level: 100,
+};
+
+export const iBulby: ICodemon<TraditionalBattle> = {
+  species: C.Species.Bulbasaur,
+  name: "Bulby",
+  level: 15,
+};
+
+export const iGlassCannon: ICodemon<TraditionalBattle> = {
+  species: C.Species.Bulbasaur,
+  name: "Glass Cannon",
+  level: 2,
+  stats: {
+    speed: {
+      individualValue: 31,
+      effortValue: 255,
+    },
+    attack: {
+      individualValue: 255,
+      effortValue: 255,
+    },
+  },
+};

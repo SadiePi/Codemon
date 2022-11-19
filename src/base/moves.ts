@@ -1,254 +1,1776 @@
-import { MoveInfo, TC } from "./index.ts";
-import Types from "./types.ts";
+import { MoveData, MoveEffect, TC, TraditionalBattle } from "./index.ts";
+import * as Types from "./types.ts";
+import * as Status from "./status.ts";
 
 // https://bulbapedia.bulbagarden.net/wiki/List_of_moves
-// # Name Type Category PP Power Accuracy Gen
-// 1	Pound	Normal	Physical	35	40	100%	I
-// 2	Karate Chop*	Fighting	Physical	25	50	100%	I
-// 3	Double Slap	Normal	Physical	10	15	85%	I
-// 4	Comet Punch	Normal	Physical	15	18	85%	I
-// 5	Mega Punch	Normal	Physical	20	80	85%	I
-// 6	Pay Day	Normal	Physical	20	40	100%	I
-// 7	Fire Punch	Fire	Physical	15	75	100%	I
-// 8	Ice Punch	Ice	Physical	15	75	100%	I
-// 9	Thunder Punch	Electric	Physical	15	75	100%	I
-// 10	Scratch	Normal	Physical	35	40	100%	I
-// 11	Vise Grip	Normal	Physical	30	55	100%	I
-// 12	Guillotine	Normal	Physical	5	—	30%	I
-// 13	Razor Wind	Normal	Special	10	80	100%*	I
-// 14	Swords Dance	Normal	Status	20*	—	—	I
-// 15	Cut	Normal	Physical	30	50	95%	I
-// 16	Gust*	Flying	Special	35	40	100%	I
-// 17	Wing Attack	Flying	Physical	35	60*	100%	I
-// 18	Whirlwind	Normal	Status	20	—	—*	I
-// 19	Fly	Flying	Physical	15	90*	95%	I
-// 20	Bind	Normal	Physical	20	15	85%*	I
-// 21	Slam	Normal	Physical	20	80	75%	I
-export const VineWhip: MoveInfo = {
+// TODOs: multi-turn moves, payday, raw damage, instakill, roar/whirlwind, move restrictions, mist, hp transfer,
+
+export const Pound: MoveData<TraditionalBattle> = {
+  name: "Pound",
+  description: "The target is physically pounded with a long tail, a foreleg, or the like.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 35,
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const KarateChop: MoveData<TraditionalBattle> = {
+  name: "Karate Chop",
+  description: "The target is attacked with a sharp chop. Critical hits land more easily.",
+  type: Types.Fighting,
+  category: "Physical",
+  pp: 25,
+  power: 50,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  criticalHitStage: 1,
+} as const;
+
+export const DoubleSlap: MoveData<TraditionalBattle> = {
+  name: "Double Slap",
+  description: "The target is slapped repeatedly, back and forth, two to five times in a row.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 10,
+  power: 15,
+  accuracy: 85,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const CometPunch: MoveData<TraditionalBattle> = {
+  name: "Comet Punch",
+  description: "The target is hit with a flurry of punches that strike two to five times in a row.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 15,
+  power: 18,
+  accuracy: 85,
+  target: TC.Adjacent,
+  makesContact: true,
+  hitAgain: (hitsSoFar: number) => {
+    if (hitsSoFar === 1) return 1;
+    if (hitsSoFar === 2) return 0.65;
+    if (hitsSoFar === 3) return 0.3;
+    if (hitsSoFar === 4) return 0.15;
+    return 0;
+  },
+} as const;
+
+export const MegaPunch: MoveData<TraditionalBattle> = {
+  name: "Mega Punch",
+  description: "The target is slugged by a punch thrown with muscle-packed power.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20,
+  power: 80,
+  accuracy: 85,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const PayDay: MoveData<TraditionalBattle> = {
+  name: "Pay Day",
+  description: "Numerous coins are hurled at the target to inflict damage. Money is earned after the battle.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20,
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  // TODO somehow
+} as const;
+
+export const FirePunch: MoveData<TraditionalBattle> = {
+  name: "Fire Punch",
+  description: "The target is punched with a fiery fist. This may also leave the target with a burn.",
+  type: Types.Fire,
+  category: "Physical",
+  pp: 15,
+  power: 75,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Burn,
+    probability: 0.1,
+  },
+} as const;
+
+export const IcePunch: MoveData<TraditionalBattle> = {
+  name: "Ice Punch",
+  description: "The target is punched with an icy fist. This may also leave the target frozen.",
+  type: Types.Ice,
+  category: "Physical",
+  pp: 15,
+  power: 75,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Freeze,
+    probability: 0.1,
+  },
+} as const;
+
+export const ThunderPunch: MoveData<TraditionalBattle> = {
+  name: "Thunder Punch",
+  description: "The target is punched with an electrified fist. This may also leave the target with paralysis.",
+  type: Types.Electric,
+  category: "Physical",
+  pp: 15,
+  power: 75,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Paralysis,
+    probability: 0.1,
+  },
+} as const;
+
+export const Scratch: MoveData<TraditionalBattle> = {
+  name: "Scratch",
+  description: "Hard, pointed, sharp claws rake the target to inflict damage.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 35,
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const ViseGrip: MoveData<TraditionalBattle> = {
+  name: "Vise Grip",
+  description: "The target is gripped and squeezed from both sides to inflict damage.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 30,
+  power: 55,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const Guillotine: MoveData<TraditionalBattle> = {
+  name: "Guillotine",
+  description: "A vicious, tearing attack with big pincers. The target faints instantly if this attack hits.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 5,
+  power: 0,
+  accuracy: 90,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO somehow
+} as const;
+
+export const RazorWind: MoveData<TraditionalBattle> = {
+  name: "Razor Wind",
+  description:
+    "In this two-turn attack, blades of wind hit opposing Pokémon on the second turn. Critical hits land more easily.",
+  type: Types.Normal,
+  category: "Special",
+  pp: 10,
+  power: 80,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  criticalHitStage: 1,
+  // TODO somehow
+} as const;
+
+export const SwordsDance: MoveData<TraditionalBattle> = {
+  name: "Swords Dance",
+  description: "A frenetic dance to uplift the fighting spirit. This sharply raises the user's Attack stat.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 30,
+  target: TC.Self,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    attack: 2,
+  },
+} as const;
+
+export const Cut: MoveData<TraditionalBattle> = {
+  name: "Cut",
+  description: "The target is cut with a scythe or claw.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 30,
+  power: 50,
+  accuracy: 95,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const Gust: MoveData<TraditionalBattle> = {
+  name: "Gust",
+  description: "A gust of wind is whipped up by wings and launched at the target to inflict damage.",
+  type: Types.Flying,
+  category: "Special",
+  pp: 35,
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent | TC.NonAdjacent,
+  makesContact: false,
+  // TODO during Fly, double power
+} as const;
+
+export const WingAttack: MoveData<TraditionalBattle> = {
+  name: "Wing Attack",
+  description: "The target is struck with large, imposing wings spread wide to inflict damage.",
+  type: Types.Flying,
+  category: "Physical",
+  pp: 35,
+  power: 60,
+  accuracy: 100,
+  target: TC.Adjacent | TC.NonAdjacent,
+  makesContact: true,
+} as const;
+
+export const Whirlwind: MoveData<TraditionalBattle> = {
+  name: "Whirlwind",
+  description:
+    "The target is blown away, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 20,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO somehow
+} as const;
+
+export const Fly: MoveData<TraditionalBattle> = {
+  name: "Fly",
+  description: "The user flies up into the sky and then strikes its target on the next turn.",
+  type: Types.Flying,
+  category: "Physical",
+  pp: 15,
+  power: 90,
+  accuracy: 95,
+  target: TC.Adjacent | TC.NonAdjacent,
+  makesContact: true,
+  // TODO somehow
+} as const;
+
+export const Bind: MoveData<TraditionalBattle> = {
+  name: "Bind",
+  description:
+    "Things such as long bodies or tentacles are used to bind and squeeze the target for four to five turns.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20,
+  power: 15,
+  accuracy: 85,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO details
+} as const;
+
+export const Slam: MoveData<TraditionalBattle> = {
+  name: "Slam",
+  description: "The target is slammed with a long tail, vines, or the like to inflict damage.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20,
+  power: 80,
+  accuracy: 75,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const VineWhip: MoveData<TraditionalBattle> = {
   name: "Vine Whip",
   description: "The target is struck with slender, whiplike vines to inflict damage.",
   type: Types.Grass,
-  damageCategory: "Physical",
-  basePP: 25, // max 40
-  basePower: 45,
-  baseAccuracy: 100,
-  targetingCategory: TC.Adjacent,
+  category: "Physical",
+  pp: 25, // max 40
+  power: 45,
+  accuracy: 100,
+  target: TC.Adjacent,
   makesContact: true,
+} as const;
+
+export const Stomp: MoveData<TraditionalBattle> = {
+  name: "Stomp",
+  description: "The target is stomped with a big foot. This may also make the target flinch.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20,
+  power: 65,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Flinch,
+    probability: 3 / 10,
+  },
+} as const;
+
+export const DoubleKick: MoveData<TraditionalBattle> = {
+  name: "Double Kick",
+  description: "The target is quickly kicked twice in succession using both feet.",
+  type: Types.Fighting,
+  category: "Physical",
+  pp: 30,
+  power: 30,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  hitAgain: h => h < 2,
+} as const;
+
+export const MegaKick: MoveData<TraditionalBattle> = {
+  name: "Mega Kick",
+  description: "The target is attacked by a kick launched with muscle-packed power.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 5,
+  power: 120,
+  accuracy: 75,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const JumpKick: MoveData<TraditionalBattle> = {
+  name: "Jump Kick",
+  description: "The user jumps up high, then strikes with a kick. If the kick misses, the user hurts itself.",
+  type: Types.Fighting,
+  category: "Physical",
+  pp: 10,
+  power: 100,
+  accuracy: 95,
+  target: TC.Adjacent,
+  makesContact: true,
+  crash: t => Math.floor(t.stats.hp.value() / 2),
+} as const;
+
+export const RollingKick: MoveData<TraditionalBattle> = {
+  name: "Rolling Kick",
+  description: "The user lashes out with a quick, spinning kick. This may also make the target flinch.",
+  type: Types.Fighting,
+  category: "Physical",
+  pp: 15,
+  power: 60,
+  accuracy: 85,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Flinch,
+    probability: 3 / 10,
+  },
+} as const;
+
+export const SandAttack: MoveData<TraditionalBattle> = {
+  name: "Sand Attack",
+  description: "Sand is hurled in the target's face, reducing the target's accuracy.",
+  type: Types.Ground,
+  category: "Status",
+  pp: 15,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    accuracy: -1,
+  },
+} as const;
+
+export const Headbutt: MoveData<TraditionalBattle> = {
+  name: "Headbutt",
+  description:
+    "The user sticks out its head and attacks by charging straight into the target. This may also make the target flinch.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 15,
+  power: 70,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Flinch,
+    probability: 3 / 10,
+  },
+} as const;
+
+export const HornAttack: MoveData<TraditionalBattle> = {
+  name: "Horn Attack",
+  description: "The target is jabbed with a sharply pointed horn to inflict damage.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 25,
+  power: 65,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const FuryAttack: MoveData<TraditionalBattle> = {
+  name: "Fury Attack",
+  description: "The target is jabbed repeatedly with a horn or beak two to five times in a row.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20,
+  power: 15,
+  accuracy: 85,
+  target: TC.Adjacent,
+  makesContact: true,
+  hitAgain: (hitsSoFar: number) => {
+    if (hitsSoFar === 1) return 1;
+    if (hitsSoFar === 2) return 0.65;
+    if (hitsSoFar === 3) return 0.3;
+    if (hitsSoFar === 4) return 0.15;
+    return 0;
+  },
 };
-// 23	Stomp	Normal	Physical	20	65	100%	I
-// 24	Double Kick	Fighting	Physical	30	30	100%	I
-// 25	Mega Kick	Normal	Physical	5	120	75%	I
-// 26	Jump Kick	Fighting	Physical	10*	100*	95%	I
-// 27	Rolling Kick	Fighting	Physical	15	60	85%	I
-// 28	Sand Attack*	Ground	Status	15	—	100%	I
-// 29	Headbutt	Normal	Physical	15	70	100%	I
-// 30	Horn Attack	Normal	Physical	25	65	100%	I
-// 31	Fury Attack	Normal	Physical	20	15	85%	I
-// 32	Horn Drill	Normal	Physical	5	—	30%	I
-export const Tackle: MoveInfo = {
+
+export const HornDrill: MoveData<TraditionalBattle> = {
+  name: "Horn Drill",
+  description:
+    "The user stabs the target with a horn that rotates like a drill. The target faints instantly if this attack hits.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 5,
+  power: 0,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO somehow
+} as const;
+
+export const Tackle: MoveData<TraditionalBattle> = {
   name: "Tackle",
   description: "A physical attack in which the user charges and slams into the target with its whole body.",
   type: Types.Normal,
-  damageCategory: "Physical",
-  basePP: 35, // max 56
-  basePower: 40,
-  baseAccuracy: 100,
-  targetingCategory: TC.Adjacent | TC.Foe,
+  category: "Physical",
+  pp: 35, // max 56
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent,
   makesContact: true,
+} as const;
+
+export const BodySlam: MoveData<TraditionalBattle> = {
+  name: "Body Slam",
+  description:
+    "The user drops onto the target with its full body weight. This may also leave the target with paralysis.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 15,
+  power: 85,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Paralysis,
+    probability: 3 / 10,
+  },
+} as const;
+
+export const Wrap: MoveData<TraditionalBattle> = {
+  name: "Wrap",
+  description: "A long body, vines, or the like are used to wrap and squeeze the target for four to five turns.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20,
+  power: 15,
+  accuracy: 90,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO functionality
 };
-// 34	Body Slam	Normal	Physical	15	85	100%	I
-// 35	Wrap	Normal	Physical	20	15	90%*	I
-export const TakeDown: MoveInfo = {
+
+export const TakeDown: MoveData<TraditionalBattle> = {
   name: "Take Down",
   description: "A reckless, full-body charge attack for slamming into the target. This also damages the user a little.",
   type: Types.Normal,
-  damageCategory: "Physical",
-  basePP: 20, // max 32
-  basePower: 90,
-  baseAccuracy: 85,
-  targetingCategory: TC.Adjacent,
+  category: "Physical",
+  pp: 20, // max 32
+  power: 90,
+  accuracy: 85,
+  target: TC.Adjacent,
   makesContact: true,
-  recoilFactor: 1 / 4,
-};
-// 37	Thrash	Normal	Physical	10*	120*	100%	I
-export const DoubleEdge: MoveInfo = {
+  recoil: 1 / 4,
+} as const;
+
+export const Thrash: MoveData<TraditionalBattle> = {
+  name: "Thrash",
+  description: "The user rampages and attacks for two to three turns. The user then becomes confused.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 10,
+  power: 120,
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Thrashing,
+  },
+} as const;
+
+export const DoubleEdge: MoveData<TraditionalBattle> = {
   name: "Double-Edge",
   description:
     "A reckless, life-risking tackle in which the user rushes the target. This also damages the user quite a lot.",
   type: Types.Normal,
-  damageCategory: "Physical",
-  basePP: 15, // max 24
-  basePower: 120,
-  baseAccuracy: 100,
-  targetingCategory: TC.Adjacent,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 120,
+  accuracy: 100,
+  target: TC.Adjacent,
   makesContact: true,
-  recoilFactor: 1 / 4,
-};
-// 39	Tail Whip	Normal	Status	30	—	100%	I
-// 40	Poison Sting	Poison	Physical	35	15	100%	I
-// 41	Twineedle	Bug	Physical	20	25	100%	I
-// 42	Pin Missile	Bug	Physical	20	25*	95%*	I
-// 43	Leer	Normal	Status	30	—	100%	I
-// 44	Bite*	Dark	Physical	25	60	100%	I
-export const Growl: MoveInfo = {
+  recoil: 1 / 4,
+} as const;
+
+export const TailWhip: MoveData<TraditionalBattle> = {
+  name: "Tail Whip",
+  description: "The user wags its tail cutely, making opposing Pokémon less wary and lowering their Defense stats.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 30,
+  accuracy: 100,
+  target: TC.All | TC.Adjacent | TC.Foe,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    defense: -1,
+  },
+} as const;
+
+export const PoisonSting: MoveData<TraditionalBattle> = {
+  name: "Poison Sting",
+  description: "The user stabs the target with a poisonous stinger. This may also poison the target.",
+  type: Types.Poison,
+  category: "Physical",
+  pp: 35,
+  power: 15,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Poison,
+    probability: 3 / 10,
+  },
+} as const;
+
+export const Twineedle: MoveData<TraditionalBattle> = {
+  name: "Twineedle",
+  description:
+    "The user damages the target twice in succession by jabbing it with two spikes. This may also poison the target.",
+  type: Types.Bug,
+  category: "Physical",
+  pp: 20,
+  power: 25,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Poison,
+    probability: 2 / 10,
+  },
+} as const;
+
+// Note: this move works differently in Legends: Arceus but I don't care.
+export const PinMissle: MoveData<TraditionalBattle> = {
+  name: "Pin Missile",
+  description: "Sharp spikes are shot at the target in rapid succession. They hit two to five times in a row.",
+  type: Types.Bug,
+  category: "Physical",
+  pp: 20,
+  power: 25,
+  accuracy: 95,
+  target: TC.Adjacent,
+  makesContact: false,
+  hitAgain: (hitsSoFar: number) => {
+    if (hitsSoFar === 1) return 1;
+    if (hitsSoFar === 2) return 0.65;
+    if (hitsSoFar === 3) return 0.3;
+    if (hitsSoFar === 4) return 0.15;
+    return 0;
+  },
+} as const;
+
+export const Leer: MoveData<TraditionalBattle> = {
+  name: "Leer",
+  description: "The user gives opposing Pokémon an intimidating leer that lowers the Defense stat.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 30,
+  accuracy: 100,
+  target: TC.All | TC.Adjacent | TC.Foe,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    defense: -1,
+  },
+} as const;
+
+export const Bite: MoveData<TraditionalBattle> = {
+  name: "Bite",
+  description: "The target is bitten with viciously sharp fangs. This may also make the target flinch.",
+  type: Types.Dark,
+  category: "Physical",
+  pp: 25, // max 40
+  power: 60,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.Flinch,
+    probability: 3 / 10,
+  },
+} as const;
+
+export const Growl: MoveData<TraditionalBattle> = {
   name: "Growl",
   description:
     "The user growls in an endearing way, making opposing Pokémon less wary. This lowers their Attack stats.",
   type: Types.Normal,
-  damageCategory: "Status",
-  basePP: 40, // max 64
-  basePower: 0,
-  baseAccuracy: 100,
-  targetingCategory: TC.All | TC.Adjacent | TC.Foe,
+  category: "Status",
+  pp: 40, // max 64
+  accuracy: 100,
+  target: TC.All | TC.Adjacent | TC.Foe,
   makesContact: false,
-  stageMods: {
+  effect: {
+    type: "StatMod",
     attack: -1,
   },
+} as const;
+
+export const Roar: MoveData<TraditionalBattle> = {
+  name: "Roar",
+  description:
+    "The target is scared off, and a different Pokémon is dragged out. In the wild, this ends a battle against a single opponent.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 20,
+  accuracy: 100,
+  priority: -6,
+  target: TC.Adjacent,
+  makesContact: false,
+  // effect: {
+  //   type: "Status",
+  //   status: Status.Roared,
+  // },
+  effect: [] as MoveEffect<TraditionalBattle>[],
+} as const;
+
+export const Sing: MoveData<TraditionalBattle> = {
+  name: "Sing",
+  description: "A soothing lullaby is sung in a calming voice that puts the target into a deep slumber.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 15,
+  accuracy: 55,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Sleep,
+  },
+} as const;
+
+export const Supersonic: MoveData<TraditionalBattle> = {
+  name: "Supersonic",
+  description: "The user generates odd sound waves from its body that confuse the target.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 20,
+  accuracy: 55,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Confusion,
+  },
+} as const;
+
+export const SonicBoom: MoveData<TraditionalBattle> = {
+  name: "Sonic Boom",
+  description: "The target is hit with a destructive shock wave that always inflicts 20 HP damage.",
+  type: Types.Normal,
+  category: "Special",
+  pp: 20,
+  power: 20,
+  accuracy: 90,
+  target: TC.Adjacent,
+  makesContact: false,
+  // effect: {
+  //   type: "Damage",
+  //   damage: 20,
+  // }
+  effect: [] as MoveEffect<TraditionalBattle>[],
+} as const;
+
+export const Disable: MoveData<TraditionalBattle> = {
+  name: "Disable",
+  description: "For four turns, this move prevents the target from using the move it last used.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 20,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Restriction",
+    // TODO implement restrictions
+  },
+} as const;
+
+export const Acid: MoveData<TraditionalBattle> = {
+  name: "Acid",
+  description: "Opposing Pokémon are attacked with a spray of harsh acid. This may also lower their Sp. Def stats.",
+  type: Types.Poison,
+  category: "Special",
+  pp: 30,
+  power: 40,
+  accuracy: 100,
+  target: TC.All | TC.Adjacent | TC.Foe,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    specialDefense: -1,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Ember: MoveData<TraditionalBattle> = {
+  name: "Ember",
+  description: "The target is attacked with small flames. This may also leave the target with a burn.",
+  type: Types.Fire,
+  category: "Special",
+  pp: 25,
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Burn,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Flamethrower: MoveData<TraditionalBattle> = {
+  name: "Flamethrower",
+  description: "The target is scorched with an intense blast of fire. This may also leave the target with a burn.",
+  type: Types.Fire,
+  category: "Special",
+  pp: 15,
+  power: 90,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Burn,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Mist: MoveData<TraditionalBattle> = {
+  name: "Mist",
+  description:
+    "The user cloaks itself and its allies in a white mist that prevents any of their stats from being lowered for five turns.",
+  type: Types.Ice,
+  category: "Status",
+  pp: 30,
+  accuracy: 100,
+  target: TC.All | TC.Ally | TC.Self,
+  makesContact: false,
+  // effect: {
+  //   type: "Status",
+  //   status: Status.Mist,
+  // },
+  effect: [] as MoveEffect<TraditionalBattle>[],
+} as const;
+
+export const WaterGun: MoveData<TraditionalBattle> = {
+  name: "Water Gun",
+  description: "The target is blasted with a forceful shot of water.",
+  type: Types.Water,
+  category: "Special",
+  pp: 25,
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+} as const;
+
+export const HydroPump: MoveData<TraditionalBattle> = {
+  name: "Hydro Pump",
+  description: "The target is blasted by a huge volume of water launched under great pressure.",
+  type: Types.Water,
+  category: "Special",
+  pp: 5,
+  power: 110,
+  accuracy: 80,
+  target: TC.Adjacent,
+  makesContact: false,
+} as const;
+
+export const Surf: MoveData<TraditionalBattle> = {
+  name: "Surf",
+  description: "The user attacks everything around it by swamping its surroundings with a giant wave.",
+  type: Types.Water,
+  category: "Special",
+  pp: 15,
+  power: 90,
+  accuracy: 100,
+  target: TC.All | TC.Adjacent,
+  makesContact: false,
+} as const;
+
+export const IceBeam: MoveData<TraditionalBattle> = {
+  name: "Ice Beam",
+  description: "The target is struck with an icy-cold beam of energy. This may also leave the target frozen.",
+  type: Types.Ice,
+  category: "Special",
+  pp: 10,
+  power: 90,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Freeze,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Blizzard: MoveData<TraditionalBattle> = {
+  name: "Blizzard",
+  description:
+    "A howling blizzard is summoned to strike opposing Pokémon. This may also leave the opposing Pokémon frozen.",
+  type: Types.Ice,
+  category: "Special",
+  pp: 5,
+  power: 110,
+  accuracy: 70,
+  target: TC.All | TC.Adjacent | TC.Foe,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Freeze,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Psybeam: MoveData<TraditionalBattle> = {
+  name: "Psybeam",
+  description: "The target is attacked with a peculiar ray. This may also leave the target confused.",
+  type: Types.Psychic,
+  category: "Special",
+  pp: 20,
+  power: 65,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Confusion,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const BubbleBeam: MoveData<TraditionalBattle> = {
+  name: "Bubble Beam",
+  description: "A spray of bubbles is forcefully ejected at the target. This may also lower the target's Speed stat.",
+  type: Types.Water,
+  category: "Special",
+  pp: 20,
+  power: 65,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    speed: -1,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const AuroraBeam: MoveData<TraditionalBattle> = {
+  name: "Aurora Beam",
+  description: "The target is hit with a rainbow-colored beam. This may also lower the target's Attack stat.",
+  type: Types.Ice,
+  category: "Special",
+  pp: 20,
+  power: 65,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    attack: -1,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const HyperBeam: MoveData<TraditionalBattle> = {
+  name: "Hyper Beam",
+  description: "The target is attacked with a powerful beam. The user can't move on the next turn.",
+  type: Types.Normal,
+  category: "Special",
+  pp: 5,
+  power: 150,
+  accuracy: 90,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
   // TODO functionality
-};
-// 46	Roar	Normal	Status	20	—	—*	I
-// 47	Sing	Normal	Status	15	—	55%	I
-// 48	Supersonic	Normal	Status	20	—	55%	I
-// 49	Sonic Boom	Normal	Special	20	—*	90%	I
-// 50	Disable	Normal	Status	20	—	100%*	I
-// 51	Acid	Poison	Special	30	40	100%	I
-// 52	Ember	Fire	Special	25	40	100%	I
-// 53	Flamethrower	Fire	Special	15	90*	100%	I
-// 54	Mist	Ice	Status	30	—	—	I
-// 55	Water Gun	Water	Special	25	40	100%	I
-// 56	Hydro Pump	Water	Special	5	110*	80%	I
-// 57	Surf	Water	Special	15	90*	100%	I
-// 58	Ice Beam	Ice	Special	10	90*	100%	I
-// 59	Blizzard	Ice	Special	5	110*	70%*	I
-// 60	Psybeam	Psychic	Special	20	65	100%	I
-// 61	Bubble Beam	Water	Special	20	65	100%	I
-// 62	Aurora Beam	Ice	Special	20	65	100%	I
-// 63	Hyper Beam	Normal	Special	5	150	90%	I
-// 64	Peck	Flying	Physical	35	35	100%	I
-// 65	Drill Peck	Flying	Physical	20	80	100%	I
-// 66	Submission	Fighting	Physical	20*	80	80%	I
-// 67	Low Kick	Fighting	Physical	20	—*	100%*	I
-// 68	Counter	Fighting	Physical	20	—	100%	I
-// 69	Seismic Toss	Fighting	Physical	20	—	100%	I
-// 70	Strength	Normal	Physical	15	80	100%	I
-// 71	Absorb	Grass	Special	25*	20*	100%	I
-// 72	Mega Drain	Grass	Special	15*	40*	100%	I
-export const LeechSeed: MoveInfo = {
+} as const;
+
+export const Peck: MoveData<TraditionalBattle> = {
+  name: "Peck",
+  description: "The target is jabbed with a sharply pointed beak or horn.",
+  type: Types.Flying,
+  category: "Physical",
+  pp: 35,
+  power: 35,
+  accuracy: 100,
+  target: TC.Foe | TC.Ally,
+  makesContact: true,
+} as const;
+
+export const DrillPeck: MoveData<TraditionalBattle> = {
+  name: "Drill Peck",
+  description: "A corkscrewing attack that strikes the target with a sharp beak acting as a drill.",
+  type: Types.Flying,
+  category: "Physical",
+  pp: 20,
+  power: 80,
+  accuracy: 100,
+  target: TC.Foe | TC.Ally,
+  makesContact: true,
+} as const;
+
+export const Submission: MoveData<TraditionalBattle> = {
+  name: "Submission",
+  description: "The user grabs the target and recklessly dives for the ground. This also damages the user a little.",
+  type: Types.Fighting,
+  category: "Physical",
+  pp: 20,
+  power: 80,
+  accuracy: 80,
+  target: TC.Adjacent,
+  makesContact: true,
+  recoil: 1 / 4,
+} as const;
+
+export const LowKick: MoveData<TraditionalBattle> = {
+  name: "Low Kick",
+  description:
+    "A powerful low kick that makes the target fall over. The heavier the target, the greater the move's power.",
+  type: Types.Fighting,
+  category: "Physical",
+  pp: 20,
+  power: 0,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO somehow
+} as const;
+
+export const Counter: MoveData<TraditionalBattle> = {
+  name: "Counter",
+  description: "A retaliation move that counters any physical attack, inflicting double the damage taken.",
+  type: Types.Fighting,
+  category: "Physical",
+  pp: 20,
+  power: 0,
+  accuracy: 100,
+  priority: -5,
+  target: TC.Self,
+  makesContact: true,
+  // TODO somehow
+} as const;
+
+export const SeismicToss: MoveData<TraditionalBattle> = {
+  name: "Seismic Toss",
+  description: "The target is thrown using the power of gravity. It inflicts damage equal to the user's level.",
+  type: Types.Fighting,
+  category: "Physical",
+  pp: 20,
+  power: 0,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO somehow
+} as const;
+
+export const Strength: MoveData<TraditionalBattle> = {
+  name: "Strength",
+  description: "The target is slugged with a punch thrown at maximum power.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 15,
+  power: 80,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const Absorb: MoveData<TraditionalBattle> = {
+  name: "Absorb",
+  description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
+  type: Types.Grass,
+  category: "Special",
+  pp: 20,
+  power: 20,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  // effect: {
+  //   type: "Heal",
+  //   amount: 1 / 2,
+  // },
+  effect: [] as MoveEffect<TraditionalBattle>[],
+} as const;
+
+export const MegaDrain: MoveData<TraditionalBattle> = {
+  name: "Mega Drain",
+  description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
+  type: Types.Grass,
+  category: "Special",
+  pp: 15,
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  // effect: {
+  //   type: "Heal",
+  //   amount: 1 / 2,
+  // },
+  effect: [] as MoveEffect<TraditionalBattle>[],
+} as const;
+
+export const LeechSeed: MoveData<TraditionalBattle> = {
   name: "Leech Seed",
   description: "A seed is planted on the target. It steals some HP from the target every turn.",
   type: Types.Grass,
-  damageCategory: "Status",
-  basePP: 10, // max 16
-  basePower: 0,
-  baseAccuracy: 90,
-  targetingCategory: TC.Adjacent,
+  category: "Status",
+  pp: 10, // max 16
+  accuracy: 90,
+  target: TC.Adjacent,
   makesContact: false,
-  // TODO functionality
-};
-export const Growth: MoveInfo = {
+  effect: {
+    type: "Status",
+    status: Status.LeechSeed,
+  },
+} as const;
+
+export const Growth: MoveData<TraditionalBattle> = {
   name: "Growth",
   description: "The user's body grows all at once, raising the Attack and Sp. Atk stats.",
   type: Types.Normal,
-  damageCategory: "Status",
-  basePP: 20, // max 32
-  basePower: 0,
-  baseAccuracy: 100,
-  targetingCategory: TC.Self,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 100,
+  target: TC.Self,
   makesContact: false,
-  stageMods: {
+  effect: {
+    type: "StatMod",
     attack: 1,
     specialAttack: 1,
   },
-};
-export const RazorLeaf: MoveInfo = {
+} as const;
+
+export const RazorLeaf: MoveData<TraditionalBattle> = {
   name: "Razor Leaf",
   description: "Sharp-edged leaves are launched to slash at opposing Pokémon. Critical hits land more easily.",
   type: Types.Grass,
-  damageCategory: "Physical",
-  basePP: 25, // max 40
-  basePower: 55,
-  baseAccuracy: 95,
-  targetingCategory: TC.Adjacent | TC.Foe,
+  category: "Physical",
+  pp: 25, // max 40
+  power: 55,
+  accuracy: 95,
+  target: TC.All | TC.Adjacent | TC.Foe,
   makesContact: false,
   criticalHitStage: 1,
-};
-export const SolarBeam: MoveInfo = {
+} as const;
+
+export const SolarBeam: MoveData<TraditionalBattle> = {
   name: "Solar Beam",
   description: "In this two-turn attack, the user gathers light, then blasts a bundled beam on the next turn.",
   type: Types.Grass,
-  damageCategory: "Special",
-  basePP: 10, // max 16
-  basePower: 120,
-  baseAccuracy: 100,
-  targetingCategory: TC.Adjacent,
+  category: "Special",
+  pp: 10, // max 16
+  power: 120,
+  accuracy: 100,
+  target: TC.Adjacent,
   makesContact: false,
   // TODO functionality
-};
-export const PoisonPowder: MoveInfo = {
+} as const;
+
+export const PoisonPowder: MoveData<TraditionalBattle> = {
   name: "Poison Powder",
   description: "The user scatters a cloud of poisonous dust that poisons the target.",
   type: Types.Poison,
-  damageCategory: "Status",
-  basePP: 35, // max 56
-  basePower: 0,
-  baseAccuracy: 75,
-  targetingCategory: TC.Adjacent,
+  category: "Status",
+  pp: 35, // max 56
+  accuracy: 75,
+  target: TC.Adjacent,
   makesContact: false,
-  // TODO functionality
-};
-// 78	Stun Spore	Grass	Status	30	—	75%	I
-export const SleepPowder: MoveInfo = {
+  effect: {
+    type: "Status",
+    status: Status.Poison,
+  },
+} as const;
+
+export const StunSpore: MoveData<TraditionalBattle> = {
+  name: "Stun Spore",
+  description: "The user scatters a cloud of numbing powder that paralyzes the target.",
+  type: Types.Grass,
+  category: "Status",
+  pp: 30, // max 48
+  accuracy: 75,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Paralysis,
+  },
+} as const;
+
+export const SleepPowder: MoveData<TraditionalBattle> = {
   name: "Sleep Powder",
   description: "The user scatters a big cloud of sleep-inducing dust around the target.",
   type: Types.Grass,
-  damageCategory: "Status",
-  basePP: 15, // max 24
-  basePower: 0,
-  baseAccuracy: 75,
-  targetingCategory: TC.Adjacent,
+  category: "Status",
+  pp: 15, // max 24
+  accuracy: 75,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Sleep,
+  },
+} as const;
+
+export const PetalDance: MoveData<TraditionalBattle> = {
+  name: "Petal Dance",
+  description: "The user attacks the target with sharp petals that land on the target.",
+  type: Types.Grass,
+  category: "Physical",
+  pp: 10, // max 16
+  power: 120,
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: true,
+  // TODO functionality
+} as const;
+
+export const StringShot: MoveData<TraditionalBattle> = {
+  name: "String Shot",
+  description: "Opposing Pokémon are bound with silk blown from the user's mouth that harshly lowers the Speed stat.",
+  type: Types.Bug,
+  category: "Status",
+  pp: 40, // max 64
+  accuracy: 95,
+  target: TC.All | TC.Adjacent | TC.Foe,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    speed: -2,
+  },
+} as const;
+
+export const DragonRage: MoveData<TraditionalBattle> = {
+  name: "Dragon Rage",
+  description: "This attack hits the target with a shock wave of pure rage. This attack always inflicts 40 HP damage.",
+  type: Types.Dragon,
+  category: "Physical",
+  pp: 10, // max 16
+  power: 0,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  // effect: {
+  //   type: "Damage",
+  //   damage: 40,
+  // },
+} as const;
+
+export const FireSpin: MoveData<TraditionalBattle> = {
+  name: "Fire Spin",
+  description: "The target becomes trapped within a fierce vortex of fire that rages for four to five turns.",
+  type: Types.Fire,
+  category: "Special",
+  pp: 15, // max 24
+  power: 35,
+  accuracy: 85,
+  target: TC.Adjacent,
   makesContact: false,
   // TODO functionality
+} as const;
+
+export const ThunderShock: MoveData<TraditionalBattle> = {
+  name: "Thunder Shock",
+  description:
+    "A jolt of electricity crashes down on the target to inflict damage. This may also leave the target with paralysis.",
+  type: Types.Electric,
+  category: "Special",
+  pp: 30, // max 48
+  power: 40,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Paralysis,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Thunderbolt: MoveData<TraditionalBattle> = {
+  name: "Thunderbolt",
+  description: "A strong electric blast crashes down on the target. This may also leave the target with paralysis.",
+  type: Types.Electric,
+  category: "Special",
+  pp: 15, // max 24
+  power: 90,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Paralysis,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const ThunderWave: MoveData<TraditionalBattle> = {
+  name: "Thunder Wave",
+  description: "The user launches a weak jolt of electricity that paralyzes the target.",
+  type: Types.Electric,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 90,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Paralysis,
+  },
+} as const;
+
+export const Thunder: MoveData<TraditionalBattle> = {
+  name: "Thunder",
+  description:
+    "A wicked thunderbolt is dropped on the target to inflict damage. This may also leave the target with paralysis.",
+  type: Types.Electric,
+  category: "Physical",
+  pp: 10, // max 16
+  power: 110,
+  accuracy: 70,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Paralysis,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const RockThrow: MoveData<TraditionalBattle> = {
+  name: "Rock Throw",
+  description: "The user picks up and throws a small rock at the target to attack.",
+  type: Types.Rock,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 50,
+  accuracy: 90,
+  target: TC.Adjacent,
+  makesContact: false,
+} as const;
+
+export const Earthquake: MoveData<TraditionalBattle> = {
+  name: "Earthquake",
+  description: "The user sets off an earthquake that strikes every Pokémon around it.",
+  type: Types.Ground,
+  category: "Physical",
+  pp: 10, // max 16
+  power: 100,
+  accuracy: 100,
+  target: TC.All | TC.Adjacent,
+  makesContact: false,
+} as const;
+
+export const Fissure: MoveData<TraditionalBattle> = {
+  name: "Fissure",
+  description:
+    "The user opens up a fissure in the ground and drops the target in. The target faints instantly if this attack hits.",
+  type: Types.Ground,
+  category: "Physical",
+  pp: 5, // max 8
+  power: 0,
+  accuracy: 30,
+  target: TC.Adjacent,
+  makesContact: false,
+  // effect: {
+  //   type: "Faint",
+  // },
+} as const;
+
+export const Dig: MoveData<TraditionalBattle> = {
+  name: "Dig",
+  description: "The user burrows into the ground, then attacks on the next turn.",
+  type: Types.Ground,
+  category: "Physical",
+  pp: 10, // max 16
+  power: 80,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "Status",
+    status: Status.SemiInvulnerableTurn,
+  },
+  // TODO functionality
+} as const;
+
+export const Toxic: MoveData<TraditionalBattle> = {
+  name: "Toxic",
+  description: "A move that leaves the target badly poisoned. Its poison damage worsens every turn.",
+  type: Types.Poison,
+  category: "Status",
+  pp: 10, // max 16
+  accuracy: 90,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.BadlyPoisoned,
+  },
+} as const;
+
+export const Confusion: MoveData<TraditionalBattle> = {
+  name: "Confusion",
+  description: "The target is hit by a weak telekinetic force. This may also confuse the target.",
+  type: Types.Psychic,
+  category: "Special",
+  pp: 25, // max 40
+  power: 50,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Confusion,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Psychic: MoveData<TraditionalBattle> = {
+  name: "Psychic",
+  description: "The target is hit by a strong telekinetic force. This may also lower the target's Sp. Def stat.",
+  type: Types.Psychic,
+  category: "Special",
+  pp: 10, // max 16
+  power: 90,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    specialDefense: -1,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Hypnosis: MoveData<TraditionalBattle> = {
+  name: "Hypnosis",
+  description: "The user employs hypnotic suggestion to make the target fall into a deep sleep.",
+  type: Types.Psychic,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 60,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Sleep,
+    probability: 1 / 10,
+  },
+} as const;
+
+export const Meditate: MoveData<TraditionalBattle> = {
+  name: "Meditate",
+  description: "The user meditates to awaken the power deep within its body and raise its Attack stat.",
+  type: Types.Psychic,
+  category: "Status",
+  pp: 40, // max 64
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    attack: 1,
+  },
+} as const;
+
+export const Agility: MoveData<TraditionalBattle> = {
+  name: "Agility",
+  description: "The user relaxes and lightens its body to move faster. This sharply raises the Speed stat.",
+  type: Types.Psychic,
+  category: "Status",
+  pp: 30, // max 48
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    speed: 2,
+  },
+} as const;
+
+export const QuickAttack: MoveData<TraditionalBattle> = {
+  name: "Quick Attack",
+  description: "The user lunges at the target at a speed that makes it almost invisible. This move always goes first.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 30, // max 48
+  power: 40,
+  accuracy: 100,
+  priority: 1,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
+export const Rage: MoveData<TraditionalBattle> = {
+  name: "Rage",
+  description:
+    "As long as this move is in use, the power of rage raises the Attack stat each time the user is hit in battle.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20, // max 32
+  power: 20,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO functionality
+} as const;
+
+export const Teleport: MoveData<TraditionalBattle> = {
+  name: "Teleport",
+  description:
+    "The user switches places with another party Pokémon. It may also be used to warp to the last Pokémon Center visited. If a wild Pokémon uses this move, it flees.",
+  type: Types.Psychic,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 100,
+  priority: -6,
+  target: TC.Self,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const NightShade: MoveData<TraditionalBattle> = {
+  name: "Night Shade",
+  description: "The user makes the target see a frightening mirage. It inflicts damage equal to the user's level.",
+  type: Types.Ghost,
+  category: "Special",
+  pp: 15, // max 24
+  power: 0,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const Mimic: MoveData<TraditionalBattle> = {
+  name: "Mimic",
+  description:
+    "The user copies the target's last move. The move can be used during battle until the Pokémon is switched out.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 10, // max 16
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  // effect: {
+  //   type: "Mimic",
+  // },
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+// why isn't this a status move apdabiouaboduiboiuafb
+export const Screech: MoveData<TraditionalBattle> = {
+  name: "Screech",
+  description: "An earsplitting screech harshly lowers the target's Defense stat.",
+  type: Types.Normal,
+  category: "Special",
+  pp: 40, // max 64
+  power: 0,
+  accuracy: 85,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    defense: -2,
+  },
+} as const;
+
+export const DoubleTeam: MoveData<TraditionalBattle> = {
+  name: "Double Team",
+  description: "By moving rapidly, the user makes illusory copies of itself to raise its evasiveness.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 15, // max 24
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    evasion: 1,
+  },
+} as const;
+
+export const Recover: MoveData<TraditionalBattle> = {
+  name: "Recover",
+  description: "Restoring its own cells, the user restores its own HP by half of its max HP.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 10, // max 16
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  // effect: {
+  //   type: "Heal",
+  //   amount: "half",
+  // },
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const Harden: MoveData<TraditionalBattle> = {
+  name: "Harden",
+  description: "The user stiffens all the muscles in its body to raise its Defense stat.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 30, // max 48
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    defense: 1,
+  },
+} as const;
+
+export const Minimize: MoveData<TraditionalBattle> = {
+  name: "Minimize",
+  description: "The user compresses its body to make itself look smaller, which sharply raises its evasiveness.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 10, // max 16
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: [
+    {
+      type: "Status",
+      status: Status.Minimize,
+    },
+    {
+      type: "StatMod",
+      evasion: 2,
+    },
+  ] as MoveEffect<TraditionalBattle>[],
+} as const;
+
+export const Smokescreen: MoveData<TraditionalBattle> = {
+  name: "Smokescreen",
+  description: "The user releases an obscuring cloud of smoke or ink. This lowers the target's accuracy.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    accuracy: -1,
+  },
+} as const;
+
+export const ConfuseRay: MoveData<TraditionalBattle> = {
+  name: "Confuse Ray",
+  description: "The target is exposed to a sinister ray that triggers confusion.",
+  type: Types.Ghost,
+  category: "Status",
+  pp: 10, // max 16
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Confusion,
+  },
+} as const;
+
+export const Withdraw: MoveData<TraditionalBattle> = {
+  name: "Withdraw",
+  description: "The user withdraws its body into its hard shell, raising its Defense stat.",
+  type: Types.Water,
+  category: "Status",
+  pp: 40, // max 64
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    defense: 1,
+  },
+} as const;
+
+export const DefenseCurl: MoveData<TraditionalBattle> = {
+  name: "Defense Curl",
+  description: "The user curls up to conceal weak spots and raise its Defense stat.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 40, // max 64
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    defense: 1,
+  },
+  // TODO functionality
+} as const;
+
+export const Barrier: MoveData<TraditionalBattle> = {
+  name: "Barrier",
+  description: "The user throws up a sturdy wall that sharply raises its Defense stat.",
+  type: Types.Psychic,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    defense: 2,
+  },
+} as const;
+
+export const LightScreen: MoveData<TraditionalBattle> = {
+  name: "Light Screen",
+  description: "A wondrous wall of light is put up to reduce damage from special attacks for five turns.",
+  type: Types.Psychic,
+  category: "Status",
+  pp: 30, // max 48
+  accuracy: 100,
+  target: TC.All | TC.Self | TC.Ally,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const Haze: MoveData<TraditionalBattle> = {
+  name: "Haze",
+  description: "The user creates a haze that eliminates every stat change among all the Pokémon engaged in battle.",
+  type: Types.Ice,
+  category: "Status",
+  pp: 30, // max 48
+  accuracy: 100,
+  target: TC.All,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const Reflect: MoveData<TraditionalBattle> = {
+  name: "Reflect",
+  description: "A wondrous wall of light is put up to reduce damage from physical attacks for five turns.",
+  type: Types.Psychic,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 100,
+  target: TC.All | TC.Self | TC.Ally,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const FocusEnergy: MoveData<TraditionalBattle> = {
+  name: "Focus Energy",
+  description: "The user takes a deep breath and focuses so that critical hits land more easily.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 30, // max 48
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const Bide: MoveData<TraditionalBattle> = {
+  name: "Bide",
+  description: "The user endures attacks for two turns, then strikes back to cause double the damage taken.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 10, // max 16
+  power: 0,
+  accuracy: 100,
+  priority: 1,
+  target: TC.Self,
+  makesContact: true,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const Metronone: MoveData<TraditionalBattle> = {
+  name: "Metronome",
+  description: "The user waggles a finger and stimulates its brain into randomly using nearly any move.",
+  type: Types.Normal,
+  category: "Status",
+  pp: 10, // max 16
+  accuracy: 100,
+  target: TC.Self,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
+} as const;
+
+export const MirrorMove: MoveData<TraditionalBattle> = {
+  name: "Mirror Move",
+  description: "The user counters the target by mimicking the target's last move.",
+  type: Types.Flying,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // TODO functionality
 };
-// 80	Petal Dance	Grass	Special	10*	120*	100%	I
-// 81	String Shot	Bug	Status	40	—	95%	I
-// 82	Dragon Rage	Dragon	Special	10	—*	100%	I
-// 83	Fire Spin	Fire	Special	15	35*	85%*	I
-// 84	Thunder Shock	Electric	Special	30	40	100%	I
-// 85	Thunderbolt	Electric	Special	15	90*	100%	I
-// 86	Thunder Wave	Electric	Status	20	—	90%*	I
-// 87	Thunder	Electric	Special	10	110*	70%	I
-// 88	Rock Throw	Rock	Physical	15	50	90%*	I
-// 89	Earthquake	Ground	Physical	10	100	100%	I
-// 90	Fissure	Ground	Physical	5	—	30%	I
-// 91	Dig	Ground	Physical	10	80*	100%	I
-// 92	Toxic	Poison	Status	10	—	90%*	I
-// 93	Confusion	Psychic	Special	25	50	100%	I
-// 94	Psychic	Psychic	Special	10	90	100%	I
-// 95	Hypnosis	Psychic	Status	20	—	60%*	I
-// 96	Meditate	Psychic	Status	40	—	—	I
-// 97	Agility	Psychic	Status	30	—	—	I
-// 98	Quick Attack	Normal	Physical	30	40	100%	I
-// 99	Rage	Normal	Physical	20	20	100%	I
-// 100	Teleport	Psychic	Status	20	—	—	I
-// 101	Night Shade	Ghost	Special	15	—	100%	I
-// 102	Mimic	Normal	Status	10	—	—*	I
-// 103	Screech	Normal	Status	40	—	85%	I
-// 104	Double Team	Normal	Status	15	—	—	I
-// 105	Recover	Normal	Status	10*	—	—	I
-// 106	Harden	Normal	Status	30	—	—	I
-// 107	Minimize	Normal	Status	10*	—	—	I
-// 108	Smokescreen	Normal	Status	20	—	100%	I
-// 109	Confuse Ray	Ghost	Status	10	—	100%	I
-// 110	Withdraw	Water	Status	40	—	—	I
-// 111	Defense Curl	Normal	Status	40	—	—	I
-// 112	Barrier	Psychic	Status	20*	—	—	I
-// 113	Light Screen	Psychic	Status	30	—	—	I
-// 114	Haze	Ice	Status	30	—	—	I
-// 115	Reflect	Psychic	Status	20	—	—	I
-// 116	Focus Energy	Normal	Status	30	—	—	I
-// 117	Bide	Normal	Physical	10	—	—*	I
-// 118	Metronome	Normal	Status	10	—	—	I
-// 119	Mirror Move	Flying	Status	20	—	—	I
 // 120	Self-Destruct	Normal	Physical	5	200*	100%	I
 // 121	Egg Bomb	Normal	Physical	10	100	75%	I
 // 122	Lick	Ghost	Physical	30	30*	100%	I
@@ -292,7 +1814,19 @@ export const SleepPowder: MoveInfo = {
 // 160	Conversion	Normal	Status	30	—	—	I
 // 161	Tri Attack	Normal	Special	10	80	100%	I
 // 162	Super Fang	Normal	Physical	10	—	90%	I
-// 163	Slash	Normal	Physical	20	70	100%	I
+export const Slash: MoveData<TraditionalBattle> = {
+  name: "Slash",
+  description: "The target is attacked with a slash of claws or blades. Critical hits land more easily.",
+  type: Types.Normal,
+  category: "Physical",
+  pp: 20,
+  power: 70,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  criticalHitStage: 1,
+} as const;
+
 // 164	Substitute	Normal	Status	10	—	—	I
 // 165	Struggle	Normal	Physical	1*	50	—*	I
 // 166	Sketch	Normal	Status	1	—	—	II
@@ -330,7 +1864,28 @@ export const SleepPowder: MoveInfo = {
 // 198	Bone Rush	Ground	Physical	10	25	90%*	II
 // 199	Lock-On	Normal	Status	5	—	—*	II
 // 200	Outrage	Dragon	Physical	10*	120*	100%	II
-// 201	Sandstorm	Rock	Status	10	—	—	II
+export const Sandstorm: MoveData<TraditionalBattle> = {
+  name: "Sandstorm",
+  description:
+    "A five-turn sandstorm is summoned to hurt all combatants except the Rock, Ground, and Steel types. It raises the Sp. Def stat of Rock types.",
+  type: Types.Rock,
+  category: "Status",
+  pp: 10,
+  accuracy: 0,
+  target: TC.All,
+  makesContact: false,
+  effect: {
+    type: "Weather",
+    weather: "Sandstorm",
+  },
+  // effect: {
+  //   duration: 5,
+  //   onStart: (battle: Battle, caster: Pokemon, target: Pokemon) => {
+  //     battle.addPseudoWeather(PW.Sandstorm);
+  //   }
+  // }
+  // TODO functionality
+} as const;
 // 202	Giga Drain	Grass	Special	10*	75*	100%	II
 // 203	Endure	Normal	Status	10	—	—	II
 // 204	Charm*	Fairy	Status	20	—	100%	II
@@ -354,41 +1909,68 @@ export const SleepPowder: MoveInfo = {
 // 222	Magnitude	Ground	Physical	30	—	100%	II
 // 223	Dynamic Punch	Fighting	Physical	5	100	50%	II
 // 224	Megahorn	Bug	Physical	10	120	85%	II
-// 225	Dragon Breath	Dragon	Special	20	60	100%	II
+export const DragonBreath: MoveData<TraditionalBattle> = {
+  name: "Dragon Breath",
+  description: "The user exhales a mighty gust that inflicts damage. This may also leave the target with paralysis.",
+  type: Types.Dragon,
+  category: "Special",
+  pp: 20,
+  power: 60,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "Status",
+    status: Status.Paralysis,
+    probability: 3 / 10,
+  },
+} as const;
 // 226	Baton Pass	Normal	Status	40	—	—	II
 // 227	Encore	Normal	Status	5	—	100%	II
 // 228	Pursuit	Dark	Physical	20	40	100%	II
 // 229	Rapid Spin	Normal	Physical	40	50*	100%	II
-export const SweetScent: MoveInfo = {
+export const SweetScent: MoveData<TraditionalBattle> = {
   name: "Sweet Scent",
   description: "A sweet scent that harshly lowers opposing Pokémon's evasiveness.",
   type: Types.Normal,
-  damageCategory: "Status",
-  basePP: 20, // max 32
-  basePower: 0,
-  baseAccuracy: 100,
-  targetingCategory: TC.Adjacent | TC.Foe,
+  category: "Status",
+  pp: 20, // max 32
+  accuracy: 100,
+  target: TC.Adjacent | TC.Foe,
   makesContact: false,
-  stageMods: {
+  effect: {
+    type: "StatMod",
     evasion: -2,
   },
-};
+} as const;
 // 231	Iron Tail	Steel	Physical	15	100	75%	II
 // 232	Metal Claw	Steel	Physical	35	50	95%	II
 // 233	Vital Throw	Fighting	Physical	10	70	—	II
 // 234	Morning Sun	Normal	Status	5	—	—	II
-export const Synthesis: MoveInfo = {
+export const Synthesis: MoveData<TraditionalBattle> = {
   name: "Synthesis",
   description: "The user restores its own HP. The amount of HP regained varies with the weather.",
   type: Types.Grass,
-  damageCategory: "Status",
-  basePP: 5, // max 8
-  basePower: 0,
-  baseAccuracy: 100,
-  targetingCategory: TC.Self,
+  category: "Status",
+  pp: 5, // max 8
+  accuracy: 100,
+  target: TC.Self,
   makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
+  // effect: {
+  //   type: "Heal",
+  //   amount: (battle: Battle, user: Pokemon) => {
+  //     const weather = battle.getWeather();
+  //     if (weather === Weather.Sunny) {
+  //       return user.maxHP / 4;
+  //     } else if (weather === Weather.Rain) {
+  //       return user.maxHP / 8;
+  //     }
+  //     return 0;
+  //   }
+  // }
   // TODO functionality
-};
+} as const;
 
 // 236	Moonlight*	Fairy	Status	5	—	—	II
 // 237	Hidden Power	Normal	Special	15	60*	100%	II
@@ -396,7 +1978,22 @@ export const Synthesis: MoveInfo = {
 // 239	Twister	Dragon	Special	20	40	100%	II
 // 240	Rain Dance	Water	Status	5	—	—	II
 // 241	Sunny Day	Fire	Status	5	—	—	II
-// 242	Crunch	Dark	Physical	15	80	100%	II
+export const Crunch: MoveData<TraditionalBattle> = {
+  name: "Crunch",
+  description: "The user crunches up the target with sharp fangs. This may also lower the target's Defense stat.",
+  type: Types.Dark,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 80,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+  effect: {
+    type: "StatMod",
+    defense: -1,
+    probability: 2 / 10,
+  },
+} as const;
 // 243	Mirror Coat	Psychic	Special	20	—	100%	II
 // 244	Psych Up	Normal	Status	10	—	—	II
 // 245	Extreme Speed	Normal	Physical	5	80	100%	II
@@ -482,7 +2079,18 @@ export const Synthesis: MoveInfo = {
 // 325	Shadow Punch	Ghost	Physical	20	60	—	III
 // 326	Extrasensory	Psychic	Special	20*	80	100%	III
 // 327	Sky Uppercut	Fighting	Physical	15	85	90%	III
-// 328	Sand Tomb	Ground	Physical	15	35*	85%*	III
+export const SandTomb: MoveData<TraditionalBattle> = {
+  name: "Sand Tomb",
+  description: "The user traps the target inside a harshly raging sandstorm for four to five turns.",
+  type: Types.Ground,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 35,
+  accuracy: 85,
+  target: TC.Adjacent,
+  makesContact: false,
+  // TODO functionality
+} as const;
 // 329	Sheer Cold	Ice	Special	5	—	30%	III
 // 330	Muddy Water	Water	Special	10	90*	85%	III
 // 331	Bullet Seed	Grass	Physical	30	25*	100%	III
@@ -491,7 +2099,18 @@ export const Synthesis: MoveInfo = {
 // 334	Iron Defense	Steel	Status	15	—	—	III
 // 335	Block	Normal	Status	5	—	—	III
 // 336	Howl	Normal	Status	40	—	—	III
-// 337	Dragon Claw	Dragon	Physical	15	80	100%	III
+export const DragonClaw: MoveData<TraditionalBattle> = {
+  name: "Dragon Claw",
+  description: "The user slashes the target with huge sharp claws.",
+  type: Types.Dragon,
+  category: "Physical",
+  pp: 15,
+  power: 80,
+  accuracy: 100,
+  target: TC.Adjacent,
+  makesContact: true,
+} as const;
+
 // 338	Frenzy Plant	Grass	Special	5	150	90%	III
 // 339	Bulk Up	Fighting	Status	20	—	—	III
 // 340	Bounce	Flying	Physical	5	85	85%	III
@@ -542,20 +2161,20 @@ export const Synthesis: MoveInfo = {
 // 385	Guard Swap	Psychic	Status	10	—	—	IV
 // 386	Punishment	Dark	Physical	5	—	100%	IV
 // 387	Last Resort	Normal	Physical	5	140*	100%	IV
-export const WorrySeed: MoveInfo = {
+export const WorrySeed: MoveData<TraditionalBattle> = {
   name: "Worry Seed",
   description:
     "A seed that causes worry is planted on the target. It prevents sleep by making the target's Ability Insomnia.",
   type: Types.Grass,
-  damageCategory: "Status",
-  basePP: 10, // max 16
-  basePower: 0,
+  category: "Status",
+  pp: 10, // max 16
   priority: 0,
-  baseAccuracy: 100,
-  targetingCategory: TC.Adjacent,
+  accuracy: 100,
+  target: TC.Adjacent,
   makesContact: false,
+  effect: [] as MoveEffect<TraditionalBattle>[],
   // TODO functionality
-};
+} as const;
 // 389	Sucker Punch	Dark	Physical	5	70*	100%	IV
 // 390	Toxic Spikes	Poison	Status	20	—	—	IV
 // 391	Heart Swap	Psychic	Status	10	—	—	IV
@@ -569,22 +2188,34 @@ export const WorrySeed: MoveInfo = {
 // 399	Dark Pulse	Dark	Special	15	80	100%	IV
 // 400	Night Slash	Dark	Physical	15	70	100%	IV
 // 401	Aqua Tail	Water	Physical	10	90	90%	IV
-export const SeedBomb: MoveInfo = {
+export const SeedBomb: MoveData<TraditionalBattle> = {
   name: "Seed Bomb",
   description: "The user slams a barrage of hard-shelled seeds down on the target from above.",
   type: Types.Grass,
-  damageCategory: "Physical",
-  basePP: 15, // max 24
-  basePower: 80,
-  baseAccuracy: 100,
-  targetingCategory: TC.Adjacent,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 80,
+  accuracy: 100,
+  target: TC.Adjacent,
   makesContact: false,
-};
+} as const;
 // 403	Air Slash	Flying	Special	15*	75	95%	IV
 // 404	X-Scissor	Bug	Physical	15	80	100%	IV
 // 405	Bug Buzz	Bug	Special	10	90	100%	IV
 // 406	Dragon Pulse	Dragon	Special	10	85*	100%	IV
-// 407	Dragon Rush	Dragon	Physical	10	100	75%	IV
+export const DragonRush: MoveData<TraditionalBattle> = {
+  name: "Dragon Rush",
+  description:
+    "The user tackles the target while exhibiting overwhelming menace. This may also make the target flinch.",
+  type: Types.Dragon,
+  category: "Physical",
+  pp: 10, // max 16
+  power: 100,
+  accuracy: 75,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO functionality
+} as const;
 // 408	Power Gem	Rock	Special	20	80*	100%	IV
 // 409	Drain Punch	Fighting	Physical	10*	75*	100%	IV
 // 410	Vacuum Wave	Fighting	Special	30	40	100%	IV
@@ -700,14 +2331,41 @@ export const SeedBomb: MoveInfo = {
 // 520	Grass Pledge	Grass	Special	10	80*	100%	V
 // 521	Volt Switch	Electric	Special	20	70	100%	V
 // 522	Struggle Bug	Bug	Special	20	50*	100%	V
-// 523	Bulldoze	Ground	Physical	20	60	100%	V
+export const Bulldoze: MoveData<TraditionalBattle> = {
+  name: "Bulldoze",
+  description:
+    "The user tramples its target into the ground, dealing damage. This also lowers the target's action speed.",
+  type: Types.Ground,
+  category: "Physical",
+  pp: 20,
+  power: 60,
+  accuracy: 100,
+  target: TC.All | TC.Adjacent,
+  makesContact: false,
+  effect: {
+    type: "StatMod",
+    speed: -1,
+  },
+} as const;
+
 // 524	Frost Breath	Ice	Special	10	60*	90%	V
 // 525	Dragon Tail	Dragon	Physical	10	60	90%	V
 // 526	Work Up	Normal	Status	30	—	—	V
 // 527	Electroweb	Electric	Special	15	55	95%	V
 // 528	Wild Charge	Electric	Physical	15	90	100%	V
 // 529	Drill Run	Ground	Physical	10	80	95%	V
-// 530	Dual Chop	Dragon	Physical	15	40	90%	V
+export const DualChop: MoveData<TraditionalBattle> = {
+  name: "Dual Chop",
+  description: "The user attacks its target by hitting it with brutal strikes. The target is hit twice in a row.",
+  type: Types.Dragon,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 80,
+  accuracy: 90,
+  target: TC.Adjacent,
+  makesContact: true,
+  // TODO multihit
+} as const;
 // 531	Heart Stamp	Psychic	Physical	25	60	100%	V
 // 532	Horn Leech	Grass	Physical	10	75	100%	V
 // 533	Sacred Sword	Fighting	Physical	15*	90	100%	V
@@ -1028,21 +2686,3 @@ export const SeedBomb: MoveInfo = {
 // 848	Sandsear Storm	Ground	Special	5	95	80	VIII
 // 849	Lunar Blessing	Psychic	Status	10	—	—	VIII
 // 850	Take Heart	Psychic	Status	10	—	—	VIII
-
-export default {
-  VineWhip,
-  Tackle,
-  TakeDown,
-  DoubleEdge,
-  Growl,
-  LeechSeed,
-  Growth,
-  RazorLeaf,
-  SolarBeam,
-  PoisonPowder,
-  SleepPowder,
-  SweetScent,
-  Synthesis,
-  WorrySeed,
-  SeedBomb,
-};

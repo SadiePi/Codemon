@@ -1,10 +1,12 @@
 import { assertEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
+import { spawn } from "../src/base/index.ts";
 
-import { chompy } from "./common.ts";
+import { iChompy } from "./common.ts";
 
 Deno.test({
   name: "Bulbapedia/Stat - Example 2",
   fn: () => {
+    const chompy = spawn(iChompy);
     chompy.stats.defense.modifyStage(2);
     console.log(chompy.toString());
     assertEquals(chompy.stats.hp.value(), 289);

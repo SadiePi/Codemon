@@ -1,11 +1,12 @@
 import { Species } from "../core/index.ts";
-import Moves from "./moves.ts";
-import Type from "./types.ts";
-import Experience from "./experience.ts";
+import * as Moves from "./moves.ts";
+import * as Types from "./types.ts";
+import * as Experience from "./experience.ts";
+import { TraditionalBattle } from "./index.ts";
 
-export const Bulbasaur: Species = {
+export const Bulbasaur: Species<TraditionalBattle> = {
   name: "Bulbasaur",
-  types: [Type.Grass, Type.Poison],
+  types: [Types.Grass, Types.Poison],
   sexRatio: 1 / 8,
   catchRate: 45,
   eggCycles: 21, // 5397 / 257
@@ -41,10 +42,10 @@ export const Bulbasaur: Species = {
 };
 // ivysaur, venusaur, ...
 
-export const Garchomp: Species = {
+export const Garchomp: Species<TraditionalBattle> = {
   name: "Garchomp",
   //graphics: Graphics,
-  types: [Type.Dragon, Type.Ground],
+  types: [Types.Dragon, Types.Ground],
   //normalAbility1: Ability,
   //normalAbility2: Ability,
   //specialAbility: Ability,
@@ -71,45 +72,15 @@ export const Garchomp: Species = {
     attack: 3,
   },
   learnset: {
-    evolution: [
-      /*Moves.Crunch*/
-    ],
-    1: [
-      /*Moves.Crunch,*/
-      /*Moves.DualChop,*/
-      /*Moves.SandTomb,*/
-      /*Moves.Tackle,*/
-      /*Moves.SandAttack,*/
-      /*Moves.DragonBreath*/
-    ],
-    18: [
-      /*Moves.Bulldoze*/
-    ],
-    27: [
-      /*Moves.Bite*/
-    ],
-    34: [
-      /*Moves.Slash*/
-    ],
-    42: [
-      /*Moves.DragonClaw*/
-    ],
-    52: [
-      /*Moves.Dig*/
-    ],
-    62: [
-      /*Moves.Sandstorm*/
-    ],
-    72: [
-      /*Moves.TakeDown*/
-    ],
-    82: [
-      /*Moves.DragonRush*/
-    ],
+    evolution: [Moves.Crunch],
+    1: [Moves.Crunch, Moves.DualChop, Moves.SandTomb, Moves.Tackle, Moves.SandAttack, Moves.DragonBreath],
+    18: [Moves.Bulldoze],
+    27: [Moves.Bite],
+    34: [Moves.Slash],
+    42: [Moves.DragonClaw],
+    52: [Moves.Dig],
+    62: [Moves.Sandstorm],
+    72: [Moves.TakeDown],
+    82: [Moves.DragonRush],
   },
-};
-
-export default {
-  Bulbasaur,
-  Garchomp,
 };

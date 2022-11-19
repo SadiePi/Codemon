@@ -2,8 +2,7 @@ import { ExperienceGroup } from "../core/experience.ts";
 
 export const Slow: ExperienceGroup = (l: number) => (5 * Math.pow(l, 3)) / 4;
 
-export const MedSlow: ExperienceGroup = (l: number) =>
-  (6 * Math.pow(l, 3)) / 5 - 15 * Math.pow(l, 2) + 100 * l - 140;
+export const MedSlow: ExperienceGroup = (l: number) => (6 * Math.pow(l, 3)) / 5 - 15 * Math.pow(l, 2) + 100 * l - 140;
 
 export const MedFast: ExperienceGroup = (l: number) => Math.pow(l, 3);
 
@@ -22,13 +21,4 @@ export const Fluctuating: ExperienceGroup = function (l: number) {
   if (l <= 36) return (Math.pow(l, 3) * (l + 14)) / 50;
   if (l <= 100) return (Math.pow(l, 3) * (l / 2 + 32)) / 50;
   return Number.POSITIVE_INFINITY;
-};
-
-export default {
-  Slow,
-  MedSlow,
-  MedFast,
-  Fast,
-  Erratic,
-  Fluctuating,
 };
