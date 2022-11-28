@@ -7,10 +7,9 @@ export * from "./item.ts";
 export * from "./mod.ts";
 export * from "./move.ts";
 export * from "./nature.ts";
-export * from "./sex.ts";
+export * from "./gender.ts";
 export * from "./species.ts";
 export * from "./stats.ts";
-export * from "./status.ts";
 export * from "./type.ts";
 
 import { Load } from "./mod.ts";

@@ -1,6 +1,6 @@
 // temporarily...
 // deno-lint-ignore-file no-empty-interface
-interface Item {
+export interface Item {
   name: string;
   description: string;
   price: number;

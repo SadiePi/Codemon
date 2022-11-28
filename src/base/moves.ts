@@ -1,11 +1,11 @@
-import { MoveData, MoveEffect, TC, TraditionalBattle } from "./index.ts";
+import { MoveData, MoveEffect, TC } from "./index.ts";
 import * as Types from "./types.ts";
 import * as Status from "./status.ts";
 
 // https://bulbapedia.bulbagarden.net/wiki/List_of_moves
-// TODOs: multi-turn moves, payday, raw damage, instakill, roar/whirlwind, move restrictions, mist, hp transfer,
+// TODOs: multi-turn moves, payday, roar/whirlwind, move restrictions, mist,
 
-export const Pound: MoveData<TraditionalBattle> = {
+export const Pound: MoveData = {
   name: "Pound",
   description: "The target is physically pounded with a long tail, a foreleg, or the like.",
   type: Types.Normal,
@@ -13,11 +13,11 @@ export const Pound: MoveData<TraditionalBattle> = {
   pp: 35,
   power: 40,
   accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
 } as const;
 
-export const KarateChop: MoveData<TraditionalBattle> = {
+export const KarateChop: MoveData = {
   name: "Karate Chop",
   description: "The target is attacked with a sharp chop. Critical hits land more easily.",
   type: Types.Fighting,
@@ -30,7 +30,7 @@ export const KarateChop: MoveData<TraditionalBattle> = {
   criticalHitStage: 1,
 } as const;
 
-export const DoubleSlap: MoveData<TraditionalBattle> = {
+export const DoubleSlap: MoveData = {
   name: "Double Slap",
   description: "The target is slapped repeatedly, back and forth, two to five times in a row.",
   type: Types.Normal,
@@ -42,7 +42,7 @@ export const DoubleSlap: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const CometPunch: MoveData<TraditionalBattle> = {
+export const CometPunch: MoveData = {
   name: "Comet Punch",
   description: "The target is hit with a flurry of punches that strike two to five times in a row.",
   type: Types.Normal,
@@ -61,7 +61,7 @@ export const CometPunch: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const MegaPunch: MoveData<TraditionalBattle> = {
+export const MegaPunch: MoveData = {
   name: "Mega Punch",
   description: "The target is slugged by a punch thrown with muscle-packed power.",
   type: Types.Normal,
@@ -73,7 +73,7 @@ export const MegaPunch: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const PayDay: MoveData<TraditionalBattle> = {
+export const PayDay: MoveData = {
   name: "Pay Day",
   description: "Numerous coins are hurled at the target to inflict damage. Money is earned after the battle.",
   type: Types.Normal,
@@ -86,7 +86,7 @@ export const PayDay: MoveData<TraditionalBattle> = {
   // TODO somehow
 } as const;
 
-export const FirePunch: MoveData<TraditionalBattle> = {
+export const FirePunch: MoveData = {
   name: "Fire Punch",
   description: "The target is punched with a fiery fist. This may also leave the target with a burn.",
   type: Types.Fire,
@@ -103,7 +103,7 @@ export const FirePunch: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const IcePunch: MoveData<TraditionalBattle> = {
+export const IcePunch: MoveData = {
   name: "Ice Punch",
   description: "The target is punched with an icy fist. This may also leave the target frozen.",
   type: Types.Ice,
@@ -120,7 +120,7 @@ export const IcePunch: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const ThunderPunch: MoveData<TraditionalBattle> = {
+export const ThunderPunch: MoveData = {
   name: "Thunder Punch",
   description: "The target is punched with an electrified fist. This may also leave the target with paralysis.",
   type: Types.Electric,
@@ -137,7 +137,7 @@ export const ThunderPunch: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Scratch: MoveData<TraditionalBattle> = {
+export const Scratch: MoveData = {
   name: "Scratch",
   description: "Hard, pointed, sharp claws rake the target to inflict damage.",
   type: Types.Normal,
@@ -149,7 +149,7 @@ export const Scratch: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const ViseGrip: MoveData<TraditionalBattle> = {
+export const ViseGrip: MoveData = {
   name: "Vise Grip",
   description: "The target is gripped and squeezed from both sides to inflict damage.",
   type: Types.Normal,
@@ -161,7 +161,7 @@ export const ViseGrip: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const Guillotine: MoveData<TraditionalBattle> = {
+export const Guillotine: MoveData = {
   name: "Guillotine",
   description: "A vicious, tearing attack with big pincers. The target faints instantly if this attack hits.",
   type: Types.Normal,
@@ -171,10 +171,12 @@ export const Guillotine: MoveData<TraditionalBattle> = {
   accuracy: 90,
   target: TC.Adjacent,
   makesContact: true,
-  // TODO somehow
+  effect: {
+    type: "Faint",
+  },
 } as const;
 
-export const RazorWind: MoveData<TraditionalBattle> = {
+export const RazorWind: MoveData = {
   name: "Razor Wind",
   description:
     "In this two-turn attack, blades of wind hit opposing Pokémon on the second turn. Critical hits land more easily.",
@@ -189,7 +191,7 @@ export const RazorWind: MoveData<TraditionalBattle> = {
   // TODO somehow
 } as const;
 
-export const SwordsDance: MoveData<TraditionalBattle> = {
+export const SwordsDance: MoveData = {
   name: "Swords Dance",
   description: "A frenetic dance to uplift the fighting spirit. This sharply raises the user's Attack stat.",
   type: Types.Normal,
@@ -203,7 +205,7 @@ export const SwordsDance: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Cut: MoveData<TraditionalBattle> = {
+export const Cut: MoveData = {
   name: "Cut",
   description: "The target is cut with a scythe or claw.",
   type: Types.Normal,
@@ -215,7 +217,7 @@ export const Cut: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const Gust: MoveData<TraditionalBattle> = {
+export const Gust: MoveData = {
   name: "Gust",
   description: "A gust of wind is whipped up by wings and launched at the target to inflict damage.",
   type: Types.Flying,
@@ -228,7 +230,7 @@ export const Gust: MoveData<TraditionalBattle> = {
   // TODO during Fly, double power
 } as const;
 
-export const WingAttack: MoveData<TraditionalBattle> = {
+export const WingAttack: MoveData = {
   name: "Wing Attack",
   description: "The target is struck with large, imposing wings spread wide to inflict damage.",
   type: Types.Flying,
@@ -240,7 +242,7 @@ export const WingAttack: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const Whirlwind: MoveData<TraditionalBattle> = {
+export const Whirlwind: MoveData = {
   name: "Whirlwind",
   description:
     "The target is blown away, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",
@@ -249,11 +251,10 @@ export const Whirlwind: MoveData<TraditionalBattle> = {
   pp: 20,
   target: TC.Adjacent,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
-  // TODO somehow
+  effect: { type: "Eject" },
 } as const;
 
-export const Fly: MoveData<TraditionalBattle> = {
+export const Fly: MoveData = {
   name: "Fly",
   description: "The user flies up into the sky and then strikes its target on the next turn.",
   type: Types.Flying,
@@ -266,7 +267,7 @@ export const Fly: MoveData<TraditionalBattle> = {
   // TODO somehow
 } as const;
 
-export const Bind: MoveData<TraditionalBattle> = {
+export const Bind: MoveData = {
   name: "Bind",
   description:
     "Things such as long bodies or tentacles are used to bind and squeeze the target for four to five turns.",
@@ -280,7 +281,7 @@ export const Bind: MoveData<TraditionalBattle> = {
   // TODO details
 } as const;
 
-export const Slam: MoveData<TraditionalBattle> = {
+export const Slam: MoveData = {
   name: "Slam",
   description: "The target is slammed with a long tail, vines, or the like to inflict damage.",
   type: Types.Normal,
@@ -292,7 +293,7 @@ export const Slam: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const VineWhip: MoveData<TraditionalBattle> = {
+export const VineWhip: MoveData = {
   name: "Vine Whip",
   description: "The target is struck with slender, whiplike vines to inflict damage.",
   type: Types.Grass,
@@ -304,7 +305,7 @@ export const VineWhip: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const Stomp: MoveData<TraditionalBattle> = {
+export const Stomp: MoveData = {
   name: "Stomp",
   description: "The target is stomped with a big foot. This may also make the target flinch.",
   type: Types.Normal,
@@ -321,7 +322,7 @@ export const Stomp: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const DoubleKick: MoveData<TraditionalBattle> = {
+export const DoubleKick: MoveData = {
   name: "Double Kick",
   description: "The target is quickly kicked twice in succession using both feet.",
   type: Types.Fighting,
@@ -334,7 +335,7 @@ export const DoubleKick: MoveData<TraditionalBattle> = {
   hitAgain: h => h < 2,
 } as const;
 
-export const MegaKick: MoveData<TraditionalBattle> = {
+export const MegaKick: MoveData = {
   name: "Mega Kick",
   description: "The target is attacked by a kick launched with muscle-packed power.",
   type: Types.Normal,
@@ -346,7 +347,7 @@ export const MegaKick: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const JumpKick: MoveData<TraditionalBattle> = {
+export const JumpKick: MoveData = {
   name: "Jump Kick",
   description: "The user jumps up high, then strikes with a kick. If the kick misses, the user hurts itself.",
   type: Types.Fighting,
@@ -359,7 +360,7 @@ export const JumpKick: MoveData<TraditionalBattle> = {
   crash: t => Math.floor(t.stats.hp.value() / 2),
 } as const;
 
-export const RollingKick: MoveData<TraditionalBattle> = {
+export const RollingKick: MoveData = {
   name: "Rolling Kick",
   description: "The user lashes out with a quick, spinning kick. This may also make the target flinch.",
   type: Types.Fighting,
@@ -376,7 +377,7 @@ export const RollingKick: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const SandAttack: MoveData<TraditionalBattle> = {
+export const SandAttack: MoveData = {
   name: "Sand Attack",
   description: "Sand is hurled in the target's face, reducing the target's accuracy.",
   type: Types.Ground,
@@ -391,7 +392,7 @@ export const SandAttack: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Headbutt: MoveData<TraditionalBattle> = {
+export const Headbutt: MoveData = {
   name: "Headbutt",
   description:
     "The user sticks out its head and attacks by charging straight into the target. This may also make the target flinch.",
@@ -409,7 +410,7 @@ export const Headbutt: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const HornAttack: MoveData<TraditionalBattle> = {
+export const HornAttack: MoveData = {
   name: "Horn Attack",
   description: "The target is jabbed with a sharply pointed horn to inflict damage.",
   type: Types.Normal,
@@ -421,7 +422,7 @@ export const HornAttack: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const FuryAttack: MoveData<TraditionalBattle> = {
+export const FuryAttack: MoveData = {
   name: "Fury Attack",
   description: "The target is jabbed repeatedly with a horn or beak two to five times in a row.",
   type: Types.Normal,
@@ -440,7 +441,7 @@ export const FuryAttack: MoveData<TraditionalBattle> = {
   },
 };
 
-export const HornDrill: MoveData<TraditionalBattle> = {
+export const HornDrill: MoveData = {
   name: "Horn Drill",
   description:
     "The user stabs the target with a horn that rotates like a drill. The target faints instantly if this attack hits.",
@@ -454,7 +455,7 @@ export const HornDrill: MoveData<TraditionalBattle> = {
   // TODO somehow
 } as const;
 
-export const Tackle: MoveData<TraditionalBattle> = {
+export const Tackle: MoveData = {
   name: "Tackle",
   description: "A physical attack in which the user charges and slams into the target with its whole body.",
   type: Types.Normal,
@@ -466,7 +467,7 @@ export const Tackle: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const BodySlam: MoveData<TraditionalBattle> = {
+export const BodySlam: MoveData = {
   name: "Body Slam",
   description:
     "The user drops onto the target with its full body weight. This may also leave the target with paralysis.",
@@ -484,7 +485,7 @@ export const BodySlam: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Wrap: MoveData<TraditionalBattle> = {
+export const Wrap: MoveData = {
   name: "Wrap",
   description: "A long body, vines, or the like are used to wrap and squeeze the target for four to five turns.",
   type: Types.Normal,
@@ -497,7 +498,7 @@ export const Wrap: MoveData<TraditionalBattle> = {
   // TODO functionality
 };
 
-export const TakeDown: MoveData<TraditionalBattle> = {
+export const TakeDown: MoveData = {
   name: "Take Down",
   description: "A reckless, full-body charge attack for slamming into the target. This also damages the user a little.",
   type: Types.Normal,
@@ -510,7 +511,7 @@ export const TakeDown: MoveData<TraditionalBattle> = {
   recoil: 1 / 4,
 } as const;
 
-export const Thrash: MoveData<TraditionalBattle> = {
+export const Thrash: MoveData = {
   name: "Thrash",
   description: "The user rampages and attacks for two to three turns. The user then becomes confused.",
   type: Types.Normal,
@@ -526,7 +527,7 @@ export const Thrash: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const DoubleEdge: MoveData<TraditionalBattle> = {
+export const DoubleEdge: MoveData = {
   name: "Double-Edge",
   description:
     "A reckless, life-risking tackle in which the user rushes the target. This also damages the user quite a lot.",
@@ -540,7 +541,7 @@ export const DoubleEdge: MoveData<TraditionalBattle> = {
   recoil: 1 / 4,
 } as const;
 
-export const TailWhip: MoveData<TraditionalBattle> = {
+export const TailWhip: MoveData = {
   name: "Tail Whip",
   description: "The user wags its tail cutely, making opposing Pokémon less wary and lowering their Defense stats.",
   type: Types.Normal,
@@ -555,7 +556,7 @@ export const TailWhip: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const PoisonSting: MoveData<TraditionalBattle> = {
+export const PoisonSting: MoveData = {
   name: "Poison Sting",
   description: "The user stabs the target with a poisonous stinger. This may also poison the target.",
   type: Types.Poison,
@@ -572,7 +573,7 @@ export const PoisonSting: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Twineedle: MoveData<TraditionalBattle> = {
+export const Twineedle: MoveData = {
   name: "Twineedle",
   description:
     "The user damages the target twice in succession by jabbing it with two spikes. This may also poison the target.",
@@ -591,7 +592,7 @@ export const Twineedle: MoveData<TraditionalBattle> = {
 } as const;
 
 // Note: this move works differently in Legends: Arceus but I don't care.
-export const PinMissle: MoveData<TraditionalBattle> = {
+export const PinMissle: MoveData = {
   name: "Pin Missile",
   description: "Sharp spikes are shot at the target in rapid succession. They hit two to five times in a row.",
   type: Types.Bug,
@@ -610,7 +611,7 @@ export const PinMissle: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Leer: MoveData<TraditionalBattle> = {
+export const Leer: MoveData = {
   name: "Leer",
   description: "The user gives opposing Pokémon an intimidating leer that lowers the Defense stat.",
   type: Types.Normal,
@@ -625,7 +626,7 @@ export const Leer: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Bite: MoveData<TraditionalBattle> = {
+export const Bite: MoveData = {
   name: "Bite",
   description: "The target is bitten with viciously sharp fangs. This may also make the target flinch.",
   type: Types.Dark,
@@ -642,7 +643,7 @@ export const Bite: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Growl: MoveData<TraditionalBattle> = {
+export const Growl: MoveData = {
   name: "Growl",
   description:
     "The user growls in an endearing way, making opposing Pokémon less wary. This lowers their Attack stats.",
@@ -658,7 +659,7 @@ export const Growl: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Roar: MoveData<TraditionalBattle> = {
+export const Roar: MoveData = {
   name: "Roar",
   description:
     "The target is scared off, and a different Pokémon is dragged out. In the wild, this ends a battle against a single opponent.",
@@ -669,14 +670,10 @@ export const Roar: MoveData<TraditionalBattle> = {
   priority: -6,
   target: TC.Adjacent,
   makesContact: false,
-  // effect: {
-  //   type: "Status",
-  //   status: Status.Roared,
-  // },
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: { type: "Eject" },
 } as const;
 
-export const Sing: MoveData<TraditionalBattle> = {
+export const Sing: MoveData = {
   name: "Sing",
   description: "A soothing lullaby is sung in a calming voice that puts the target into a deep slumber.",
   type: Types.Normal,
@@ -691,7 +688,7 @@ export const Sing: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Supersonic: MoveData<TraditionalBattle> = {
+export const Supersonic: MoveData = {
   name: "Supersonic",
   description: "The user generates odd sound waves from its body that confuse the target.",
   type: Types.Normal,
@@ -706,7 +703,7 @@ export const Supersonic: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const SonicBoom: MoveData<TraditionalBattle> = {
+export const SonicBoom: MoveData = {
   name: "Sonic Boom",
   description: "The target is hit with a destructive shock wave that always inflicts 20 HP damage.",
   type: Types.Normal,
@@ -716,14 +713,13 @@ export const SonicBoom: MoveData<TraditionalBattle> = {
   accuracy: 90,
   target: TC.Adjacent,
   makesContact: false,
-  // effect: {
-  //   type: "Damage",
-  //   damage: 20,
-  // }
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: {
+    type: "HP",
+    hp: 20,
+  },
 } as const;
 
-export const Disable: MoveData<TraditionalBattle> = {
+export const Disable: MoveData = {
   name: "Disable",
   description: "For four turns, this move prevents the target from using the move it last used.",
   type: Types.Normal,
@@ -738,7 +734,7 @@ export const Disable: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Acid: MoveData<TraditionalBattle> = {
+export const Acid: MoveData = {
   name: "Acid",
   description: "Opposing Pokémon are attacked with a spray of harsh acid. This may also lower their Sp. Def stats.",
   type: Types.Poison,
@@ -755,7 +751,7 @@ export const Acid: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Ember: MoveData<TraditionalBattle> = {
+export const Ember: MoveData = {
   name: "Ember",
   description: "The target is attacked with small flames. This may also leave the target with a burn.",
   type: Types.Fire,
@@ -772,7 +768,7 @@ export const Ember: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Flamethrower: MoveData<TraditionalBattle> = {
+export const Flamethrower: MoveData = {
   name: "Flamethrower",
   description: "The target is scorched with an intense blast of fire. This may also leave the target with a burn.",
   type: Types.Fire,
@@ -789,7 +785,7 @@ export const Flamethrower: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Mist: MoveData<TraditionalBattle> = {
+export const Mist: MoveData = {
   name: "Mist",
   description:
     "The user cloaks itself and its allies in a white mist that prevents any of their stats from being lowered for five turns.",
@@ -803,10 +799,10 @@ export const Mist: MoveData<TraditionalBattle> = {
   //   type: "Status",
   //   status: Status.Mist,
   // },
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
 } as const;
 
-export const WaterGun: MoveData<TraditionalBattle> = {
+export const WaterGun: MoveData = {
   name: "Water Gun",
   description: "The target is blasted with a forceful shot of water.",
   type: Types.Water,
@@ -818,7 +814,7 @@ export const WaterGun: MoveData<TraditionalBattle> = {
   makesContact: false,
 } as const;
 
-export const HydroPump: MoveData<TraditionalBattle> = {
+export const HydroPump: MoveData = {
   name: "Hydro Pump",
   description: "The target is blasted by a huge volume of water launched under great pressure.",
   type: Types.Water,
@@ -830,7 +826,7 @@ export const HydroPump: MoveData<TraditionalBattle> = {
   makesContact: false,
 } as const;
 
-export const Surf: MoveData<TraditionalBattle> = {
+export const Surf: MoveData = {
   name: "Surf",
   description: "The user attacks everything around it by swamping its surroundings with a giant wave.",
   type: Types.Water,
@@ -842,7 +838,7 @@ export const Surf: MoveData<TraditionalBattle> = {
   makesContact: false,
 } as const;
 
-export const IceBeam: MoveData<TraditionalBattle> = {
+export const IceBeam: MoveData = {
   name: "Ice Beam",
   description: "The target is struck with an icy-cold beam of energy. This may also leave the target frozen.",
   type: Types.Ice,
@@ -859,7 +855,7 @@ export const IceBeam: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Blizzard: MoveData<TraditionalBattle> = {
+export const Blizzard: MoveData = {
   name: "Blizzard",
   description:
     "A howling blizzard is summoned to strike opposing Pokémon. This may also leave the opposing Pokémon frozen.",
@@ -877,7 +873,7 @@ export const Blizzard: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Psybeam: MoveData<TraditionalBattle> = {
+export const Psybeam: MoveData = {
   name: "Psybeam",
   description: "The target is attacked with a peculiar ray. This may also leave the target confused.",
   type: Types.Psychic,
@@ -894,7 +890,7 @@ export const Psybeam: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const BubbleBeam: MoveData<TraditionalBattle> = {
+export const BubbleBeam: MoveData = {
   name: "Bubble Beam",
   description: "A spray of bubbles is forcefully ejected at the target. This may also lower the target's Speed stat.",
   type: Types.Water,
@@ -911,7 +907,7 @@ export const BubbleBeam: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const AuroraBeam: MoveData<TraditionalBattle> = {
+export const AuroraBeam: MoveData = {
   name: "Aurora Beam",
   description: "The target is hit with a rainbow-colored beam. This may also lower the target's Attack stat.",
   type: Types.Ice,
@@ -928,7 +924,7 @@ export const AuroraBeam: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const HyperBeam: MoveData<TraditionalBattle> = {
+export const HyperBeam: MoveData = {
   name: "Hyper Beam",
   description: "The target is attacked with a powerful beam. The user can't move on the next turn.",
   type: Types.Normal,
@@ -938,11 +934,11 @@ export const HyperBeam: MoveData<TraditionalBattle> = {
   accuracy: 90,
   target: TC.Adjacent,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const Peck: MoveData<TraditionalBattle> = {
+export const Peck: MoveData = {
   name: "Peck",
   description: "The target is jabbed with a sharply pointed beak or horn.",
   type: Types.Flying,
@@ -954,7 +950,7 @@ export const Peck: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const DrillPeck: MoveData<TraditionalBattle> = {
+export const DrillPeck: MoveData = {
   name: "Drill Peck",
   description: "A corkscrewing attack that strikes the target with a sharp beak acting as a drill.",
   type: Types.Flying,
@@ -966,7 +962,7 @@ export const DrillPeck: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const Submission: MoveData<TraditionalBattle> = {
+export const Submission: MoveData = {
   name: "Submission",
   description: "The user grabs the target and recklessly dives for the ground. This also damages the user a little.",
   type: Types.Fighting,
@@ -979,7 +975,7 @@ export const Submission: MoveData<TraditionalBattle> = {
   recoil: 1 / 4,
 } as const;
 
-export const LowKick: MoveData<TraditionalBattle> = {
+export const LowKick: MoveData = {
   name: "Low Kick",
   description:
     "A powerful low kick that makes the target fall over. The heavier the target, the greater the move's power.",
@@ -993,7 +989,7 @@ export const LowKick: MoveData<TraditionalBattle> = {
   // TODO somehow
 } as const;
 
-export const Counter: MoveData<TraditionalBattle> = {
+export const Counter: MoveData = {
   name: "Counter",
   description: "A retaliation move that counters any physical attack, inflicting double the damage taken.",
   type: Types.Fighting,
@@ -1007,7 +1003,7 @@ export const Counter: MoveData<TraditionalBattle> = {
   // TODO somehow
 } as const;
 
-export const SeismicToss: MoveData<TraditionalBattle> = {
+export const SeismicToss: MoveData = {
   name: "Seismic Toss",
   description: "The target is thrown using the power of gravity. It inflicts damage equal to the user's level.",
   type: Types.Fighting,
@@ -1020,7 +1016,7 @@ export const SeismicToss: MoveData<TraditionalBattle> = {
   // TODO somehow
 } as const;
 
-export const Strength: MoveData<TraditionalBattle> = {
+export const Strength: MoveData = {
   name: "Strength",
   description: "The target is slugged with a punch thrown at maximum power.",
   type: Types.Normal,
@@ -1032,7 +1028,7 @@ export const Strength: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const Absorb: MoveData<TraditionalBattle> = {
+export const Absorb: MoveData = {
   name: "Absorb",
   description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
   type: Types.Grass,
@@ -1046,10 +1042,10 @@ export const Absorb: MoveData<TraditionalBattle> = {
   //   type: "Heal",
   //   amount: 1 / 2,
   // },
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
 } as const;
 
-export const MegaDrain: MoveData<TraditionalBattle> = {
+export const MegaDrain: MoveData = {
   name: "Mega Drain",
   description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
   type: Types.Grass,
@@ -1059,14 +1055,13 @@ export const MegaDrain: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.Adjacent,
   makesContact: false,
-  // effect: {
-  //   type: "Heal",
-  //   amount: 1 / 2,
-  // },
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: {
+    type: "Leech",
+    ratio: 1 / 2,
+  },
 } as const;
 
-export const LeechSeed: MoveData<TraditionalBattle> = {
+export const LeechSeed: MoveData = {
   name: "Leech Seed",
   description: "A seed is planted on the target. It steals some HP from the target every turn.",
   type: Types.Grass,
@@ -1081,7 +1076,7 @@ export const LeechSeed: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Growth: MoveData<TraditionalBattle> = {
+export const Growth: MoveData = {
   name: "Growth",
   description: "The user's body grows all at once, raising the Attack and Sp. Atk stats.",
   type: Types.Normal,
@@ -1097,7 +1092,7 @@ export const Growth: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const RazorLeaf: MoveData<TraditionalBattle> = {
+export const RazorLeaf: MoveData = {
   name: "Razor Leaf",
   description: "Sharp-edged leaves are launched to slash at opposing Pokémon. Critical hits land more easily.",
   type: Types.Grass,
@@ -1110,7 +1105,7 @@ export const RazorLeaf: MoveData<TraditionalBattle> = {
   criticalHitStage: 1,
 } as const;
 
-export const SolarBeam: MoveData<TraditionalBattle> = {
+export const SolarBeam: MoveData = {
   name: "Solar Beam",
   description: "In this two-turn attack, the user gathers light, then blasts a bundled beam on the next turn.",
   type: Types.Grass,
@@ -1123,7 +1118,7 @@ export const SolarBeam: MoveData<TraditionalBattle> = {
   // TODO functionality
 } as const;
 
-export const PoisonPowder: MoveData<TraditionalBattle> = {
+export const PoisonPowder: MoveData = {
   name: "Poison Powder",
   description: "The user scatters a cloud of poisonous dust that poisons the target.",
   type: Types.Poison,
@@ -1138,7 +1133,7 @@ export const PoisonPowder: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const StunSpore: MoveData<TraditionalBattle> = {
+export const StunSpore: MoveData = {
   name: "Stun Spore",
   description: "The user scatters a cloud of numbing powder that paralyzes the target.",
   type: Types.Grass,
@@ -1153,7 +1148,7 @@ export const StunSpore: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const SleepPowder: MoveData<TraditionalBattle> = {
+export const SleepPowder: MoveData = {
   name: "Sleep Powder",
   description: "The user scatters a big cloud of sleep-inducing dust around the target.",
   type: Types.Grass,
@@ -1168,7 +1163,7 @@ export const SleepPowder: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const PetalDance: MoveData<TraditionalBattle> = {
+export const PetalDance: MoveData = {
   name: "Petal Dance",
   description: "The user attacks the target with sharp petals that land on the target.",
   type: Types.Grass,
@@ -1181,7 +1176,7 @@ export const PetalDance: MoveData<TraditionalBattle> = {
   // TODO functionality
 } as const;
 
-export const StringShot: MoveData<TraditionalBattle> = {
+export const StringShot: MoveData = {
   name: "String Shot",
   description: "Opposing Pokémon are bound with silk blown from the user's mouth that harshly lowers the Speed stat.",
   type: Types.Bug,
@@ -1196,7 +1191,7 @@ export const StringShot: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const DragonRage: MoveData<TraditionalBattle> = {
+export const DragonRage: MoveData = {
   name: "Dragon Rage",
   description: "This attack hits the target with a shock wave of pure rage. This attack always inflicts 40 HP damage.",
   type: Types.Dragon,
@@ -1206,13 +1201,13 @@ export const DragonRage: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.Adjacent,
   makesContact: false,
-  // effect: {
-  //   type: "Damage",
-  //   damage: 40,
-  // },
+  effect: {
+    type: "HP",
+    hp: -40,
+  },
 } as const;
 
-export const FireSpin: MoveData<TraditionalBattle> = {
+export const FireSpin: MoveData = {
   name: "Fire Spin",
   description: "The target becomes trapped within a fierce vortex of fire that rages for four to five turns.",
   type: Types.Fire,
@@ -1225,7 +1220,7 @@ export const FireSpin: MoveData<TraditionalBattle> = {
   // TODO functionality
 } as const;
 
-export const ThunderShock: MoveData<TraditionalBattle> = {
+export const ThunderShock: MoveData = {
   name: "Thunder Shock",
   description:
     "A jolt of electricity crashes down on the target to inflict damage. This may also leave the target with paralysis.",
@@ -1243,7 +1238,7 @@ export const ThunderShock: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Thunderbolt: MoveData<TraditionalBattle> = {
+export const Thunderbolt: MoveData = {
   name: "Thunderbolt",
   description: "A strong electric blast crashes down on the target. This may also leave the target with paralysis.",
   type: Types.Electric,
@@ -1260,7 +1255,7 @@ export const Thunderbolt: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const ThunderWave: MoveData<TraditionalBattle> = {
+export const ThunderWave: MoveData = {
   name: "Thunder Wave",
   description: "The user launches a weak jolt of electricity that paralyzes the target.",
   type: Types.Electric,
@@ -1275,7 +1270,7 @@ export const ThunderWave: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Thunder: MoveData<TraditionalBattle> = {
+export const Thunder: MoveData = {
   name: "Thunder",
   description:
     "A wicked thunderbolt is dropped on the target to inflict damage. This may also leave the target with paralysis.",
@@ -1293,7 +1288,7 @@ export const Thunder: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const RockThrow: MoveData<TraditionalBattle> = {
+export const RockThrow: MoveData = {
   name: "Rock Throw",
   description: "The user picks up and throws a small rock at the target to attack.",
   type: Types.Rock,
@@ -1305,7 +1300,7 @@ export const RockThrow: MoveData<TraditionalBattle> = {
   makesContact: false,
 } as const;
 
-export const Earthquake: MoveData<TraditionalBattle> = {
+export const Earthquake: MoveData = {
   name: "Earthquake",
   description: "The user sets off an earthquake that strikes every Pokémon around it.",
   type: Types.Ground,
@@ -1317,7 +1312,7 @@ export const Earthquake: MoveData<TraditionalBattle> = {
   makesContact: false,
 } as const;
 
-export const Fissure: MoveData<TraditionalBattle> = {
+export const Fissure: MoveData = {
   name: "Fissure",
   description:
     "The user opens up a fissure in the ground and drops the target in. The target faints instantly if this attack hits.",
@@ -1328,12 +1323,10 @@ export const Fissure: MoveData<TraditionalBattle> = {
   accuracy: 30,
   target: TC.Adjacent,
   makesContact: false,
-  // effect: {
-  //   type: "Faint",
-  // },
+  effect: { type: "Faint" },
 } as const;
 
-export const Dig: MoveData<TraditionalBattle> = {
+export const Dig: MoveData = {
   name: "Dig",
   description: "The user burrows into the ground, then attacks on the next turn.",
   type: Types.Ground,
@@ -1350,7 +1343,7 @@ export const Dig: MoveData<TraditionalBattle> = {
   // TODO functionality
 } as const;
 
-export const Toxic: MoveData<TraditionalBattle> = {
+export const Toxic: MoveData = {
   name: "Toxic",
   description: "A move that leaves the target badly poisoned. Its poison damage worsens every turn.",
   type: Types.Poison,
@@ -1365,7 +1358,7 @@ export const Toxic: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Confusion: MoveData<TraditionalBattle> = {
+export const Confusion: MoveData = {
   name: "Confusion",
   description: "The target is hit by a weak telekinetic force. This may also confuse the target.",
   type: Types.Psychic,
@@ -1382,7 +1375,7 @@ export const Confusion: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Psychic: MoveData<TraditionalBattle> = {
+export const Psychic: MoveData = {
   name: "Psychic",
   description: "The target is hit by a strong telekinetic force. This may also lower the target's Sp. Def stat.",
   type: Types.Psychic,
@@ -1399,7 +1392,7 @@ export const Psychic: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Hypnosis: MoveData<TraditionalBattle> = {
+export const Hypnosis: MoveData = {
   name: "Hypnosis",
   description: "The user employs hypnotic suggestion to make the target fall into a deep sleep.",
   type: Types.Psychic,
@@ -1415,7 +1408,7 @@ export const Hypnosis: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Meditate: MoveData<TraditionalBattle> = {
+export const Meditate: MoveData = {
   name: "Meditate",
   description: "The user meditates to awaken the power deep within its body and raise its Attack stat.",
   type: Types.Psychic,
@@ -1430,7 +1423,7 @@ export const Meditate: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Agility: MoveData<TraditionalBattle> = {
+export const Agility: MoveData = {
   name: "Agility",
   description: "The user relaxes and lightens its body to move faster. This sharply raises the Speed stat.",
   type: Types.Psychic,
@@ -1445,7 +1438,7 @@ export const Agility: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const QuickAttack: MoveData<TraditionalBattle> = {
+export const QuickAttack: MoveData = {
   name: "Quick Attack",
   description: "The user lunges at the target at a speed that makes it almost invisible. This move always goes first.",
   type: Types.Normal,
@@ -1458,7 +1451,7 @@ export const QuickAttack: MoveData<TraditionalBattle> = {
   makesContact: true,
 } as const;
 
-export const Rage: MoveData<TraditionalBattle> = {
+export const Rage: MoveData = {
   name: "Rage",
   description:
     "As long as this move is in use, the power of rage raises the Attack stat each time the user is hit in battle.",
@@ -1472,7 +1465,7 @@ export const Rage: MoveData<TraditionalBattle> = {
   // TODO functionality
 } as const;
 
-export const Teleport: MoveData<TraditionalBattle> = {
+export const Teleport: MoveData = {
   name: "Teleport",
   description:
     "The user switches places with another party Pokémon. It may also be used to warp to the last Pokémon Center visited. If a wild Pokémon uses this move, it flees.",
@@ -1483,11 +1476,11 @@ export const Teleport: MoveData<TraditionalBattle> = {
   priority: -6,
   target: TC.Self,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const NightShade: MoveData<TraditionalBattle> = {
+export const NightShade: MoveData = {
   name: "Night Shade",
   description: "The user makes the target see a frightening mirage. It inflicts damage equal to the user's level.",
   type: Types.Ghost,
@@ -1497,11 +1490,11 @@ export const NightShade: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.Adjacent,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const Mimic: MoveData<TraditionalBattle> = {
+export const Mimic: MoveData = {
   name: "Mimic",
   description:
     "The user copies the target's last move. The move can be used during battle until the Pokémon is switched out.",
@@ -1514,12 +1507,12 @@ export const Mimic: MoveData<TraditionalBattle> = {
   // effect: {
   //   type: "Mimic",
   // },
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
 // why isn't this a status move apdabiouaboduiboiuafb
-export const Screech: MoveData<TraditionalBattle> = {
+export const Screech: MoveData = {
   name: "Screech",
   description: "An earsplitting screech harshly lowers the target's Defense stat.",
   type: Types.Normal,
@@ -1535,7 +1528,7 @@ export const Screech: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const DoubleTeam: MoveData<TraditionalBattle> = {
+export const DoubleTeam: MoveData = {
   name: "Double Team",
   description: "By moving rapidly, the user makes illusory copies of itself to raise its evasiveness.",
   type: Types.Normal,
@@ -1550,7 +1543,7 @@ export const DoubleTeam: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Recover: MoveData<TraditionalBattle> = {
+export const Recover: MoveData = {
   name: "Recover",
   description: "Restoring its own cells, the user restores its own HP by half of its max HP.",
   type: Types.Normal,
@@ -1563,11 +1556,11 @@ export const Recover: MoveData<TraditionalBattle> = {
   //   type: "Heal",
   //   amount: "half",
   // },
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const Harden: MoveData<TraditionalBattle> = {
+export const Harden: MoveData = {
   name: "Harden",
   description: "The user stiffens all the muscles in its body to raise its Defense stat.",
   type: Types.Normal,
@@ -1582,7 +1575,7 @@ export const Harden: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Minimize: MoveData<TraditionalBattle> = {
+export const Minimize: MoveData = {
   name: "Minimize",
   description: "The user compresses its body to make itself look smaller, which sharply raises its evasiveness.",
   type: Types.Normal,
@@ -1600,10 +1593,10 @@ export const Minimize: MoveData<TraditionalBattle> = {
       type: "StatMod",
       evasion: 2,
     },
-  ] as MoveEffect<TraditionalBattle>[],
+  ] as MoveEffect[],
 } as const;
 
-export const Smokescreen: MoveData<TraditionalBattle> = {
+export const Smokescreen: MoveData = {
   name: "Smokescreen",
   description: "The user releases an obscuring cloud of smoke or ink. This lowers the target's accuracy.",
   type: Types.Normal,
@@ -1618,7 +1611,7 @@ export const Smokescreen: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const ConfuseRay: MoveData<TraditionalBattle> = {
+export const ConfuseRay: MoveData = {
   name: "Confuse Ray",
   description: "The target is exposed to a sinister ray that triggers confusion.",
   type: Types.Ghost,
@@ -1633,7 +1626,7 @@ export const ConfuseRay: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const Withdraw: MoveData<TraditionalBattle> = {
+export const Withdraw: MoveData = {
   name: "Withdraw",
   description: "The user withdraws its body into its hard shell, raising its Defense stat.",
   type: Types.Water,
@@ -1648,7 +1641,7 @@ export const Withdraw: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const DefenseCurl: MoveData<TraditionalBattle> = {
+export const DefenseCurl: MoveData = {
   name: "Defense Curl",
   description: "The user curls up to conceal weak spots and raise its Defense stat.",
   type: Types.Normal,
@@ -1664,7 +1657,7 @@ export const DefenseCurl: MoveData<TraditionalBattle> = {
   // TODO functionality
 } as const;
 
-export const Barrier: MoveData<TraditionalBattle> = {
+export const Barrier: MoveData = {
   name: "Barrier",
   description: "The user throws up a sturdy wall that sharply raises its Defense stat.",
   type: Types.Psychic,
@@ -1679,7 +1672,7 @@ export const Barrier: MoveData<TraditionalBattle> = {
   },
 } as const;
 
-export const LightScreen: MoveData<TraditionalBattle> = {
+export const LightScreen: MoveData = {
   name: "Light Screen",
   description: "A wondrous wall of light is put up to reduce damage from special attacks for five turns.",
   type: Types.Psychic,
@@ -1688,11 +1681,11 @@ export const LightScreen: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.All | TC.Self | TC.Ally,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const Haze: MoveData<TraditionalBattle> = {
+export const Haze: MoveData = {
   name: "Haze",
   description: "The user creates a haze that eliminates every stat change among all the Pokémon engaged in battle.",
   type: Types.Ice,
@@ -1701,11 +1694,11 @@ export const Haze: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.All,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const Reflect: MoveData<TraditionalBattle> = {
+export const Reflect: MoveData = {
   name: "Reflect",
   description: "A wondrous wall of light is put up to reduce damage from physical attacks for five turns.",
   type: Types.Psychic,
@@ -1714,11 +1707,11 @@ export const Reflect: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.All | TC.Self | TC.Ally,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const FocusEnergy: MoveData<TraditionalBattle> = {
+export const FocusEnergy: MoveData = {
   name: "Focus Energy",
   description: "The user takes a deep breath and focuses so that critical hits land more easily.",
   type: Types.Normal,
@@ -1727,11 +1720,11 @@ export const FocusEnergy: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.Self,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const Bide: MoveData<TraditionalBattle> = {
+export const Bide: MoveData = {
   name: "Bide",
   description: "The user endures attacks for two turns, then strikes back to cause double the damage taken.",
   type: Types.Normal,
@@ -1742,11 +1735,11 @@ export const Bide: MoveData<TraditionalBattle> = {
   priority: 1,
   target: TC.Self,
   makesContact: true,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const Metronone: MoveData<TraditionalBattle> = {
+export const Metronone: MoveData = {
   name: "Metronome",
   description: "The user waggles a finger and stimulates its brain into randomly using nearly any move.",
   type: Types.Normal,
@@ -1755,11 +1748,11 @@ export const Metronone: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.Self,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 
-export const MirrorMove: MoveData<TraditionalBattle> = {
+export const MirrorMove: MoveData = {
   name: "Mirror Move",
   description: "The user counters the target by mimicking the target's last move.",
   type: Types.Flying,
@@ -1768,7 +1761,7 @@ export const MirrorMove: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.Adjacent,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 };
 // 120	Self-Destruct	Normal	Physical	5	200*	100%	I
@@ -1814,7 +1807,7 @@ export const MirrorMove: MoveData<TraditionalBattle> = {
 // 160	Conversion	Normal	Status	30	—	—	I
 // 161	Tri Attack	Normal	Special	10	80	100%	I
 // 162	Super Fang	Normal	Physical	10	—	90%	I
-export const Slash: MoveData<TraditionalBattle> = {
+export const Slash: MoveData = {
   name: "Slash",
   description: "The target is attacked with a slash of claws or blades. Critical hits land more easily.",
   type: Types.Normal,
@@ -1864,7 +1857,7 @@ export const Slash: MoveData<TraditionalBattle> = {
 // 198	Bone Rush	Ground	Physical	10	25	90%*	II
 // 199	Lock-On	Normal	Status	5	—	—*	II
 // 200	Outrage	Dragon	Physical	10*	120*	100%	II
-export const Sandstorm: MoveData<TraditionalBattle> = {
+export const Sandstorm: MoveData = {
   name: "Sandstorm",
   description:
     "A five-turn sandstorm is summoned to hurt all combatants except the Rock, Ground, and Steel types. It raises the Sp. Def stat of Rock types.",
@@ -1874,16 +1867,17 @@ export const Sandstorm: MoveData<TraditionalBattle> = {
   accuracy: 0,
   target: TC.All,
   makesContact: false,
-  effect: {
-    type: "Weather",
-    weather: "Sandstorm",
-  },
+  // effect: {
+  //   type: "Weather",
+  //   weather: "Sandstorm",
+  // },
   // effect: {
   //   duration: 5,
   //   onStart: (battle: Battle, caster: Pokemon, target: Pokemon) => {
   //     battle.addPseudoWeather(PW.Sandstorm);
   //   }
   // }
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 // 202	Giga Drain	Grass	Special	10*	75*	100%	II
@@ -1909,7 +1903,7 @@ export const Sandstorm: MoveData<TraditionalBattle> = {
 // 222	Magnitude	Ground	Physical	30	—	100%	II
 // 223	Dynamic Punch	Fighting	Physical	5	100	50%	II
 // 224	Megahorn	Bug	Physical	10	120	85%	II
-export const DragonBreath: MoveData<TraditionalBattle> = {
+export const DragonBreath: MoveData = {
   name: "Dragon Breath",
   description: "The user exhales a mighty gust that inflicts damage. This may also leave the target with paralysis.",
   type: Types.Dragon,
@@ -1929,7 +1923,7 @@ export const DragonBreath: MoveData<TraditionalBattle> = {
 // 227	Encore	Normal	Status	5	—	100%	II
 // 228	Pursuit	Dark	Physical	20	40	100%	II
 // 229	Rapid Spin	Normal	Physical	40	50*	100%	II
-export const SweetScent: MoveData<TraditionalBattle> = {
+export const SweetScent: MoveData = {
   name: "Sweet Scent",
   description: "A sweet scent that harshly lowers opposing Pokémon's evasiveness.",
   type: Types.Normal,
@@ -1947,7 +1941,7 @@ export const SweetScent: MoveData<TraditionalBattle> = {
 // 232	Metal Claw	Steel	Physical	35	50	95%	II
 // 233	Vital Throw	Fighting	Physical	10	70	—	II
 // 234	Morning Sun	Normal	Status	5	—	—	II
-export const Synthesis: MoveData<TraditionalBattle> = {
+export const Synthesis: MoveData = {
   name: "Synthesis",
   description: "The user restores its own HP. The amount of HP regained varies with the weather.",
   type: Types.Grass,
@@ -1956,7 +1950,7 @@ export const Synthesis: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.Self,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // effect: {
   //   type: "Heal",
   //   amount: (battle: Battle, user: Pokemon) => {
@@ -1978,7 +1972,7 @@ export const Synthesis: MoveData<TraditionalBattle> = {
 // 239	Twister	Dragon	Special	20	40	100%	II
 // 240	Rain Dance	Water	Status	5	—	—	II
 // 241	Sunny Day	Fire	Status	5	—	—	II
-export const Crunch: MoveData<TraditionalBattle> = {
+export const Crunch: MoveData = {
   name: "Crunch",
   description: "The user crunches up the target with sharp fangs. This may also lower the target's Defense stat.",
   type: Types.Dark,
@@ -2079,7 +2073,7 @@ export const Crunch: MoveData<TraditionalBattle> = {
 // 325	Shadow Punch	Ghost	Physical	20	60	—	III
 // 326	Extrasensory	Psychic	Special	20*	80	100%	III
 // 327	Sky Uppercut	Fighting	Physical	15	85	90%	III
-export const SandTomb: MoveData<TraditionalBattle> = {
+export const SandTomb: MoveData = {
   name: "Sand Tomb",
   description: "The user traps the target inside a harshly raging sandstorm for four to five turns.",
   type: Types.Ground,
@@ -2099,7 +2093,7 @@ export const SandTomb: MoveData<TraditionalBattle> = {
 // 334	Iron Defense	Steel	Status	15	—	—	III
 // 335	Block	Normal	Status	5	—	—	III
 // 336	Howl	Normal	Status	40	—	—	III
-export const DragonClaw: MoveData<TraditionalBattle> = {
+export const DragonClaw: MoveData = {
   name: "Dragon Claw",
   description: "The user slashes the target with huge sharp claws.",
   type: Types.Dragon,
@@ -2161,7 +2155,7 @@ export const DragonClaw: MoveData<TraditionalBattle> = {
 // 385	Guard Swap	Psychic	Status	10	—	—	IV
 // 386	Punishment	Dark	Physical	5	—	100%	IV
 // 387	Last Resort	Normal	Physical	5	140*	100%	IV
-export const WorrySeed: MoveData<TraditionalBattle> = {
+export const WorrySeed: MoveData = {
   name: "Worry Seed",
   description:
     "A seed that causes worry is planted on the target. It prevents sleep by making the target's Ability Insomnia.",
@@ -2172,7 +2166,7 @@ export const WorrySeed: MoveData<TraditionalBattle> = {
   accuracy: 100,
   target: TC.Adjacent,
   makesContact: false,
-  effect: [] as MoveEffect<TraditionalBattle>[],
+  effect: [] as MoveEffect[],
   // TODO functionality
 } as const;
 // 389	Sucker Punch	Dark	Physical	5	70*	100%	IV
@@ -2188,7 +2182,7 @@ export const WorrySeed: MoveData<TraditionalBattle> = {
 // 399	Dark Pulse	Dark	Special	15	80	100%	IV
 // 400	Night Slash	Dark	Physical	15	70	100%	IV
 // 401	Aqua Tail	Water	Physical	10	90	90%	IV
-export const SeedBomb: MoveData<TraditionalBattle> = {
+export const SeedBomb: MoveData = {
   name: "Seed Bomb",
   description: "The user slams a barrage of hard-shelled seeds down on the target from above.",
   type: Types.Grass,
@@ -2203,7 +2197,7 @@ export const SeedBomb: MoveData<TraditionalBattle> = {
 // 404	X-Scissor	Bug	Physical	15	80	100%	IV
 // 405	Bug Buzz	Bug	Special	10	90	100%	IV
 // 406	Dragon Pulse	Dragon	Special	10	85*	100%	IV
-export const DragonRush: MoveData<TraditionalBattle> = {
+export const DragonRush: MoveData = {
   name: "Dragon Rush",
   description:
     "The user tackles the target while exhibiting overwhelming menace. This may also make the target flinch.",
@@ -2331,7 +2325,7 @@ export const DragonRush: MoveData<TraditionalBattle> = {
 // 520	Grass Pledge	Grass	Special	10	80*	100%	V
 // 521	Volt Switch	Electric	Special	20	70	100%	V
 // 522	Struggle Bug	Bug	Special	20	50*	100%	V
-export const Bulldoze: MoveData<TraditionalBattle> = {
+export const Bulldoze: MoveData = {
   name: "Bulldoze",
   description:
     "The user tramples its target into the ground, dealing damage. This also lowers the target's action speed.",
@@ -2354,7 +2348,7 @@ export const Bulldoze: MoveData<TraditionalBattle> = {
 // 527	Electroweb	Electric	Special	15	55	95%	V
 // 528	Wild Charge	Electric	Physical	15	90	100%	V
 // 529	Drill Run	Ground	Physical	10	80	95%	V
-export const DualChop: MoveData<TraditionalBattle> = {
+export const DualChop: MoveData = {
   name: "Dual Chop",
   description: "The user attacks its target by hitting it with brutal strikes. The target is hit twice in a row.",
   type: Types.Dragon,

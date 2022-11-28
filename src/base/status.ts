@@ -1,18 +1,63 @@
 // deno-lint-ignore-file no-unused-vars
-import { TraditionalBattle } from "./battle.ts";
-import { StatusEffect, Codemon } from "./index.ts";
+import { Action, ActionSource, StatusEffect } from "./index.ts";
+import C from "./index.ts";
 
 // Non-volatile status effects
 
-export const Burn: StatusEffect<TraditionalBattle> = {
+export const Burn: StatusEffect = {
   name: "Burn",
-  description: "The target is burned. Take 1/16 of max HP as damage at the end of each turn. Attack is halved.",
+  description:
+    "This Codemon is burned by searing heat! Take 1/16 of max HP as damage after each turn. Attack is halved.",
   volatile: false,
-  apply: (target, source, battle) => {},
-  unapply: (target, source, battle) => {},
+
+  apply: (target, source, battle) => {
+    if (target.species.types.includes(C.Types.Fire)) return; // immune
+
+    // halve attack damage, damage after action
+    let attackedThisRound = false; // TODO: this probably doesn't work. test it
+    battle.on("action", action => {
+      if (action.source.type === "Move" && action.source.move.user === target && action.attack) {
+        const user = action.source.move.user;
+        attackedThisRound = true;
+        action.messages.push(`${user.name} is weakened by ${user.gender.pronouns.possessive} burn!`);
+        action.attack.other *= 0.5;
+        action.reactions.push({
+          source: BurnDamage,
+          targets: [target],
+        });
+      }
+    });
+    battle.on("roundEnd", reciept => {
+      if (!attackedThisRound) {
+        reciept.reactions.push({
+          source: BurnDamage,
+          targets: [target],
+        });
+      }
+      attackedThisRound = false;
+    });
+  },
+  unapply: (target, source, battle) => {
+    /* TODO */
+  },
 };
 
-export const Freeze: StatusEffect<TraditionalBattle> = {
+const BurnDamage: ActionSource = {
+  type: "Status",
+  statusEffect: Burn,
+  use: (targets, battle): Action => {
+    if (targets.length !== 1) throw new Error("BurnDamage can only target one Codemon");
+    const target = targets[0];
+    const damage = Math.floor(target.stats.hp.max / 16);
+    const a = new Action(BurnDamage, targets, {
+      hp: -damage,
+    });
+    a.messages.push(`${target.name} took ${damage} damage from ${target.gender.pronouns.possessive} burn!`);
+    return a;
+  },
+};
+
+export const Freeze: StatusEffect = {
   name: "Freeze",
   description: "The target is frozen.",
   volatile: false,
@@ -20,7 +65,7 @@ export const Freeze: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Paralysis: StatusEffect<TraditionalBattle> = {
+export const Paralysis: StatusEffect = {
   name: "Paralysis",
   description: "The target is unable to move.",
   volatile: false,
@@ -28,35 +73,37 @@ export const Paralysis: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Poison: StatusEffect<TraditionalBattle> = {
+export const Poison: StatusEffect = {
   name: "Poison",
   description: "The target is poisoned.",
   volatile: false,
   apply: (target, source, battle) => {
-    battle.on("afterAction", a => {
-      if (a.actor === target) {
+    let attacked = false; // TODO: this probably doesn't work. test it
+
+    battle.on("actionReport", a => {
+      if (a.source.type === "Move" && a.source.move.user === target) {
         target.stats.hp.current -= (target.stats.hp.value() * 1) / 8;
+        attacked = true;
       }
+    });
+
+    battle.on("roundEnd", () => {
+      if (attacked) target.stats.hp.current -= (target.stats.hp.value() * 1) / 8;
+      attacked = false; // reset
     });
   },
   unapply: (target, source, battle) => {},
 };
 
-export const BadlyPoisoned: StatusEffect<TraditionalBattle> = {
+export const BadlyPoisoned: StatusEffect = {
   name: "Badly Poisoned",
   description: "The target is badly poisoned.",
   volatile: false,
-  apply: (target, source, battle) => {
-    battle.on("afterAction", a => {
-      if (a.actor === target) {
-        target.stats.hp.current -= (target.stats.hp.value() * 1) / 16;
-      }
-    });
-  },
+  apply: (target, source, battle) => {},
   unapply: (target, source, battle) => {},
 };
 
-export const Sleep: StatusEffect<TraditionalBattle> = {
+export const Sleep: StatusEffect = {
   name: "Sleep",
   description: "The target falls asleep.",
   volatile: false,
@@ -66,7 +113,7 @@ export const Sleep: StatusEffect<TraditionalBattle> = {
 
 // Volatile status effects
 
-export const Bound: StatusEffect<TraditionalBattle> = {
+export const Bound: StatusEffect = {
   name: "Bound",
   description: "The target is bound.",
   volatile: true,
@@ -74,7 +121,7 @@ export const Bound: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const CantEscape: StatusEffect<TraditionalBattle> = {
+export const CantEscape: StatusEffect = {
   name: "Can't Escape",
   description: "The target is unable to escape.",
   volatile: true,
@@ -82,7 +129,7 @@ export const CantEscape: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Confusion: StatusEffect<TraditionalBattle> = {
+export const Confusion: StatusEffect = {
   name: "Confusion",
   description: "The target is confused.",
   volatile: true,
@@ -90,7 +137,7 @@ export const Confusion: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Curse: StatusEffect<TraditionalBattle> = {
+export const Curse: StatusEffect = {
   name: "Curse",
   description: "The target is cursed.",
   volatile: true,
@@ -98,7 +145,7 @@ export const Curse: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Drowsy: StatusEffect<TraditionalBattle> = {
+export const Drowsy: StatusEffect = {
   name: "Drowsy",
   description: "The target is drowsy.",
   volatile: true,
@@ -106,7 +153,7 @@ export const Drowsy: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Embargo: StatusEffect<TraditionalBattle> = {
+export const Embargo: StatusEffect = {
   name: "Embargo",
   description: "The target is unable to use items.",
   volatile: true,
@@ -114,7 +161,7 @@ export const Embargo: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Encore: StatusEffect<TraditionalBattle> = {
+export const Encore: StatusEffect = {
   name: "Encore",
   description: "The target is encored.",
   volatile: true,
@@ -122,7 +169,7 @@ export const Encore: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Flinch: StatusEffect<TraditionalBattle> = {
+export const Flinch: StatusEffect = {
   name: "Flinch",
   description: "The target flinches.",
   volatile: true,
@@ -130,7 +177,7 @@ export const Flinch: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const HealBlock: StatusEffect<TraditionalBattle> = {
+export const HealBlock: StatusEffect = {
   name: "Heal Block",
   description: "The target is unable to heal.",
   volatile: true,
@@ -138,7 +185,7 @@ export const HealBlock: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Identified: StatusEffect<TraditionalBattle> = {
+export const Identified: StatusEffect = {
   name: "Identified",
   description: "The target is identified.",
   volatile: true,
@@ -146,7 +193,7 @@ export const Identified: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Infatuation: StatusEffect<TraditionalBattle> = {
+export const Infatuation: StatusEffect = {
   name: "Infatuation",
   description: "The target is infatuated.",
   volatile: true,
@@ -154,7 +201,7 @@ export const Infatuation: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const LeechSeed: StatusEffect<TraditionalBattle> = {
+export const LeechSeed: StatusEffect = {
   name: "Leech Seed",
   description: "The target's hp is leeched by the attacker.",
   volatile: true,
@@ -162,7 +209,7 @@ export const LeechSeed: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Nightmare: StatusEffect<TraditionalBattle> = {
+export const Nightmare: StatusEffect = {
   name: "Nightmare",
   description: "The target is in a nightmare.",
   volatile: true,
@@ -170,7 +217,7 @@ export const Nightmare: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const PerishSong: StatusEffect<TraditionalBattle> = {
+export const PerishSong: StatusEffect = {
   name: "Perish Song",
   description: "The target is about to perish.",
   volatile: true,
@@ -178,7 +225,7 @@ export const PerishSong: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Taunt: StatusEffect<TraditionalBattle> = {
+export const Taunt: StatusEffect = {
   name: "Taunt",
   description: "The target is taunted.",
   volatile: true,
@@ -186,7 +233,7 @@ export const Taunt: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Telekinesis: StatusEffect<TraditionalBattle> = {
+export const Telekinesis: StatusEffect = {
   name: "Telekinesis",
   description: "The target is telekinetic.",
   volatile: true,
@@ -194,7 +241,7 @@ export const Telekinesis: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Torment: StatusEffect<TraditionalBattle> = {
+export const Torment: StatusEffect = {
   name: "Torment",
   description: "The target is tormented.",
   volatile: true,
@@ -202,7 +249,7 @@ export const Torment: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const TypeChange: StatusEffect<TraditionalBattle> = {
+export const TypeChange: StatusEffect = {
   name: "Type Change",
   description: "The target's type is changed.",
   volatile: true,
@@ -210,7 +257,7 @@ export const TypeChange: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Splinters: StatusEffect<TraditionalBattle> = {
+export const Splinters: StatusEffect = {
   name: "Splinters",
   description: "The target is splintered.",
   volatile: true,
@@ -218,7 +265,7 @@ export const Splinters: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const PowerBoost: StatusEffect<TraditionalBattle> = {
+export const PowerBoost: StatusEffect = {
   name: "Power Boost",
   description: "The target's power is boosted.",
   volatile: true,
@@ -226,7 +273,7 @@ export const PowerBoost: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const PowerDrop: StatusEffect<TraditionalBattle> = {
+export const PowerDrop: StatusEffect = {
   name: "Power Drop",
   description: "The target's power is dropped.",
   volatile: true,
@@ -234,7 +281,7 @@ export const PowerDrop: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const GuardBoost: StatusEffect<TraditionalBattle> = {
+export const GuardBoost: StatusEffect = {
   name: "Guard Boost",
   description: "The target's guard is boosted.",
   volatile: true,
@@ -242,7 +289,7 @@ export const GuardBoost: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const GuardDrop: StatusEffect<TraditionalBattle> = {
+export const GuardDrop: StatusEffect = {
   name: "Guard Drop",
   description: "The target's guard is dropped.",
   volatile: true,
@@ -252,7 +299,7 @@ export const GuardDrop: StatusEffect<TraditionalBattle> = {
 
 // Volatile battle status
 
-export const AquaRing: StatusEffect<TraditionalBattle> = {
+export const AquaRing: StatusEffect = {
   name: "Aqua Ring",
   description: "The target is protected by an aqua ring.",
   volatile: true,
@@ -260,7 +307,7 @@ export const AquaRing: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Bracing: StatusEffect<TraditionalBattle> = {
+export const Bracing: StatusEffect = {
   name: "Bracing",
   description: "The target is bracing.",
   volatile: true,
@@ -268,7 +315,7 @@ export const Bracing: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const ChargingTurn: StatusEffect<TraditionalBattle> = {
+export const ChargingTurn: StatusEffect = {
   name: "Charging Turn",
   description: "The target is charging a turn.",
   volatile: true,
@@ -276,7 +323,7 @@ export const ChargingTurn: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const CenterOfAttention: StatusEffect<TraditionalBattle> = {
+export const CenterOfAttention: StatusEffect = {
   name: "Center Of Attention",
   description: "The target is focused on the center of the field.",
   volatile: true,
@@ -284,7 +331,7 @@ export const CenterOfAttention: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const DefenseCurl: StatusEffect<TraditionalBattle> = {
+export const DefenseCurl: StatusEffect = {
   name: "Defense Curl",
   description: "The target is curling its defense.",
   volatile: true,
@@ -293,7 +340,7 @@ export const DefenseCurl: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Rooting: StatusEffect<TraditionalBattle> = {
+export const Rooting: StatusEffect = {
   name: "Rooting",
   description: "The target is rooted.",
   volatile: true,
@@ -301,7 +348,7 @@ export const Rooting: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const MagicCoat: StatusEffect<TraditionalBattle> = {
+export const MagicCoat: StatusEffect = {
   name: "Magic Coat",
   description: "The target is protected by a magic coat.",
   volatile: true,
@@ -309,7 +356,7 @@ export const MagicCoat: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const MagneticLevitation: StatusEffect<TraditionalBattle> = {
+export const MagneticLevitation: StatusEffect = {
   name: "Magnetic Levitation",
   description: "The target is levitating with magnetic force.",
   volatile: true,
@@ -317,7 +364,7 @@ export const MagneticLevitation: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Mimic: StatusEffect<TraditionalBattle> = {
+export const Mimic: StatusEffect = {
   name: "Mimic",
   description: "The target is mimicking an opponent.",
   volatile: true,
@@ -325,7 +372,7 @@ export const Mimic: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Minimize: StatusEffect<TraditionalBattle> = {
+export const Minimize: StatusEffect = {
   name: "Minimize",
   description: "The target is minimized.",
   volatile: true,
@@ -333,7 +380,7 @@ export const Minimize: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Protection: StatusEffect<TraditionalBattle> = {
+export const Protection: StatusEffect = {
   name: "Protection",
   description: "The target is protected.",
   volatile: true,
@@ -341,7 +388,7 @@ export const Protection: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Recharging: StatusEffect<TraditionalBattle> = {
+export const Recharging: StatusEffect = {
   name: "Recharging",
   description: "The target is recharging.",
   volatile: true,
@@ -349,7 +396,7 @@ export const Recharging: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const SemiInvulnerableTurn: StatusEffect<TraditionalBattle> = {
+export const SemiInvulnerableTurn: StatusEffect = {
   name: "Semi-Invulnerable Turn",
   description: "The target is semi-invulnerable for a turn.",
   volatile: true,
@@ -357,7 +404,7 @@ export const SemiInvulnerableTurn: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Substitute: StatusEffect<TraditionalBattle> = {
+export const Substitute: StatusEffect = {
   name: "Substitute",
   description: "The target is protected by a substitute.",
   volatile: true,
@@ -365,7 +412,7 @@ export const Substitute: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const TakingAim: StatusEffect<TraditionalBattle> = {
+export const TakingAim: StatusEffect = {
   name: "Taking Aim",
   description: "The target is taking aim.",
   volatile: true,
@@ -373,7 +420,7 @@ export const TakingAim: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Thrashing: StatusEffect<TraditionalBattle> = {
+export const Thrashing: StatusEffect = {
   name: "Thrashing",
   description: "The target is thrashing.",
   volatile: true,
@@ -381,7 +428,7 @@ export const Thrashing: StatusEffect<TraditionalBattle> = {
   unapply: (target, source, battle) => {},
 };
 
-export const Transformed: StatusEffect<TraditionalBattle> = {
+export const Transformed: StatusEffect = {
   name: "Transformed",
   description: "The target is transformed.",
   volatile: true,

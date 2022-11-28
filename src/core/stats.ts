@@ -3,7 +3,6 @@ import Codemon from "./codemon.ts";
 import C from "./config.ts";
 
 export type PermanentStat = "hp" | "attack" | "defense" | "specialAttack" | "specialDefense" | "speed";
-
 export type BattleStat = "accuracy" | "evasion";
 
 export type Stat = PermanentStat | BattleStat;
@@ -47,10 +46,10 @@ interface IPermanentStatEntry {
   individualValue?: number;
   effortValue?: number;
 }
-export class PermanentStatEntry<B extends Battle = Battle> extends BattleStatEntry {
+export class PermanentStatEntry extends BattleStatEntry {
   public individualValue: number;
   public effortValue: number;
-  constructor(public readonly stat: Stat, public readonly self: Codemon<B>, args: IPermanentStatEntry) {
+  constructor(public readonly stat: Stat, public readonly self: Codemon, args: IPermanentStatEntry) {
     super(stat, args);
     this.individualValue = args.individualValue ?? Math.floor(Math.random() * C.codemon.stats.maxIV);
     this.effortValue = args.effortValue ?? 0;
@@ -82,12 +81,12 @@ export class PermanentStatEntry<B extends Battle = Battle> extends BattleStatEnt
   }
 }
 
-export class HPStatEntry<B extends Battle = Battle> extends PermanentStatEntry<B> {
+export class HPStatEntry extends PermanentStatEntry {
   public current;
   public get max() {
     return this.value();
   }
-  constructor(self: Codemon<B>, args: IPermanentStatEntry) {
+  constructor(self: Codemon, args: IPermanentStatEntry) {
     super("hp" as Stat, self, args);
     this.current = this.value();
   }
@@ -108,24 +107,23 @@ export class HPStatEntry<B extends Battle = Battle> extends PermanentStatEntry<B
   }
 }
 
-type Stats<B extends Battle = Battle> = Record<PermanentStat, PermanentStatEntry<B>> &
-  Record<BattleStat, BattleStatEntry>;
+type Stats<B extends Battle = Battle> = Record<PermanentStat, PermanentStatEntry> & Record<BattleStat, BattleStatEntry>;
 
 export type IStats = Partial<Record<PermanentStat, IPermanentStatEntry>> &
   Partial<Record<BattleStat, IBattleStatEntry>>;
 
-export class StatSet<B extends Battle = Battle> implements Stats<B> {
-  public hp: HPStatEntry<B>;
-  public attack: PermanentStatEntry<B>;
-  public defense: PermanentStatEntry<B>;
-  public specialAttack: PermanentStatEntry<B>;
-  public specialDefense: PermanentStatEntry<B>;
-  public speed: PermanentStatEntry<B>;
+export class StatSet implements Stats {
+  public hp: HPStatEntry;
+  public attack: PermanentStatEntry;
+  public defense: PermanentStatEntry;
+  public specialAttack: PermanentStatEntry;
+  public specialDefense: PermanentStatEntry;
+  public speed: PermanentStatEntry;
 
   public accuracy: BattleStatEntry;
   public evasion: BattleStatEntry;
 
-  constructor(args: IStats & { self: Codemon<B> }) {
+  constructor(args: IStats & { self: Codemon }) {
     // Feels like there should be a better way to do this
     this.hp = new HPStatEntry(args.self, { ...args.hp });
     this.attack = new PermanentStatEntry("attack", args.self, {

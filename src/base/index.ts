@@ -19,7 +19,6 @@ const Codex = {
   Nature,
   Status,
   //Abilities,
-  //Graphics,
   //BodyStyles,
   //Footprints,
   //CodexColors,
@@ -27,3 +26,6 @@ const Codex = {
   //Items,
 } as const;
 export default Codex;
+
+type DeepMap<T, U> = T extends Record<string, unknown> ? { [K in keyof T]: DeepMap<T[K], U> } : U;
+export type DiscoveryMap = DeepMap<typeof Codex, boolean>;

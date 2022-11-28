@@ -2,12 +2,12 @@ import { Stat } from "./stats.ts";
 import Codemon from "./codemon.ts";
 import { ExperienceGroup, Learnset } from "./experience.ts";
 import { Type } from "./type.ts";
-import { Sex } from "./sex.ts";
+import { Gender } from "./gender.ts";
 import { BaseStats, EVYields } from "./stats.ts";
 import { Nature } from "./nature.ts";
 import { Battle } from "./battle.ts";
 
-export interface Species<B extends Battle = Battle> {
+export interface Species {
   // Normal species definition information
   name: string;
   //graphics: Graphics
@@ -28,11 +28,11 @@ export interface Species<B extends Battle = Battle> {
   baseFriendship: number;
   baseStats: BaseStats;
   evYields: EVYields;
-  learnset: Learnset<B>;
+  learnset: Learnset;
 
   // Calculation overrides
-  overrideName?: (self: Codemon<B>, inputName: string) => string;
-  overrideSex?: (self: Codemon<B>, inputSex: Sex) => Sex;
-  overrideStatValue?: (self: Codemon<B>, stat: Stat, inputStat: number, considerBattleStatus: boolean) => number; // TODO use this
-  overrideNature?: (self: Codemon<B>, inputNature: Nature) => Nature;
+  overrideName?: (self: Codemon, inputName: string) => string;
+  overrideSex?: (self: Codemon, inputSex: Gender) => Gender;
+  overrideStatValue?: (self: Codemon, stat: Stat, inputStat: number, considerBattleStatus: boolean) => number; // TODO use this
+  overrideNature?: (self: Codemon, inputNature: Nature) => Nature;
 }

@@ -2,7 +2,7 @@ import C from "./config.ts";
 import Codemon from "./codemon.ts";
 import { PermanentStat, StageMods } from "./stats.ts";
 import { Type } from "./type.ts";
-import { Battle, StatusEffect } from "./battle.ts";
+import { Action, Battle, StatusEffect, ActionSource, Weather } from "./battle.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
 
@@ -11,10 +11,9 @@ export type TCPosition = "Adjacent" | "Non-Adjacent";
 // TODO? export type TCType = "Normal" | "Fire" | "Water" | "Electric" | "Grass" | "Ice" | "Fighting" | "Poison" | "Ground" | "Flying" | "Psychic" | "Bug" | "Rock" | "Ghost" | "Dragon" | "Dark" | "Steel" | "Fairy"
 export type TCAlignment = "Allies" | "Foes";
 
-type TCQP = TCQuantifier | TCPosition | `${TCQuantifier} ${TCPosition}`;
-type TCQPA = TCQP | TCAlignment | `${TCQP} ${TCAlignment}`;
+type TCQP = TCQuantifier | `${TCQuantifier} ${TCPosition}`;
+type TCQPA = TCQP | `${TCQP} ${TCAlignment}`;
 export type TCString = TCQPA | "Self";
-
 export type _TargetingCategory =
   | {
       quantifier: TCQuantifier;
@@ -35,33 +34,18 @@ export enum TargetingCategory {
 }
 export const TC = TargetingCategory; // for convenience
 
-// deno-lint-ignore no-explicit-any
-type Weather = any;
-interface WeatherMoveEffect {
-  type: "Weather";
-  weather: Weather;
-}
-interface StatusMoveEffect<B extends Battle> {
-  type: "Status";
-  status: StatusEffect<B>;
-}
-interface StatModMoveEffect extends StageMods {
-  type: "StatMod";
-}
-
-interface RestrictionMoveEffect {
-  type: "Restriction";
-  // TODO
-}
-
-export type MoveEffect<B extends Battle> = { probability?: number } & (
-  | WeatherMoveEffect
-  | StatusMoveEffect<B>
-  | StatModMoveEffect
-  | RestrictionMoveEffect
+export type MoveEffect = { probability?: number } & (
+  | { type: "Weather"; weather: Weather }
+  | { type: "Status"; status: StatusEffect }
+  | ({ type: "StatMod" } & StageMods)
+  | { type: "Restriction" }
+  | { type: "HP"; hp: number }
+  | { type: "Faint" }
+  | { type: "Leech"; ratio: number }
+  | { type: "Eject" }
 );
 
-interface BaseMoveData<B extends Battle = Battle> {
+interface BaseMoveData {
   category: DamageCategory;
   name: string;
   description: string;
@@ -69,99 +53,68 @@ interface BaseMoveData<B extends Battle = Battle> {
   pp: number | { new (): PPScheme };
   accuracy?: number;
   makesContact: boolean;
-  target: TargetingCategory;
+  target: TargetingCategory | TCString;
   ppScheme?: PPScheme;
   priority?: number;
-  effect?: MoveEffect<B> | MoveEffect<B>[];
+  effect?: MoveEffect | MoveEffect[];
   hitAgain?: (hitCount: number) => number | boolean;
 }
-interface StatusMoveData<B extends Battle = Battle> extends BaseMoveData<B> {
+interface StatusMoveData extends BaseMoveData {
   category: "Status";
-  effect: MoveEffect<B> | MoveEffect<B>[];
+  effect: MoveEffect | MoveEffect[];
 }
 
-interface PhysicalMoveData<B extends Battle = Battle> extends BaseMoveData<B> {
+interface PhysicalMoveData extends BaseMoveData {
   category: "Physical";
   power: number; // TODO: Add Battle parameter
-  recoil?: number | ((target: Codemon<B>, battle: B) => number);
-  crash?: number | ((target: Codemon<B>, battle: B) => number);
+  recoil?: number | ((target: Codemon, battle: Battle) => number);
+  crash?: number | ((target: Codemon, battle: Battle) => number);
   criticalHitStage?: number;
-  effect?: MoveEffect<B> | MoveEffect<B>[];
+  effect?: MoveEffect | MoveEffect[];
 }
 
-interface SpecialMoveData<B extends Battle = Battle> extends BaseMoveData<B> {
+interface SpecialMoveData extends BaseMoveData {
   category: "Special";
   power: number; // TODO: Add Battle parameter
-  recoil?: number | ((target: Codemon<B>, battle: B) => number);
-  crash?: number | ((target: Codemon<B>, battle: B) => number);
+  recoil?: number | ((target: Codemon, battle: Battle) => number);
+  crash?: number | ((target: Codemon, battle: Battle) => number);
   criticalHitStage?: number;
-  effect?: MoveEffect<B> | MoveEffect<B>[];
+  effect?: MoveEffect | MoveEffect[];
 }
 
-export type MoveData<B extends Battle = Battle> = StatusMoveData<B> | PhysicalMoveData<B> | SpecialMoveData<B>;
+export type MoveData = StatusMoveData | PhysicalMoveData | SpecialMoveData;
 
-export interface MoveUsage<B extends Battle = Battle> {
-  user: Codemon<B>;
-  targets: Codemon<B>[];
-  moveData: MoveData<B>;
-  damage?: {
-    base: number;
-    multitarget: number;
-    weather: number;
-    random: number;
-    critical: number;
-    stab: number;
-    other: number;
-    recoil?: MoveUsage<B>;
-  };
-  stats: StageMods;
-  statuses: StatusEffect<B>[];
-  //weather: Weather;
+export interface IMove {
+  self: Codemon;
+  info: MoveData;
 }
 
-export interface MoveReciept<B extends Battle = Battle> {
-  usage: MoveUsage<B>;
-  target: Codemon<B>;
-  damage?: number;
-  fainted: boolean;
-  typeBoost: number;
-  stats?: StageMods;
-  statuses?: StatusEffect<B>[];
-  //weather: Weather;
-}
-
-export interface IMove<B extends Battle = Battle> {
-  self: Codemon<B>;
-  info: MoveData<B>;
-}
-
-export class Move<B extends Battle = Battle> {
-  public data: MoveData<B>;
-  public user: Codemon<B>;
+export class Move {
+  public data: MoveData;
+  public user: Codemon;
   public PP: PPScheme;
+  public readonly actionSource: ActionSource;
 
-  constructor(args: IMove<B>) {
+  constructor(args: IMove) {
     this.data = args.info;
     this.user = args.self;
     this.PP = typeof this.data.pp === "number" ? new PPScheme(this.data.pp) : new this.data.pp();
-  }
 
-  public Use(targets: Codemon<B>[]): MoveUsage<B> {
-    if (!this.PP.Use()) {
-      console.log("TODO: Fail without remaining PP");
-    }
-    const usage: MoveUsage<B> = {
-      user: this.user,
-      targets,
-      moveData: this.data,
-      stats: {},
-      statuses: [],
+    this.actionSource = {
+      type: "Move",
+      move: this,
+      priority: this.data.priority ?? 0,
+      use: (targets, battle) => {
+        if (!this.PP.Use()) console.log("TODO: Fail without remaining PP");
+
+        const action = new Action(this.actionSource, targets);
+
+        this.ApplyDamage(action, targets, battle);
+        this.ApplyEffects(action, targets, battle);
+
+        return action;
+      },
     };
-
-    this.ApplyDamage(usage, targets);
-    this.ApplyEffects(usage);
-
-    return usage;
   }
 
   // TODO: Complete this; it's only the rudimentary random check
@@ -177,13 +130,11 @@ export class Move<B extends Battle = Battle> {
   }
 
   private GetCriticalMultiplier(): number {
-    if (this.data.category === "Status") return 1;
-    if (this.TryCriticalHit()) return C.codemon.moves.criticalMultiplier;
-    return 1;
+    return this.TryCriticalHit() ? C.codemon.moves.criticalMultiplier : 1;
   }
 
-  private ApplyDamage(usage: MoveUsage<B>, targets: Codemon<B>[]) {
-    if (usage.moveData.category !== "Physical" && usage.moveData.category !== "Special") return;
+  private ApplyDamage(usage: Action, targets: Codemon[], battle: Battle) {
+    if (this.data.category !== "Physical" && this.data.category !== "Special") return;
 
     const stats: [PermanentStat, PermanentStat] =
       this.data.category === "Physical" ? ["attack", "defense"] : ["specialAttack", "specialDefense"];
@@ -191,16 +142,16 @@ export class Move<B extends Battle = Battle> {
     const critical = this.GetCriticalMultiplier();
     const multitarget = targets.length > 1 ? C.codemon.moves.multitargetMultiplier : 1;
     const random = 0.85 + Math.random() * 0.15;
-    const stab = this.user.species.types.includes(usage.moveData.type) ? 1.5 : 1;
+    const stab = this.user.species.types.includes(this.data.type) ? 1.5 : 1;
 
     let base = (2 * this.user.experience.level) / 5 + 2;
-    base *= usage.moveData.power; // TODO apply effective power, not base
+    base *= this.data.power; // TODO apply effective power, not base
     // TODO fix this
     base *= this.user.stats[stats[0]].value(critical != 1 && this.user.stats[stats[0]].stage > 0);
     base /= this.user.stats[stats[1]].value(critical != 1 && this.user.stats[stats[1]].stage < 0);
     base = base / 50 + 2;
 
-    usage.damage = {
+    usage.attack = {
       base,
       critical,
       stab,
@@ -211,34 +162,39 @@ export class Move<B extends Battle = Battle> {
     };
   }
 
-  private ApplyEffects(usage: MoveUsage<B>) {
-    if (!usage.moveData.effect) return;
-    if (Array.isArray(usage.moveData.effect)) usage.moveData.effect.forEach(e => this.ApplyEffect(usage, e));
-    else this.ApplyEffect(usage, usage.moveData.effect);
+  private ApplyEffects(usage: Action, targets: Codemon[], battle: Battle) {
+    if (!this.data.effect) return;
+    if (Array.isArray(this.data.effect)) this.data.effect.forEach(e => this.TryApplyEffect(usage, e, targets, battle));
+    else this.TryApplyEffect(usage, this.data.effect, targets, battle);
   }
 
-  private ApplyEffect(usage: MoveUsage<B>, effect: MoveEffect<B>) {
+  private TryApplyEffect(usage: Action, effect: MoveEffect, targets: Codemon[], battle: Battle) {
     if (effect.probability && Math.random() > effect.probability) return;
+    this.ApplyEffect(usage, effect, targets, battle);
+  }
+
+  private ApplyEffect(usage: Action, effect: MoveEffect, targets: Codemon[], battle: Battle) {
     switch (effect.type) {
       case "Weather":
-        this.ApplyWeather(usage, effect);
+        this.ApplyWeather(usage, effect.weather, battle);
         break;
       case "StatMod":
-        this.ApplyStatStage(usage, effect);
+        this.ApplyStatStage(usage, effect, targets, battle);
         break;
       case "Status":
-        this.ApplyStatus(usage, effect);
+        this.ApplyStatus(usage, effect.status, targets, battle);
         break;
+      default:
+        console.log("TODO: Implement effect", effect);
     }
   }
 
-  // deno-lint-ignore no-unused-vars
-  private ApplyWeather(usage: MoveUsage<B>, weather: Weather) {
-    // TODO
+  private ApplyWeather(usage: Action, weather: Weather, battle: Battle) {
+    usage.weather = weather;
   }
 
-  private ApplyStatStage(usage: MoveUsage<B>, effect: StatModMoveEffect) {
-    const stats = usage.stats ?? {};
+  private ApplyStatStage(usage: Action, effect: StageMods, targets: Codemon[], battle: Battle) {
+    const stats = usage.stage ?? {};
     if (effect.attack) stats.attack = (stats.attack ?? 0) + effect.attack;
     if (effect.defense) stats.defense = (stats.defense ?? 0) + effect.defense;
     if (effect.specialAttack) stats.specialAttack = (stats.specialAttack ?? 0) + effect.specialAttack;
@@ -246,12 +202,12 @@ export class Move<B extends Battle = Battle> {
     if (effect.speed) stats.speed = (stats.speed ?? 0) + effect.speed;
     if (effect.accuracy) stats.accuracy = (stats.accuracy ?? 0) + effect.accuracy;
     if (effect.evasion) stats.evasion = (stats.evasion ?? 0) + effect.evasion;
-    usage.stats = stats;
+    usage.stage = stats;
   }
 
-  private ApplyStatus(usage: MoveUsage<B>, effect: StatusMoveEffect<B>) {
+  private ApplyStatus(usage: Action, effect: StatusEffect, targets: Codemon[], battle: Battle) {
     const statuses = usage.statuses ?? [];
-    statuses.push(effect.status);
+    statuses.push(effect);
     usage.statuses = statuses;
   }
 

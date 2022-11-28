@@ -1,10 +1,9 @@
-import { Species } from "../core/index.ts";
+import { Species } from "./index.ts";
 import * as Moves from "./moves.ts";
 import * as Types from "./types.ts";
 import * as Experience from "./experience.ts";
-import { TraditionalBattle } from "./index.ts";
 
-export const Bulbasaur: Species<TraditionalBattle> = {
+export const Bulbasaur: Species = {
   name: "Bulbasaur",
   types: [Types.Grass, Types.Poison],
   sexRatio: 1 / 8,
@@ -42,7 +41,7 @@ export const Bulbasaur: Species<TraditionalBattle> = {
 };
 // ivysaur, venusaur, ...
 
-export const Garchomp: Species<TraditionalBattle> = {
+export const Garchomp: Species = {
   name: "Garchomp",
   //graphics: Graphics,
   types: [Types.Dragon, Types.Ground],
