@@ -1,5 +1,18 @@
-import Codemon, { spawn } from "../core/codemon.ts";
-import { ActionReciept, ActionReport, ActionSource, Battle, ReadyAction } from "../core/battle.ts";
+import {
+  MoveEntry,
+  TargetChoice,
+  Codemon,
+  spawn,
+  EffectReciept,
+  ActionReciept,
+  ActionSource,
+  ActionTarget,
+  Battle,
+  ReadyAction,
+  RoundReciept,
+  effectsFromParams,
+  PreliminaryRoundReciept,
+} from "./index.ts";
 
 export class TraditionalBattle extends Battle {
   public combatants: Codemon[];
@@ -9,40 +22,55 @@ export class TraditionalBattle extends Battle {
     this.combatants = combatants.map(c => (c instanceof Codemon ? c : spawn(c)));
   }
 
-  getTargets(_source: ActionSource): Codemon[] {
-    throw new Error("Method not implemented.");
+  getTargets(source: ActionSource): TargetChoice {
+    return {
+      source,
+      targets: [...this.combatants],
+      choice: "RandomSingle",
+    };
   }
 
   async runBattle() {
     await this.wait("start", this.combatants);
-    while (this.combatants.length > 1) await this.runRound();
-    const ret = { winner: this.combatants[0] ?? null };
-    await this.wait("afterEnd", ret);
-    return ret;
+
+    const rounds: RoundReciept[] = [];
+    while (this.combatants.length > 1) rounds.push(await this.runRound());
+
+    const report = { winner: this.combatants[0] ?? null, rounds, messages: [] };
+    await this.wait("afterEnd", report);
+
+    return report;
   }
 
   async runRound() {
     await this.wait("round", this.combatants, this.round);
+    const actions = await this.getActions();
+    await this.wait("ready", actions);
 
-    const actions = this.sortActions(await this.getActions());
-    const reports: ActionReport[] = [];
-    for (const action of actions) {
-      const report = await this.applyAction(action);
-      reports.push(...report);
-    }
-
-    await this.wait("roundEnd", {
+    const reciepts: ActionReciept[] = [];
+    for (const action of this.sortActions(actions)) reciepts.push(await this.runAction(action));
+    const preciept: PreliminaryRoundReciept = {
       round: this.round,
-      reports,
+      actions: reciepts,
       messages: [],
       reactions: [],
-    });
+    };
+
+    await this.wait("roundEnd", preciept);
+    for (const reaction of this.sortActions(preciept.reactions)) reciepts.push(await this.runAction(reaction));
+    const reciept: RoundReciept = {
+      round: this.round,
+      actions: reciepts,
+      messages: [],
+    };
+
+    this._round++;
+    return reciept;
   }
 
   // deno-lint-ignore require-await
   async getActions() {
-    const actions = this.combatants.map(c => this.getAIAction(c));
-    return actions;
+    return this.combatants.map(c => this.getAIAction(c));
   }
 
   // getTeamActions() {
@@ -52,9 +80,14 @@ export class TraditionalBattle extends Battle {
 
   getAIAction(codemon: Codemon): ReadyAction {
     return {
-      source: codemon.moves[0].actionSource,
+      source: codemon.moves[0],
       targets: [this.combatants[this.combatants.findIndex(c => c !== codemon)]],
     };
+  }
+
+  // deno-lint-ignore no-unused-vars
+  getAITarget(codemon: ActionTarget, choice: TargetChoice): ActionTarget[] {
+    throw new Error("Method not implemented.");
   }
 
   sortActions(actions: ReadyAction[]) {
@@ -62,85 +95,80 @@ export class TraditionalBattle extends Battle {
       const prioDiff = (a.source.priority ?? 0) - (b.source.priority ?? 0);
       if (prioDiff !== 0) return prioDiff;
 
-      const aSpeed = a.source.type === "Move" ? a.source.move.user.stats.speed.value(true) : 0;
-      const bSpeed = b.source.type === "Move" ? b.source.move.user.stats.speed.value(true) : 0;
+      const aSpeed = a.source instanceof MoveEntry ? a.source.user.stats.speed.value(true) : 0;
+      const bSpeed = b.source instanceof MoveEntry ? b.source.user.stats.speed.value(true) : 0;
       return bSpeed - aSpeed;
     });
   }
 
-  async applyAction(ready: ReadyAction): Promise<ActionReport[]> {
-    const reports: ActionReport[] = [];
-
+  async runAction(ready: ReadyAction): Promise<ActionReciept> {
     await this.wait("beforeAction", ready);
-    const action = ready.source.use(ready.targets, this);
+    const action = ready.source.useAction(ready.targets, this);
     await this.wait("action", action);
 
-    for (const preaction of this.sortActions(action.preactions)) {
-      const report = await this.applyAction(preaction);
-      reports.push(...report);
-    }
+    const preactions: ActionReciept[] = [];
+    for (const preaction of this.sortActions(action.preactions)) preactions.push(await this.runAction(preaction));
 
-    const reciepts: ActionReciept[] = [];
+    const effects: EffectReciept[] = [];
     for (const target of action.targets) {
-      await this.wait("beforeActionReciept", action, target);
-      const reciept = await target.RecieveAction(action);
-      await this.wait("actionReciept", reciept);
-      reciepts.push(reciept);
+      const effect = effectsFromParams(action, ready, target, this);
+      await this.wait("beforeEffectReciept", effect, target, action);
+      const reciept = await target.recieveAction(effect, ready, this);
+      await this.wait("effectReciept", reciept);
+      effects.push(reciept);
     }
 
-    const report: ActionReport = {
-      source: ready.source,
-      targets: action.targets,
+    const reactions: ActionReciept[] = [];
+    for (const reaction of this.sortActions(action.reactions)) reactions.push(await this.runAction(reaction));
+
+    const reciept: ActionReciept = {
+      preactions,
       action,
-      reciepts,
+      effects,
       messages: [],
+      reactions,
     };
-    await this.wait("actionReport", report);
-    reports.push(report);
 
-    for (const reaction of this.sortActions(action.reactions)) {
-      const report = await this.applyAction(reaction);
-      reports.push(...report);
-    }
+    await this.wait("actionReciept", reciept);
 
-    return reports;
+    return reciept;
   }
 
   consoleInterface() {
-    this.on("start", async () => {
+    this.on("start", () => {
       console.log("Battle started!\n");
       console.log("Combatants:");
-      console.log(this.combatants.map(c => c.toString(false)).join("\n"));
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      console.log(this.combatants.map(c => c.toString(true)).join("\n"));
+      prompt("Press enter to continue...");
+      console.log();
     });
 
-    this.on("round", async round => {
-      console.log("\nRound " + round + "!");
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    this.on("round", round => {
+      console.log(`\nRound ${round}!`);
     });
 
-    this.on("action", async action => {
-      if (action.source.type === "Move") {
-        console.log(
-          `${action.source.move.user.name} used ${action.source.move.data.name} on ${action.targets
-            .map(t => t.name)
-            .join(", ")}!`
-        );
+    //this.on("ready", () => console.log("Actions ready!"));
+
+    this.on("action", action => {
+      if (action.source instanceof MoveEntry)
+        action.messages.push(`${action.source.user.name} used ${action.source.data.name}!`);
+      // TODO add other action types
+    });
+
+    this.on("effectReciept", reciept => {
+      if (reciept.target instanceof Codemon) {
+        if (reciept.attack) {
+          if (reciept.attack.typeBoost === 0) console.log("It had no effect!");
+          console.log(reciept.target.name + " took " + reciept.attack.total + " damage!");
+        }
       }
+    });
 
-      if (action.source.type === "Item") {
-        // console.log(`Used ${action.source.}!`);
-      }
-
-      // if (action.source.type === "Swap") {
-      //   // console.log(`Used ${action.source.}!`);
-      // }
-
-      // if (action.source.type === "Flee") {
-      //   // console.log(`Used ${action.source.}!`);
-      // }
-
-      await new Promise(resolve => setTimeout(resolve, 1000));
+    this.on("roundEnd", reciept => {
+      console.log("\nRound " + reciept.round + " ended!");
+      console.log(reciept.messages.join("\n"));
+      prompt("Press enter to continue...");
+      console.log();
     });
   }
 }

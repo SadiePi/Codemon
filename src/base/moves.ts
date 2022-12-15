@@ -1,2682 +1,2862 @@
-import { MoveData, MoveEffect, TC } from "./index.ts";
-import * as Types from "./types.ts";
-import * as Status from "./status.ts";
+import { ReadyAction } from "./index.ts";
+import C, { Codemon, Move } from "./index.ts";
+import { ActionTarget } from "../core/battle.ts";
+import { Battle } from "./index.ts";
 
 // https://bulbapedia.bulbagarden.net/wiki/List_of_moves
-// TODOs: multi-turn moves, payday, roar/whirlwind, move restrictions, mist,
-
-export const Pound: MoveData = {
+// TODOs: multi-turn moves, payday, move restrictions, mist, type specific hits or misses, type changing
+export const Pound: Move = {
   name: "Pound",
   description: "The target is physically pounded with a long tail, a foreleg, or the like.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 35,
-  power: 40,
-  accuracy: 100,
   target: "Any Adjacent",
   makesContact: true,
-} as const;
 
-export const KarateChop: MoveData = {
+  power: 40,
+};
+
+export const KarateChop: Move = {
   name: "Karate Chop",
   description: "The target is attacked with a sharp chop. Critical hits land more easily.",
-  type: Types.Fighting,
+  type: C.Types.Fighting,
   category: "Physical",
   pp: 25,
-  power: 50,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
   criticalHitStage: 1,
-} as const;
 
-export const DoubleSlap: MoveData = {
+  power: 50,
+};
+
+export const DoubleSlap: Move = {
   name: "Double Slap",
   description: "The target is slapped repeatedly, back and forth, two to five times in a row.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 10,
-  power: 15,
-  accuracy: 85,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
 
-export const CometPunch: MoveData = {
+  accuracy: 85,
+  power: 15,
+};
+
+export const CometPunch: Move = {
   name: "Comet Punch",
   description: "The target is hit with a flurry of punches that strike two to five times in a row.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 15,
+  target: "Any Adjacent",
+  makesContact: true,
+  // useAgain: (uses: number) => {
+  //   if (hitsSoFar === 1) return true;
+  //   if (hitsSoFar === 2) return Math.random() < 0.65;
+  //   if (hitsSoFar === 3) return Math.random() < 0.3;
+  //   if (hitsSoFar === 4) return Math.random() < 0.15;
+  //   return false;
+  // },
+
   power: 18,
   accuracy: 85,
-  target: TC.Adjacent,
-  makesContact: true,
-  hitAgain: (hitsSoFar: number) => {
-    if (hitsSoFar === 1) return 1;
-    if (hitsSoFar === 2) return 0.65;
-    if (hitsSoFar === 3) return 0.3;
-    if (hitsSoFar === 4) return 0.15;
-    return 0;
-  },
-} as const;
+};
 
-export const MegaPunch: MoveData = {
+export const MegaPunch: Move = {
   name: "Mega Punch",
   description: "The target is slugged by a punch thrown with muscle-packed power.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20,
   power: 80,
   accuracy: 85,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const PayDay: MoveData = {
+export const PayDay: Move = {
   name: "Pay Day",
   description: "Numerous coins are hurled at the target to inflict damage. Money is earned after the battle.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20,
   power: 40,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
   // TODO somehow
-} as const;
+};
 
-export const FirePunch: MoveData = {
+export const FirePunch: Move = {
   name: "Fire Punch",
   description: "The target is punched with a fiery fist. This may also leave the target with a burn.",
-  type: Types.Fire,
+  type: C.Types.Fire,
   category: "Physical",
   pp: 15,
   power: 75,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Burn,
-    probability: 0.1,
-  },
-} as const;
+  status: [C.Statuses.Burn, 1 / 10],
+};
 
-export const IcePunch: MoveData = {
+export const IcePunch: Move = {
   name: "Ice Punch",
   description: "The target is punched with an icy fist. This may also leave the target frozen.",
-  type: Types.Ice,
+  type: C.Types.Ice,
   category: "Physical",
   pp: 15,
   power: 75,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Freeze,
-    probability: 0.1,
-  },
-} as const;
+  status: [C.Statuses.Freeze, 1 / 10],
+};
 
-export const ThunderPunch: MoveData = {
+export const ThunderPunch: Move = {
   name: "Thunder Punch",
   description: "The target is punched with an electrified fist. This may also leave the target with paralysis.",
-  type: Types.Electric,
+  type: C.Types.Electric,
   category: "Physical",
   pp: 15,
   power: 75,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Paralysis,
-    probability: 0.1,
-  },
-} as const;
+  status: [C.Statuses.Paralysis, 1 / 10],
+};
 
-export const Scratch: MoveData = {
+export const Scratch: Move = {
   name: "Scratch",
   description: "Hard, pointed, sharp claws rake the target to inflict damage.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 35,
   power: 40,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const ViseGrip: MoveData = {
+export const ViseGrip: Move = {
   name: "Vise Grip",
   description: "The target is gripped and squeezed from both sides to inflict damage.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 30,
   power: 55,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const Guillotine: MoveData = {
+export const Guillotine: Move = {
   name: "Guillotine",
   description: "A vicious, tearing attack with big pincers. The target faints instantly if this attack hits.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 5,
-  power: 0,
   accuracy: 90,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Faint",
-  },
-} as const;
+  faint: true,
+};
 
-export const RazorWind: MoveData = {
+export const RazorWind: Move = {
   name: "Razor Wind",
   description:
     "In this two-turn attack, blades of wind hit opposing Pokémon on the second turn. Critical hits land more easily.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Special",
   pp: 10,
   power: 80,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
   criticalHitStage: 1,
   // TODO somehow
-} as const;
+};
 
-export const SwordsDance: MoveData = {
+export const SwordsDance: Move = {
   name: "Swords Dance",
   description: "A frenetic dance to uplift the fighting spirit. This sharply raises the user's Attack stat.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 30,
-  target: TC.Self,
+  target: "Self",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    attack: 2,
-  },
-} as const;
+  stage: { attack: 2 },
+};
 
-export const Cut: MoveData = {
+export const Cut: Move = {
   name: "Cut",
   description: "The target is cut with a scythe or claw.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 30,
   power: 50,
   accuracy: 95,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const Gust: MoveData = {
+export const Gust: Move = {
   name: "Gust",
   description: "A gust of wind is whipped up by wings and launched at the target to inflict damage.",
-  type: Types.Flying,
+  type: C.Types.Flying,
   category: "Special",
   pp: 35,
   power: 40,
-  accuracy: 100,
-  target: TC.Adjacent | TC.NonAdjacent,
+  target: "Any",
   makesContact: false,
   // TODO during Fly, double power
-} as const;
+};
 
-export const WingAttack: MoveData = {
+export const WingAttack: Move = {
   name: "Wing Attack",
   description: "The target is struck with large, imposing wings spread wide to inflict damage.",
-  type: Types.Flying,
+  type: C.Types.Flying,
   category: "Physical",
   pp: 35,
   power: 60,
-  accuracy: 100,
-  target: TC.Adjacent | TC.NonAdjacent,
+  target: "Any",
   makesContact: true,
-} as const;
+};
 
-export const Whirlwind: MoveData = {
+export const Whirlwind: Move = {
   name: "Whirlwind",
   description:
     "The target is blown away, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 20,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: { type: "Eject" },
-} as const;
+  eject: true,
+};
 
-export const Fly: MoveData = {
+export const Fly: Move = {
   name: "Fly",
   description: "The user flies up into the sky and then strikes its target on the next turn.",
-  type: Types.Flying,
+  type: C.Types.Flying,
   category: "Physical",
   pp: 15,
   power: 90,
   accuracy: 95,
-  target: TC.Adjacent | TC.NonAdjacent,
+  target: "Any",
   makesContact: true,
   // TODO somehow
-} as const;
+};
 
-export const Bind: MoveData = {
+export const Bind: Move = {
   name: "Bind",
   description:
     "Things such as long bodies or tentacles are used to bind and squeeze the target for four to five turns.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20,
   power: 15,
   accuracy: 85,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
   // TODO details
-} as const;
+};
 
-export const Slam: MoveData = {
+export const Slam: Move = {
   name: "Slam",
   description: "The target is slammed with a long tail, vines, or the like to inflict damage.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20,
   power: 80,
   accuracy: 75,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const VineWhip: MoveData = {
+export const VineWhip: Move = {
   name: "Vine Whip",
   description: "The target is struck with slender, whiplike vines to inflict damage.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Physical",
   pp: 25, // max 40
   power: 45,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const Stomp: MoveData = {
+export const Stomp: Move = {
   name: "Stomp",
   description: "The target is stomped with a big foot. This may also make the target flinch.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20,
   power: 65,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Flinch,
-    probability: 3 / 10,
-  },
-} as const;
+  status: [C.Statuses.Flinch, 3 / 10],
+};
 
-export const DoubleKick: MoveData = {
+export const DoubleKick: Move = {
   name: "Double Kick",
   description: "The target is quickly kicked twice in succession using both feet.",
-  type: Types.Fighting,
+  type: C.Types.Fighting,
   category: "Physical",
   pp: 30,
   power: 30,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  hitAgain: h => h < 2,
-} as const;
+  // hitAgain: h => h < 2,
+};
 
-export const MegaKick: MoveData = {
+export const MegaKick: Move = {
   name: "Mega Kick",
   description: "The target is attacked by a kick launched with muscle-packed power.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 5,
   power: 120,
   accuracy: 75,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const JumpKick: MoveData = {
+export const JumpKick: Move = {
   name: "Jump Kick",
   description: "The user jumps up high, then strikes with a kick. If the kick misses, the user hurts itself.",
-  type: Types.Fighting,
+  type: C.Types.Fighting,
   category: "Physical",
   pp: 10,
   power: 100,
   accuracy: 95,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  crash: t => Math.floor(t.stats.hp.value() / 2),
-} as const;
+  crash: {
+    hp: action => Math.floor(action.source instanceof Codemon ? action.source.stats.hp.value() / 2 : 0),
+  },
+};
 
-export const RollingKick: MoveData = {
+export const RollingKick: Move = {
   name: "Rolling Kick",
   description: "The user lashes out with a quick, spinning kick. This may also make the target flinch.",
-  type: Types.Fighting,
+  type: C.Types.Fighting,
   category: "Physical",
   pp: 15,
   power: 60,
   accuracy: 85,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Flinch,
-    probability: 3 / 10,
-  },
-} as const;
+  status: [C.Statuses.Flinch, 3 / 10],
+};
 
-export const SandAttack: MoveData = {
+export const SandAttack: Move = {
   name: "Sand Attack",
   description: "Sand is hurled in the target's face, reducing the target's accuracy.",
-  type: Types.Ground,
+  type: C.Types.Ground,
   category: "Status",
   pp: 15,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    accuracy: -1,
-  },
-} as const;
+  stage: { accuracy: -1 },
+};
 
-export const Headbutt: MoveData = {
+export const Headbutt: Move = {
   name: "Headbutt",
   description:
     "The user sticks out its head and attacks by charging straight into the target. This may also make the target flinch.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 15,
   power: 70,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Flinch,
-    probability: 3 / 10,
-  },
-} as const;
+  status: [C.Statuses.Flinch, 3 / 10],
+};
 
-export const HornAttack: MoveData = {
+export const HornAttack: Move = {
   name: "Horn Attack",
   description: "The target is jabbed with a sharply pointed horn to inflict damage.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 25,
   power: 65,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const FuryAttack: MoveData = {
+export const FuryAttack: Move = {
   name: "Fury Attack",
   description: "The target is jabbed repeatedly with a horn or beak two to five times in a row.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20,
   power: 15,
   accuracy: 85,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  hitAgain: (hitsSoFar: number) => {
-    if (hitsSoFar === 1) return 1;
-    if (hitsSoFar === 2) return 0.65;
-    if (hitsSoFar === 3) return 0.3;
-    if (hitsSoFar === 4) return 0.15;
-    return 0;
-  },
+  // hitAgain: (hitsSoFar: number) => {
+  //   if (hitsSoFar === 1) return 1;
+  //   if (hitsSoFar === 2) return 0.65;
+  //   if (hitsSoFar === 3) return 0.3;
+  //   if (hitsSoFar === 4) return 0.15;
+  //   return 0;
+  // },
 };
 
-export const HornDrill: MoveData = {
+export const HornDrill: Move = {
   name: "Horn Drill",
   description:
     "The user stabs the target with a horn that rotates like a drill. The target faints instantly if this attack hits.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 5,
-  power: 0,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  // TODO somehow
-} as const;
+  faint: true,
+};
 
-export const Tackle: MoveData = {
+export const Tackle: Move = {
   name: "Tackle",
   description: "A physical attack in which the user charges and slams into the target with its whole body.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 35, // max 56
   power: 40,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const BodySlam: MoveData = {
+export const BodySlam: Move = {
   name: "Body Slam",
   description:
     "The user drops onto the target with its full body weight. This may also leave the target with paralysis.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 15,
   power: 85,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Paralysis,
-    probability: 3 / 10,
-  },
-} as const;
+  status: [C.Statuses.Paralysis, 3 / 10],
+};
 
-export const Wrap: MoveData = {
+export const Wrap: Move = {
   name: "Wrap",
   description: "A long body, vines, or the like are used to wrap and squeeze the target for four to five turns.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20,
   power: 15,
   accuracy: 90,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
   // TODO functionality
 };
 
-export const TakeDown: MoveData = {
+export const TakeDown: Move = {
   name: "Take Down",
   description: "A reckless, full-body charge attack for slamming into the target. This also damages the user a little.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20, // max 32
   power: 90,
   accuracy: 85,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  recoil: 1 / 4,
-} as const;
+  // recoil: 1 / 4,
+};
 
-export const Thrash: MoveData = {
+export const Thrash: Move = {
   name: "Thrash",
   description: "The user rampages and attacks for two to three turns. The user then becomes confused.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 10,
   power: 120,
-  accuracy: 100,
-  target: TC.Self,
+  target: "Self",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Thrashing,
-  },
-} as const;
+  status: C.Statuses.Thrashing,
+};
 
-export const DoubleEdge: MoveData = {
+export const DoubleEdge: Move = {
   name: "Double-Edge",
   description:
     "A reckless, life-risking tackle in which the user rushes the target. This also damages the user quite a lot.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 15, // max 24
   power: 120,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  recoil: 1 / 4,
-} as const;
+  // recoil: 1 / 4,
+};
 
-export const TailWhip: MoveData = {
+export const TailWhip: Move = {
   name: "Tail Whip",
   description: "The user wags its tail cutely, making opposing Pokémon less wary and lowering their Defense stats.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 30,
-  accuracy: 100,
-  target: TC.All | TC.Adjacent | TC.Foe,
+  target: "Every Adjacent Foe",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    defense: -1,
-  },
-} as const;
+  stage: { defense: -1 },
+};
 
-export const PoisonSting: MoveData = {
+export const PoisonSting: Move = {
   name: "Poison Sting",
   description: "The user stabs the target with a poisonous stinger. This may also poison the target.",
-  type: Types.Poison,
+  type: C.Types.Poison,
   category: "Physical",
   pp: 35,
   power: 15,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Poison,
-    probability: 3 / 10,
-  },
-} as const;
+  status: [C.Statuses.Poison, 3 / 10],
+};
 
-export const Twineedle: MoveData = {
+export const Twineedle: Move = {
   name: "Twineedle",
   description:
     "The user damages the target twice in succession by jabbing it with two spikes. This may also poison the target.",
-  type: Types.Bug,
+  type: C.Types.Bug,
   category: "Physical",
   pp: 20,
   power: 25,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Poison,
-    probability: 2 / 10,
-  },
-} as const;
+  status: [C.Statuses.Poison, 2 / 10],
+};
 
-// Note: this move works differently in Legends: Arceus but I don't care.
-export const PinMissle: MoveData = {
+export const PinMissle: Move = {
   name: "Pin Missile",
   description: "Sharp spikes are shot at the target in rapid succession. They hit two to five times in a row.",
-  type: Types.Bug,
+  type: C.Types.Bug,
   category: "Physical",
   pp: 20,
   power: 25,
   accuracy: 95,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  hitAgain: (hitsSoFar: number) => {
-    if (hitsSoFar === 1) return 1;
-    if (hitsSoFar === 2) return 0.65;
-    if (hitsSoFar === 3) return 0.3;
-    if (hitsSoFar === 4) return 0.15;
-    return 0;
-  },
-} as const;
+  // hitAgain: (hitsSoFar: number) => {
+  //   if (hitsSoFar === 1) return 1;
+  //   if (hitsSoFar === 2) return 0.65;
+  //   if (hitsSoFar === 3) return 0.3;
+  //   if (hitsSoFar === 4) return 0.15;
+  //   return 0;
+  // },
+};
 
-export const Leer: MoveData = {
+export const Leer: Move = {
   name: "Leer",
   description: "The user gives opposing Pokémon an intimidating leer that lowers the Defense stat.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 30,
-  accuracy: 100,
-  target: TC.All | TC.Adjacent | TC.Foe,
+  target: "Every Adjacent Foe",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    defense: -1,
-  },
-} as const;
+  stage: { defense: -1 },
+};
 
-export const Bite: MoveData = {
+export const Bite: Move = {
   name: "Bite",
   description: "The target is bitten with viciously sharp fangs. This may also make the target flinch.",
-  type: Types.Dark,
+  type: C.Types.Dark,
   category: "Physical",
   pp: 25, // max 40
   power: 60,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.Flinch,
-    probability: 3 / 10,
-  },
-} as const;
+  status: [C.Statuses.Flinch, 3 / 10],
+};
 
-export const Growl: MoveData = {
+export const Growl: Move = {
   name: "Growl",
   description:
     "The user growls in an endearing way, making opposing Pokémon less wary. This lowers their Attack stats.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 40, // max 64
-  accuracy: 100,
-  target: TC.All | TC.Adjacent | TC.Foe,
+  target: "Every Adjacent Foe",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    attack: -1,
-  },
-} as const;
+  stage: { attack: -1 },
+};
 
-export const Roar: MoveData = {
+export const Roar: Move = {
   name: "Roar",
   description:
     "The target is scared off, and a different Pokémon is dragged out. In the wild, this ends a battle against a single opponent.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 20,
-  accuracy: 100,
   priority: -6,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: { type: "Eject" },
-} as const;
+  eject: true,
+};
 
-export const Sing: MoveData = {
+export const Sing: Move = {
   name: "Sing",
   description: "A soothing lullaby is sung in a calming voice that puts the target into a deep slumber.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 15,
   accuracy: 55,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Sleep,
-  },
-} as const;
+  status: C.Statuses.Sleep,
+};
 
-export const Supersonic: MoveData = {
+export const Supersonic: Move = {
   name: "Supersonic",
   description: "The user generates odd sound waves from its body that confuse the target.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 20,
   accuracy: 55,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Confusion,
-  },
-} as const;
+  status: C.Statuses.Confusion,
+};
 
-export const SonicBoom: MoveData = {
+export const SonicBoom: Move = {
   name: "Sonic Boom",
   description: "The target is hit with a destructive shock wave that always inflicts 20 HP damage.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Special",
   pp: 20,
   power: 20,
   accuracy: 90,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "HP",
-    hp: 20,
-  },
-} as const;
+  hp: -20,
+};
 
-export const Disable: MoveData = {
+export const Disable: Move = {
   name: "Disable",
   description: "For four turns, this move prevents the target from using the move it last used.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 20,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Restriction",
-    // TODO implement restrictions
-  },
-} as const;
+  restrict: null, // TODO
+};
 
-export const Acid: MoveData = {
+export const Acid: Move = {
   name: "Acid",
   description: "Opposing Pokémon are attacked with a spray of harsh acid. This may also lower their Sp. Def stats.",
-  type: Types.Poison,
+  type: C.Types.Poison,
   category: "Special",
   pp: 30,
   power: 40,
-  accuracy: 100,
-  target: TC.All | TC.Adjacent | TC.Foe,
+  target: "Every Adjacent Foe",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    specialDefense: -1,
-    probability: 1 / 10,
-  },
-} as const;
+  stage: { specialDefense: -1 },
+};
 
-export const Ember: MoveData = {
+export const Ember: Move = {
   name: "Ember",
   description: "The target is attacked with small flames. This may also leave the target with a burn.",
-  type: Types.Fire,
+  type: C.Types.Fire,
   category: "Special",
   pp: 25,
   power: 40,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Burn,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Burn, 1 / 10],
+};
 
-export const Flamethrower: MoveData = {
+export const Flamethrower: Move = {
   name: "Flamethrower",
   description: "The target is scorched with an intense blast of fire. This may also leave the target with a burn.",
-  type: Types.Fire,
+  type: C.Types.Fire,
   category: "Special",
   pp: 15,
   power: 90,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Burn,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Burn, 1 / 10],
+};
 
-export const Mist: MoveData = {
+export const Mist: Move = {
   name: "Mist",
   description:
     "The user cloaks itself and its allies in a white mist that prevents any of their stats from being lowered for five turns.",
-  type: Types.Ice,
+  type: C.Types.Ice,
   category: "Status",
   pp: 30,
-  accuracy: 100,
-  target: TC.All | TC.Ally | TC.Self,
+  target: "Team",
   makesContact: false,
-  // effect: {
-  //   type: "Status",
-  //   status: Status.Mist,
-  // },
-  effect: [] as MoveEffect[],
-} as const;
+  // status: C.Statuses.Mist,
+};
 
-export const WaterGun: MoveData = {
+export const WaterGun: Move = {
   name: "Water Gun",
   description: "The target is blasted with a forceful shot of water.",
-  type: Types.Water,
+  type: C.Types.Water,
   category: "Special",
   pp: 25,
   power: 40,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-} as const;
+};
 
-export const HydroPump: MoveData = {
+export const HydroPump: Move = {
   name: "Hydro Pump",
   description: "The target is blasted by a huge volume of water launched under great pressure.",
-  type: Types.Water,
+  type: C.Types.Water,
   category: "Special",
   pp: 5,
   power: 110,
   accuracy: 80,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-} as const;
+};
 
-export const Surf: MoveData = {
+export const Surf: Move = {
   name: "Surf",
   description: "The user attacks everything around it by swamping its surroundings with a giant wave.",
-  type: Types.Water,
+  type: C.Types.Water,
   category: "Special",
   pp: 15,
   power: 90,
-  accuracy: 100,
-  target: TC.All | TC.Adjacent,
+  target: "Every Adjacent",
   makesContact: false,
-} as const;
+};
 
-export const IceBeam: MoveData = {
+export const IceBeam: Move = {
   name: "Ice Beam",
   description: "The target is struck with an icy-cold beam of energy. This may also leave the target frozen.",
-  type: Types.Ice,
+  type: C.Types.Ice,
   category: "Special",
   pp: 10,
   power: 90,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Freeze,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Freeze, 1 / 10],
+};
 
-export const Blizzard: MoveData = {
+export const Blizzard: Move = {
   name: "Blizzard",
   description:
     "A howling blizzard is summoned to strike opposing Pokémon. This may also leave the opposing Pokémon frozen.",
-  type: Types.Ice,
+  type: C.Types.Ice,
   category: "Special",
   pp: 5,
   power: 110,
   accuracy: 70,
-  target: TC.All | TC.Adjacent | TC.Foe,
+  target: "Every Adjacent Foe",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Freeze,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Freeze, 1 / 10],
+};
 
-export const Psybeam: MoveData = {
+export const Psybeam: Move = {
   name: "Psybeam",
   description: "The target is attacked with a peculiar ray. This may also leave the target confused.",
-  type: Types.Psychic,
+  type: C.Types.Psychic,
   category: "Special",
   pp: 20,
   power: 65,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Confusion,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Confusion, 1 / 10],
+};
 
-export const BubbleBeam: MoveData = {
+export const BubbleBeam: Move = {
   name: "Bubble Beam",
   description: "A spray of bubbles is forcefully ejected at the target. This may also lower the target's Speed stat.",
-  type: Types.Water,
+  type: C.Types.Water,
   category: "Special",
   pp: 20,
   power: 65,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    speed: -1,
-    probability: 1 / 10,
-  },
-} as const;
+  stage: [{ speed: -1 }, 1 / 10],
+};
 
-export const AuroraBeam: MoveData = {
+export const AuroraBeam: Move = {
   name: "Aurora Beam",
   description: "The target is hit with a rainbow-colored beam. This may also lower the target's Attack stat.",
-  type: Types.Ice,
+  type: C.Types.Ice,
   category: "Special",
   pp: 20,
   power: 65,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    attack: -1,
-    probability: 1 / 10,
-  },
-} as const;
+  stage: [{ attack: -1 }, 1 / 10],
+};
 
-export const HyperBeam: MoveData = {
+export const HyperBeam: Move = {
   name: "Hyper Beam",
   description: "The target is attacked with a powerful beam. The user can't move on the next turn.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Special",
   pp: 5,
   power: 150,
   accuracy: 90,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: [] as MoveEffect[],
   // TODO functionality
-} as const;
+};
 
-export const Peck: MoveData = {
+export const Peck: Move = {
   name: "Peck",
   description: "The target is jabbed with a sharply pointed beak or horn.",
-  type: Types.Flying,
+  type: C.Types.Flying,
   category: "Physical",
   pp: 35,
   power: 35,
-  accuracy: 100,
-  target: TC.Foe | TC.Ally,
+  target: "Any",
   makesContact: true,
-} as const;
+};
 
-export const DrillPeck: MoveData = {
+export const DrillPeck: Move = {
   name: "Drill Peck",
   description: "A corkscrewing attack that strikes the target with a sharp beak acting as a drill.",
-  type: Types.Flying,
+  type: C.Types.Flying,
   category: "Physical",
   pp: 20,
   power: 80,
-  accuracy: 100,
-  target: TC.Foe | TC.Ally,
+  target: "Any",
   makesContact: true,
-} as const;
+};
 
-export const Submission: MoveData = {
+export const Submission: Move = {
   name: "Submission",
   description: "The user grabs the target and recklessly dives for the ground. This also damages the user a little.",
-  type: Types.Fighting,
+  type: C.Types.Fighting,
   category: "Physical",
   pp: 20,
   power: 80,
   accuracy: 80,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  recoil: 1 / 4,
-} as const;
+  // recoil: 1 / 4,
+};
 
-export const LowKick: MoveData = {
+export const LowKick: Move = {
   name: "Low Kick",
   description:
     "A powerful low kick that makes the target fall over. The heavier the target, the greater the move's power.",
-  type: Types.Fighting,
+  type: C.Types.Fighting,
   category: "Physical",
   pp: 20,
-  power: 0,
-  accuracy: 100,
-  target: TC.Adjacent,
+  /*power: (_action, target, _battle) => {
+    const w = target.species.weight;
+    if (w < 10) return 20;
+    if (w < 25) return 40;
+    if (w < 50) return 60;
+    if (w < ) return 80;
+    if (w < ) return ;
+    return ;
+  },*/
+  target: "Any Adjacent",
   makesContact: true,
-  // TODO somehow
-} as const;
+};
 
-export const Counter: MoveData = {
+export const Counter: Move = {
   name: "Counter",
   description: "A retaliation move that counters any physical attack, inflicting double the damage taken.",
-  type: Types.Fighting,
+  type: C.Types.Fighting,
   category: "Physical",
   pp: 20,
-  power: 0,
-  accuracy: 100,
   priority: -5,
-  target: TC.Self,
+  target: "Self",
   makesContact: true,
-  // TODO somehow
-} as const;
+  // TODO somehow, probably a special actionSource
+};
 
-export const SeismicToss: MoveData = {
+export const SeismicToss: Move = {
   name: "Seismic Toss",
   description: "The target is thrown using the power of gravity. It inflicts damage equal to the user's level.",
-  type: Types.Fighting,
+  type: C.Types.Fighting,
   category: "Physical",
   pp: 20,
-  power: 0,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
   // TODO somehow
-} as const;
+};
 
-export const Strength: MoveData = {
+export const Strength: Move = {
   name: "Strength",
   description: "The target is slugged with a punch thrown at maximum power.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 15,
   power: 80,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const Absorb: MoveData = {
+export const Absorb: Move = {
   name: "Absorb",
   description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Special",
   pp: 20,
   power: 20,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  // effect: {
-  //   type: "Heal",
-  //   amount: 1 / 2,
-  // },
-  effect: [] as MoveEffect[],
-} as const;
+  leech: 1 / 2,
+};
 
-export const MegaDrain: MoveData = {
+export const MegaDrain: Move = {
   name: "Mega Drain",
   description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Special",
   pp: 15,
   power: 40,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Leech",
-    ratio: 1 / 2,
-  },
-} as const;
+  leech: 1 / 2,
+};
 
-export const LeechSeed: MoveData = {
+export const LeechSeed: Move = {
   name: "Leech Seed",
   description: "A seed is planted on the target. It steals some HP from the target every turn.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Status",
   pp: 10, // max 16
   accuracy: 90,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.LeechSeed,
-  },
-} as const;
+  status: C.Statuses.LeechSeed,
+};
 
-export const Growth: MoveData = {
+export const Growth: Move = {
   name: "Growth",
   description: "The user's body grows all at once, raising the Attack and Sp. Atk stats.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 20, // max 32
-  accuracy: 100,
-  target: TC.Self,
+  target: "Self",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    attack: 1,
-    specialAttack: 1,
-  },
-} as const;
+  stage: { attack: 1, specialAttack: 1 },
+};
 
-export const RazorLeaf: MoveData = {
+export const RazorLeaf: Move = {
   name: "Razor Leaf",
   description: "Sharp-edged leaves are launched to slash at opposing Pokémon. Critical hits land more easily.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Physical",
   pp: 25, // max 40
   power: 55,
   accuracy: 95,
-  target: TC.All | TC.Adjacent | TC.Foe,
+  target: "Every Adjacent Foe",
   makesContact: false,
   criticalHitStage: 1,
-} as const;
+};
 
-export const SolarBeam: MoveData = {
+export const SolarBeam: Move = {
   name: "Solar Beam",
   description: "In this two-turn attack, the user gathers light, then blasts a bundled beam on the next turn.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Special",
   pp: 10, // max 16
   power: 120,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
   // TODO functionality
-} as const;
+};
 
-export const PoisonPowder: MoveData = {
+export const PoisonPowder: Move = {
   name: "Poison Powder",
   description: "The user scatters a cloud of poisonous dust that poisons the target.",
-  type: Types.Poison,
+  type: C.Types.Poison,
   category: "Status",
   pp: 35, // max 56
   accuracy: 75,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Poison,
-  },
-} as const;
+  status: C.Statuses.Poison,
+};
 
-export const StunSpore: MoveData = {
+export const StunSpore: Move = {
   name: "Stun Spore",
   description: "The user scatters a cloud of numbing powder that paralyzes the target.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Status",
   pp: 30, // max 48
   accuracy: 75,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Paralysis,
-  },
-} as const;
+  status: C.Statuses.Paralysis,
+};
 
-export const SleepPowder: MoveData = {
+export const SleepPowder: Move = {
   name: "Sleep Powder",
   description: "The user scatters a big cloud of sleep-inducing dust around the target.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Status",
   pp: 15, // max 24
   accuracy: 75,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Sleep,
-  },
-} as const;
+  status: C.Statuses.Sleep,
+};
 
-export const PetalDance: MoveData = {
+export const PetalDance: Move = {
   name: "Petal Dance",
   description: "The user attacks the target with sharp petals that land on the target.",
-  type: Types.Grass,
+  type: C.Types.Grass,
   category: "Physical",
   pp: 10, // max 16
   power: 120,
-  accuracy: 100,
-  target: TC.Self,
+  target: "Random Adjacent Foe",
   makesContact: true,
   // TODO functionality
-} as const;
+};
 
-export const StringShot: MoveData = {
+export const StringShot: Move = {
   name: "String Shot",
   description: "Opposing Pokémon are bound with silk blown from the user's mouth that harshly lowers the Speed stat.",
-  type: Types.Bug,
+  type: C.Types.Bug,
   category: "Status",
   pp: 40, // max 64
   accuracy: 95,
-  target: TC.All | TC.Adjacent | TC.Foe,
+  target: "Every Adjacent Foe",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    speed: -2,
-  },
-} as const;
+  stage: { speed: -2 },
+};
 
-export const DragonRage: MoveData = {
+export const DragonRage: Move = {
   name: "Dragon Rage",
   description: "This attack hits the target with a shock wave of pure rage. This attack always inflicts 40 HP damage.",
-  type: Types.Dragon,
+  type: C.Types.Dragon,
   category: "Physical",
   pp: 10, // max 16
-  power: 0,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "HP",
-    hp: -40,
-  },
-} as const;
+  hp: -40,
+};
 
-export const FireSpin: MoveData = {
+export const FireSpin: Move = {
   name: "Fire Spin",
   description: "The target becomes trapped within a fierce vortex of fire that rages for four to five turns.",
-  type: Types.Fire,
+  type: C.Types.Fire,
   category: "Special",
   pp: 15, // max 24
   power: 35,
   accuracy: 85,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
   // TODO functionality
-} as const;
+};
 
-export const ThunderShock: MoveData = {
+export const ThunderShock: Move = {
   name: "Thunder Shock",
   description:
     "A jolt of electricity crashes down on the target to inflict damage. This may also leave the target with paralysis.",
-  type: Types.Electric,
+  type: C.Types.Electric,
   category: "Special",
   pp: 30, // max 48
   power: 40,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Paralysis,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Paralysis, 1 / 10],
+};
 
-export const Thunderbolt: MoveData = {
+export const Thunderbolt: Move = {
   name: "Thunderbolt",
   description: "A strong electric blast crashes down on the target. This may also leave the target with paralysis.",
-  type: Types.Electric,
+  type: C.Types.Electric,
   category: "Special",
   pp: 15, // max 24
   power: 90,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Paralysis,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Paralysis, 1 / 10],
+};
 
-export const ThunderWave: MoveData = {
+export const ThunderWave: Move = {
   name: "Thunder Wave",
   description: "The user launches a weak jolt of electricity that paralyzes the target.",
-  type: Types.Electric,
+  type: C.Types.Electric,
   category: "Status",
   pp: 20, // max 32
   accuracy: 90,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Paralysis,
-  },
-} as const;
+  status: C.Statuses.Paralysis,
+};
 
-export const Thunder: MoveData = {
+export const Thunder: Move = {
   name: "Thunder",
   description:
     "A wicked thunderbolt is dropped on the target to inflict damage. This may also leave the target with paralysis.",
-  type: Types.Electric,
+  type: C.Types.Electric,
   category: "Physical",
   pp: 10, // max 16
   power: 110,
   accuracy: 70,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Paralysis,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Paralysis, 1 / 10],
+};
 
-export const RockThrow: MoveData = {
+export const RockThrow: Move = {
   name: "Rock Throw",
   description: "The user picks up and throws a small rock at the target to attack.",
-  type: Types.Rock,
+  type: C.Types.Rock,
   category: "Physical",
+  target: "Any Adjacent",
+  makesContact: false,
   pp: 15, // max 24
   power: 50,
   accuracy: 90,
-  target: TC.Adjacent,
-  makesContact: false,
-} as const;
+};
 
-export const Earthquake: MoveData = {
+export const Earthquake: Move = {
   name: "Earthquake",
   description: "The user sets off an earthquake that strikes every Pokémon around it.",
-  type: Types.Ground,
+  type: C.Types.Ground,
   category: "Physical",
   pp: 10, // max 16
   power: 100,
-  accuracy: 100,
-  target: TC.All | TC.Adjacent,
+  target: "Every Adjacent",
   makesContact: false,
-} as const;
+};
 
-export const Fissure: MoveData = {
+export const Fissure: Move = {
   name: "Fissure",
   description:
     "The user opens up a fissure in the ground and drops the target in. The target faints instantly if this attack hits.",
-  type: Types.Ground,
+  type: C.Types.Ground,
   category: "Physical",
   pp: 5, // max 8
-  power: 0,
   accuracy: 30,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: { type: "Faint" },
-} as const;
+  faint: true,
+};
 
-export const Dig: MoveData = {
+export const Dig: Move = {
   name: "Dig",
   description: "The user burrows into the ground, then attacks on the next turn.",
-  type: Types.Ground,
+  type: C.Types.Ground,
   category: "Physical",
   pp: 10, // max 16
   power: 80,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-  effect: {
-    type: "Status",
-    status: Status.SemiInvulnerableTurn,
-  },
+  status: C.Statuses.SemiInvulnerableTurn,
   // TODO functionality
-} as const;
+};
 
-export const Toxic: MoveData = {
+export const Toxic: Move = {
   name: "Toxic",
   description: "A move that leaves the target badly poisoned. Its poison damage worsens every turn.",
-  type: Types.Poison,
+  type: C.Types.Poison,
   category: "Status",
   pp: 10, // max 16
   accuracy: 90,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.BadlyPoisoned,
-  },
-} as const;
+  status: C.Statuses.BadlyPoisoned,
+};
 
-export const Confusion: MoveData = {
+export const Confusion: Move = {
   name: "Confusion",
   description: "The target is hit by a weak telekinetic force. This may also confuse the target.",
-  type: Types.Psychic,
+  type: C.Types.Psychic,
   category: "Special",
   pp: 25, // max 40
   power: 50,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Confusion,
-    probability: 1 / 10,
-  },
-} as const;
+  status: [C.Statuses.Confusion, 1 / 10],
+};
 
-export const Psychic: MoveData = {
+export const Psychic: Move = {
   name: "Psychic",
   description: "The target is hit by a strong telekinetic force. This may also lower the target's Sp. Def stat.",
-  type: Types.Psychic,
+  type: C.Types.Psychic,
   category: "Special",
   pp: 10, // max 16
   power: 90,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    specialDefense: -1,
-    probability: 1 / 10,
-  },
-} as const;
+  stage: [{ specialDefense: -1 }, 1 / 10],
+};
 
-export const Hypnosis: MoveData = {
+export const Hypnosis: Move = {
   name: "Hypnosis",
   description: "The user employs hypnotic suggestion to make the target fall into a deep sleep.",
-  type: Types.Psychic,
+  type: C.Types.Psychic,
   category: "Status",
   pp: 20, // max 32
   accuracy: 60,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Sleep,
-    probability: 1 / 10,
-  },
-} as const;
+  status: C.Statuses.Sleep,
+};
 
-export const Meditate: MoveData = {
+export const Meditate: Move = {
   name: "Meditate",
   description: "The user meditates to awaken the power deep within its body and raise its Attack stat.",
-  type: Types.Psychic,
+  type: C.Types.Psychic,
   category: "Status",
   pp: 40, // max 64
-  accuracy: 100,
-  target: TC.Self,
+  target: "Self",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    attack: 1,
-  },
-} as const;
+  stage: { attack: 1 },
+};
 
-export const Agility: MoveData = {
+export const Agility: Move = {
   name: "Agility",
   description: "The user relaxes and lightens its body to move faster. This sharply raises the Speed stat.",
-  type: Types.Psychic,
+  type: C.Types.Psychic,
   category: "Status",
   pp: 30, // max 48
-  accuracy: 100,
-  target: TC.Self,
+  target: "Self",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    speed: 2,
-  },
-} as const;
+  stage: { speed: 2 },
+};
 
-export const QuickAttack: MoveData = {
+export const QuickAttack: Move = {
   name: "Quick Attack",
   description: "The user lunges at the target at a speed that makes it almost invisible. This move always goes first.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 30, // max 48
   power: 40,
-  accuracy: 100,
   priority: 1,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
-} as const;
+};
 
-export const Rage: MoveData = {
+export const Rage: Move = {
   name: "Rage",
   description:
     "As long as this move is in use, the power of rage raises the Attack stat each time the user is hit in battle.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 20, // max 32
   power: 20,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
   // TODO functionality
-} as const;
+};
 
-export const Teleport: MoveData = {
+export const Teleport: Move = {
   name: "Teleport",
   description:
     "The user switches places with another party Pokémon. It may also be used to warp to the last Pokémon Center visited. If a wild Pokémon uses this move, it flees.",
-  type: Types.Psychic,
+  type: C.Types.Psychic,
   category: "Status",
   pp: 20, // max 32
-  accuracy: 100,
   priority: -6,
-  target: TC.Self,
+  target: "Self",
   makesContact: false,
-  effect: [] as MoveEffect[],
+  eject: true,
   // TODO functionality
-} as const;
+};
 
-export const NightShade: MoveData = {
+export const NightShade: Move = {
   name: "Night Shade",
   description: "The user makes the target see a frightening mirage. It inflicts damage equal to the user's level.",
-  type: Types.Ghost,
+  type: C.Types.Ghost,
   category: "Special",
   pp: 15, // max 24
-  power: 0,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: [] as MoveEffect[],
+  hp: action => (action.source instanceof Codemon ? action.source.experience.level : 0),
   // TODO functionality
-} as const;
+};
 
-export const Mimic: MoveData = {
+export const Mimic: Move = {
   name: "Mimic",
   description:
     "The user copies the target's last move. The move can be used during battle until the Pokémon is switched out.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 10, // max 16
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  // effect: {
-  //   type: "Mimic",
-  // },
-  effect: [] as MoveEffect[],
   // TODO functionality
-} as const;
+};
 
 // why isn't this a status move apdabiouaboduiboiuafb
-export const Screech: MoveData = {
+export const Screech: Move = {
   name: "Screech",
   description: "An earsplitting screech harshly lowers the target's Defense stat.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Special",
   pp: 40, // max 64
-  power: 0,
   accuracy: 85,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    defense: -2,
-  },
-} as const;
+  stage: { defense: -2 },
+};
 
-export const DoubleTeam: MoveData = {
+export const DoubleTeam: Move = {
   name: "Double Team",
   description: "By moving rapidly, the user makes illusory copies of itself to raise its evasiveness.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 15, // max 24
-  accuracy: 100,
-  target: TC.Self,
+  target: "Self",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    evasion: 1,
-  },
-} as const;
+  stage: { evasion: 1 },
+};
 
-export const Recover: MoveData = {
+export const Recover: Move = {
   name: "Recover",
   description: "Restoring its own cells, the user restores its own HP by half of its max HP.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Status",
   pp: 10, // max 16
-  accuracy: 100,
-  target: TC.Self,
+  target: "Self",
   makesContact: false,
   // effect: {
   //   type: "Heal",
   //   amount: "half",
   // },
-  effect: [] as MoveEffect[],
-  // TODO functionality
-} as const;
-
-export const Harden: MoveData = {
-  name: "Harden",
-  description: "The user stiffens all the muscles in its body to raise its Defense stat.",
-  type: Types.Normal,
-  category: "Status",
-  pp: 30, // max 48
-  accuracy: 100,
-  target: TC.Self,
-  makesContact: false,
-  effect: {
-    type: "StatMod",
-    defense: 1,
-  },
-} as const;
-
-export const Minimize: MoveData = {
-  name: "Minimize",
-  description: "The user compresses its body to make itself look smaller, which sharply raises its evasiveness.",
-  type: Types.Normal,
-  category: "Status",
-  pp: 10, // max 16
-  accuracy: 100,
-  target: TC.Self,
-  makesContact: false,
-  effect: [
-    {
-      type: "Status",
-      status: Status.Minimize,
-    },
-    {
-      type: "StatMod",
-      evasion: 2,
-    },
-  ] as MoveEffect[],
-} as const;
-
-export const Smokescreen: MoveData = {
-  name: "Smokescreen",
-  description: "The user releases an obscuring cloud of smoke or ink. This lowers the target's accuracy.",
-  type: Types.Normal,
-  category: "Status",
-  pp: 20, // max 32
-  accuracy: 100,
-  target: TC.Adjacent,
-  makesContact: false,
-  effect: {
-    type: "StatMod",
-    accuracy: -1,
-  },
-} as const;
-
-export const ConfuseRay: MoveData = {
-  name: "Confuse Ray",
-  description: "The target is exposed to a sinister ray that triggers confusion.",
-  type: Types.Ghost,
-  category: "Status",
-  pp: 10, // max 16
-  accuracy: 100,
-  target: TC.Adjacent,
-  makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Confusion,
-  },
-} as const;
-
-export const Withdraw: MoveData = {
-  name: "Withdraw",
-  description: "The user withdraws its body into its hard shell, raising its Defense stat.",
-  type: Types.Water,
-  category: "Status",
-  pp: 40, // max 64
-  accuracy: 100,
-  target: TC.Self,
-  makesContact: false,
-  effect: {
-    type: "StatMod",
-    defense: 1,
-  },
-} as const;
-
-export const DefenseCurl: MoveData = {
-  name: "Defense Curl",
-  description: "The user curls up to conceal weak spots and raise its Defense stat.",
-  type: Types.Normal,
-  category: "Status",
-  pp: 40, // max 64
-  accuracy: 100,
-  target: TC.Self,
-  makesContact: false,
-  effect: {
-    type: "StatMod",
-    defense: 1,
-  },
-  // TODO functionality
-} as const;
-
-export const Barrier: MoveData = {
-  name: "Barrier",
-  description: "The user throws up a sturdy wall that sharply raises its Defense stat.",
-  type: Types.Psychic,
-  category: "Status",
-  pp: 20, // max 32
-  accuracy: 100,
-  target: TC.Self,
-  makesContact: false,
-  effect: {
-    type: "StatMod",
-    defense: 2,
-  },
-} as const;
-
-export const LightScreen: MoveData = {
-  name: "Light Screen",
-  description: "A wondrous wall of light is put up to reduce damage from special attacks for five turns.",
-  type: Types.Psychic,
-  category: "Status",
-  pp: 30, // max 48
-  accuracy: 100,
-  target: TC.All | TC.Self | TC.Ally,
-  makesContact: false,
-  effect: [] as MoveEffect[],
-  // TODO functionality
-} as const;
-
-export const Haze: MoveData = {
-  name: "Haze",
-  description: "The user creates a haze that eliminates every stat change among all the Pokémon engaged in battle.",
-  type: Types.Ice,
-  category: "Status",
-  pp: 30, // max 48
-  accuracy: 100,
-  target: TC.All,
-  makesContact: false,
-  effect: [] as MoveEffect[],
-  // TODO functionality
-} as const;
-
-export const Reflect: MoveData = {
-  name: "Reflect",
-  description: "A wondrous wall of light is put up to reduce damage from physical attacks for five turns.",
-  type: Types.Psychic,
-  category: "Status",
-  pp: 20, // max 32
-  accuracy: 100,
-  target: TC.All | TC.Self | TC.Ally,
-  makesContact: false,
-  effect: [] as MoveEffect[],
-  // TODO functionality
-} as const;
-
-export const FocusEnergy: MoveData = {
-  name: "Focus Energy",
-  description: "The user takes a deep breath and focuses so that critical hits land more easily.",
-  type: Types.Normal,
-  category: "Status",
-  pp: 30, // max 48
-  accuracy: 100,
-  target: TC.Self,
-  makesContact: false,
-  effect: [] as MoveEffect[],
-  // TODO functionality
-} as const;
-
-export const Bide: MoveData = {
-  name: "Bide",
-  description: "The user endures attacks for two turns, then strikes back to cause double the damage taken.",
-  type: Types.Normal,
-  category: "Physical",
-  pp: 10, // max 16
-  power: 0,
-  accuracy: 100,
-  priority: 1,
-  target: TC.Self,
-  makesContact: true,
-  effect: [] as MoveEffect[],
-  // TODO functionality
-} as const;
-
-export const Metronone: MoveData = {
-  name: "Metronome",
-  description: "The user waggles a finger and stimulates its brain into randomly using nearly any move.",
-  type: Types.Normal,
-  category: "Status",
-  pp: 10, // max 16
-  accuracy: 100,
-  target: TC.Self,
-  makesContact: false,
-  effect: [] as MoveEffect[],
-  // TODO functionality
-} as const;
-
-export const MirrorMove: MoveData = {
-  name: "Mirror Move",
-  description: "The user counters the target by mimicking the target's last move.",
-  type: Types.Flying,
-  category: "Status",
-  pp: 20, // max 32
-  accuracy: 100,
-  target: TC.Adjacent,
-  makesContact: false,
-  effect: [] as MoveEffect[],
+  hp: action => (action.source instanceof Codemon ? action.source.stats.hp.max / 2 : 0),
   // TODO functionality
 };
-// 120	Self-Destruct	Normal	Physical	5	200*	100%	I
-// 121	Egg Bomb	Normal	Physical	10	100	75%	I
-// 122	Lick	Ghost	Physical	30	30*	100%	I
-// 123	Smog	Poison	Special	20	30*	70%	I
-// 124	Sludge	Poison	Special	20	65	100%	I
-// 125	Bone Club	Ground	Physical	20	65	85%	I
-// 126	Fire Blast	Fire	Special	5	110*	85%	I
-// 127	Waterfall	Water	Physical	15	80	100%	I
-// 128	Clamp	Water	Physical	15*	35	85%*	I
-// 129	Swift	Normal	Special	20	60	—	I
-// 130	Skull Bash	Normal	Physical	10*	130*	100%	I
-// 131	Spike Cannon	Normal	Physical	15	20	100%	I
-// 132	Constrict	Normal	Physical	35	10	100%	I
-// 133	Amnesia	Psychic	Status	20	—	—	I
-// 134	Kinesis	Psychic	Status	15	—	80%	I
-// 135	Soft-Boiled	Normal	Status	10	—	—	I
-// 136	High Jump Kick	Fighting	Physical	10*	130*	90%	I
-// 137	Glare	Normal	Status	30	—	100%*	I
-// 138	Dream Eater	Psychic	Special	15	100	100%	I
-// 139	Poison Gas	Poison	Status	40	—	90%*	I
-// 140	Barrage	Normal	Physical	20	15	85%	I
-// 141	Leech Life	Bug	Physical	10*	80*	100%	I
-// 142	Lovely Kiss	Normal	Status	10	—	75%	I
-// 143	Sky Attack	Flying	Physical	5	140*	90%	I
-// 144	Transform	Normal	Status	10	—	—	I
-// 145	Bubble	Water	Special	30	40*	100%	I
-// 146	Dizzy Punch	Normal	Physical	10	70	100%	I
-// 147	Spore	Grass	Status	15	—	100%	I
-// 148	Flash	Normal	Status	20	—	100%*	I
-// 149	Psywave	Psychic	Special	15	—	100%*	I
-// 150	Splash	Normal	Status	40	—	—	I
-// 151	Acid Armor	Poison	Status	20*	—	—	I
-// 152	Crabhammer	Water	Physical	10	100*	90%*	I
-// 153	Explosion	Normal	Physical	5	250*	100%	I
-// 154	Fury Swipes	Normal	Physical	15	18	80%	I
-// 155	Bonemerang	Ground	Physical	10	50	90%	I
-// 156	Rest	Psychic	Status	10	—	—	I
-// 157	Rock Slide	Rock	Physical	10	75	90%	I
-// 158	Hyper Fang	Normal	Physical	15	80	90%	I
-// 159	Sharpen	Normal	Status	30	—	—	I
-// 160	Conversion	Normal	Status	30	—	—	I
-// 161	Tri Attack	Normal	Special	10	80	100%	I
-// 162	Super Fang	Normal	Physical	10	—	90%	I
-export const Slash: MoveData = {
-  name: "Slash",
-  description: "The target is attacked with a slash of claws or blades. Critical hits land more easily.",
-  type: Types.Normal,
-  category: "Physical",
-  pp: 20,
-  power: 70,
-  accuracy: 100,
-  target: TC.Adjacent,
-  makesContact: true,
-  criticalHitStage: 1,
-} as const;
 
-// 164	Substitute	Normal	Status	10	—	—	I
-// 165	Struggle	Normal	Physical	1*	50	—*	I
-// 166	Sketch	Normal	Status	1	—	—	II
-// 167	Triple Kick	Fighting	Physical	10	10	90%	II
-// 168	Thief	Dark	Physical	25*	60*	100%	II
-// 169	Spider Web	Bug	Status	10	—	—	II
-// 170	Mind Reader	Normal	Status	5	—	—*	II
-// 171	Nightmare	Ghost	Status	15	—	100%	II
-// 172	Flame Wheel	Fire	Physical	25	60	100%	II
-// 173	Snore	Normal	Special	15	50*	100%	II
-// 174	Curse*	Ghost	Status	10	—	—	II
-// 175	Flail	Normal	Physical	15	—	100%	II
-// 176	Conversion 2	Normal	Status	30	—	—	II
-// 177	Aeroblast	Flying	Special	5	100	95%	II
-// 178	Cotton Spore	Grass	Status	40	—	100%*	II
-// 179	Reversal	Fighting	Physical	15	—	100%	II
-// 180	Spite	Ghost	Status	10	—	100%	II
-// 181	Powder Snow	Ice	Special	25	40	100%	II
-// 182	Protect	Normal	Status	10	—	—	II
-// 183	Mach Punch	Fighting	Physical	30	40	100%	II
-// 184	Scary Face	Normal	Status	10	—	100%*	II
-// 185	Feint Attack	Dark	Physical	20	60	—	II
-// 186	Sweet Kiss*	Fairy	Status	10	—	75%	II
-// 187	Belly Drum	Normal	Status	10	—	—	II
-// 188	Sludge Bomb	Poison	Special	10	90	100%	II
-// 189	Mud-Slap	Ground	Special	10	20	100%	II
-// 190	Octazooka	Water	Special	10	65	85%	II
-// 191	Spikes	Ground	Status	20	—	—	II
-// 192	Zap Cannon	Electric	Special	5	120*	50%	II
-// 193	Foresight	Normal	Status	40	—	—*	II
-// 194	Destiny Bond	Ghost	Status	5	—	—	II
-// 195	Perish Song	Normal	Status	5	—	—	II
-// 196	Icy Wind	Ice	Special	15	55	95%	II
-// 197	Detect	Fighting	Status	5	—	—	II
-// 198	Bone Rush	Ground	Physical	10	25	90%*	II
-// 199	Lock-On	Normal	Status	5	—	—*	II
-// 200	Outrage	Dragon	Physical	10*	120*	100%	II
-export const Sandstorm: MoveData = {
-  name: "Sandstorm",
-  description:
-    "A five-turn sandstorm is summoned to hurt all combatants except the Rock, Ground, and Steel types. It raises the Sp. Def stat of Rock types.",
-  type: Types.Rock,
+export const Harden: Move = {
+  name: "Harden",
+  description: "The user stiffens all the muscles in its body to raise its Defense stat.",
+  type: C.Types.Normal,
   category: "Status",
-  pp: 10,
-  accuracy: 0,
-  target: TC.All,
+  pp: 30, // max 48
+  target: "Self",
   makesContact: false,
-  // effect: {
-  //   type: "Weather",
-  //   weather: "Sandstorm",
-  // },
-  // effect: {
-  //   duration: 5,
-  //   onStart: (battle: Battle, caster: Pokemon, target: Pokemon) => {
-  //     battle.addPseudoWeather(PW.Sandstorm);
-  //   }
-  // }
-  effect: [] as MoveEffect[],
-  // TODO functionality
-} as const;
-// 202	Giga Drain	Grass	Special	10*	75*	100%	II
-// 203	Endure	Normal	Status	10	—	—	II
-// 204	Charm*	Fairy	Status	20	—	100%	II
-// 205	Rollout	Rock	Physical	20	30	90%	II
-// 206	False Swipe	Normal	Physical	40	40	100%	II
-// 207	Swagger	Normal	Status	15	—	85%*	II
-// 208	Milk Drink	Normal	Status	10	—	—	II
-// 209	Spark	Electric	Physical	20	65	100%	II
-// 210	Fury Cutter	Bug	Physical	20	40*	95%	II
-// 211	Steel Wing	Steel	Physical	25	70	90%	II
-// 212	Mean Look	Normal	Status	5	—	—	II
-// 213	Attract	Normal	Status	15	—	100%	II
-// 214	Sleep Talk	Normal	Status	10	—	—	II
-// 215	Heal Bell	Normal	Status	5	—	—	II
-// 216	Return	Normal	Physical	20	—	100%	II
-// 217	Present	Normal	Physical	15	—	90%	II
-// 218	Frustration	Normal	Physical	20	—	100%	II
-// 219	Safeguard	Normal	Status	25	—	—	II
-// 220	Pain Split	Normal	Status	20	—	—*	II
-// 221	Sacred Fire	Fire	Physical	5	100	95%	II
-// 222	Magnitude	Ground	Physical	30	—	100%	II
-// 223	Dynamic Punch	Fighting	Physical	5	100	50%	II
-// 224	Megahorn	Bug	Physical	10	120	85%	II
-export const DragonBreath: MoveData = {
-  name: "Dragon Breath",
-  description: "The user exhales a mighty gust that inflicts damage. This may also leave the target with paralysis.",
-  type: Types.Dragon,
-  category: "Special",
-  pp: 20,
-  power: 60,
-  accuracy: 100,
-  target: TC.Adjacent,
-  makesContact: false,
-  effect: {
-    type: "Status",
-    status: Status.Paralysis,
-    probability: 3 / 10,
-  },
-} as const;
-// 226	Baton Pass	Normal	Status	40	—	—	II
-// 227	Encore	Normal	Status	5	—	100%	II
-// 228	Pursuit	Dark	Physical	20	40	100%	II
-// 229	Rapid Spin	Normal	Physical	40	50*	100%	II
-export const SweetScent: MoveData = {
-  name: "Sweet Scent",
-  description: "A sweet scent that harshly lowers opposing Pokémon's evasiveness.",
-  type: Types.Normal,
-  category: "Status",
-  pp: 20, // max 32
-  accuracy: 100,
-  target: TC.Adjacent | TC.Foe,
-  makesContact: false,
-  effect: {
-    type: "StatMod",
-    evasion: -2,
-  },
-} as const;
-// 231	Iron Tail	Steel	Physical	15	100	75%	II
-// 232	Metal Claw	Steel	Physical	35	50	95%	II
-// 233	Vital Throw	Fighting	Physical	10	70	—	II
-// 234	Morning Sun	Normal	Status	5	—	—	II
-export const Synthesis: MoveData = {
-  name: "Synthesis",
-  description: "The user restores its own HP. The amount of HP regained varies with the weather.",
-  type: Types.Grass,
-  category: "Status",
-  pp: 5, // max 8
-  accuracy: 100,
-  target: TC.Self,
-  makesContact: false,
-  effect: [] as MoveEffect[],
-  // effect: {
-  //   type: "Heal",
-  //   amount: (battle: Battle, user: Pokemon) => {
-  //     const weather = battle.getWeather();
-  //     if (weather === Weather.Sunny) {
-  //       return user.maxHP / 4;
-  //     } else if (weather === Weather.Rain) {
-  //       return user.maxHP / 8;
-  //     }
-  //     return 0;
-  //   }
-  // }
-  // TODO functionality
-} as const;
+  stage: { defense: 1 },
+};
 
-// 236	Moonlight*	Fairy	Status	5	—	—	II
-// 237	Hidden Power	Normal	Special	15	60*	100%	II
-// 238	Cross Chop	Fighting	Physical	5	100	80%	II
-// 239	Twister	Dragon	Special	20	40	100%	II
-// 240	Rain Dance	Water	Status	5	—	—	II
-// 241	Sunny Day	Fire	Status	5	—	—	II
-export const Crunch: MoveData = {
-  name: "Crunch",
-  description: "The user crunches up the target with sharp fangs. This may also lower the target's Defense stat.",
-  type: Types.Dark,
-  category: "Physical",
-  pp: 15, // max 24
-  power: 80,
-  accuracy: 100,
-  target: TC.Adjacent,
-  makesContact: true,
-  effect: {
-    type: "StatMod",
-    defense: -1,
-    probability: 2 / 10,
-  },
-} as const;
-// 243	Mirror Coat	Psychic	Special	20	—	100%	II
-// 244	Psych Up	Normal	Status	10	—	—	II
-// 245	Extreme Speed	Normal	Physical	5	80	100%	II
-// 246	Ancient Power	Rock	Special	5	60	100%	II
-// 247	Shadow Ball	Ghost	Special	15	80	100%	II
-// 248	Future Sight	Psychic	Special	10*	120*	100%*	II
-// 249	Rock Smash	Fighting	Physical	15	40*	100%	II
-// 250	Whirlpool	Water	Special	15	35*	85%*	II
-// 251	Beat Up	Dark	Physical	10	—*	100%	II
-// 252	Fake Out	Normal	Physical	10	40	100%	III
-// 253	Uproar	Normal	Special	10	90*	100%	III
-// 254	Stockpile	Normal	Status	20*	—	—	III
-// 255	Spit Up	Normal	Special	10	—	100%	III
-// 256	Swallow	Normal	Status	10	—	—	III
-// 257	Heat Wave	Fire	Special	10	95*	90%	III
-// 258	Hail	Ice	Status	10	—	—	III
-// 259	Torment	Dark	Status	15	—	100%	III
-// 260	Flatter	Dark	Status	15	—	100%	III
-// 261	Will-O-Wisp	Fire	Status	15	—	85%*	III
-// 262	Memento	Dark	Status	10	—	100%	III
-// 263	Facade	Normal	Physical	20	70	100%	III
-// 264	Focus Punch	Fighting	Physical	20	150	100%	III
-// 265	Smelling Salts	Normal	Physical	10	70*	100%	III
-// 266	Follow Me	Normal	Status	20	—	—	III
-// 267	Nature Power	Normal	Status	20	—	—	III
-// 268	Charge	Electric	Status	20	—	—	III
-// 269	Taunt	Dark	Status	20	—	100%	III
-// 270	Helping Hand	Normal	Status	20	—	—	III
-// 271	Trick	Psychic	Status	10	—	100%	III
-// 272	Role Play	Psychic	Status	10	—	—	III
-// 273	Wish	Normal	Status	10	—	—	III
-// 274	Assist	Normal	Status	20	—	—	III
-// 275	Ingrain	Grass	Status	20	—	—	III
-// 276	Superpower	Fighting	Physical	5	120	100%	III
-// 277	Magic Coat	Psychic	Status	15	—	—	III
-// 278	Recycle	Normal	Status	10	—	—	III
-// 279	Revenge	Fighting	Physical	10	60	100%	III
-// 280	Brick Break	Fighting	Physical	15	75	100%	III
-// 281	Yawn	Normal	Status	10	—	—	III
-// 282	Knock Off	Dark	Physical	20	65*	100%	III
-// 283	Endeavor	Normal	Physical	5	—	100%	III
-// 284	Eruption	Fire	Special	5	150	100%	III
-// 285	Skill Swap	Psychic	Status	10	—	—	III
-// 286	Imprison	Psychic	Status	10	—	—	III
-// 287	Refresh	Normal	Status	20	—	—	III
-// 288	Grudge	Ghost	Status	5	—	—	III
-// 289	Snatch	Dark	Status	10	—	—	III
-// 290	Secret Power	Normal	Physical	20	70	100%	III
-// 291	Dive	Water	Physical	10	80*	100%	III
-// 292	Arm Thrust	Fighting	Physical	20	15	100%	III
-// 293	Camouflage	Normal	Status	20	—	—	III
-// 294	Tail Glow	Bug	Status	20	—	—	III
-// 295	Luster Purge	Psychic	Special	5	70	100%	III
-// 296	Mist Ball	Psychic	Special	5	70	100%	III
-// 297	Feather Dance	Flying	Status	15	—	100%	III
-// 298	Teeter Dance	Normal	Status	20	—	100%	III
-// 299	Blaze Kick	Fire	Physical	10	85	90%	III
-// 300	Mud Sport	Ground	Status	15	—	—	III
-// 301	Ice Ball	Ice	Physical	20	30	90%	III
-// 302	Needle Arm	Grass	Physical	15	60	100%	III
-// 303	Slack Off	Normal	Status	10	—	—	III
-// 304	Hyper Voice	Normal	Special	10	90	100%	III
-// 305	Poison Fang	Poison	Physical	15	50	100%	III
-// 306	Crush Claw	Normal	Physical	10	75	95%	III
-// 307	Blast Burn	Fire	Special	5	150	90%	III
-// 308	Hydro Cannon	Water	Special	5	150	90%	III
-// 309	Meteor Mash	Steel	Physical	10	90*	90%*	III
-// 310	Astonish	Ghost	Physical	15	30	100%	III
-// 311	Weather Ball	Normal	Special	10	50	100%	III
-// 312	Aromatherapy	Grass	Status	5	—	—	III
-// 313	Fake Tears	Dark	Status	20	—	100%	III
-// 314	Air Cutter	Flying	Special	25	60*	95%	III
-// 315	Overheat	Fire	Special	5	130*	90%	III
-// 316	Odor Sleuth	Normal	Status	40	—	—*	III
-// 317	Rock Tomb	Rock	Physical	15*	60*	95%*	III
-// 318	Silver Wind	Bug	Special	5	60	100%	III
-// 319	Metal Sound	Steel	Status	40	—	85%	III
-// 320	Grass Whistle	Grass	Status	15	—	55%	III
-// 321	Tickle	Normal	Status	20	—	100%	III
-// 322	Cosmic Power	Psychic	Status	20	—	—	III
-// 323	Water Spout	Water	Special	5	150	100%	III
-// 324	Signal Beam	Bug	Special	15	75	100%	III
-// 325	Shadow Punch	Ghost	Physical	20	60	—	III
-// 326	Extrasensory	Psychic	Special	20*	80	100%	III
-// 327	Sky Uppercut	Fighting	Physical	15	85	90%	III
-export const SandTomb: MoveData = {
-  name: "Sand Tomb",
-  description: "The user traps the target inside a harshly raging sandstorm for four to five turns.",
-  type: Types.Ground,
-  category: "Physical",
-  pp: 15, // max 24
-  power: 35,
-  accuracy: 85,
-  target: TC.Adjacent,
-  makesContact: false,
-  // TODO functionality
-} as const;
-// 329	Sheer Cold	Ice	Special	5	—	30%	III
-// 330	Muddy Water	Water	Special	10	90*	85%	III
-// 331	Bullet Seed	Grass	Physical	30	25*	100%	III
-// 332	Aerial Ace	Flying	Physical	20	60	—	III
-// 333	Icicle Spear	Ice	Physical	30	25*	100%	III
-// 334	Iron Defense	Steel	Status	15	—	—	III
-// 335	Block	Normal	Status	5	—	—	III
-// 336	Howl	Normal	Status	40	—	—	III
-export const DragonClaw: MoveData = {
-  name: "Dragon Claw",
-  description: "The user slashes the target with huge sharp claws.",
-  type: Types.Dragon,
-  category: "Physical",
-  pp: 15,
-  power: 80,
-  accuracy: 100,
-  target: TC.Adjacent,
-  makesContact: true,
-} as const;
-
-// 338	Frenzy Plant	Grass	Special	5	150	90%	III
-// 339	Bulk Up	Fighting	Status	20	—	—	III
-// 340	Bounce	Flying	Physical	5	85	85%	III
-// 341	Mud Shot	Ground	Special	15	55	95%	III
-// 342	Poison Tail	Poison	Physical	25	50	100%	III
-// 343	Covet	Normal	Physical	25*	60*	100%	III
-// 344	Volt Tackle	Electric	Physical	15	120	100%	III
-// 345	Magical Leaf	Grass	Special	20	60	—	III
-// 346	Water Sport	Water	Status	15	—	—	III
-// 347	Calm Mind	Psychic	Status	20	—	—	III
-// 348	Leaf Blade	Grass	Physical	15	90*	100%	III
-// 349	Dragon Dance	Dragon	Status	20	—	—	III
-// 350	Rock Blast	Rock	Physical	10	25	90%*	III
-// 351	Shock Wave	Electric	Special	20	60	—	III
-// 352	Water Pulse	Water	Special	20	60	100%	III
-// 353	Doom Desire	Steel	Special	5	140*	100%*	III
-// 354	Psycho Boost	Psychic	Special	5	140	90%	III
-// 355	Roost	Flying	Status	10	—	—	IV
-// 356	Gravity	Psychic	Status	5	—	—	IV
-// 357	Miracle Eye	Psychic	Status	40	—	—	IV
-// 358	Wake-Up Slap	Fighting	Physical	10	70*	100%	IV
-// 359	Hammer Arm	Fighting	Physical	10	100	90%	IV
-// 360	Gyro Ball	Steel	Physical	5	—	100%	IV
-// 361	Healing Wish	Psychic	Status	10	—	—	IV
-// 362	Brine	Water	Special	10	65	100%	IV
-// 363	Natural Gift	Normal	Physical	15	—	100%	IV
-// 364	Feint	Normal	Physical	10	30*	100%	IV
-// 365	Pluck	Flying	Physical	20	60	100%	IV
-// 366	Tailwind	Flying	Status	15*	—	—	IV
-// 367	Acupressure	Normal	Status	30	—	—	IV
-// 368	Metal Burst	Steel	Physical	10	—	100%	IV
-// 369	U-turn	Bug	Physical	20	70	100%	IV
-// 370	Close Combat	Fighting	Physical	5	120	100%	IV
-// 371	Payback	Dark	Physical	10	50	100%	IV
-// 372	Assurance	Dark	Physical	10	60*	100%	IV
-// 373	Embargo	Dark	Status	15	—	100%	IV
-// 374	Fling	Dark	Physical	10	—	100%	IV
-// 375	Psycho Shift	Psychic	Status	10	—	100%*	IV
-// 376	Trump Card	Normal	Special	5	—	—	IV
-// 377	Heal Block	Psychic	Status	15	—	100%	IV
-// 378	Wring Out	Normal	Special	5	—	100%	IV
-// 379	Power Trick	Psychic	Status	10	—	—	IV
-// 380	Gastro Acid	Poison	Status	10	—	100%	IV
-// 381	Lucky Chant	Normal	Status	30	—	—	IV
-// 382	Me First	Normal	Status	20	—	—	IV
-// 383	Copycat	Normal	Status	20	—	—	IV
-// 384	Power Swap	Psychic	Status	10	—	—	IV
-// 385	Guard Swap	Psychic	Status	10	—	—	IV
-// 386	Punishment	Dark	Physical	5	—	100%	IV
-// 387	Last Resort	Normal	Physical	5	140*	100%	IV
-export const WorrySeed: MoveData = {
-  name: "Worry Seed",
-  description:
-    "A seed that causes worry is planted on the target. It prevents sleep by making the target's Ability Insomnia.",
-  type: Types.Grass,
+export const Minimize: Move = {
+  name: "Minimize",
+  description: "The user compresses its body to make itself look smaller, which sharply raises its evasiveness.",
+  type: C.Types.Normal,
   category: "Status",
   pp: 10, // max 16
-  priority: 0,
-  accuracy: 100,
-  target: TC.Adjacent,
+  target: "Self",
   makesContact: false,
-  effect: [] as MoveEffect[],
+  stage: { evasion: 2 },
+  status: C.Statuses.Minimize,
+};
+
+export const Smokescreen: Move = {
+  name: "Smokescreen",
+  description: "The user releases an obscuring cloud of smoke or ink. This lowers the target's accuracy.",
+  type: C.Types.Normal,
+  category: "Status",
+  pp: 20, // max 32
+  target: "Any Adjacent",
+  makesContact: false,
+  stage: { accuracy: -1 },
+};
+
+export const ConfuseRay: Move = {
+  name: "Confuse Ray",
+  description: "The target is exposed to a sinister ray that triggers confusion.",
+  type: C.Types.Ghost,
+  category: "Status",
+  pp: 10, // max 16
+  target: "Any Adjacent",
+  makesContact: false,
+  status: C.Statuses.Confusion,
+};
+
+export const Withdraw: Move = {
+  name: "Withdraw",
+  description: "The user withdraws its body into its hard shell, raising its Defense stat.",
+  type: C.Types.Water,
+  category: "Status",
+  pp: 40, // max 64
+  target: "Self",
+  makesContact: false,
+  stage: { defense: 1 },
+};
+
+export const DefenseCurl: Move = {
+  name: "Defense Curl",
+  description: "The user curls up to conceal weak spots and raise its Defense stat.",
+  type: C.Types.Normal,
+  category: "Status",
+  pp: 40, // max 64
+  target: "Self",
+  makesContact: false,
+  stage: { defense: 1 },
   // TODO functionality
-} as const;
-// 389	Sucker Punch	Dark	Physical	5	70*	100%	IV
-// 390	Toxic Spikes	Poison	Status	20	—	—	IV
-// 391	Heart Swap	Psychic	Status	10	—	—	IV
-// 392	Aqua Ring	Water	Status	20	—	—	IV
-// 393	Magnet Rise	Electric	Status	10	—	—	IV
-// 394	Flare Blitz	Fire	Physical	15	120	100%	IV
-// 395	Force Palm	Fighting	Physical	10	60	100%	IV
-// 396	Aura Sphere	Fighting	Special	20	80*	—	IV
-// 397	Rock Polish	Rock	Status	20	—	—	IV
-// 398	Poison Jab	Poison	Physical	20	80	100%	IV
-// 399	Dark Pulse	Dark	Special	15	80	100%	IV
-// 400	Night Slash	Dark	Physical	15	70	100%	IV
-// 401	Aqua Tail	Water	Physical	10	90	90%	IV
-export const SeedBomb: MoveData = {
-  name: "Seed Bomb",
-  description: "The user slams a barrage of hard-shelled seeds down on the target from above.",
-  type: Types.Grass,
-  category: "Physical",
-  pp: 15, // max 24
-  power: 80,
-  accuracy: 100,
-  target: TC.Adjacent,
+};
+
+export const Barrier: Move = {
+  name: "Barrier",
+  description: "The user throws up a sturdy wall that sharply raises its Defense stat.",
+  type: C.Types.Psychic,
+  category: "Status",
+  pp: 20, // max 32
+  target: "Self",
   makesContact: false,
-} as const;
-// 403	Air Slash	Flying	Special	15*	75	95%	IV
-// 404	X-Scissor	Bug	Physical	15	80	100%	IV
-// 405	Bug Buzz	Bug	Special	10	90	100%	IV
-// 406	Dragon Pulse	Dragon	Special	10	85*	100%	IV
-export const DragonRush: MoveData = {
-  name: "Dragon Rush",
-  description:
-    "The user tackles the target while exhibiting overwhelming menace. This may also make the target flinch.",
-  type: Types.Dragon,
+  stage: { defense: 2 },
+};
+
+export const LightScreen: Move = {
+  name: "Light Screen",
+  description: "A wondrous wall of light is put up to reduce damage from special attacks for five turns.",
+  type: C.Types.Psychic,
+  category: "Status",
+  pp: 30, // max 48
+  target: "Team",
+  makesContact: false,
+  // TODO functionality
+};
+
+export const Haze: Move = {
+  name: "Haze",
+  description: "The user creates a haze that eliminates every stat change among all the Pokémon engaged in battle.",
+  type: C.Types.Ice,
+  category: "Status",
+  pp: 30, // max 48
+  target: "All",
+  makesContact: false,
+  // TODO functionality
+};
+
+export const Reflect: Move = {
+  name: "Reflect",
+  description: "A wondrous wall of light is put up to reduce damage from physical attacks for five turns.",
+  type: C.Types.Psychic,
+  category: "Status",
+  pp: 20, // max 32
+  target: "Team",
+  makesContact: false,
+  // TODO functionality
+};
+
+export const FocusEnergy: Move = {
+  name: "Focus Energy",
+  description: "The user takes a deep breath and focuses so that critical hits land more easily.",
+  type: C.Types.Normal,
+  category: "Status",
+  pp: 30, // max 48
+  target: "Self",
+  makesContact: false,
+  // TODO functionality
+};
+
+export const Bide: Move = {
+  name: "Bide",
+  description: "The user endures attacks for two turns, then strikes back to cause double the damage taken.",
+  type: C.Types.Normal,
+  category: "Physical",
+  pp: 10, // max 16
+  priority: 1,
+  target: "Self",
+  makesContact: true,
+  // TODO functionality
+};
+
+export const Metronone: Move = {
+  name: "Metronome",
+  description: "The user waggles a finger and stimulates its brain into randomly using nearly any move.",
+  type: C.Types.Normal,
+  category: "Status",
+  pp: 10, // max 16
+  target: "Self",
+  makesContact: false,
+  // TODO functionality
+};
+
+export const MirrorMove: Move = {
+  name: "Mirror Move",
+  description: "The user counters the target by mimicking the target's last move.",
+  type: C.Types.Flying,
+  category: "Status",
+  pp: 20, // max 32
+  target: "Any Adjacent",
+  makesContact: false,
+  // TODO functionality
+};
+
+export const SelfDesctuct: Move = {
+  name: "Self-Destruct",
+  description: "The user attacks everything around it by causing an explosion. The user faints upon using this move.",
+  type: C.Types.Normal,
+  target: "Every Adjacent",
+  category: "Physical",
+  pp: 5, // max 8
+  power: 200,
+  makesContact: false,
+  recoil: { faint: true },
+};
+
+export const EggBomb: Move = {
+  name: "Egg Bomb",
+  description: "A large egg is hurled at the target with maximum force to inflict damage.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
   category: "Physical",
   pp: 10, // max 16
   power: 100,
   accuracy: 75,
-  target: TC.Adjacent,
+  makesContact: false,
+};
+
+export const Lick: Move = {
+  name: "Lick",
+  description: "The target is licked with a long tongue, causing damage. It may also leave the target with paralysis.",
+  type: C.Types.Ghost,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 30,
+  power: 30,
+  makesContact: true,
+  status: [C.Statuses.Paralysis, 3 / 10],
+};
+// below are SV descriptions, above are SwSh descriptions (or the most recent usable version)
+export const Smog: Move = {
+  name: "Smog",
+  description: "The target is attacked with a discharge of filthy gases. This may also poison the target.",
+  type: C.Types.Poison,
+  target: "Any Adjacent",
+  category: "Special",
+  pp: 20,
+  power: 30,
+  accuracy: 70,
+  makesContact: false,
+  status: [C.Statuses.Poison, 4 / 10],
+};
+
+export const Sludge: Move = {
+  name: "Sludge",
+  description: "Unsanitary sludge is hurled at the target. This may also poison the target.",
+  type: C.Types.Poison,
+  target: "Any Adjacent",
+  category: "Special",
+  pp: 20,
+  power: 65,
+  makesContact: false,
+  status: [C.Statuses.Poison, 3 / 10],
+};
+
+export const BoneClub: Move = {
+  name: "Bone Club",
+  description: "The user clubs the target with a bone. This may also make the target flinch.",
+  type: C.Types.Ground,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 20,
+  power: 65,
+  accuracy: 85,
+  makesContact: false,
+  status: [C.Statuses.Flinch, 1 / 10],
+};
+export const FireBlast: Move = {
+  name: "Fire Blast",
+  description:
+    "The target is attacked with an intense blast of all-consuming fire. This may also leave the target with a burn.",
+  type: C.Types.Fire,
+  target: "Any Adjacent",
+  category: "Special",
+  pp: 5,
+  power: 110,
+  accuracy: 85,
+  makesContact: false,
+  status: [C.Statuses.Burn, 1 / 10],
+};
+
+export const Waterfall: Move = {
+  name: "Waterfall",
+  description: "The user charges at the target and may make it flinch.",
+  type: C.Types.Water,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 15,
+  power: 80,
+  makesContact: true,
+  status: [C.Statuses.Flinch, 2 / 10],
+};
+
+export const Clamp: Move = {
+  name: "Clamp",
+  description: "The target is clamped and squeezed by the user's very thick and sturdy shell for four to five turns.",
+  type: C.Types.Water,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 10,
+  power: 35,
+  accuracy: 85,
   makesContact: true,
   // TODO functionality
-} as const;
-// 408	Power Gem	Rock	Special	20	80*	100%	IV
-// 409	Drain Punch	Fighting	Physical	10*	75*	100%	IV
-// 410	Vacuum Wave	Fighting	Special	30	40	100%	IV
-// 411	Focus Blast	Fighting	Special	5	120	70%	IV
-// 412	Energy Ball	Grass	Special	10	90*	100%	IV
-// 413	Brave Bird	Flying	Physical	15	120	100%	IV
-// 414	Earth Power	Ground	Special	10	90	100%	IV
-// 415	Switcheroo	Dark	Status	10	—	100%	IV
-// 416	Giga Impact	Normal	Physical	5	150	90%	IV
-// 417	Nasty Plot	Dark	Status	20	—	—	IV
-// 418	Bullet Punch	Steel	Physical	30	40	100%	IV
-// 419	Avalanche	Ice	Physical	10	60	100%	IV
-// 420	Ice Shard	Ice	Physical	30	40	100%	IV
-// 421	Shadow Claw	Ghost	Physical	15	70	100%	IV
-// 422	Thunder Fang	Electric	Physical	15	65	95%	IV
-// 423	Ice Fang	Ice	Physical	15	65	95%	IV
-// 424	Fire Fang	Fire	Physical	15	65	95%	IV
-// 425	Shadow Sneak	Ghost	Physical	30	40	100%	IV
-// 426	Mud Bomb	Ground	Special	10	65	85%	IV
-// 427	Psycho Cut	Psychic	Physical	20	70	100%	IV
-// 428	Zen Headbutt	Psychic	Physical	15	80	90%	IV
-// 429	Mirror Shot	Steel	Special	10	65	85%	IV
-// 430	Flash Cannon	Steel	Special	10	80	100%	IV
-// 431	Rock Climb	Normal	Physical	20	90	85%	IV
-// 432	Defog	Flying	Status	15	—	—	IV
-// 433	Trick Room	Psychic	Status	5	—	—	IV
-// 434	Draco Meteor	Dragon	Special	5	130*	90%	IV
-// 435	Discharge	Electric	Special	15	80	100%	IV
-// 436	Lava Plume	Fire	Special	15	80	100%	IV
-// 437	Leaf Storm	Grass	Special	5	130*	90%	IV
-// 438	Power Whip	Grass	Physical	10	120	85%	IV
-// 439	Rock Wrecker	Rock	Physical	5	150	90%	IV
-// 440	Cross Poison	Poison	Physical	20	70	100%	IV
-// 441	Gunk Shot	Poison	Physical	5	120	80%*	IV
-// 442	Iron Head	Steel	Physical	15	80	100%	IV
-// 443	Magnet Bomb	Steel	Physical	20	60	—	IV
-// 444	Stone Edge	Rock	Physical	5	100	80%	IV
-// 445	Captivate	Normal	Status	20	—	100%	IV
-// 446	Stealth Rock	Rock	Status	20	—	—	IV
-// 447	Grass Knot	Grass	Special	20	—	100%	IV
-// 448	Chatter	Flying	Special	20	65*	100%	IV
-// 449	Judgment	Normal	Special	10	100	100%	IV
-// 450	Bug Bite	Bug	Physical	20	60	100%	IV
-// 451	Charge Beam	Electric	Special	10	50	90%	IV
-// 452	Wood Hammer	Grass	Physical	15	120	100%	IV
-// 453	Aqua Jet	Water	Physical	20	40	100%	IV
-// 454	Attack Order	Bug	Physical	15	90	100%	IV
-// 455	Defend Order	Bug	Status	10	—	—	IV
-// 456	Heal Order	Bug	Status	10	—	—	IV
-// 457	Head Smash	Rock	Physical	5	150	80%	IV
-// 458	Double Hit	Normal	Physical	10	35	90%	IV
-// 459	Roar of Time	Dragon	Special	5	150	90%	IV
-// 460	Spacial Rend	Dragon	Special	5	100	95%	IV
-// 461	Lunar Dance	Psychic	Status	10	—	—	IV
-// 462	Crush Grip	Normal	Physical	5	—	100%	IV
-// 463	Magma Storm	Fire	Special	5	100*	75%*	IV
-// 464	Dark Void	Dark	Status	10	—	50%*	IV
-// 465	Seed Flare	Grass	Special	5	120	85%	IV
-// 466	Ominous Wind	Ghost	Special	5	60	100%	IV
-// 467	Shadow Force	Ghost	Physical	5	120	100%	IV
-// 468	Hone Claws	Dark	Status	15	—	—	V
-// 469	Wide Guard	Rock	Status	10	—	—	V
-// 470	Guard Split	Psychic	Status	10	—	—	V
-// 471	Power Split	Psychic	Status	10	—	—	V
-// 472	Wonder Room	Psychic	Status	10	—	—	V
-// 473	Psyshock	Psychic	Special	10	80	100%	V
-// 474	Venoshock	Poison	Special	10	65	100%	V
-// 475	Autotomize	Steel	Status	15	—	—	V
-// 476	Rage Powder	Bug	Status	20	—	—	V
-// 477	Telekinesis	Psychic	Status	15	—	—	V
-// 478	Magic Room	Psychic	Status	10	—	—	V
-// 479	Smack Down	Rock	Physical	15	50	100%	V
-// 480	Storm Throw	Fighting	Physical	10	60*	100%	V
-// 481	Flame Burst	Fire	Special	15	70	100%	V
-// 482	Sludge Wave	Poison	Special	10	95	100%	V
-// 483	Quiver Dance	Bug	Status	20	—	—	V
-// 484	Heavy Slam	Steel	Physical	10	—	100%	V
-// 485	Synchronoise	Psychic	Special	10*	120*	100%	V
-// 486	Electro Ball	Electric	Special	10	—	100%	V
-// 487	Soak	Water	Status	20	—	100%	V
-// 488	Flame Charge	Fire	Physical	20	50	100%	V
-// 489	Coil	Poison	Status	20	—	—	V
-// 490	Low Sweep	Fighting	Physical	20	65*	100%	V
-// 491	Acid Spray	Poison	Special	20	40	100%	V
-// 492	Foul Play	Dark	Physical	15	95	100%	V
-// 493	Simple Beam	Normal	Status	15	—	100%	V
-// 494	Entrainment	Normal	Status	15	—	100%	V
-// 495	After You	Normal	Status	15	—	—	V
-// 496	Round	Normal	Special	15	60	100%	V
-// 497	Echoed Voice	Normal	Special	15	40	100%	V
-// 498	Chip Away	Normal	Physical	20	70	100%	V
-// 499	Clear Smog	Poison	Special	15	50	—	V
-// 500	Stored Power	Psychic	Special	10	20	100%	V
-// 501	Quick Guard	Fighting	Status	15	—	—	V
-// 502	Ally Switch	Psychic	Status	15	—	—	V
-// 503	Scald	Water	Special	15	80	100%	V
-// 504	Shell Smash	Normal	Status	15	—	—	V
-// 505	Heal Pulse	Psychic	Status	10	—	—	V
-// 506	Hex	Ghost	Special	10	65*	100%	V
-// 507	Sky Drop	Flying	Physical	10	60	100%	V
-// 508	Shift Gear	Steel	Status	10	—	—	V
-// 509	Circle Throw	Fighting	Physical	10	60	90%	V
-// 510	Incinerate	Fire	Special	15	60*	100%	V
-// 511	Quash	Dark	Status	15	—	100%	V
-// 512	Acrobatics	Flying	Physical	15	55	100%	V
-// 513	Reflect Type	Normal	Status	15	—	—	V
-// 514	Retaliate	Normal	Physical	5	70	100%	V
-// 515	Final Gambit	Fighting	Special	5	—	100%	V
-// 516	Bestow	Normal	Status	15	—	—	V
-// 517	Inferno	Fire	Special	5	100	50%	V
-// 518	Water Pledge	Water	Special	10	80*	100%	V
-// 519	Fire Pledge	Fire	Special	10	80*	100%	V
-// 520	Grass Pledge	Grass	Special	10	80*	100%	V
-// 521	Volt Switch	Electric	Special	20	70	100%	V
-// 522	Struggle Bug	Bug	Special	20	50*	100%	V
-export const Bulldoze: MoveData = {
+};
+
+export const Swift: Move = {
+  name: "Swift",
+  description: "Star-shaped rays are shot at the opposing Pokémon. This attack never misses.",
+  type: C.Types.Normal,
+  target: "Every Adjacent Foe",
+  category: "Special",
+  pp: 20,
+  power: 60,
+  makesContact: false,
+  // TODO functionality
+};
+
+export const SkullBash: Move = {
+  name: "Skull Bash",
+  description:
+    "The user tucks in its head to raise its Defense in the first turn, then rams the target on the next turn.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 10,
+  power: 130,
+  makesContact: true,
+  stage: { defense: 1 },
+  // TODO functionality
+};
+
+export const SpikeCannon: Move = {
+  name: "Spike Cannon",
+  description: "Sharp spikes are shot at the target in rapid succession. Two to five times in a row.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 15,
+  power: 20,
+  makesContact: false,
+  // TODO functionality
+};
+
+export const Constrict: Move = {
+  name: "Constrict",
+  description:
+    "The target is attacked with long, creeping tentacles, vines, or the like. This may also lower the target's Speed stat.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 35,
+  power: 10,
+  makesContact: true,
+  stage: [{ speed: -1 }, 1 / 10],
+};
+
+export const Amnesia: Move = {
+  name: "Amnesia",
+  description:
+    "The user temporarily empties its mind to forget its concerns. This sharply raises the user's Sp. Def stat.",
+  type: C.Types.Psychic,
+  target: "Self",
+  category: "Status",
+  pp: 20,
+  makesContact: false,
+  stage: { specialDefense: 2 },
+};
+
+export const Kinesis: Move = {
+  name: "Kinesis",
+  description: "The user distracts the target by bending a spoon. This lowers the target's accuracy.",
+  type: C.Types.Psychic,
+  target: "Any Adjacent",
+  category: "Status",
+  pp: 15,
+  accuracy: 80,
+  makesContact: false,
+  stage: { accuracy: -1 },
+};
+
+export const SoftBoiled: Move = {
+  name: "Soft-Boiled",
+  description: "The user restores its own HP by up to half of its max HP.",
+  type: C.Types.Normal,
+  target: "Self",
+  category: "Status",
+  pp: 5,
+  makesContact: false,
+  hp: action => (action.source instanceof Codemon ? action.source.stats.hp.max / 2 : 0),
+};
+
+export const HighJumpKick: Move = {
+  name: "High Jump Kick",
+  description:
+    "The target is attacked with a knee kick from a jump. If this move misses, the user takes damage instead.",
+  type: C.Types.Fighting,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 10,
+  power: 130,
+  accuracy: 90,
+  makesContact: true,
+  crash: { hp: action => (action.source instanceof Codemon ? action.source.stats.hp.max / 2 : 0) },
+};
+
+export const Glare: Move = {
+  name: "Glare",
+  description: "The user intimidates the target with the pattern on its belly to cause paralysis.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Status",
+  pp: 30,
+  makesContact: false,
+  status: C.Statuses.Paralysis,
+  // TODO hit ghosts
+};
+
+export const DreamEater: Move = {
+  name: "Dream Eater",
+  description:
+    "The user eats the dreams of a sleeping target. The user's HP is restored by up to half the damage taken by the target.",
+  type: C.Types.Psychic,
+  target: "Any Adjacent",
+  category: "Special",
+  pp: 15,
+  power: 100,
+  makesContact: false,
+  leech: 1 / 2,
+  // TODO only works on sleeping targets
+};
+
+export const PoisonGas: Move = {
+  name: "Poison Gas",
+  description: "A cloud of poison gas is sprayed in the face of opposing Pokémon, poisoning those it hits.",
+  type: C.Types.Poison,
+  target: "Every Adjacent Foe",
+  category: "Status",
+  pp: 40,
+  accuracy: 90,
+  makesContact: false,
+  status: C.Statuses.Poison,
+};
+
+export const Barrage: Move = {
+  name: "Barrage",
+  description: "Round objects are hurled at the target to strike two to five times in a row.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 20,
+  power: 15,
+  accuracy: 85,
+  makesContact: false,
+  // TODO functionality
+};
+
+export const LeechLife: Move = {
+  name: "Leech Life",
+  description:
+    "The user drains the target's blood. The user's HP is restored by up to half the damage taken by the target.",
+  type: C.Types.Bug,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 10,
+  power: 80,
+  makesContact: true,
+  leech: 1 / 2,
+};
+
+export const LovelyKiss: Move = {
+  name: "Lovely Kiss",
+  description:
+    "With a scary face, the user tries to force a kiss on the target. If it succeeds, the target falls asleep.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Status",
+  pp: 10,
+  accuracy: 75,
+  makesContact: false,
+  status: C.Statuses.Sleep,
+};
+
+export const SkyAttack: Move = {
+  name: "Sky Attack",
+  description: "A second-turn attack move where critical hits land more easily. This may also make the target flinch.",
+  type: C.Types.Flying,
+  target: "Any",
+  category: "Physical",
+  pp: 5,
+  power: 140,
+  accuracy: 90,
+  makesContact: true,
+  status: [C.Statuses.Flinch, 1 / 3],
+  // TODO functionality
+};
+
+export const Transform: Move = {
+  name: "Transform",
+  description: "The user transforms into a copy of the target right down to having the same move set.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Status",
+  pp: 10,
+  makesContact: false,
+  // TODO fml
+};
+
+export const Bubble: Move = {
+  name: "Bubble",
+  description: "A spray of countless bubbles is jetted at the opposing Pokémon. This may also lower their Speed stat.",
+  type: C.Types.Water,
+  target: "Every Adjacent Foe",
+  category: "Special",
+  pp: 30,
+  power: 40,
+  makesContact: false,
+  stage: [{ speed: -1 }, 1 / 10],
+};
+
+export const DizzyPunch: Move = {
+  name: "Dizzy Punch",
+  description: "The target is hit with rhythmically launched punches. This may also leave the target confused.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 10,
+  power: 70,
+  makesContact: true,
+  status: [C.Statuses.Confusion, 1 / 5],
+};
+
+export const Spore: Move = {
+  name: "Spore",
+  description: "The user scatters bursts of spores that induce sleep.",
+  type: C.Types.Grass,
+  target: "Any Adjacent",
+  category: "Status",
+  pp: 15,
+  makesContact: false,
+  status: C.Statuses.Sleep,
+  // TODO miss on grass types
+};
+
+export const Flash: Move = {
+  name: "Flash",
+  description: "The user flashes a bright light that cuts the target's accuracy.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Status",
+  pp: 20,
+  makesContact: false,
+  stage: { accuracy: -1 },
+};
+export const Psywave: Move = {
+  name: "Psywave",
+  description: "The target is attacked with an odd psychic wave. The attack varies in intensity.",
+  type: C.Types.Psychic,
+  target: "Any Adjacent",
+  category: "Special",
+  pp: 15,
+  makesContact: false,
+  hp: action =>
+    action.source instanceof Codemon ? Math.floor((action.source.experience.level * (Math.random() * +50)) / 100) : 0,
+};
+
+export const Splash: Move = {
+  name: "Splash",
+  description: "The user just flops and splashes around to no effect at all.",
+  type: C.Types.Normal,
+  category: "Status",
+  pp: 40, // max 64
+  target: "Self",
+  makesContact: false,
+};
+
+export const AcidArmor: Move = {
+  name: "Acid Armor",
+  description: "The user alters its cellular structure to liquefy itself, sharply raising its Defense stat.",
+  type: C.Types.Poison,
+  category: "Status",
+  pp: 20,
+  target: "Self",
+  makesContact: false,
+  stage: { defense: 2 },
+};
+
+export const Crabhammer: Move = {
+  name: "Crabhammer",
+  description:
+    "The target is hammered with a large pincer. This move has a heightened chance of landing a critical hit.",
+  type: C.Types.Water,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 10,
+  power: 100,
+  accuracy: 90,
+  makesContact: true,
+  criticalHitStage: 1,
+};
+
+export const Explosion: Move = {
+  name: "Explosion",
+  description:
+    "The user attacks everything around it by causing a tremendous explosion. The user faints upon using this move.",
+  type: C.Types.Normal,
+  target: "Every Adjacent",
+  category: "Physical",
+  pp: 5,
+  power: 250,
+  makesContact: false,
+  recoil: { faint: true },
+};
+
+export const FurySwipes: Move = {
+  name: "Fury Swipes",
+  description: "The target is raked with sharp claws or scythes quickly two to five times in a row.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 15,
+  power: 18,
+  accuracy: 80,
+  makesContact: true,
+  // TODO functionality
+};
+
+export const Bonemerang: Move = {
+  name: "Bonemerang",
+  description: "The user throws the bone it holds. The bone loops around to hit the target twice—coming and going.",
+  type: C.Types.Ground,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 10,
+  power: 50,
+  accuracy: 90,
+  makesContact: false,
+  // TODO functionality
+};
+
+export const Rest: Move = {
+  name: "Rest",
+  description:
+    "The user goes to sleep for two turns. This fully restores the user's HP and heals any status conditions.",
+  type: C.Types.Psychic,
+  target: "Self",
+  category: "Status",
+  pp: 5,
+  makesContact: false,
+  // TODO functionality
+};
+
+export const RockSlide: Move = {
+  name: "Rock Slide",
+  description:
+    "Large boulders are hurled at opposing Pokémon to inflict damage. This may also make the opposing Pokémon flinch.",
+  type: C.Types.Rock,
+  target: "Every Adjacent Foe",
+  category: "Physical",
+  pp: 10,
+  power: 75,
+  accuracy: 90,
+  makesContact: false,
+  status: [C.Statuses.Flinch, 3 / 10],
+};
+
+export const HyperFang: Move = {
+  name: "Hyper Fang",
+  description: "The user bites hard on the target with its sharp front fangs. This may also make the target flinch.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 15,
+  power: 80,
+  accuracy: 90,
+  makesContact: true,
+  status: [C.Statuses.Flinch, 1 / 10],
+};
+
+export const Sharpen: Move = {
+  name: "Sharpen",
+  description: "The user makes its edges more jagged, which raises its Attack stat.",
+  type: C.Types.Normal,
+  target: "Self",
+  category: "Status",
+  pp: 30,
+  makesContact: false,
+  stage: { attack: 1 },
+};
+
+export const Conversion: Move = {
+  name: "Conversion",
+  description:
+    "The user changes its type to become the same type as the move at the top of the list of moves it knows.",
+  type: C.Types.Normal,
+  target: "Self",
+  category: "Status",
+  pp: 30,
+  makesContact: false,
+  // TODO functionality
+};
+export const TriAttack: Move = {
+  name: "Tri Attack",
+  description:
+    "The user strikes with a simultaneous three-beam attack. This may also burn, freeze, or paralyze the target.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Special",
+  pp: 10,
+  power: 80,
+  makesContact: false,
+  // status: [
+  //   [C.Statuses.Burn, 1 / 5],
+  //   [C.Statuses.Freeze, 1 / 5],
+  //   [C.Statuses.Paralyze, 1 / 5],
+  // ],
+  // TODO functionality
+};
+
+export const SuperFang: Move = {
+  name: "Super Fang",
+  description: "The user chomps hard on the target with its sharp front fangs. This cuts the target's HP in half.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 10,
+  accuracy: 90,
+  makesContact: true,
+  hp: (_, target) => (target instanceof Codemon ? Math.max(Math.floor(target.stats.hp.current / 2)) : 0),
+};
+
+export const Slash: Move = {
+  name: "Slash",
+  description: "The target is attacked with a slash of claws or blades. Critical hits land more easily.",
+  type: C.Types.Normal,
+  target: "Any Adjacent",
+  category: "Physical",
+  pp: 20,
+  power: 70,
+  makesContact: true,
+  criticalHitStage: 1,
+};
+
+export const Substitute: Move = {
+  name: "Substitute",
+  description:
+    "The user creates a substitute for itself using some of its HP. The substitute serves as the user's decoy.",
+  type: C.Types.Normal,
+  target: "Self",
+  category: "Status",
+  pp: 10,
+  makesContact: false,
+  // TODO sheesh
+};
+
+export const Struggle: Move = {
+  name: "Struggle",
+  description: "This attack is used in desperation only if the user has no PP. It also damages the user a little.",
+  type: C.Types.Normal,
+  category: "Physical",
+  target: "Any Adjacent",
+  pp: 1,
+  power: 50,
+  makesContact: true,
+  // recoil: {  },
+};
+export const Sketch: Move = {} as Move;
+export const TripleKick: Move = {} as Move;
+export const Thief: Move = {} as Move;
+export const SpiderWeb: Move = {} as Move;
+export const MindReader: Move = {} as Move;
+export const Nightmare: Move = {} as Move;
+export const FlameWheel: Move = {} as Move;
+export const Snore: Move = {} as Move;
+export const Curse: Move = {} as Move;
+export const Flail: Move = {} as Move;
+export const Conversion2: Move = {} as Move;
+export const Aeroblast: Move = {} as Move;
+export const CottonSpore: Move = {} as Move;
+export const Reversal: Move = {} as Move;
+export const Spite: Move = {} as Move;
+export const PowderSnow: Move = {} as Move;
+export const Protect: Move = {} as Move;
+export const MachPunch: Move = {} as Move;
+export const ScaryFace: Move = {} as Move;
+export const FeintAttack: Move = {} as Move;
+export const SweetKiss: Move = {} as Move;
+export const BellyDrum: Move = {} as Move;
+export const SludgeBomb: Move = {} as Move;
+export const MudSlap: Move = {} as Move;
+export const Octazooka: Move = {} as Move;
+export const Spikes: Move = {} as Move;
+export const ZapCannon: Move = {} as Move;
+export const Foresight: Move = {} as Move;
+export const DestinyBond: Move = {} as Move;
+export const PerishSong: Move = {} as Move;
+export const IcyWind: Move = {} as Move;
+export const Detect: Move = {} as Move;
+export const BoneRush: Move = {} as Move;
+export const LockOn: Move = {} as Move;
+export const Outrage: Move = {} as Move;
+export const Sandstorm: Move = {
+  name: "Sandstorm",
+  description:
+    "A five-turn sandstorm is summoned to hurt all combatants except the Rock, Ground, and Steel C.Types. It raises the Sp. Def stat of Rock C.Types.",
+  type: C.Types.Rock,
+  category: "Status",
+  pp: 10,
+  accuracy: 0,
+  target: "All",
+  makesContact: false,
+  // weather: Weather.Sandstorm,
+  // TODO functionality
+};
+export const GigaDrain: Move = {} as Move;
+export const Endure: Move = {} as Move;
+export const Charm: Move = {} as Move;
+export const Rollout: Move = {} as Move;
+export const FalseSwipe: Move = {} as Move;
+export const Swagger: Move = {} as Move;
+export const MilkDrink: Move = {} as Move;
+export const Spark: Move = {} as Move;
+export const FuryCutter: Move = {} as Move;
+export const SteelWing: Move = {} as Move;
+export const MeanLook: Move = {} as Move;
+export const Attract: Move = {} as Move;
+export const SleepTalk: Move = {} as Move;
+export const HealBell: Move = {} as Move;
+export const Return: Move = {} as Move;
+export const Present: Move = {} as Move;
+export const Frustration: Move = {} as Move;
+export const Safeguard: Move = {} as Move;
+export const PainSplit: Move = {} as Move;
+export const SacredFire: Move = {} as Move;
+export const Magnitude: Move = {} as Move;
+export const DynamicPunch: Move = {} as Move;
+export const Megahorn: Move = {} as Move;
+export const DragonBreath: Move = {
+  name: "Dragon Breath",
+  description: "The user exhales a mighty gust that inflicts damage. This may also leave the target with paralysis.",
+  type: C.Types.Dragon,
+  category: "Special",
+  pp: 20,
+  power: 60,
+  target: "Any Adjacent",
+  makesContact: false,
+  status: [C.Statuses.Paralysis, 3 / 10],
+};
+export const BatonPass: Move = {} as Move;
+export const Encore: Move = {} as Move;
+export const Pursuit: Move = {} as Move;
+export const RapidSpin: Move = {} as Move;
+export const SweetScent: Move = {
+  name: "Sweet Scent",
+  description: "A sweet scent that harshly lowers opposing Pokémon's evasiveness.",
+  type: C.Types.Normal,
+  category: "Status",
+  pp: 20, // max 32
+  target: "Any Adjacent Foe",
+  makesContact: false,
+  stage: { evasion: -2 },
+};
+export const IronTail: Move = {} as Move;
+export const MetalClaw: Move = {} as Move;
+export const VitalThrow: Move = {} as Move;
+export const MorningSun: Move = {} as Move;
+export const Synthesis: Move = {
+  name: "Synthesis",
+  description: "The user restores its own HP. The amount of HP regained varies with the weather.",
+  type: C.Types.Grass,
+  category: "Status",
+  pp: 5, // max 8
+  target: "Self",
+  makesContact: false,
+  hp: (_, target, _battle) => {
+    if (target instanceof Codemon) return target.stats.hp.max / 8;
+    // const weather = battle.weather;
+    // if (weather === Weather.Sunny) return target.maxHp / 2;
+    // if (weather === Weather.Rain) return target.maxHp / 4;
+  },
+  // TODO functionality
+};
+
+export const Moonlight: Move = {} as Move;
+export const HiddenPower: Move = {} as Move;
+export const CrossChop: Move = {} as Move;
+export const Twister: Move = {} as Move;
+export const RainDance: Move = {} as Move;
+export const SunnyDay: Move = {} as Move;
+export const Crunch: Move = {
+  name: "Crunch",
+  description: "The user crunches up the target with sharp fangs. This may also lower the target's Defense stat.",
+  type: C.Types.Dark,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 80,
+  target: "Any Adjacent",
+  makesContact: true,
+  stage: [{ defense: -1 }, 2 / 10],
+};
+export const MirrorCoat: Move = {} as Move;
+export const PsychUp: Move = {} as Move;
+export const ExtremeSpeed: Move = {} as Move;
+export const AncientPower: Move = {} as Move;
+export const ShadowBall: Move = {} as Move;
+export const FutureSight: Move = {} as Move;
+export const RockSmash: Move = {} as Move;
+export const Whirlpool: Move = {} as Move;
+export const BeatUp: Move = {} as Move;
+export const FakeOut: Move = {} as Move;
+export const Uproar: Move = {} as Move;
+export const Stockpile: Move = {} as Move;
+export const SpitUp: Move = {} as Move;
+export const Swallow: Move = {} as Move;
+export const HeatWave: Move = {} as Move;
+export const Hail: Move = {} as Move;
+export const Torment: Move = {} as Move;
+export const Flatter: Move = {} as Move;
+export const WillOWisp: Move = {} as Move;
+export const Memento: Move = {} as Move;
+export const Facade: Move = {} as Move;
+export const FocusPunch: Move = {} as Move;
+export const SmellingSalts: Move = {} as Move;
+export const FollowMe: Move = {} as Move;
+export const NaturePower: Move = {} as Move;
+export const Charge: Move = {} as Move;
+export const Taunt: Move = {} as Move;
+export const HelpingHand: Move = {} as Move;
+export const Trick: Move = {} as Move;
+export const RolePlay: Move = {} as Move;
+export const Wish: Move = {} as Move;
+export const Assist: Move = {} as Move;
+export const Ingrain: Move = {} as Move;
+export const Superpower: Move = {} as Move;
+export const MagicCoat: Move = {} as Move;
+export const Recycle: Move = {} as Move;
+export const Revenge: Move = {} as Move;
+export const BrickBreak: Move = {} as Move;
+export const Yawn: Move = {} as Move;
+export const KnockOff: Move = {} as Move;
+export const Endeavor: Move = {} as Move;
+export const Eruption: Move = {} as Move;
+export const SkillSwap: Move = {} as Move;
+export const Imprison: Move = {} as Move;
+export const Refresh: Move = {} as Move;
+export const Grudge: Move = {} as Move;
+export const Snatch: Move = {} as Move;
+export const SecretPower: Move = {} as Move;
+export const Dive: Move = {} as Move;
+export const ArmThrust: Move = {} as Move;
+export const Camouflage: Move = {} as Move;
+export const TailGlow: Move = {} as Move;
+export const LusterPurge: Move = {} as Move;
+export const MistBall: Move = {} as Move;
+export const FeatherDance: Move = {} as Move;
+export const TeeterDance: Move = {} as Move;
+export const BlazeKick: Move = {} as Move;
+export const MudSport: Move = {} as Move;
+export const IceBall: Move = {} as Move;
+export const NeedleArm: Move = {} as Move;
+export const SlackOff: Move = {} as Move;
+export const HyperVoice: Move = {} as Move;
+export const PoisonFang: Move = {} as Move;
+export const CrushClaw: Move = {} as Move;
+export const BlastBurn: Move = {} as Move;
+export const HydroCannon: Move = {} as Move;
+export const MeteorMash: Move = {} as Move;
+export const Astonish: Move = {} as Move;
+export const WeatherBall: Move = {} as Move;
+export const Aromatherapy: Move = {} as Move;
+export const FakeTears: Move = {} as Move;
+export const AirCutter: Move = {} as Move;
+export const Overheat: Move = {} as Move;
+export const OdorSleuth: Move = {} as Move;
+export const RockTomb: Move = {} as Move;
+export const SilverWind: Move = {} as Move;
+export const MetalSound: Move = {} as Move;
+export const GrassWhistle: Move = {} as Move;
+export const Tickle: Move = {} as Move;
+export const CosmicPower: Move = {} as Move;
+export const WaterSpout: Move = {} as Move;
+export const SignalBeam: Move = {} as Move;
+export const ShadowPunch: Move = {} as Move;
+export const Extrasensory: Move = {} as Move;
+export const SkyUppercut: Move = {} as Move;
+export const SandTomb: Move = {
+  name: "Sand Tomb",
+  description: "The user traps the target inside a harshly raging sandstorm for four to five turns.",
+  type: C.Types.Ground,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 35,
+  accuracy: 85,
+  target: "Any Adjacent",
+  makesContact: false,
+  // TODO functionality
+};
+export const SheerCold: Move = {} as Move;
+export const MuddyWater: Move = {} as Move;
+export const BulletSeed: Move = {} as Move;
+export const AerialAce: Move = {} as Move;
+export const IcicleSpear: Move = {} as Move;
+export const IronDefense: Move = {} as Move;
+export const Block: Move = {} as Move;
+export const Howl: Move = {} as Move;
+export const DragonClaw: Move = {
+  name: "Dragon Claw",
+  description: "The user slashes the target with huge sharp claws.",
+  type: C.Types.Dragon,
+  category: "Physical",
+  pp: 15,
+  power: 80,
+  target: "Any Adjacent",
+  makesContact: true,
+};
+
+export const FrenzyPlant: Move = {} as Move;
+export const BulkUp: Move = {} as Move;
+export const Bounce: Move = {} as Move;
+export const MudShot: Move = {} as Move;
+export const PoisonTail: Move = {} as Move;
+export const Covet: Move = {} as Move;
+export const VoltTackle: Move = {} as Move;
+export const MagicalLeaf: Move = {} as Move;
+export const WaterSport: Move = {} as Move;
+export const CalmMind: Move = {} as Move;
+export const LeafBlade: Move = {} as Move;
+export const DragonDance: Move = {} as Move;
+export const RockBlast: Move = {} as Move;
+export const ShockWave: Move = {} as Move;
+export const WaterPulse: Move = {} as Move;
+export const DoomDesire: Move = {} as Move;
+export const PsychoBoost: Move = {} as Move;
+export const Roost: Move = {} as Move;
+export const Gravity: Move = {} as Move;
+export const MiracleEye: Move = {} as Move;
+export const WakeUpSlap: Move = {} as Move;
+export const HammerArm: Move = {} as Move;
+export const GyroBall: Move = {} as Move;
+export const HealingWish: Move = {} as Move;
+export const Brine: Move = {} as Move;
+export const NaturalGift: Move = {} as Move;
+export const Feint: Move = {} as Move;
+export const Pluck: Move = {} as Move;
+export const Tailwind: Move = {} as Move;
+export const Acupressure: Move = {} as Move;
+export const MetalBurst: Move = {} as Move;
+export const Uturn: Move = {} as Move;
+export const CloseCombat: Move = {} as Move;
+export const Payback: Move = {} as Move;
+export const Assurance: Move = {} as Move;
+export const Embargo: Move = {} as Move;
+export const Fling: Move = {} as Move;
+export const PsychoShift: Move = {} as Move;
+export const TrumpCard: Move = {} as Move;
+export const HealBlock: Move = {} as Move;
+export const WringOut: Move = {} as Move;
+export const PowerTrick: Move = {} as Move;
+export const GastroAcid: Move = {} as Move;
+export const LuckyChant: Move = {} as Move;
+export const MeFirst: Move = {} as Move;
+export const Copycat: Move = {} as Move;
+export const PowerSwap: Move = {} as Move;
+export const GuardSwap: Move = {} as Move;
+export const Punishment: Move = {} as Move;
+export const LastResort: Move = {} as Move;
+export const WorrySeed: Move = {
+  name: "Worry Seed",
+  description:
+    "A seed that causes worry is planted on the target. It prevents sleep by making the target's Ability Insomnia.",
+  type: C.Types.Grass,
+  category: "Status",
+  pp: 10, // max 16
+  priority: 0,
+  target: "Any Adjacent",
+  makesContact: false,
+  // TODO functionality
+};
+export const SuckerPunch: Move = {} as Move;
+export const ToxicSpikes: Move = {} as Move;
+export const HeartSwap: Move = {} as Move;
+export const AquaRing: Move = {} as Move;
+export const MagnetRise: Move = {} as Move;
+export const FlareBlitz: Move = {} as Move;
+export const ForcePalm: Move = {} as Move;
+export const AuraSphere: Move = {} as Move;
+export const RockPolish: Move = {} as Move;
+export const PoisonJab: Move = {} as Move;
+export const DarkPulse: Move = {} as Move;
+export const NightSlash: Move = {} as Move;
+export const AquaTail: Move = {} as Move;
+export const SeedBomb: Move = {
+  name: "Seed Bomb",
+  description: "The user slams a barrage of hard-shelled seeds down on the target from above.",
+  type: C.Types.Grass,
+  category: "Physical",
+  pp: 15, // max 24
+  power: 80,
+  target: "Any Adjacent",
+  makesContact: false,
+};
+export const AirSlash: Move = {} as Move;
+export const XScissor: Move = {} as Move;
+export const BugBuzz: Move = {} as Move;
+export const DragonPulse: Move = {} as Move;
+export const DragonRush: Move = {
+  name: "Dragon Rush",
+  description:
+    "The user tackles the target while exhibiting overwhelming menace. This may also make the target flinch.",
+  type: C.Types.Dragon,
+  category: "Physical",
+  pp: 10, // max 16
+  power: 100,
+  accuracy: 75,
+  target: "Any Adjacent",
+  makesContact: true,
+  // TODO functionality
+};
+export const PowerGem: Move = {} as Move;
+export const DrainPunch: Move = {} as Move;
+export const VacuumWave: Move = {} as Move;
+export const FocusBlast: Move = {} as Move;
+export const EnergyBall: Move = {} as Move;
+export const BraveBird: Move = {} as Move;
+export const EarthPower: Move = {} as Move;
+export const Switcheroo: Move = {} as Move;
+export const GigaImpact: Move = {} as Move;
+export const NastyPlot: Move = {} as Move;
+export const BulletPunch: Move = {} as Move;
+export const Avalanche: Move = {} as Move;
+export const IceShard: Move = {} as Move;
+export const ShadowClaw: Move = {} as Move;
+export const ThunderFang: Move = {} as Move;
+export const IceFang: Move = {} as Move;
+export const FireFang: Move = {} as Move;
+export const ShadowSneak: Move = {} as Move;
+export const MudBomb: Move = {} as Move;
+export const PsychoCut: Move = {} as Move;
+export const ZenHeadbutt: Move = {} as Move;
+export const MirrorShot: Move = {} as Move;
+export const FlashCannon: Move = {} as Move;
+export const RockClimb: Move = {} as Move;
+export const Defog: Move = {} as Move;
+export const TrickRoom: Move = {} as Move;
+export const DracoMeteor: Move = {} as Move;
+export const Discharge: Move = {} as Move;
+export const LavaPlume: Move = {} as Move;
+export const LeafStorm: Move = {} as Move;
+export const PowerWhip: Move = {} as Move;
+export const RockWrecker: Move = {} as Move;
+export const CrossPoison: Move = {} as Move;
+export const GunkShot: Move = {} as Move;
+export const IronHead: Move = {} as Move;
+export const MagnetBomb: Move = {} as Move;
+export const StoneEdge: Move = {} as Move;
+export const Captivate: Move = {} as Move;
+export const StealthRock: Move = {} as Move;
+export const GrassKnot: Move = {} as Move;
+export const Chatter: Move = {} as Move;
+export const Judgment: Move = {} as Move;
+export const BugBite: Move = {} as Move;
+export const ChargeBeam: Move = {} as Move;
+export const WoodHammer: Move = {} as Move;
+export const AquaJet: Move = {} as Move;
+export const AttackOrder: Move = {} as Move;
+export const DefendOrder: Move = {} as Move;
+export const HealOrder: Move = {} as Move;
+export const HeadSmash: Move = {} as Move;
+export const DoubleHit: Move = {} as Move;
+export const RoarofTime: Move = {} as Move;
+export const SpacialRend: Move = {} as Move;
+export const LunarDance: Move = {} as Move;
+export const CrushGrip: Move = {} as Move;
+export const MagmaStorm: Move = {} as Move;
+export const DarkVoid: Move = {} as Move;
+export const SeedFlare: Move = {} as Move;
+export const OminousWind: Move = {} as Move;
+export const ShadowForce: Move = {} as Move;
+export const HoneClaws: Move = {} as Move;
+export const WideGuard: Move = {} as Move;
+export const GuardSplit: Move = {} as Move;
+export const PowerSplit: Move = {} as Move;
+export const WonderRoom: Move = {} as Move;
+export const Psyshock: Move = {} as Move;
+export const Venoshock: Move = {} as Move;
+export const Autotomize: Move = {} as Move;
+export const RagePowder: Move = {} as Move;
+export const Telekinesis: Move = {} as Move;
+export const MagicRoom: Move = {} as Move;
+export const SmackDown: Move = {} as Move;
+export const StormThrow: Move = {} as Move;
+export const FlameBurst: Move = {} as Move;
+export const SludgeWave: Move = {} as Move;
+export const QuiverDance: Move = {} as Move;
+export const HeavySlam: Move = {} as Move;
+export const Synchronoise: Move = {} as Move;
+export const ElectroBall: Move = {} as Move;
+export const Soak: Move = {} as Move;
+export const FlameCharge: Move = {} as Move;
+export const Coil: Move = {} as Move;
+export const LowSweep: Move = {} as Move;
+export const AcidSpray: Move = {} as Move;
+export const FoulPlay: Move = {} as Move;
+export const SimpleBeam: Move = {} as Move;
+export const Entrainment: Move = {} as Move;
+export const AfterYou: Move = {} as Move;
+export const Round: Move = {} as Move;
+export const EchoedVoice: Move = {} as Move;
+export const ChipAway: Move = {} as Move;
+export const ClearSmog: Move = {} as Move;
+export const StoredPower: Move = {} as Move;
+export const QuickGuard: Move = {} as Move;
+export const AllySwitch: Move = {} as Move;
+export const Scald: Move = {} as Move;
+export const ShellSmash: Move = {} as Move;
+export const HealPulse: Move = {} as Move;
+export const Hex: Move = {} as Move;
+export const SkyDrop: Move = {} as Move;
+export const ShiftGear: Move = {} as Move;
+export const CircleThrow: Move = {} as Move;
+export const Incinerate: Move = {} as Move;
+export const Quash: Move = {} as Move;
+export const Acrobatics: Move = {} as Move;
+export const ReflectType: Move = {} as Move;
+export const Retaliate: Move = {} as Move;
+export const FinalGambit: Move = {} as Move;
+export const Bestow: Move = {} as Move;
+export const Inferno: Move = {} as Move;
+export const WaterPledge: Move = {} as Move;
+export const FirePledge: Move = {} as Move;
+export const GrassPledge: Move = {} as Move;
+export const VoltSwitch: Move = {} as Move;
+export const StruggleBug: Move = {} as Move;
+export const Bulldoze: Move = {
   name: "Bulldoze",
   description:
     "The user tramples its target into the ground, dealing damage. This also lowers the target's action speed.",
-  type: Types.Ground,
+  type: C.Types.Ground,
   category: "Physical",
   pp: 20,
   power: 60,
-  accuracy: 100,
-  target: TC.All | TC.Adjacent,
+  target: "Every Adjacent",
   makesContact: false,
-  effect: {
-    type: "StatMod",
-    speed: -1,
-  },
-} as const;
+  stage: { speed: -1 },
+};
 
-// 524	Frost Breath	Ice	Special	10	60*	90%	V
-// 525	Dragon Tail	Dragon	Physical	10	60	90%	V
-// 526	Work Up	Normal	Status	30	—	—	V
-// 527	Electroweb	Electric	Special	15	55	95%	V
-// 528	Wild Charge	Electric	Physical	15	90	100%	V
-// 529	Drill Run	Ground	Physical	10	80	95%	V
-export const DualChop: MoveData = {
+export const FrostBreath: Move = {} as Move;
+export const DragonTail: Move = {} as Move;
+export const WorkUp: Move = {} as Move;
+export const Electroweb: Move = {} as Move;
+export const WildCharge: Move = {} as Move;
+export const DrillRun: Move = {} as Move;
+export const DualChop: Move = {
   name: "Dual Chop",
   description: "The user attacks its target by hitting it with brutal strikes. The target is hit twice in a row.",
-  type: Types.Dragon,
+  type: C.Types.Dragon,
   category: "Physical",
   pp: 15, // max 24
   power: 80,
   accuracy: 90,
-  target: TC.Adjacent,
+  target: "Any Adjacent",
   makesContact: true,
   // TODO multihit
-} as const;
-// 531	Heart Stamp	Psychic	Physical	25	60	100%	V
-// 532	Horn Leech	Grass	Physical	10	75	100%	V
-// 533	Sacred Sword	Fighting	Physical	15*	90	100%	V
-// 534	Razor Shell	Water	Physical	10	75	95%	V
-// 535	Heat Crash	Fire	Physical	10	—	100%	V
-// 536	Leaf Tornado	Grass	Special	10	65	90%	V
-// 537	Steamroller	Bug	Physical	20	65	100%	V
-// 538	Cotton Guard	Grass	Status	10	—	—	V
-// 539	Night Daze	Dark	Special	10	85	95%	V
-// 540	Psystrike	Psychic	Special	10	100	100%	V
-// 541	Tail Slap	Normal	Physical	10	25	85%	V
-// 542	Hurricane	Flying	Special	10	110*	70%	V
-// 543	Head Charge	Normal	Physical	15	120	100%	V
-// 544	Gear Grind	Steel	Physical	15	50	85%	V
-// 545	Searing Shot	Fire	Special	5	100	100%	V
-// 546	Techno Blast	Normal	Special	5	120*	100%	V
-// 547	Relic Song	Normal	Special	10	75	100%	V
-// 548	Secret Sword	Fighting	Special	10	85	100%	V
-// 549	Glaciate	Ice	Special	10	65	95%	V
-// 550	Bolt Strike	Electric	Physical	5	130	85%	V
-// 551	Blue Flare	Fire	Special	5	130	85%	V
-// 552	Fiery Dance	Fire	Special	10	80	100%	V
-// 553	Freeze Shock	Ice	Physical	5	140	90%	V
-// 554	Ice Burn	Ice	Special	5	140	90%	V
-// 555	Snarl	Dark	Special	15	55	95%	V
-// 556	Icicle Crash	Ice	Physical	10	85	90%	V
-// 557	V-create	Fire	Physical	5	180	95%	V
-// 558	Fusion Flare	Fire	Special	5	100	100%	V
-// 559	Fusion Bolt	Electric	Physical	5	100	100%	V
-// 560	Flying Press	Fighting	Physical	10	100*	95%	VI
-// 561	Mat Block	Fighting	Status	10	—	—	VI
-// 562	Belch	Poison	Special	10	120	90%	VI
-// 563	Rototiller	Ground	Status	10	—	—	VI
-// 564	Sticky Web	Bug	Status	20	—	—	VI
-// 565	Fell Stinger	Bug	Physical	25	50*	100%	VI
-// 566	Phantom Force	Ghost	Physical	10	90	100%	VI
-// 567	Trick-or-Treat	Ghost	Status	20	—	100%	VI
-// 568	Noble Roar	Normal	Status	30	—	100%	VI
-// 569	Ion Deluge	Electric	Status	25	—	—	VI
-// 570	Parabolic Charge	Electric	Special	20	65*	100%	VI
-// 571	Forest's Curse	Grass	Status	20	—	100%	VI
-// 572	Petal Blizzard	Grass	Physical	15	90	100%	VI
-// 573	Freeze-Dry	Ice	Special	20	70	100%	VI
-// 574	Disarming Voice	Fairy	Special	15	40	—	VI
-// 575	Parting Shot	Dark	Status	20	—	100%	VI
-// 576	Topsy-Turvy	Dark	Status	20	—	—*	VI
-// 577	Draining Kiss	Fairy	Special	10	50	100%	VI
-// 578	Crafty Shield	Fairy	Status	10	—	—	VI
-// 579	Flower Shield	Fairy	Status	10	—	—	VI
-// 580	Grassy Terrain	Grass	Status	10	—	—	VI
-// 581	Misty Terrain	Fairy	Status	10	—	—	VI
-// 582	Electrify	Electric	Status	20	—	—	VI
-// 583	Play Rough	Fairy	Physical	10	90	90%	VI
-// 584	Fairy Wind	Fairy	Special	30	40	100%	VI
-// 585	Moonblast	Fairy	Special	15	95	100%	VI
-// 586	Boomburst	Normal	Special	10	140	100%	VI
-// 587	Fairy Lock	Fairy	Status	10	—	—	VI
-// 588	King's Shield	Steel	Status	10	—	—	VI
-// 589	Play Nice	Normal	Status	20	—	—	VI
-// 590	Confide	Normal	Status	20	—	—	VI
-// 591	Diamond Storm	Rock	Physical	5	100	95%	VI
-// 592	Steam Eruption	Water	Special	5	110	95%	VI
-// 593	Hyperspace Hole	Psychic	Special	5	80	—	VI
-// 594	Water Shuriken*	Water	Special	20	15	100%	VI
-// 595	Mystical Fire	Fire	Special	10	75*	100%	VI
-// 596	Spiky Shield	Grass	Status	10	—	—	VI
-// 597	Aromatic Mist	Fairy	Status	20	—	—	VI
-// 598	Eerie Impulse	Electric	Status	15	—	100%	VI
-// 599	Venom Drench	Poison	Status	20	—	100%	VI
-// 600	Powder	Bug	Status	20	—	100%	VI
-// 601	Geomancy	Fairy	Status	10	—	—	VI
-// 602	Magnetic Flux	Electric	Status	20	—	—	VI
-// 603	Happy Hour	Normal	Status	30	—	—	VI
-// 604	Electric Terrain	Electric	Status	10	—	—	VI
-// 605	Dazzling Gleam	Fairy	Special	10	80	100%	VI
-// 606	Celebrate	Normal	Status	40	—	—	VI
-// 607	Hold Hands	Normal	Status	40	—	—	VI
-// 608	Baby-Doll Eyes	Fairy	Status	30	—	100%	VI
-// 609	Nuzzle	Electric	Physical	20	20	100%	VI
-// 610	Hold Back	Normal	Physical	40	40	100%	VI
-// 611	Infestation	Bug	Special	20	20	100%	VI
-// 612	Power-Up Punch	Fighting	Physical	20	40	100%	VI
-// 613	Oblivion Wing	Flying	Special	10	80	100%	VI
-// 614	Thousand Arrows	Ground	Physical	10	90	100%	VI
-// 615	Thousand Waves	Ground	Physical	10	90	100%	VI
-// 616	Land's Wrath	Ground	Physical	10	90	100%	VI
-// 617	Light of Ruin	Fairy	Special	5	140	90%	VI
-// 618	Origin Pulse	Water	Special	10	110	85%	VI*
-// 619	Precipice Blades	Ground	Physical	10	120	85%	VI*
-// 620	Dragon Ascent	Flying	Physical	5	120	100%	VI*
-// 621	Hyperspace Fury	Dark	Physical	5	100	—	VI*
-// 622	Breakneck Blitz	Normal	Physical	1	—	—	VII
-// 623	Breakneck Blitz	Normal	Special	1	—	—	VII
-// 624	All-Out Pummeling	Fighting	Physical	1	—	—	VII
-// 625	All-Out Pummeling	Fighting	Special	1	—	—	VII
-// 626	Supersonic Skystrike	Flying	Physical	1	—	—	VII
-// 627	Supersonic Skystrike	Flying	Special	1	—	—	VII
-// 628	Acid Downpour	Poison	Physical	1	—	—	VII
-// 629	Acid Downpour	Poison	Special	1	—	—	VII
-// 630	Tectonic Rage	Ground	Physical	1	—	—	VII
-// 631	Tectonic Rage	Ground	Special	1	—	—	VII
-// 632	Continental Crush	Rock	Physical	1	—	—	VII
-// 633	Continental Crush	Rock	Special	1	—	—	VII
-// 634	Savage Spin-Out	Bug	Physical	1	—	—	VII
-// 635	Savage Spin-Out	Bug	Special	1	—	—	VII
-// 636	Never-Ending Nightmare	Ghost	Physical	1	—	—	VII
-// 637	Never-Ending Nightmare	Ghost	Special	1	—	—	VII
-// 638	Corkscrew Crash	Steel	Physical	1	—	—	VII
-// 639	Corkscrew Crash	Steel	Special	1	—	—	VII
-// 640	Inferno Overdrive	Fire	Physical	1	—	—	VII
-// 641	Inferno Overdrive	Fire	Special	1	—	—	VII
-// 642	Hydro Vortex	Water	Physical	1	—	—	VII
-// 643	Hydro Vortex	Water	Special	1	—	—	VII
-// 644	Bloom Doom	Grass	Physical	1	—	—	VII
-// 645	Bloom Doom	Grass	Special	1	—	—	VII
-// 646	Gigavolt Havoc	Electric	Physical	1	—	—	VII
-// 647	Gigavolt Havoc	Electric	Special	1	—	—	VII
-// 648	Shattered Psyche	Psychic	Physical	1	—	—	VII
-// 649	Shattered Psyche	Psychic	Special	1	—	—	VII
-// 650	Subzero Slammer	Ice	Physical	1	—	—	VII
-// 651	Subzero Slammer	Ice	Special	1	—	—	VII
-// 652	Devastating Drake	Dragon	Physical	1	—	—	VII
-// 653	Devastating Drake	Dragon	Special	1	—	—	VII
-// 654	Black Hole Eclipse	Dark	Physical	1	—	—	VII
-// 655	Black Hole Eclipse	Dark	Special	1	—	—	VII
-// 656	Twinkle Tackle	Fairy	Physical	1	—	—	VII
-// 657	Twinkle Tackle	Fairy	Special	1	—	—	VII
-// 658	Catastropika	Electric	Physical	1	210	—	VII
-// 659	Shore Up	Ground	Status	10	—	—	VII
-// 660	First Impression	Bug	Physical	10	90	100%	VII
-// 661	Baneful Bunker	Poison	Status	10	—	—	VII
-// 662	Spirit Shackle	Ghost	Physical	10	80	100%	VII
-// 663	Darkest Lariat	Dark	Physical	10	85	100%	VII
-// 664	Sparkling Aria	Water	Special	10	90	100%	VII
-// 665	Ice Hammer	Ice	Physical	10	100	90%	VII
-// 666	Floral Healing	Fairy	Status	10	—	—	VII
-// 667	High Horsepower	Ground	Physical	10	95	95%	VII
-// 668	Strength Sap	Grass	Status	10	—	100%	VII
-// 669	Solar Blade	Grass	Physical	10	125	100%	VII
-// 670	Leafage	Grass	Physical	40	40	100%	VII
-// 671	Spotlight	Normal	Status	15	—	—	VII
-// 672	Toxic Thread	Poison	Status	20	—	100%	VII
-// 673	Laser Focus	Normal	Status	30	—	—	VII
-// 674	Gear Up	Steel	Status	20	—	—	VII
-// 675	Throat Chop	Dark	Physical	15	80	100%	VII
-// 676	Pollen Puff	Bug	Special	15	90	100%	VII
-// 677	Anchor Shot	Steel	Physical	20	80	100%	VII
-// 678	Psychic Terrain	Psychic	Status	10	—	—	VII
-// 679	Lunge	Bug	Physical	15	80	100%	VII
-// 680	Fire Lash	Fire	Physical	15	80	100%	VII
-// 681	Power Trip	Dark	Physical	10	20	100%	VII
-// 682	Burn Up	Fire	Special	5	130	100%	VII
-// 683	Speed Swap	Psychic	Status	10	—	—	VII
-// 684	Smart Strike	Steel	Physical	10	70	—	VII
-// 685	Purify	Poison	Status	20	—	—	VII
-// 686	Revelation Dance	Normal	Special	15	90	100%	VII
-// 687	Core Enforcer	Dragon	Special	10	100	100%	VII
-// 688	Trop Kick	Grass	Physical	15	70	100%	VII
-// 689	Instruct	Psychic	Status	15	—	—	VII
-// 690	Beak Blast	Flying	Physical	15	100	100%	VII
-// 691	Clanging Scales	Dragon	Special	5	110	100%	VII
-// 692	Dragon Hammer	Dragon	Physical	15	90	100%	VII
-// 693	Brutal Swing	Dark	Physical	20	60	100%	VII
-// 694	Aurora Veil	Ice	Status	20	—	—	VII
-// 695	Sinister Arrow Raid	Ghost	Physical	1	180	—	VII
-// 696	Malicious Moonsault	Dark	Physical	1	180	—	VII
-// 697	Oceanic Operetta	Water	Special	1	195	—	VII
-// 698	Guardian of Alola	Fairy	Special	1	—	—	VII
-// 699	Soul-Stealing 7-Star Strike	Ghost	Physical	1	195	—	VII
-// 700	Stoked Sparksurfer	Electric	Special	1	175	—	VII
-// 701	Pulverizing Pancake	Normal	Physical	1	210	—	VII
-// 702	Extreme Evoboost	Normal	Status	1	—	—	VII
-// 703	Genesis Supernova	Psychic	Special	1	185	—	VII
-// 704	Shell Trap	Fire	Special	5	150	100%	VII
-// 705	Fleur Cannon	Fairy	Special	5	130	90%	VII
-// 706	Psychic Fangs	Psychic	Physical	10	85	100%	VII
-// 707	Stomping Tantrum	Ground	Physical	10	75	100%	VII
-// 708	Shadow Bone	Ghost	Physical	10	85	100%	VII
-// 709	Accelerock	Rock	Physical	20	40	100%	VII
-// 710	Liquidation	Water	Physical	10	85	100%	VII
-// 711	Prismatic Laser	Psychic	Special	10	160	100%	VII
-// 712	Spectral Thief	Ghost	Physical	10	90	100%	VII
-// 713	Sunsteel Strike	Steel	Physical	5	100	100%	VII
-// 714	Moongeist Beam	Ghost	Special	5	100	100%	VII
-// 715	Tearful Look	Normal	Status	20	—	—	VII
-// 716	Zing Zap	Electric	Physical	10	80	100%	VII
-// 717	Nature's Madness	Fairy	Special	10	—	90%	VII
-// 718	Multi-Attack	Normal	Physical	10	120*	100%	VII
-// 719	10,000,000 Volt Thunderbolt	Electric	Special	1	195	—	VII
-// 720	Mind Blown	Fire	Special	5	150	100%	VII*
-// 721	Plasma Fists	Electric	Physical	15	100	100%	VII*
-// 722	Photon Geyser	Psychic	Special	5	100	100%	VII*
-// 723	Light That Burns the Sky	Psychic	Special	1	200	—	VII*
-// 724	Searing Sunraze Smash	Steel	Physical	1	200	—	VII*
-// 725	Menacing Moonraze Maelstrom	Ghost	Special	1	200	—	VII*
-// 726	Let's Snuggle Forever	Fairy	Physical	1	190	—	VII*
-// 727	Splintered Stormshards	Rock	Physical	1	190	—	VII*
-// 728	Clangorous Soulblaze	Dragon	Special	1	185	—	VII*
-// 729	Zippy Zap	Electric	Physical	10*	80*	100%	VII*
-// 730	Splishy Splash	Water	Special	15	90	100%	VII*
-// 731	Floaty Fall	Flying	Physical	15	90	95%	VII*
-// 732	Pika Papow	Electric	Special	20	—	—	VII*
-// 733	Bouncy Bubble	Water	Special	20*	60*	100%	VII*
-// 734	Buzzy Buzz	Electric	Special	20*	60*	100%	VII*
-// 735	Sizzly Slide	Fire	Physical	20*	60*	100%	VII*
-// 736	Glitzy Glow	Psychic	Special	15	80*	95%*	VII*
-// 737	Baddy Bad	Dark	Special	15	80*	95%*	VII*
-// 738	Sappy Seed	Grass	Physical	10*	100*	90%*	VII*
-// 739	Freezy Frost	Ice	Special	10*	100*	90%*	VII*
-// 740	Sparkly Swirl	Fairy	Special	5*	120*	85%*	VII*
-// 741	Veevee Volley	Normal	Physical	20	—	—	VII*
-// 742	Double Iron Bash	Steel	Physical	5	60	100%	VII*
-// 743	Max Guard	Normal	Status	10	—	—	VIII
-// 744	Dynamax Cannon	Dragon	Special	5	100	100%	VIII
-// 745	Snipe Shot	Water	Special	15	80	100%	VIII
-// 746	Jaw Lock	Dark	Physical	10	80	100%	VIII
-// 747	Stuff Cheeks	Normal	Status	10	—	—	VIII
-// 748	No Retreat	Fighting	Status	5	—	—	VIII
-// 749	Tar Shot	Rock	Status	15	—	100%	VIII
-// 750	Magic Powder	Psychic	Status	20	—	100%	VIII
-// 751	Dragon Darts	Dragon	Physical	10	50	100%	VIII
-// 752	Teatime	Normal	Status	10	—	—	VIII
-// 753	Octolock	Fighting	Status	15	—	100%	VIII
-// 754	Bolt Beak	Electric	Physical	10	85	100%	VIII
-// 755	Fishious Rend	Water	Physical	10	85	100%	VIII
-// 756	Court Change	Normal	Status	10	—	100%	VIII
-// 757	Max Flare	Fire	???	10	—	—	VIII
-// 758	Max Flutterby	Bug	???	10	—	—	VIII
-// 759	Max Lightning	Electric	???	10	—	—	VIII
-// 760	Max Strike	Normal	???	10	—	—	VIII
-// 761	Max Knuckle	Fighting	???	10	—	—	VIII
-// 762	Max Phantasm	Ghost	???	10	—	—	VIII
-// 763	Max Hailstorm	Ice	???	10	—	—	VIII
-// 764	Max Ooze	Poison	???	10	—	—	VIII
-// 765	Max Geyser	Water	???	10	—	—	VIII
-// 766	Max Airstream	Flying	???	10	—	—	VIII
-// 767	Max Starfall	Fairy	???	10	—	—	VIII
-// 768	Max Wyrmwind	Dragon	???	10	—	—	VIII
-// 769	Max Mindstorm	Psychic	???	10	—	—	VIII
-// 770	Max Rockfall	Rock	???	10	—	—	VIII
-// 771	Max Quake	Ground	???	10	—	—	VIII
-// 772	Max Darkness	Dark	???	10	—	—	VIII
-// 773	Max Overgrowth	Grass	???	10	—	—	VIII
-// 774	Max Steelspike	Steel	???	10	—	—	VIII
-// 775	Clangorous Soul	Dragon	Status	5	—	—	VIII
-// 776	Body Press	Fighting	Physical	10	80	100%	VIII
-// 777	Decorate	Fairy	Status	15	—	—	VIII
-// 778	Drum Beating	Grass	Physical	10	80	100%	VIII
-// 779	Snap Trap	Grass	Physical	15	35	100%	VIII
-// 780	Pyro Ball	Fire	Physical	5	120	90%	VIII
-// 781	Behemoth Blade	Steel	Physical	5	100	100%	VIII
-// 782	Behemoth Bash	Steel	Physical	5	100	100%	VIII
-// 783	Aura Wheel	Electric	Physical	10	110	100%	VIII
-// 784	Breaking Swipe	Dragon	Physical	15	60	100%	VIII
-// 785	Branch Poke	Grass	Physical	40	40	100%	VIII
-// 786	Overdrive	Electric	Special	10	80	100%	VIII
-// 787	Apple Acid	Grass	Special	10	80	100%	VIII
-// 788	Grav Apple	Grass	Physical	10	80	100%	VIII
-// 789	Spirit Break	Fairy	Physical	15	75	100%	VIII
-// 790	Strange Steam	Fairy	Special	10	90	95%	VIII
-// 791	Life Dew	Water	Status	10	—	—	VIII
-// 792	Obstruct	Dark	Status	10	—	100%	VIII
-// 793	False Surrender	Dark	Physical	10	80	—	VIII
-// 794	Meteor Assault	Fighting	Physical	5	150	100%	VIII
-// 795	Eternabeam	Dragon	Special	5	160	90%	VIII
-// 796	Steel Beam	Steel	Special	5	140	95%	VIII
-// 797	Expanding Force	Psychic	Special	10	80	100%	VIII
-// 798	Steel Roller	Steel	Physical	5	130	100%	VIII
-// 799	Scale Shot	Dragon	Physical	20	25	90%	VIII
-// 800	Meteor Beam	Rock	Special	10	120	90%	VIII
-// 801	Shell Side Arm	Poison	Special	10	90	100%	VIII
-// 802	Misty Explosion	Fairy	Special	5	100	100%	VIII
-// 803	Grassy Glide	Grass	Physical	20	70	100%	VIII
-// 804	Rising Voltage	Electric	Special	20	70	100%	VIII
-// 805	Terrain Pulse	Normal	Special	10	50	100%	VIII
-// 806	Skitter Smack	Bug	Physical	10	70	90%	VIII
-// 807	Burning Jealousy	Fire	Special	5	70	100%	VIII
-// 808	Lash Out	Dark	Physical	5	75	100%	VIII
-// 809	Poltergeist	Ghost	Physical	5	110	90%	VIII
-// 810	Corrosive Gas	Poison	Status	40	—	100%	VIII
-// 811	Coaching	Fighting	Status	10	—	—	VIII
-// 812	Flip Turn	Water	Physical	20	60	100%	VIII
-// 813	Triple Axel	Ice	Physical	10	20	90%	VIII
-// 814	Dual Wingbeat	Flying	Physical	10	40	90%	VIII
-// 815	Scorching Sands	Ground	Special	10	70	100%	VIII
-// 816	Jungle Healing	Grass	Status	10	—	—	VIII
-// 817	Wicked Blow	Dark	Physical	5	80	100%	VIII
-// 818	Surging Strikes	Water	Physical	5	25	100%	VIII
-// 819	Thunder Cage	Electric	Special	15	80	90%	VIII
-// 820	Dragon Energy	Dragon	Special	5	150	100%	VIII
-// 821	Freezing Glare	Psychic	Special	10	90	100%	VIII
-// 822	Fiery Wrath	Dark	Special	10	90	100%	VIII
-// 823	Thunderous Kick	Fighting	Physical	10	90	100%	VIII
-// 824	Glacial Lance	Ice	Physical	5	130	100%	VIII
-// 825	Astral Barrage	Ghost	Special	5	120	100%	VIII
-// 826	Eerie Spell	Psychic	Special	5	80	100%	VIII
-// 827	Dire Claw	Poison	Physical	15	60	100	VIII
-// 828	Psyshield Bash	Psychic	Physical	10	70	90	VIII
-// 829	Power Shift	Normal	Status	10	—	—	VIII
-// 830	Stone Axe	Rock	Physical	15	65	90	VIII
-// 831	Springtide Storm	Fairy	Special	5	95	80	VIII
-// 832	Mystical Power	Psychic	Special	10	70	90	VIII
-// 833	Raging Fury	Fire	Physical	10	90	85	VIII
-// 834	Wave Crash	Water	Physical	10	75	100	VIII
-// 835	Chloroblast	Grass	Special	5	120	95	VIII
-// 836	Mountain Gale	Ice	Physical	5	100	85	VIII
-// 837	Victory Dance	Fighting	Status	10	—	—	VIII
-// 838	Headlong Rush	Ground	Physical	5	100	100	VIII
-// 839	Barb Barrage	Poison	Physical	15	60	100	VIII
-// 840	Esper Wing	Psychic	Special	10	75	90	VIII
-// 841	Bitter Malice	Ghost	Special	15	60	100	VIII
-// 842	Shelter	Steel	Status	10	—	—	VIII
-// 843	Triple Arrows	Fighting	Physical	15	50	100	VIII
-// 844	Infernal Parade	Ghost	Special	15	60	100	VIII
-// 845	Ceaseless Edge	Dark	Physical	15	65	90	VIII
-// 846	Bleakwind Storm	Flying	Special	5	95	80	VIII
-// 847	Wildbolt Storm	Electric	Special	5	95	80	VIII
-// 848	Sandsear Storm	Ground	Special	5	95	80	VIII
-// 849	Lunar Blessing	Psychic	Status	10	—	—	VIII
-// 850	Take Heart	Psychic	Status	10	—	—	VIII
+};
+export const HeartStamp: Move = {} as Move;
+export const HornLeech: Move = {} as Move;
+export const SacredSword: Move = {} as Move;
+export const RazorShell: Move = {} as Move;
+export const HeatCrash: Move = {} as Move;
+export const LeafTornado: Move = {} as Move;
+export const Steamroller: Move = {} as Move;
+export const CottonGuard: Move = {} as Move;
+export const NightDaze: Move = {} as Move;
+export const Psystrike: Move = {} as Move;
+export const TailSlap: Move = {} as Move;
+export const Hurricane: Move = {} as Move;
+export const HeadCharge: Move = {} as Move;
+export const GearGrind: Move = {} as Move;
+export const SearingShot: Move = {} as Move;
+export const TechnoBlast: Move = {} as Move;
+export const RelicSong: Move = {} as Move;
+export const SecretSword: Move = {} as Move;
+export const Glaciate: Move = {} as Move;
+export const BoltStrike: Move = {} as Move;
+export const BlueFlare: Move = {} as Move;
+export const FieryDance: Move = {} as Move;
+export const FreezeShock: Move = {} as Move;
+export const IceBurn: Move = {} as Move;
+export const Snarl: Move = {} as Move;
+export const IcicleCrash: Move = {} as Move;
+export const Vcreate: Move = {} as Move;
+export const FusionFlare: Move = {} as Move;
+export const FusionBolt: Move = {} as Move;
+export const FlyingPress: Move = {} as Move;
+export const MatBlock: Move = {} as Move;
+export const Belch: Move = {} as Move;
+export const Rototiller: Move = {} as Move;
+export const StickyWeb: Move = {} as Move;
+export const FellStinger: Move = {} as Move;
+export const PhantomForce: Move = {} as Move;
+export const TrickorTreat: Move = {} as Move;
+export const NobleRoar: Move = {} as Move;
+export const IonDeluge: Move = {} as Move;
+export const ParabolicCharge: Move = {} as Move;
+export const ForestsCurse: Move = {} as Move;
+export const PetalBlizzard: Move = {} as Move;
+export const FreezeDry: Move = {} as Move;
+export const DisarmingVoice: Move = {} as Move;
+export const PartingShot: Move = {} as Move;
+export const TopsyTurvy: Move = {} as Move;
+export const DrainingKiss: Move = {} as Move;
+export const CraftyShield: Move = {} as Move;
+export const FlowerShield: Move = {} as Move;
+export const GrassyTerrain: Move = {} as Move;
+export const MistyTerrain: Move = {} as Move;
+export const Electrify: Move = {} as Move;
+export const PlayRough: Move = {} as Move;
+export const FairyWind: Move = {} as Move;
+export const Moonblast: Move = {} as Move;
+export const Boomburst: Move = {} as Move;
+export const FairyLock: Move = {} as Move;
+export const KingsShield: Move = {} as Move;
+export const PlayNice: Move = {} as Move;
+export const Confide: Move = {} as Move;
+export const DiamondStorm: Move = {} as Move;
+export const SteamEruption: Move = {} as Move;
+export const HyperspaceHole: Move = {} as Move;
+export const WaterShuriken: Move = {} as Move;
+export const MysticalFire: Move = {} as Move;
+export const SpikyShield: Move = {} as Move;
+export const AromaticMist: Move = {} as Move;
+export const EerieImpulse: Move = {} as Move;
+export const VenomDrench: Move = {} as Move;
+export const Powder: Move = {} as Move;
+export const Geomancy: Move = {} as Move;
+export const MagneticFlux: Move = {} as Move;
+export const HappyHour: Move = {} as Move;
+export const ElectricTerrain: Move = {} as Move;
+export const DazzlingGleam: Move = {} as Move;
+export const Celebrate: Move = {} as Move;
+export const HoldHands: Move = {} as Move;
+export const BabyDollEyes: Move = {} as Move;
+export const Nuzzle: Move = {} as Move;
+export const HoldBack: Move = {} as Move;
+export const Infestation: Move = {} as Move;
+export const PowerUpPunch: Move = {} as Move;
+export const OblivionWing: Move = {} as Move;
+export const ThousandArrows: Move = {} as Move;
+export const ThousandWaves: Move = {} as Move;
+export const LandsWrath: Move = {} as Move;
+export const LightofRuin: Move = {} as Move;
+export const OriginPulse: Move = {} as Move;
+export const PrecipiceBlades: Move = {} as Move;
+export const DragonAscent: Move = {} as Move;
+export const HyperspaceFury: Move = {} as Move;
+/*
+these are strange z moves so ignore them for now. it shouldn't be a problem
+export const BreakneckBlitz: Move = {}  as Move;
+// export const BreakneckBlitz: Move = {}  as Move;
+export const AllOutPummeling: Move = {}  as Move;
+// export const AllOutPummeling: Move = {}  as Move;
+export const SupersonicSkystrike: Move = {}  as Move;
+// export const SupersonicSkystrike: Move = {}  as Move;
+export const AcidDownpour: Move = {}  as Move;
+// export const AcidDownpour: Move = {}  as Move;
+export const TectonicRage: Move = {}  as Move;
+// export const TectonicRage: Move = {}  as Move;
+export const ContinentalCrush: Move = {}  as Move;
+// export const ContinentalCrush: Move = {}  as Move;
+export const SavageSpinOut: Move = {}  as Move;
+// export const SavageSpinOut: Move = {}  as Move;
+export const NeverEndingNightmare: Move = {}  as Move;
+// export const NeverEndingNightmare: Move = {}  as Move;
+export const CorkscrewCrash: Move = {}  as Move;
+// export const CorkscrewCrash: Move = {}  as Move;
+export const InfernoOverdrive: Move = {}  as Move;
+// export const InfernoOverdrive: Move = {}  as Move;
+export const HydroVortex: Move = {}  as Move;
+// export const HydroVortex: Move = {}  as Move;
+export const BloomDoom: Move = {}  as Move;
+// export const BloomDoom: Move = {}  as Move;
+export const GigavoltHavoc: Move = {}  as Move;
+// export const GigavoltHavoc: Move = {}  as Move;
+export const ShatteredPsyche: Move = {}  as Move;
+// export const ShatteredPsyche: Move = {}  as Move;
+export const SubzeroSlammer: Move = {}  as Move;
+// export const SubzeroSlammer: Move = {}  as Move;
+export const DevastatingDrake: Move = {}  as Move;
+// export const DevastatingDrake: Move = {}  as Move;
+export const BlackHoleEclipse: Move = {}  as Move;
+// export const BlackHoleEclipse: Move = {}  as Move;
+export const TwinkleTackle: Move = {}  as Move;
+// export const TwinkleTackle: Move = {}  as Move;
+export const Catastropika: Move = {} as Move;
+*/
+export const ShoreUp: Move = {} as Move;
+export const FirstImpression: Move = {} as Move;
+export const BanefulBunker: Move = {} as Move;
+export const SpiritShackle: Move = {} as Move;
+export const DarkestLariat: Move = {} as Move;
+export const SparklingAria: Move = {} as Move;
+export const IceHammer: Move = {} as Move;
+export const FloralHealing: Move = {} as Move;
+export const HighHorsepower: Move = {} as Move;
+export const StrengthSap: Move = {} as Move;
+export const SolarBlade: Move = {} as Move;
+export const Leafage: Move = {} as Move;
+export const Spotlight: Move = {} as Move;
+export const ToxicThread: Move = {} as Move;
+export const LaserFocus: Move = {} as Move;
+export const GearUp: Move = {} as Move;
+export const ThroatChop: Move = {} as Move;
+export const PollenPuff: Move = {} as Move;
+export const AnchorShot: Move = {} as Move;
+export const PsychicTerrain: Move = {} as Move;
+export const Lunge: Move = {} as Move;
+export const FireLash: Move = {} as Move;
+export const PowerTrip: Move = {} as Move;
+export const BurnUp: Move = {} as Move;
+export const SpeedSwap: Move = {} as Move;
+export const SmartStrike: Move = {} as Move;
+export const Purify: Move = {} as Move;
+export const RevelationDance: Move = {} as Move;
+export const CoreEnforcer: Move = {} as Move;
+export const TropKick: Move = {} as Move;
+export const Instruct: Move = {} as Move;
+export const BeakBlast: Move = {} as Move;
+export const ClangingScales: Move = {} as Move;
+export const DragonHammer: Move = {} as Move;
+export const BrutalSwing: Move = {} as Move;
+export const AuroraVeil: Move = {} as Move;
+export const SinisterArrowRaid: Move = {} as Move;
+export const MaliciousMoonsault: Move = {} as Move;
+export const OceanicOperetta: Move = {} as Move;
+export const GuardianofAlola: Move = {} as Move;
+export const SoulStealing7StarStrike: Move = {} as Move;
+export const StokedSparksurfer: Move = {} as Move;
+export const PulverizingPancake: Move = {} as Move;
+export const ExtremeEvoboost: Move = {} as Move;
+export const GenesisSupernova: Move = {} as Move;
+export const ShellTrap: Move = {} as Move;
+export const FleurCannon: Move = {} as Move;
+export const PsychicFangs: Move = {} as Move;
+export const StompingTantrum: Move = {} as Move;
+export const ShadowBone: Move = {} as Move;
+export const Accelerock: Move = {} as Move;
+export const Liquidation: Move = {} as Move;
+export const PrismaticLaser: Move = {} as Move;
+export const SpectralThief: Move = {} as Move;
+export const SunsteelStrike: Move = {} as Move;
+export const MoongeistBeam: Move = {} as Move;
+export const TearfulLook: Move = {} as Move;
+export const ZingZap: Move = {} as Move;
+export const NaturesMadness: Move = {} as Move;
+export const MultiAttack: Move = {} as Move;
+export const TenKVoltThunderbolt: Move = {} as Move;
+export const MindBlown: Move = {} as Move;
+export const PlasmaFists: Move = {} as Move;
+export const PhotonGeyser: Move = {} as Move;
+export const LightThatBurnstheSky: Move = {} as Move;
+export const SearingSunrazeSmash: Move = {} as Move;
+export const MenacingMoonrazeMaelstrom: Move = {} as Move;
+export const LetsSnuggleForever: Move = {} as Move;
+export const SplinteredStormshards: Move = {} as Move;
+export const ClangorousSoulblaze: Move = {} as Move;
+export const ZippyZap: Move = {} as Move;
+export const SplishySplash: Move = {} as Move;
+export const FloatyFall: Move = {} as Move;
+export const PikaPapow: Move = {} as Move;
+export const BouncyBubble: Move = {} as Move;
+export const BuzzyBuzz: Move = {} as Move;
+export const SizzlySlide: Move = {} as Move;
+export const GlitzyGlow: Move = {} as Move;
+export const BaddyBad: Move = {} as Move;
+export const SappySeed: Move = {} as Move;
+export const FreezyFrost: Move = {} as Move;
+export const SparklySwirl: Move = {} as Move;
+export const VeeveeVolley: Move = {} as Move;
+export const DoubleIronBash: Move = {} as Move;
+export const MaxGuard: Move = {} as Move;
+export const DynamaxCannon: Move = {} as Move;
+export const SnipeShot: Move = {} as Move;
+export const JawLock: Move = {} as Move;
+export const StuffCheeks: Move = {} as Move;
+export const NoRetreat: Move = {} as Move;
+export const TarShot: Move = {} as Move;
+export const MagicPowder: Move = {} as Move;
+export const DragonDarts: Move = {} as Move;
+export const Teatime: Move = {} as Move;
+export const Octolock: Move = {} as Move;
+export const BoltBeak: Move = {} as Move;
+export const FishiousRend: Move = {} as Move;
+export const CourtChange: Move = {} as Move;
+export const MaxFlare: Move = {} as Move;
+export const MaxFlutterby: Move = {} as Move;
+export const MaxLightning: Move = {} as Move;
+export const MaxStrike: Move = {} as Move;
+export const MaxKnuckle: Move = {} as Move;
+export const MaxPhantasm: Move = {} as Move;
+export const MaxHailstorm: Move = {} as Move;
+export const MaxOoze: Move = {} as Move;
+export const MaxGeyser: Move = {} as Move;
+export const MaxAirstream: Move = {} as Move;
+export const MaxStarfall: Move = {} as Move;
+export const MaxWyrmwind: Move = {} as Move;
+export const MaxMindstorm: Move = {} as Move;
+export const MaxRockfall: Move = {} as Move;
+export const MaxQuake: Move = {} as Move;
+export const MaxDarkness: Move = {} as Move;
+export const MaxOvergrowth: Move = {} as Move;
+export const MaxSteelspike: Move = {} as Move;
+export const ClangorousSoul: Move = {} as Move;
+export const BodyPress: Move = {} as Move;
+export const Decorate: Move = {} as Move;
+export const DrumBeating: Move = {} as Move;
+export const SnapTrap: Move = {} as Move;
+export const PyroBall: Move = {} as Move;
+export const BehemothBlade: Move = {} as Move;
+export const BehemothBash: Move = {} as Move;
+export const AuraWheel: Move = {} as Move;
+export const BreakingSwipe: Move = {} as Move;
+export const BranchPoke: Move = {} as Move;
+export const Overdrive: Move = {} as Move;
+export const AppleAcid: Move = {} as Move;
+export const GravApple: Move = {} as Move;
+export const SpiritBreak: Move = {} as Move;
+export const StrangeSteam: Move = {} as Move;
+export const LifeDew: Move = {} as Move;
+export const Obstruct: Move = {} as Move;
+export const FalseSurrender: Move = {} as Move;
+export const MeteorAssault: Move = {} as Move;
+export const Eternabeam: Move = {} as Move;
+export const SteelBeam: Move = {} as Move;
+export const ExpandingForce: Move = {} as Move;
+export const SteelRoller: Move = {} as Move;
+export const ScaleShot: Move = {} as Move;
+export const MeteorBeam: Move = {} as Move;
+export const ShellSideArm: Move = {} as Move;
+export const MistyExplosion: Move = {} as Move;
+export const GrassyGlide: Move = {} as Move;
+export const RisingVoltage: Move = {} as Move;
+export const TerrainPulse: Move = {} as Move;
+export const SkitterSmack: Move = {} as Move;
+export const BurningJealousy: Move = {} as Move;
+export const LashOut: Move = {} as Move;
+export const Poltergeist: Move = {} as Move;
+export const CorrosiveGas: Move = {} as Move;
+export const Coaching: Move = {} as Move;
+export const FlipTurn: Move = {} as Move;
+export const TripleAxel: Move = {} as Move;
+export const DualWingbeat: Move = {} as Move;
+export const ScorchingSands: Move = {} as Move;
+export const JungleHealing: Move = {} as Move;
+export const WickedBlow: Move = {} as Move;
+export const SurgingStrikes: Move = {} as Move;
+export const ThunderCage: Move = {} as Move;
+export const DragonEnergy: Move = {} as Move;
+export const FreezingGlare: Move = {} as Move;
+export const FieryWrath: Move = {} as Move;
+export const ThunderousKick: Move = {} as Move;
+export const GlacialLance: Move = {} as Move;
+export const AstralBarrage: Move = {} as Move;
+export const EerieSpell: Move = {} as Move;
+export const DireClaw: Move = {} as Move;
+export const PsyshieldBash: Move = {} as Move;
+export const PowerShift: Move = {} as Move;
+export const StoneAxe: Move = {} as Move;
+export const SpringtideStorm: Move = {} as Move;
+export const MysticalPower: Move = {} as Move;
+export const RagingFury: Move = {} as Move;
+export const WaveCrash: Move = {} as Move;
+export const Chloroblast: Move = {} as Move;
+export const MountainGale: Move = {} as Move;
+export const VictoryDance: Move = {} as Move;
+export const HeadlongRush: Move = {} as Move;
+export const BarbBarrage: Move = {} as Move;
+export const EsperWing: Move = {} as Move;
+export const BitterMalice: Move = {} as Move;
+export const Shelter: Move = {} as Move;
+export const TripleArrows: Move = {} as Move;
+export const InfernalParade: Move = {} as Move;
+export const CeaselessEdge: Move = {} as Move;
+export const BleakwindStorm: Move = {} as Move;
+export const WildboltStorm: Move = {} as Move;
+export const SandsearStorm: Move = {} as Move;
+export const LunarBlessing: Move = {} as Move;
+export const TakeHeart: Move = {} as Move;

@@ -24,7 +24,7 @@ export const Female = {
   },
 };
 export const NonBinary = {
-  name: "Non-binary",
+  name: "Non-binary", // Codemon says trans rights
   pronouns: {
     subject: "they",
     object: "them",

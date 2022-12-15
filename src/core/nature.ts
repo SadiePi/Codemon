@@ -1,5 +1,6 @@
 import { PermanentStat } from "./stats.ts";
 import C from "../base/index.ts";
+import { randomChoice } from "./util.ts";
 
 export interface Nature {
   name: string;
@@ -8,6 +9,5 @@ export interface Nature {
 }
 
 export function getRandomNature(): Nature {
-  const nats = Object.values(C.Nature);
-  return nats[(nats.length * Math.random()) << 0];
+  return randomChoice(Object.values(C.Natures));
 }

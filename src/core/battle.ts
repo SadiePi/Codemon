@@ -1,93 +1,198 @@
-// deno-lint-ignore no-unused-vars
-import Input from "https://deno.land/x/input@2.0.3/index.ts";
 import { EventEmitter } from "https://raw.githubusercontent.com/SadiePi/event-with-wait/master/mod.ts";
-import { Ability } from "./ability.ts";
+import { Codemon, DamageCategory, Type } from "./index.ts";
 
-import Codemon from "./codemon.ts";
-import { Item } from "./item.ts";
-import { Move } from "./move.ts";
+import { TargetingCategory } from "./move.ts";
 import { StageMods } from "./stats.ts";
 
 export interface StatusEffect {
   name: string;
   description: string;
   volatile: boolean;
-  apply: (target: Codemon, action: Action, battle: Battle) => void;
+  apply: (target: ActionTarget, source: Action, battle: Battle) => void | (() => void);
   // TODO shouldUnapply: (target: Codemon, action: Action battle: Battle) => boolean;
-  unapply: (target: Codemon, action: Action, battle: Battle) => void;
 }
 
 export interface Weather {
   name: string;
   description: string;
-  apply: (action: Action, battle: Battle) => void;
-  // TODO shouldUnapply: (target: Codemon<B>, source: Codemon<B>, battle: B) => boolean;
-  unapply: (action: Action, battle: Battle) => void;
+  apply: (source: Action, battle: Battle) => void | (() => void);
 }
 
-export type ActionSource = {
+export interface Ability {
+  name: string;
+  description: string;
+  apply: (target: ActionTarget, source: Action, battle: Battle) => void | (() => void);
+}
+
+export interface ActionSource {
   priority?: number;
-  use: (targets: Codemon[], battle: Battle) => Action;
-} & (
-  | { type: "Item"; item: Item }
-  | { type: "Ability"; ability: Ability }
-  | { type: "Move"; move: Move }
-  | { type: "Status"; statusEffect: StatusEffect }
-  | { type: "Weather"; weather: Weather }
-  | { type: "Meta"; meta: "Flee" | "Switch" | "Run" | "End" }
-  | { type: "Other"; meta?: unknown }
-);
+  targetingCategory: TargetingCategory;
+  useAction: (targets: ActionTarget[], battle: Battle) => Action;
+}
+
+export interface ActionTarget {
+  recieveAction(effects: ActionEffects, action: ReadyAction, battle: Battle): EffectReciept | Promise<EffectReciept>;
+}
+
+export interface TargetChoice {
+  source: ActionSource;
+  targets: ActionTarget[];
+  choice: "All" | "Single" | "RandomAll" | "RandomSingle";
+}
 
 export interface ReadyAction {
   source: ActionSource;
-  targets: Codemon[];
+  targets: ActionTarget[];
 }
 
-type ActionEffects = {
-  attack: {
-    base: number;
-    multitarget: number;
-    weather: number;
-    random: number;
-    critical: number;
-    stab: number;
-    other: number;
-  } | null;
+export interface Attack {
+  level: number;
+  power: number;
+  stat: number;
+  category: Exclude<DamageCategory, "Status">;
+  type: Type;
+  critical?: number;
+  item?: number;
+  stab?: number;
+  weather?: number;
+  multitarget?: number;
+  random?: number;
+  other?: number;
+}
 
-  hp: number | null; // raw hp change
-  stage: StageMods | null;
-  swap: Codemon | null;
-  flee: boolean;
-  statuses: StatusEffect[];
-  weather: Weather | null;
-  recoil: ActionSource | null;
-  crash: ActionSource | null;
-  messages: string[];
+// TODO NEXT separate action effects from action params
+
+export interface ActionEffects {
+  /** Initial probability of overall success */
+  accuracy?: number;
+  /** Attack power */
+  power?: number;
+  /** Specific attack values */
+  attack?: Attack;
+  /** Add status effects */
+  status?: StatusEffect | StatusEffect[];
+  /** Change weather */
+  weather?: Weather;
+  /** Recover a multiple of damage dealt */
+  leech?: number;
+  /** Raw HP change */
+  hp?: number;
+  /** Instant faint */
+  faint?: boolean;
+  /** Stat stage changes */
+  stage?: StageMods;
+  /** Chance of removing from battle without fainting */
+  eject?: boolean;
+  /** Restrict move usage */
+  restrict?: unknown; // restirct move usage
+  /** Apply an effect to the user on hit */
+  recoil?: EffectParams; // affect the user on hit
+  /** Apply an effect to the user on miss */
+  crash?: EffectParams;
+  /** Apply an action before this one */
+  preactions?: ReadyAction | ReadyAction[];
+  /** Apply an action after this one */
+  reactions?: EffectDecider<ReadyAction | ReadyAction[]>;
+}
+
+type EffectDecider<T> = T | [T, number] | ((action: ReadyAction, target: ActionTarget, battle: Battle) => T);
+type EffectParams = {
+  [effect in keyof ActionEffects]: EffectDecider<ActionEffects[effect]>;
 };
+export type EffectSource = {
+  /** Name of the effect */
+  name: string;
+  /** More details */
+  description: string;
+  /** Targeting cateory */
+  target: TargetingCategory;
+} & EffectParams;
 
-export class Action implements ReadyAction, ActionEffects {
-  constructor(public source: ActionSource, public targets: Codemon[], effects?: Partial<ActionEffects>) {
-    Object.assign(this, effects);
-  }
-  public successful = true;
-  public attack: ActionEffects["attack"] = null;
-  public hp: ActionEffects["hp"] = null;
-  public stage: ActionEffects["stage"] = null;
-  public swap: ActionEffects["swap"] = null;
-  public flee: ActionEffects["flee"] = false;
-  public weather: ActionEffects["weather"] = null;
-  public recoil: ActionEffects["recoil"] = null;
-  public crash: ActionEffects["crash"] = null;
-  public statuses: ActionEffects["statuses"] = [];
-  public messages: ActionEffects["messages"] = [];
+function effectFromParam<T>(
+  param: EffectDecider<T>,
+  action: ReadyAction,
+  target: ActionTarget,
+  battle: Battle
+): T | undefined {
+  if (Array.isArray(param)) return Math.random() < param[1] ? param[0] : undefined;
+  if (param instanceof Function) return param(action, target, battle);
+  return param;
+}
+
+export function effectsFromParams<T>(
+  params: EffectParams,
+  action: ReadyAction,
+  target: ActionTarget,
+  battle: Battle
+): ActionEffects {
+  const ret = {} as ActionEffects;
+
+  // TODO figure out why typescript doesn't like doing this in a loop
+  // for now, adding new effects requires adding them here
+
+  const accuracy = effectFromParam(params.accuracy, action, target, battle);
+  if (accuracy !== undefined) ret.accuracy = accuracy;
+
+  const power = effectFromParam(params.power, action, target, battle);
+  if (power !== undefined) ret.power = power;
+
+  const attack = effectFromParam(params.attack, action, target, battle);
+  if (attack !== undefined) ret.attack = attack;
+
+  const status = effectFromParam(params.status, action, target, battle);
+  if (status !== undefined) ret.status = status;
+
+  const weather = effectFromParam(params.weather, action, target, battle);
+  if (weather !== undefined) ret.weather = weather;
+
+  const leech = effectFromParam(params.leech, action, target, battle);
+  if (leech !== undefined) ret.leech = leech;
+
+  const hp = effectFromParam(params.hp, action, target, battle);
+  if (hp !== undefined) ret.hp = hp;
+
+  const faint = effectFromParam(params.faint, action, target, battle);
+  if (faint !== undefined) ret.faint = faint;
+
+  const stage = effectFromParam(params.stage, action, target, battle);
+  if (stage !== undefined) ret.stage = stage;
+
+  const eject = effectFromParam(params.eject, action, target, battle);
+  if (eject !== undefined) ret.eject = eject;
+
+  const restrict = effectFromParam(params.restrict, action, target, battle);
+  if (restrict !== undefined) ret.restrict = restrict;
+
+  const recoil = effectFromParam(params.recoil, action, target, battle);
+  if (recoil !== undefined) ret.recoil = recoil;
+
+  const crash = effectFromParam(params.crash, action, target, battle);
+  if (crash !== undefined) ret.crash = crash;
+
+  const preactions = effectFromParam(params.preactions, action, target, battle);
+  if (preactions !== undefined) ret.preactions = preactions;
+
+  const reactions = effectFromParam(params.reactions, action, target, battle);
+  if (reactions !== undefined) ret.reactions = reactions;
+
+  return ret;
+}
+
+export class Action implements ReadyAction {
+  constructor(
+    public params: EffectParams,
+    public source: ActionSource,
+    public targets: ActionTarget[],
+    public battle: Battle
+  ) {}
   public preactions: ReadyAction[] = [];
   public reactions: ReadyAction[] = [];
+  public messages: string[] = [];
 }
 
-export interface ActionReciept {
-  action: Action;
-  target: Codemon;
-  successful?: boolean;
+export interface EffectReciept {
+  target: ActionTarget;
+  failed?: boolean;
   attack?: {
     typeBoost: number;
     total: number;
@@ -95,50 +200,59 @@ export interface ActionReciept {
   hp?: number;
   fainted?: boolean;
   stage?: StageMods;
-  swap?: Codemon;
+  swap?: ActionTarget;
   flee?: boolean;
   statuses?: StatusEffect[];
   weather?: Weather;
   messages?: string[];
 }
 
-export interface ActionReport {
-  source: ActionSource;
-  targets: Codemon[];
+export interface ActionReciept {
+  preactions?: ActionReciept[];
   action: Action;
-  reciepts: ActionReciept[];
-  messages: string[];
+  effects: EffectReciept[];
+  messages?: string[];
+  reactions?: ActionReciept[];
 }
 
-export interface RoundReciept {
+export interface PreliminaryRoundReciept {
   round: number;
-  reports: ActionReport[];
+  actions: ActionReciept[];
   messages: string[];
   reactions: ReadyAction[];
 }
 
-export interface RoundReport {
+export interface RoundReciept {
   round: number;
-  reports: ActionReport[];
+  actions: ActionReciept[];
   messages: string[];
 }
 
-export type Controller = (codemon: Codemon, battle: Battle) => Promise<ReadyAction> | ReadyAction;
+export interface BattleReciept {
+  rounds: RoundReciept[];
+  winner: ActionTarget;
+  messages: string[];
+}
 
-export abstract class Battle extends EventEmitter<{
-  start: [combatants: Codemon[]];
-  round: [combatants: Codemon[], round: number];
+export type BattleController = (combatant: Combatant, battle: Battle) => Promise<ReadyAction> | ReadyAction;
+
+type BattleEvents = {
+  start: [combatants: ActionTarget[]];
+  round: [combatants: ActionTarget[], round: number];
   ready: [actions: ReadyAction[]];
   beforeAction: [source: ReadyAction];
   action: [action: Action];
-  beforeActionReciept: [action: Action, target: Codemon];
+  beforeEffectReciept: [effect: ActionEffects, target: ActionTarget, action: Action];
+  effectReciept: [reciept: EffectReciept];
   actionReciept: [reciept: ActionReciept];
-  actionReport: [report: ActionReport];
-  roundEnd: [reciept: RoundReciept];
-  afterRound: [report: RoundReport];
-  afterEnd: [result: unknown];
-}> {
-  private _round = 0;
+  roundEnd: [reciept: PreliminaryRoundReciept];
+  afterRound: [report: RoundReciept];
+  afterEnd: [report: BattleReciept];
+};
+
+export type Combatant = Codemon; // TODO: add other combatants
+export abstract class Battle extends EventEmitter<BattleEvents> {
+  protected _round = 0;
   public get round(): number {
     return this._round;
   }
@@ -157,19 +271,20 @@ export abstract class Battle extends EventEmitter<{
   //   this._history.push(...actions.map<HistoryItem<Action>>(a => ({ round: this.round, pre: a.pre, post: a.post })));
   // }
 
-  private playerController: Controller = this.getAIAction;
-  public setPlayerController(i: Controller) {
+  private playerController: BattleController = this.getAIAction;
+  public setPlayerController(i: BattleController) {
     this.playerController = i;
   }
-  public async getPlayerAction(codemon: Codemon): Promise<ReadyAction> {
-    return await this.playerController(codemon, this);
+  public async getPlayerAction(combatant: Combatant): Promise<ReadyAction> {
+    return await this.playerController(combatant, this);
   }
 
-  abstract runBattle(): Promise<{ winner: Codemon }>;
-  abstract runRound(): Promise<void>;
-  abstract getTargets(source: ActionSource): Codemon[];
+  abstract runBattle(): Promise<BattleReciept>;
+  abstract runRound(): Promise<RoundReciept>;
   abstract getActions(): Promise<ReadyAction[]>;
-  abstract getAIAction(codemon: Codemon): ReadyAction;
+  abstract getTargets(source: ActionSource): TargetChoice;
+  abstract getAITarget(combatant: Combatant, choice: TargetChoice): ActionTarget[];
+  abstract getAIAction(combatant: Combatant): ReadyAction;
   abstract sortActions(actions: ReadyAction[]): ReadyAction[];
-  abstract applyAction(action: ReadyAction): Promise<ActionReport[]>;
+  abstract runAction(action: ReadyAction): Promise<ActionReciept>;
 }

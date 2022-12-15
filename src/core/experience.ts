@@ -1,21 +1,20 @@
 import C from "./config.ts";
-import { Codemon } from "./codemon.ts";
-import { MoveData } from "./move.ts";
-import { Species } from "./species.ts";
+import { Codemon, Species } from "./codemon.ts";
+import { Move } from "./move.ts";
 import { PermanentStat } from "./stats.ts";
 
 export type ExperienceGroup = (level: number) => number;
 
 export type Learnset = {
-  machine?: MoveData[];
-  evolution?: MoveData[];
-  breeding?: [Species[], MoveData][];
-  tutoring?: MoveData[];
-  [level: number]: MoveData[];
+  machine?: Move[];
+  evolution?: Move[];
+  breeding?: [Species[], Move][];
+  tutoring?: Move[];
+  [level: number]: Move[];
 };
 
 export interface LevelUpReport {
-  moves: MoveData[];
+  moves: Move[];
   stats?: Record<PermanentStat, number>;
 }
 
@@ -44,7 +43,7 @@ export default class Experience {
       (args.points ?? 0 + (args.level ? this.group(args.level) : 0)) || this.group(C.codemon.stats.defaultLevel)
     );
     expify.levelUps.forEach(levelUp => {
-      levelUp.moves.forEach(move => this.self.LearnMove(move));
+      levelUp.moves.forEach(move => this.self.learnMove(move));
     });
   }
 

@@ -1,12 +1,12 @@
 import { assertEquals, assertNotEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
 
 import C, { spawn } from "../src/base/index.ts";
-import { iChompy } from "./common.ts";
+import { iKibble } from "./common.ts";
 
 Deno.test("Tackle basic info", () => {
   const chompy = spawn({
     moves: [C.Moves.Tackle],
-    ...iChompy,
+    ...iKibble,
   });
 
   const tackle = chompy.moves[0];
@@ -23,14 +23,13 @@ Deno.test("Tackle basic info", () => {
 });
 
 Deno.test("Tackle usage", () => {
-  const chompy = spawn(iChompy);
-
-  console.log(chompy.stats.hp.current);
-  console.log(chompy.moves);
-  const mu = chompy.moves[0].Use([chompy]);
-  // mu.random = 0.85;
-  console.log(mu);
-  const ur = chompy.RecieveMove(mu);
-  console.log(ur.damage);
-  console.log(chompy.stats.hp.current);
+  // const chompy = spawn(iChompy);
+  // console.log(chompy.stats.hp.current);
+  // console.log(chompy.moves);
+  // const mu = chompy.moves[0].actionSource.use([chompy]);
+  // // mu.random = 0.85;
+  // console.log(mu);
+  // const ur = chompy.RecieveMove(mu);
+  // console.log(ur.damage);
+  // console.log(chompy.stats.hp.current);
 });

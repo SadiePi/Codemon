@@ -4,9 +4,11 @@ export * from "./battle.ts";
 import * as Species from "./species.ts";
 import * as Moves from "./moves.ts";
 import * as Types from "./types.ts";
-import * as Nature from "./nature.ts";
-import * as Status from "./status.ts";
+import * as Natures from "./natures.ts";
+import * as Statuses from "./statuses.ts";
 import * as Experience from "./experience.ts";
+import * as Abilities from "./abilities.ts";
+import * as Items from "./items.ts";
 
 /**
  * Acts as the Pokedex for this library
@@ -16,14 +18,11 @@ const Codex = {
   Species,
   Moves,
   Types,
-  Nature,
-  Status,
-  //Abilities,
-  //BodyStyles,
-  //Footprints,
-  //CodexColors,
+  Natures,
+  Statuses,
   Experience,
-  //Items,
+  Abilities,
+  Items,
 } as const;
 export default Codex;
 

@@ -1,3 +1,5 @@
+// I'm not even sure this should be a thing
+
 // deno-lint-ignore-file no-unused-vars
 export type Game = unknown;
 export interface GameLoad extends Record<string, unknown> {

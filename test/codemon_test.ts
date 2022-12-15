@@ -1,9 +1,9 @@
 import C, { spawn } from "../src/base/index.ts";
-import { iChompy } from "./common.ts";
+import { iKibble } from "./common.ts";
 
 Deno.test("chompy", () => {
   console.log();
-  console.log(spawn(iChompy).toString());
+  console.log(spawn(iKibble).toString());
 });
 
 Deno.test("generic", () => {

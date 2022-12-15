@@ -1,7 +1,7 @@
-import { Battle } from "./battle.ts";
-import Codemon from "./codemon.ts";
 import C from "./config.ts";
+import { Codemon } from "./codemon.ts";
 
+// Add new stats by editing these types
 export type PermanentStat = "hp" | "attack" | "defense" | "specialAttack" | "specialDefense" | "speed";
 export type BattleStat = "accuracy" | "evasion";
 
@@ -107,7 +107,7 @@ export class HPStatEntry extends PermanentStatEntry {
   }
 }
 
-type Stats<B extends Battle = Battle> = Record<PermanentStat, PermanentStatEntry> & Record<BattleStat, BattleStatEntry>;
+type Stats = Record<PermanentStat, PermanentStatEntry> & Record<BattleStat, BattleStatEntry>;
 
 export type IStats = Partial<Record<PermanentStat, IPermanentStatEntry>> &
   Partial<Record<BattleStat, IBattleStatEntry>>;

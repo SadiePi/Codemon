@@ -1,4 +1,3 @@
-export * from "./ability.ts";
 export * from "./battle.ts";
 export * from "./codemon.ts";
 export * from "./config.ts";
@@ -8,7 +7,6 @@ export * from "./mod.ts";
 export * from "./move.ts";
 export * from "./nature.ts";
 export * from "./gender.ts";
-export * from "./species.ts";
 export * from "./stats.ts";
 export * from "./type.ts";
 
