@@ -1,0 +1,1 @@
+import { ItemType } from "../index.ts"; export const SalacBerry: ItemType = {} as ItemType;

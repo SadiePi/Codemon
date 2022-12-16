@@ -1,4 +1,4 @@
-import C, { Codemon, Species, Type } from "../src/base/index.ts";
+import C, { Codemon, Species, Type } from "../src/index.ts";
 
 // Define the Nuclear type and its relationship to other types
 const TypeNuclear = {} as Type;
@@ -55,7 +55,10 @@ const SpeciesNucleon: Species = {
   types: [TypeNuclear],
   //normalAbility1: AbilityAtomize,
   //specialAbility: AbilityGeigerSense,
-  sexRatio: 7 / 8,
+  genders: [
+    [C.Genders.Male, 7],
+    [C.Genders.Female, 1],
+  ],
   catchRate: 45,
   eggCycles: 120,
   height: 0.7,

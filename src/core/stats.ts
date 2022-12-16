@@ -1,5 +1,7 @@
-import C from "./config.ts";
+import C from "../index.ts";
+import Conf from "./config.ts";
 import { Codemon } from "./codemon.ts";
+import { randomChoice } from "./util.ts";
 
 // Add new stats by editing these types
 export type PermanentStat = "hp" | "attack" | "defense" | "specialAttack" | "specialDefense" | "speed";
@@ -24,7 +26,7 @@ export class BattleStatEntry {
   public modifyStage(modification: number) {
     const old = this._stage;
     this._stage += modification;
-    this._stage = Math.max(C.codemon.stats.minStage, Math.min(this._stage, C.codemon.stats.maxStage));
+    this._stage = Math.max(Conf.codemon.stats.minStage, Math.min(this._stage, Conf.codemon.stats.maxStage));
     return this._stage - old;
   }
 
@@ -51,7 +53,7 @@ export class PermanentStatEntry extends BattleStatEntry {
   public effortValue: number;
   constructor(public readonly stat: Stat, public readonly self: Codemon, args: IPermanentStatEntry) {
     super(stat, args);
-    this.individualValue = args.individualValue ?? Math.floor(Math.random() * C.codemon.stats.maxIV);
+    this.individualValue = args.individualValue ?? Math.floor(Math.random() * Conf.codemon.stats.maxIV);
     this.effortValue = args.effortValue ?? 0;
   }
 
@@ -65,8 +67,8 @@ export class PermanentStatEntry extends BattleStatEntry {
     const nature = considerStage ? this.self.nature : this.self.originalNature;
     const natureBuff = nature.buff === this.stat;
     const natureNerf = nature.nerf === this.stat;
-    if (natureBuff && !natureNerf) val *= 1 + C.codemon.nature.statEffect;
-    if (natureNerf && !natureBuff) val *= 1 - C.codemon.nature.statEffect;
+    if (natureBuff && !natureNerf) val *= 1 + Conf.codemon.nature.statEffect;
+    if (natureNerf && !natureBuff) val *= 1 - Conf.codemon.nature.statEffect;
     val = Math.floor(val);
 
     if (considerStage) {
@@ -157,6 +159,16 @@ export class StatSet implements Stats {
       [this.accuracy, this.evasion].map(s => s.toString()).join(", ")
     );
   }
+}
+
+export interface Nature {
+  name: string;
+  buff: PermanentStat;
+  nerf: PermanentStat;
+}
+
+export function getRandomNature(): Nature {
+  return randomChoice(Object.values(C.Natures));
 }
 
 export type BaseStats = Record<PermanentStat, number>;

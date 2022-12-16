@@ -1,20 +1,18 @@
 // temporarily...
-// deno-lint-ignore-file no-empty-interface
-export interface Item {
+export interface ItemType {
   name: string;
   description: string;
   price: number;
   isKeyItem: boolean;
   // graphics: Graphics;
+  // escape?: EscapeInfo;
+  // ball?: BallInfo
+  // fossil?: FossilInfo;
 }
 
-interface EscapeItem extends Item {}
-interface EvolutionItem extends Item {}
-// EvoItemModes
-interface FossilItem extends Item {}
-
-interface Ball extends Item {
-  //catchRate: (battle, target, source) => number;
+export interface Item {
+  type: ItemType;
+  count: number;
 }
 
 export type Inventory = Item[];

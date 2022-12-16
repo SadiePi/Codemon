@@ -1,0 +1,1 @@
+import { ItemType } from "../index.ts"; export const WhiteManeHair: ItemType = {} as ItemType;

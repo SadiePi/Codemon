@@ -1,11 +1,10 @@
 import { Ability, ReadyAction, EffectReciept, ActionTarget, ActionEffects } from "./battle.ts";
 import Experience, { ExperienceGroup, Learnset } from "./experience.ts";
 import { MoveEntry, Move } from "./move.ts";
-import { getRandomNature, Nature } from "./nature.ts";
-import { Gender } from "./gender.ts";
 import { BaseStats, EVYields, IStats, Stat, StatSet } from "./stats.ts";
-import { Action, Attack, Battle, Type } from "./index.ts";
+import { Action, Attack, Battle, getRandomNature, Nature } from "./index.ts";
 import { RequireAtLeastOne, weightedRandom } from "./util.ts";
+import { ItemType } from "./item.ts";
 
 type RangeOrExact = number | [number, number];
 
@@ -25,7 +24,25 @@ export type BodyType =
   | "Insectoid"
   | "Finned";
 
-export interface Species {
+export interface Type {
+  name: string;
+  color: string; // TODO move to a palette file
+  weaknesses: Type[];
+  resistances: Type[];
+  immunities: Type[];
+}
+
+export interface Gender {
+  //symbol: Image;
+  name: string;
+  pronouns: {
+    subject: string;
+    object: string;
+    possessive: string;
+  };
+}
+
+export type Species = {
   // Normal species definition information
   name: string;
   description: string;
@@ -54,7 +71,7 @@ export interface Species {
     RequireAtLeastOne<{
       level?: number;
       happiness?: number;
-      item?: string;
+      item?: ItemType;
       time?: string;
       location?: string;
       trade?: boolean;
@@ -67,7 +84,7 @@ export interface Species {
   overrideSex?: (self: Codemon, inputSex: Gender) => Gender;
   overrideStatValue?: (self: Codemon, stat: Stat, inputStat: number, considerBattleStatus: boolean) => number; // TODO use this
   overrideNature?: (self: Codemon, inputNature: Nature) => Nature;
-}
+};
 
 export interface ICodemon {
   species: Species;

@@ -1,10 +1,9 @@
 import { assertEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
-import { spawn } from "../src/base/index.ts";
+import { spawn } from "../src/index.ts";
 import { iKibble } from "./common.ts";
 
 Deno.test({
-  // https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2
-  name: "Bulbapedia/Stat - Example 2",
+  name: "https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2",
   fn: () => {
     const kibble = spawn(iKibble);
     kibble.stats.defense.modifyStage(2);

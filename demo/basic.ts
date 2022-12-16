@@ -1,4 +1,4 @@
-import C, { Codemon } from "../src/base/index.ts";
+import C, { Codemon } from "../src/index.ts";
 
 const bulby = new Codemon({
   species: C.Species.Bulbasaur,

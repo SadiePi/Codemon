@@ -17,7 +17,3 @@ export function weightedRandom<T>(entries: [T, number][]): T {
 export function randomChoice<T>(entries: T[]): T {
   return entries[Math.floor(Math.random() * entries.length)];
 }
-
-export function placeholder<T>(): T {
-  return {} as T;
-}

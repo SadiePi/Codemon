@@ -1,11 +1,11 @@
-import C, { Female, ICodemon } from "../src/base/index.ts";
+import C, { ICodemon } from "../src/index.ts";
 
 export const iKibble: ICodemon = {
   species: C.Species.Garchomp,
   name: "Kibble",
-  gender: Female,
+  gender: C.Genders.Female,
   level: 78,
-  nature: C.Nature.Adamant,
+  nature: C.Natures.Adamant,
   stats: {
     hp: {
       individualValue: 24,

@@ -1,0 +1,1 @@
+import { ItemType } from "../index.ts"; export const SeaIncense: ItemType = {} as ItemType;

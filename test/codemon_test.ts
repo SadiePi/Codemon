@@ -1,4 +1,4 @@
-import C, { spawn } from "../src/base/index.ts";
+import C, { spawn } from "../src/index.ts";
 import { iKibble } from "./common.ts";
 
 Deno.test("chompy", () => {

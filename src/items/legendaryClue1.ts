@@ -1,0 +1,1 @@
+import { ItemType } from "../index.ts"; export const LegendaryClue1: ItemType = {} as ItemType;

@@ -1,6 +1,6 @@
 import { assertEquals, assertNotEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
 
-import C, { spawn } from "../src/base/index.ts";
+import C, { spawn } from "../src/index.ts";
 import { iKibble } from "./common.ts";
 
 Deno.test("Tackle basic info", () => {

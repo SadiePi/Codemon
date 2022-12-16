@@ -1,0 +1,1 @@
+import { ItemType } from "../index.ts"; export const KeytoRoom6: ItemType = {} as ItemType;

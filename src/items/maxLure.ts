@@ -1,0 +1,1 @@
+import { ItemType } from "../index.ts"; export const MaxLure: ItemType = {} as ItemType;

@@ -1,0 +1,1 @@
+import { ItemType } from "../index.ts"; export const PolkadotBow: ItemType = {} as ItemType;

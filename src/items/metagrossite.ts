@@ -1,0 +1,1 @@
+import { ItemType } from "../index.ts"; export const Metagrossite: ItemType = {} as ItemType;
