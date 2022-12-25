@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SalacBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SalacBerry: Item = {} as Item;

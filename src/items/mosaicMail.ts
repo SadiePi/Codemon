@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MosaicMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MosaicMail: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const DefenseCurl: Move = {
+export const DefenseCurl = moves.register(() => ({
   name: "Defense Curl",
   description: "The user curls up to conceal weak spots and raise its Defense stat.",
   type: C.Types.Normal,
@@ -8,6 +9,6 @@ export const DefenseCurl: Move = {
   pp: 40, // max 64
   target: "Self",
   makesContact: false,
-  stage: { defense: 1 },
-};
+  stages: { defense: 1 },
+}));
 // TODO boost rollout and iceball

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Sludge: Move = {
+export const Sludge = moves.register(() => ({
   name: "Sludge",
   description: "Unsanitary sludge is hurled at the target. This may also poison the target.",
   type: C.Types.Poison,
@@ -10,4 +11,4 @@ export const Sludge: Move = {
   power: 65,
   makesContact: false,
   status: [C.Statuses.Poison, 3 / 10],
-};
+}));

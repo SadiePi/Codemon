@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Conversion: Move = {
+export const Conversion = moves.register(() => ({
   name: "Conversion",
   description:
     "The user changes its type to become the same type as the move at the top of the list of moves it knows.",
@@ -9,5 +10,5 @@ export const Conversion: Move = {
   category: "Status",
   pp: 30,
   makesContact: false,
-};
+}));
 // TODO conversion

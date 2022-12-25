@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Pass: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Pass: Item = {} as Item;

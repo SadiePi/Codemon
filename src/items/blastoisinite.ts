@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Blastoisinite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Blastoisinite: Item = {} as Item;

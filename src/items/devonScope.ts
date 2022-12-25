@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const DevonScope: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const DevonScope: Item = {} as Item;

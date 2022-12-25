@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GBSounds: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GBSounds: Item = {} as Item;

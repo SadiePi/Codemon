@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const YacheBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const YacheBerry: Item = {} as Item;

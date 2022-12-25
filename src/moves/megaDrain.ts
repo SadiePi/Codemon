@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const MegaDrain: Move = {
+export const MegaDrain = moves.register(() => ({
   name: "Mega Drain",
   description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
   type: C.Types.Grass,
@@ -10,4 +11,4 @@ export const MegaDrain: Move = {
   target: "Any Adjacent",
   makesContact: false,
   leech: 1 / 2,
-};
+}));

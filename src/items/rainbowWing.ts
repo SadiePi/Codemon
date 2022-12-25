@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const RainbowWing: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const RainbowWing: Item = {} as Item;

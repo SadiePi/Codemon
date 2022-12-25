@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BoiledEgg: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BoiledEgg: Item = {} as Item;

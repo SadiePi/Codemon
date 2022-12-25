@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Latiasite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Latiasite: Item = {} as Item;

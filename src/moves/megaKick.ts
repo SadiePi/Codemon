@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const MegaKick: Move = {
+export const MegaKick = moves.register(() => ({
   name: "Mega Kick",
   description: "The target is attacked by a kick launched with muscle-packed power.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const MegaKick: Move = {
   accuracy: 75,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

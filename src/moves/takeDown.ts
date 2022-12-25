@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const TakeDown: Move = {
+export const TakeDown = moves.register(() => ({
   name: "Take Down",
   description: "A reckless, full-body charge attack for slamming into the target. This also damages the user a little.",
   type: C.Types.Normal,
@@ -11,5 +12,5 @@ export const TakeDown: Move = {
   target: "Any Adjacent",
   makesContact: true,
   // recoil: 1 / 4,
-};
+}));
 // TODO proportional recoil

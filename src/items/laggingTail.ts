@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const LaggingTail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const LaggingTail: Item = {} as Item;

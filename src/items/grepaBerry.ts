@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GrepaBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GrepaBerry: Item = {} as Item;

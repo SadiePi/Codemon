@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Tyranitarite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Tyranitarite: Item = {} as Item;

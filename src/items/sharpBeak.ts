@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SharpBeak: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SharpBeak: Item = {} as Item;

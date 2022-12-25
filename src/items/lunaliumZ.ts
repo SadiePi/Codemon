@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const LunaliumZ: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const LunaliumZ: Item = {} as Item;

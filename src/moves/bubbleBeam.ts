@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const BubbleBeam: Move = {
+export const BubbleBeam = moves.register(() => ({
   name: "Bubble Beam",
   description: "A spray of bubbles is forcefully ejected at the target. This may also lower the target's Speed stat.",
   type: C.Types.Water,
@@ -9,5 +10,5 @@ export const BubbleBeam: Move = {
   power: 65,
   target: "Any Adjacent",
   makesContact: false,
-  stage: [{ speed: -1 }, 1 / 10],
-};
+  stages: [1 / 10, { speed: -1 }],
+}));

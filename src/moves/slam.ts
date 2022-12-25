@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Slam: Move = {
+export const Slam = moves.register(() => ({
   name: "Slam",
   description: "The target is slammed with a long tail, vines, or the like to inflict damage.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const Slam: Move = {
   accuracy: 75,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

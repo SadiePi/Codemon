@@ -1,5 +1,7 @@
-import C, { Move } from "../index.ts";
-export const KarateChop: Move = {
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
+
+export const KarateChop = moves.register(() => ({
   name: "Karate Chop",
   description: "The target is attacked with a sharp chop. Critical hits land more easily.",
   type: C.Types.Fighting,
@@ -10,4 +12,4 @@ export const KarateChop: Move = {
   criticalHitStage: 1,
 
   power: 50,
-};
+}));

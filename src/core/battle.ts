@@ -4,287 +4,310 @@ import { Codemon, DamageCategory, Type } from "./index.ts";
 import { TargetingCategory } from "./move.ts";
 import { StageMods } from "./stats.ts";
 
-export interface StatusEffect {
+type EventHandler<E extends Record<string, unknown[]>> = {
+  [K in keyof E]?: (...event: E[K]) => void;
+};
+
+export type StatusEffectEvents = {
+  beforeApply: [entry: StatusEffectEntry, target: EffectTarget, source: Action, battle: Battle];
+  // TODO ...
+};
+
+export interface StatusEffect extends EventHandler<StatusEffectEvents> {
   name: string;
   description: string;
   volatile: boolean;
-  apply: (target: ActionTarget, source: Action, battle: Battle) => void | (() => void);
+  apply: (entry: StatusEffectEntry, target: EffectTarget, source: Action, battle: Battle) => void | (() => void);
   // TODO shouldUnapply: (target: Codemon, action: Action battle: Battle) => boolean;
+  // TODO apply to map
+}
+
+export class StatusEffectEntry extends EventEmitter<StatusEffectEvents> {
+  constructor(public readonly effect: StatusEffect) {
+    super();
+  }
 }
 
 export interface Weather {
   name: string;
   description: string;
   apply: (source: Action, battle: Battle) => void | (() => void);
+  // TODO apply to map
 }
 
-export interface Ability {
-  name: string;
-  description: string;
-  apply: (target: ActionTarget, source: Action, battle: Battle) => void | (() => void);
-}
-
-export interface ActionSource {
-  priority?: number;
-  targetingCategory: TargetingCategory;
-  useAction: (targets: ActionTarget[], battle: Battle) => Action;
-}
-
-export interface ActionTarget {
-  recieveAction(effects: ActionEffects, action: ReadyAction, battle: Battle): EffectReciept | Promise<EffectReciept>;
-}
-
-export interface TargetChoice {
-  source: ActionSource;
-  targets: ActionTarget[];
-  choice: "All" | "Single" | "RandomAll" | "RandomSingle";
-}
-
-export interface ReadyAction {
-  source: ActionSource;
-  targets: ActionTarget[];
-}
-
-export interface Attack {
-  level: number;
-  power: number;
-  stat: number;
-  category: Exclude<DamageCategory, "Status">;
-  type: Type;
-  critical?: number;
-  item?: number;
-  stab?: number;
-  weather?: number;
-  multitarget?: number;
-  random?: number;
-  other?: number;
-}
-
-// TODO NEXT separate action effects from action params
-
-export interface ActionEffects {
-  /** Initial probability of overall success */
-  accuracy?: number;
-  /** Attack power */
-  power?: number;
-  /** Specific attack values */
+// TODO this belongs in ../battles/traditional.ts but
+// that would lead to type parameters everywhere again
+export interface Effects {
+  /** Normal attack on the target */
   attack?: Attack;
-  /** Add status effects */
+  /** Apply status effects */
   status?: StatusEffect | StatusEffect[];
   /** Change weather */
   weather?: Weather;
-  /** Recover a multiple of damage dealt */
+  /** Recover proportion (out of 1) of damage dealt */
   leech?: number;
   /** Raw HP change */
   hp?: number;
   /** Instant faint */
   faint?: boolean;
   /** Stat stage changes */
-  stage?: StageMods;
-  /** Chance of removing from battle without fainting */
+  stages?: StageMods;
+  /** Remove from battle without fainting */
   eject?: boolean;
-  /** Restrict move usage */
-  restrict?: unknown; // restirct move usage
-  /** Apply an effect to the user on hit */
-  recoil?: EffectParams; // affect the user on hit
-  /** Apply an effect to the user on miss */
-  crash?: EffectParams;
-  /** Apply an action before this one */
-  preactions?: ReadyAction | ReadyAction[];
-  /** Apply an action after this one */
-  reactions?: EffectDecider<ReadyAction | ReadyAction[]>;
+  /** Weather or not this effect should repeat */
+  repeat?: boolean;
+  /** End the battle immediately */
+  end?: boolean;
+  /** Catch-all custom effect */
+  custom?: (target: EffectTarget, action: Action, battle: Battle) => void;
 }
 
-type EffectDecider<T> = T | [T, number] | ((action: ReadyAction, target: ActionTarget, battle: Battle) => T);
-type EffectParams = {
-  [effect in keyof ActionEffects]: EffectDecider<ActionEffects[effect]>;
+export interface Attack {
+  /** The level of the user */
+  level: number;
+  /** The power of the move */
+  power: number;
+  /** The relavent attack stat of the user */
+  stat: number;
+  /** The category of the move */
+  category: Exclude<DamageCategory, "Status">;
+  /** The type of the move */
+  type: Type;
+  /** Factor from critical hit */
+  critical?: number;
+  /** Factor from held item */
+  item?: number;
+  /** Factor from Same Type Attack Boost */
+  stab?: number;
+  /** Factor from influence of weather */
+  weather?: number;
+  /** Factor from multiple targets */
+  multitarget?: number;
+  /** Factor from Math.random() */
+  random?: number;
+  /** Factor from ✨Special✨ */
+  other?: number;
+}
+
+export interface AttackReciept {
+  readonly attack: Attack;
+  readonly typeBoost: number;
+  readonly total: number;
+}
+
+export type EffectDecider<T> = T | [number, T, T?] | ((action: Action, target: EffectTarget, battle: Battle) => T); // decider function
+// TODO more deciders
+
+function decideEffect<T>(decider: EffectDecider<T>, action: Action, target: EffectTarget, battle: Battle): T {
+  if (decider instanceof Function) return decider(action, target, battle);
+  if (Array.isArray(decider)) {
+    const first = decider[0];
+    if (typeof first === "number") {
+      if (Math.random() < decider[0]) return decider[1];
+      else if (decider[2]) return decider[2];
+    }
+  }
+  return decider as T;
+}
+
+export type EffectParams = {
+  [effect in keyof Effects]: EffectDecider<Effects[effect]>;
+} & {
+  accuracy?: number;
 };
-export type EffectSource = {
-  /** Name of the effect */
-  name: string;
-  /** More details */
-  description: string;
-  /** Targeting cateory */
-  target: TargetingCategory;
-} & EffectParams;
 
-function effectFromParam<T>(
-  param: EffectDecider<T>,
-  action: ReadyAction,
-  target: ActionTarget,
-  battle: Battle
-): T | undefined {
-  if (Array.isArray(param)) return Math.random() < param[1] ? param[0] : undefined;
-  if (param instanceof Function) return param(action, target, battle);
-  return param;
-}
-
-export function effectsFromParams<T>(
-  params: EffectParams,
-  action: ReadyAction,
-  target: ActionTarget,
-  battle: Battle
-): ActionEffects {
-  const ret = {} as ActionEffects;
-
-  // TODO figure out why typescript doesn't like doing this in a loop
-  // for now, adding new effects requires adding them here
-
-  const accuracy = effectFromParam(params.accuracy, action, target, battle);
-  if (accuracy !== undefined) ret.accuracy = accuracy;
-
-  const power = effectFromParam(params.power, action, target, battle);
-  if (power !== undefined) ret.power = power;
-
-  const attack = effectFromParam(params.attack, action, target, battle);
-  if (attack !== undefined) ret.attack = attack;
-
-  const status = effectFromParam(params.status, action, target, battle);
-  if (status !== undefined) ret.status = status;
-
-  const weather = effectFromParam(params.weather, action, target, battle);
-  if (weather !== undefined) ret.weather = weather;
-
-  const leech = effectFromParam(params.leech, action, target, battle);
-  if (leech !== undefined) ret.leech = leech;
-
-  const hp = effectFromParam(params.hp, action, target, battle);
-  if (hp !== undefined) ret.hp = hp;
-
-  const faint = effectFromParam(params.faint, action, target, battle);
-  if (faint !== undefined) ret.faint = faint;
-
-  const stage = effectFromParam(params.stage, action, target, battle);
-  if (stage !== undefined) ret.stage = stage;
-
-  const eject = effectFromParam(params.eject, action, target, battle);
-  if (eject !== undefined) ret.eject = eject;
-
-  const restrict = effectFromParam(params.restrict, action, target, battle);
-  if (restrict !== undefined) ret.restrict = restrict;
-
-  const recoil = effectFromParam(params.recoil, action, target, battle);
-  if (recoil !== undefined) ret.recoil = recoil;
-
-  const crash = effectFromParam(params.crash, action, target, battle);
-  if (crash !== undefined) ret.crash = crash;
-
-  const preactions = effectFromParam(params.preactions, action, target, battle);
-  if (preactions !== undefined) ret.preactions = preactions;
-
-  const reactions = effectFromParam(params.reactions, action, target, battle);
-  if (reactions !== undefined) ret.reactions = reactions;
-
+export function decideEffects(action: Action, target: EffectTarget, battle: Battle) {
+  const effects = action.effects;
+  if (Math.random() < (effects.accuracy ?? 1.1)) return {};
+  const ret: Effects = {};
+  const attack = decideEffect(effects.attack, action, target, battle);
+  if (attack) ret.attack = attack;
+  const status = decideEffect(effects.status, action, target, battle);
+  if (status) ret.status = status;
+  const weather = decideEffect(effects.weather, action, target, battle);
+  if (weather) ret.weather = weather;
+  const leech = decideEffect(effects.leech, action, target, battle);
+  if (leech) ret.leech = leech;
+  const hp = decideEffect(effects.hp, action, target, battle);
+  if (hp) ret.hp = hp;
+  const faint = decideEffect(effects.faint, action, target, battle);
+  if (faint) ret.faint = faint;
+  const stages = decideEffect(effects.stages, action, target, battle);
+  if (stages) ret.stages = stages;
+  const eject = decideEffect(effects.eject, action, target, battle);
+  if (eject) ret.eject = eject;
+  const repeat = decideEffect(effects.repeat, action, target, battle);
+  if (repeat) ret.repeat = repeat;
   return ret;
 }
 
-export class Action implements ReadyAction {
-  constructor(
-    public params: EffectParams,
-    public source: ActionSource,
-    public targets: ActionTarget[],
-    public battle: Battle
-  ) {}
-  public preactions: ReadyAction[] = [];
-  public reactions: ReadyAction[] = [];
-  public messages: string[] = [];
+export type EffectSource = EffectParams & {
+  name: string;
+  description: string;
+  target: TargetingCategory;
+  accuracy?: number;
+};
+
+export type EffectReciept = {
+  readonly messages: BattleMessage[];
+  readonly attack?: AttackReciept;
+} & {
+  readonly [effect in Exclude<keyof Effects, "attack">]?: Effects[effect];
+};
+
+export interface EffectContext {
+  effects: Effects;
+  action: Action;
+  battle: Battle;
 }
 
-export interface EffectReciept {
-  target: ActionTarget;
-  failed?: boolean;
-  attack?: {
-    typeBoost: number;
-    total: number;
-  };
-  hp?: number;
-  fainted?: boolean;
-  stage?: StageMods;
-  swap?: ActionTarget;
-  flee?: boolean;
-  statuses?: StatusEffect[];
-  weather?: Weather;
-  messages?: string[];
+export interface EffectTarget {
+  recieveEffect(context: EffectContext): EffectReciept | Promise<EffectReciept>;
+}
+
+// this is only a class so i can initialize the arrays here instead of everywhere else
+// there may be a better way
+export class Action {
+  public source: ActionSource; // Note to self, Subject,
+  public effects: EffectParams; // Verb
+  public targets: EffectTarget[]; // Object,
+  public preactions: ReadyAction[] = [];
+  public reactions: ReadyAction[] = [];
+  public messages: BattleMessage[] = [];
+
+  constructor(args: { source: ActionSource; targets: EffectTarget[]; effects: EffectParams }) {
+    this.source = args.source;
+    this.targets = args.targets;
+    this.effects = args.effects;
+  }
+}
+
+export interface ActionUseContext {
+  battle: Battle;
+  targets: EffectTarget[];
+}
+
+export interface ActionSource {
+  priority?: number;
+  targetingCategory: TargetingCategory;
+  useAction: (context: ActionUseContext) => Action;
+}
+
+export interface ReadyAction {
+  source: ActionSource;
+  targets: EffectTarget[];
 }
 
 export interface ActionReciept {
-  preactions?: ActionReciept[];
-  action: Action;
-  effects: EffectReciept[];
-  messages?: string[];
-  reactions?: ActionReciept[];
+  readonly source: ActionSource;
+  readonly preactions: ActionReciept[];
+  readonly effects: EffectReciept[];
+  readonly reactions: ActionReciept[];
+  readonly messages: BattleMessage[];
 }
 
-export interface PreliminaryRoundReciept {
-  round: number;
-  actions: ActionReciept[];
-  messages: string[];
+// this round system is still pretty rough
+// TODO make this better
+
+export interface Round {
+  readonly number: number;
+  preactions: ReadyAction[];
+  reciepts: ActionReciept[]; // running list of past actions this round
+  messages: BattleMessage[];
   reactions: ReadyAction[];
 }
 
 export interface RoundReciept {
-  round: number;
-  actions: ActionReciept[];
-  messages: string[];
+  readonly number: number;
+  readonly preactions: ActionReciept[];
+  readonly actions: ActionReciept[];
+  readonly reactions: ActionReciept[];
+  readonly messages: BattleMessage[];
 }
 
-export interface BattleReciept {
-  rounds: RoundReciept[];
-  winner: ActionTarget;
-  messages: string[];
-}
-
-export type BattleController = (combatant: Combatant, battle: Battle) => Promise<ReadyAction> | ReadyAction;
+export type BattleMessage = string; // TODO include animation info etc
 
 type BattleEvents = {
-  start: [combatants: ActionTarget[]];
-  round: [combatants: ActionTarget[], round: number];
+  /** The start of the battle, before anything has happened */
+  start: [combatants: BattleActor[]];
+  /** The start of a round, before actions have been chosen */
+  round: [round: Round];
+  /** An actor has decided on an action */
+  readyAction: [action: ReadyAction];
+  /** All actors have decided on an action */
   ready: [actions: ReadyAction[]];
-  beforeAction: [source: ReadyAction];
+  /** An action is about to be executed */
+  beforeAction: [action: ReadyAction];
+  /** An action has been executed, but its effects haven't been sent to the targets yet */
   action: [action: Action];
-  beforeEffectReciept: [effect: ActionEffects, target: ActionTarget, action: Action];
+  /** An effect is about to be sent to a target */
+  effect: [effect: Effects, target: EffectTarget, action: Action];
+  /** An effect has been sent to a target */
   effectReciept: [reciept: EffectReciept];
+  /** The end of an action, before reactions are run */
+  actionEnd: [action: Action];
+  /** An action has been executed, and its effects have been sent to the targets */
   actionReciept: [reciept: ActionReciept];
-  roundEnd: [reciept: PreliminaryRoundReciept];
-  afterRound: [report: RoundReciept];
-  afterEnd: [report: BattleReciept];
+  /** The end of a round, after all actions are done, before reactions are run */
+  roundEnd: [reciept: Round];
+  /** The end of a round, after all actions and reactions are done */
+  roundReciept: [report: RoundReciept];
+  /** The end of the battle, after all rounds are done */
+  battleReciept: [report: BattleReciept];
 };
 
-export type Combatant = Codemon; // TODO: add other combatants
+export interface TargetChoice {
+  targets: EffectTarget[];
+  count: "All" | number;
+  random?: boolean;
+}
+export interface BattleController {
+  action: (combatant: BattleActor, battle: Battle) => Promise<ActionSource> | ActionSource;
+  target: (combatant: BattleActor, ready: ActionSource, choice: TargetChoice) => EffectTarget[];
+  apply?: (battle: Battle) => void; // for player interfaces
+}
+
+export interface BattleActor {
+  self: Codemon; // TODO more, like substitute
+  controller: BattleController;
+}
+
 export abstract class Battle extends EventEmitter<BattleEvents> {
-  protected _round = 0;
-  public get round(): number {
-    return this._round;
-  }
-
-  // private _history: HistoryItem[] = [];
-  // public getHistory(filter?: { actor?: Action["pre"]["actor"]; round?: number; type?: Action["pre"]["type"] }) {
-  //   if (!filter) return this._history.at(-1);
-  //   for (const hi of this._history) {
-  //     if (filter.actor && filter.actor !== hi.pre.actor && filter.actor !== hi.post?.actor) continue;
-  //     if (filter.round && filter.round !== hi.round) continue;
-  //     if (filter.type && filter.type !== hi.pre.type && hi.post?.type) continue;
-  //     return hi;
-  //   }
-  // }
-  // protected pushHistory(...actions: { pre: Action["pre"]; post?: Action["post"] }[]) {
-  //   this._history.push(...actions.map<HistoryItem<Action>>(a => ({ round: this.round, pre: a.pre, post: a.post })));
-  // }
-
-  private playerController: BattleController = this.getAIAction;
-  public setPlayerController(i: BattleController) {
-    this.playerController = i;
-  }
-  public async getPlayerAction(combatant: Combatant): Promise<ReadyAction> {
-    return await this.playerController(combatant, this);
-  }
+  // TODO history searching for things like move restrictions
 
   abstract runBattle(): Promise<BattleReciept>;
   abstract runRound(): Promise<RoundReciept>;
-  abstract getActions(): Promise<ReadyAction[]>;
-  abstract getTargets(source: ActionSource): TargetChoice;
-  abstract getAITarget(combatant: Combatant, choice: TargetChoice): ActionTarget[];
-  abstract getAIAction(combatant: Combatant): ReadyAction;
-  abstract sortActions(actions: ReadyAction[]): ReadyAction[];
   abstract runAction(action: ReadyAction): Promise<ActionReciept>;
+  abstract sortActions(actions: ReadyAction[]): ReadyAction[];
+  abstract getCurrentRound(): Round;
+  abstract getAction(combatant: BattleActor): ReadyAction | Promise<ReadyAction>;
+  abstract getActions(): Promise<ReadyAction[]>;
+  abstract getTargets(source: ActionSource): TargetChoice | Promise<TargetChoice>;
+}
+
+export interface BattleReciept {
+  readonly rounds: RoundReciept[];
+  readonly remaining: BattleActor[];
+  readonly messages: BattleMessage[];
+}
+
+export function flattenActionMessages(action: ActionReciept, into: BattleMessage[] = []) {
+  for (const preaction of action.preactions) flattenActionMessages(preaction, into);
+  for (const effect of action.effects) into.push(...effect.messages);
+  into.push(...action.messages);
+  for (const reaction of action.reactions) flattenActionMessages(reaction, into);
+  return into;
+}
+
+export function flattenRoundMessages(round: RoundReciept, into: BattleMessage[] = []) {
+  for (const action of round.actions) flattenActionMessages(action, into);
+  into.push(...round.messages);
+  for (const reaction of round.reactions) flattenActionMessages(reaction, into);
+  return into;
+}
+
+export function flattenBattleMessages(battle: BattleReciept, into: BattleMessage[] = []) {
+  for (const round of battle.rounds) flattenRoundMessages(round, into);
+  into.push(...battle.messages);
+  return into;
 }

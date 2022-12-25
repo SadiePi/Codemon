@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MaxRepel: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MaxRepel: Item = {} as Item;

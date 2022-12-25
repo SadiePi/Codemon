@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Garchompite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Garchompite: Item = {} as Item;

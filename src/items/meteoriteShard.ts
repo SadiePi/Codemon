@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MeteoriteShard: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MeteoriteShard: Item = {} as Item;

@@ -4,9 +4,9 @@ export const iKibble: ICodemon = {
   species: C.Species.Garchomp,
   name: "Kibble",
   gender: C.Genders.Female,
-  level: 78,
   nature: C.Natures.Adamant,
   stats: {
+    level: 78,
     hp: {
       individualValue: 24,
       effortValue: 74,
@@ -37,20 +37,20 @@ export const iKibble: ICodemon = {
 export const iBigBoi: ICodemon = {
   species: C.Species.Garchomp,
   name: "Big Boi",
-  level: 100,
+  stats: { level: 100 },
 };
 
 export const iBulby: ICodemon = {
   species: C.Species.Bulbasaur,
   name: "Bulby",
-  level: 15,
+  stats: { level: 15 },
 };
 
 export const iGlassCannon: ICodemon = {
   species: C.Species.Bulbasaur,
   name: "Glass Cannon",
-  level: 2,
   stats: {
+    level: 2,
     speed: {
       individualValue: 31,
       effortValue: 255,

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ChoiceSpecs: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ChoiceSpecs: Item = {} as Item;

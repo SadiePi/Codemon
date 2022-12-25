@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PropCase: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PropCase: Item = {} as Item;

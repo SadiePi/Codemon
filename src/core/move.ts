@@ -1,7 +1,7 @@
 import C from "./config.ts";
-import { Type } from "./type.ts";
-import { Action, Battle, ActionSource, ActionTarget } from "./battle.ts";
-import { Codemon, EffectSource } from "./index.ts";
+import { Action, ActionSource } from "./battle.ts";
+import { Codemon, EffectSource, Type } from "./index.ts";
+import { ActionUseContext, Attack, EffectDecider } from "../index.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
 
@@ -20,47 +20,56 @@ export type TargetingCategory =
   | `${TCQuantifier} ${TCPosition}`
   | `${TCQuantifier} ${TCAlignment}`
   | `${TCQuantifier} ${TCPosition} ${TCAlignment}`;
-export interface Move extends EffectSource {
+
+export type Move = EffectSource & {
   name: string;
   description: string;
   type: Type;
   category: DamageCategory;
   priority?: number;
+  power?: number;
   pp: number | { new (): PPScheme };
   makesContact: boolean;
   criticalHitStage?: number;
-}
+};
 
 export interface IMoveEntry {
   self: Codemon;
-  info: Move;
+  move: Move;
 }
 
 export class MoveEntry implements ActionSource {
   public priority?: number;
   public targetingCategory: TargetingCategory;
-  public data: Move;
+  public effects: Move;
   public user: Codemon;
   public PP: PPScheme;
 
   constructor(args: IMoveEntry) {
-    this.data = args.info;
+    this.effects = args.move;
     this.user = args.self;
-    this.PP = typeof this.data.pp === "number" ? new PPScheme(this.data.pp) : new this.data.pp();
-    this.priority = this.data.priority;
-    this.targetingCategory = this.data.target;
+    this.PP = typeof this.effects.pp === "number" ? new PPScheme(this.effects.pp) : new this.effects.pp();
+    this.priority = this.effects.priority;
+    this.targetingCategory = this.effects.target;
   }
 
-  useAction(targets: ActionTarget[], battle: Battle): Action {
+  useAction(context: ActionUseContext): Action {
     if (!this.PP.Use()) console.log("TODO: Fail without remaining PP");
-    return new Action(this.data, this, targets, battle);
+    // TODO: Handle conflicting power and attack effects
+    // for now, explicit attack effects simply override the power
+    // TODO: Generate attack effect from power
+    return new Action({
+      effects: this.effects,
+      source: this,
+      targets: context.targets,
+    });
   }
 
   // TODO: Complete this; it's only the rudimentary random check
   private TryCriticalHit(): boolean {
-    if (this.data.category === "Status") return false;
+    if (this.effects.category === "Status") return false;
     const crit = Math.random();
-    const stage = this.data.criticalHitStage ?? 0;
+    const stage = this.effects.criticalHitStage ?? 0;
     const aff = 1; // TODO: this.self.affection == max ? 1/2 : 1
     if (stage >= 3) return true;
     if (stage == 2) return crit < (1 / 2) * aff;
@@ -100,7 +109,7 @@ export class MoveEntry implements ActionSource {
   }*/
 
   public toString() {
-    return `${this.data.name} - ${this.data.type.name}/${this.data.category} - ${this.PP.current}/${this.PP.max} (${this.PP.boosts})`;
+    return `${this.effects.name} - ${this.effects.type.name}/${this.effects.category} - ${this.PP.current}/${this.PP.max} (${this.PP.boosts})`;
   }
 }
 

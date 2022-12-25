@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const SweetScent: Move = {
+export const SweetScent = moves.register(() => ({
   name: "Sweet Scent",
   description: "A sweet scent that harshly lowers opposing Pokémon's evasiveness.",
   type: C.Types.Normal,
@@ -8,5 +9,5 @@ export const SweetScent: Move = {
   pp: 20, // max 32
   target: "Any Adjacent Foe",
   makesContact: false,
-  stage: { evasion: -2 },
-};
+  stages: { evasion: -2 },
+}));

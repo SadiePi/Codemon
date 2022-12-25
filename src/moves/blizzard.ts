@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Blizzard: Move = {
+export const Blizzard = moves.register(() => ({
   name: "Blizzard",
   description:
     "A howling blizzard is summoned to strike opposing Pokémon. This may also leave the opposing Pokémon frozen.",
@@ -12,4 +13,4 @@ export const Blizzard: Move = {
   target: "Every Adjacent Foe",
   makesContact: false,
   status: [C.Statuses.Freeze, 1 / 10],
-};
+}));

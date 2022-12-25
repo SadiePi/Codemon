@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Waterfall: Move = {
+export const Waterfall = moves.register(() => ({
   name: "Waterfall",
   description: "The user charges at the target and may make it flinch.",
   type: C.Types.Water,
@@ -10,4 +11,4 @@ export const Waterfall: Move = {
   power: 80,
   makesContact: true,
   status: [C.Statuses.Flinch, 2 / 10],
-};
+}));

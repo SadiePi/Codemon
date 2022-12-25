@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Ember: Move = {
+export const Ember = moves.register(() => ({
   name: "Ember",
   description: "The target is attacked with small flames. This may also leave the target with a burn.",
   type: C.Types.Fire,
@@ -10,4 +11,4 @@ export const Ember: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: [C.Statuses.Burn, 1 / 10],
-};
+}));

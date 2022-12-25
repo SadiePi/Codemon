@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Ampharosite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Ampharosite: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const PoisonPowder: Move = {
+export const PoisonPowder = moves.register(() => ({
   name: "Poison Powder",
   description: "The user scatters a cloud of poisonous dust that poisons the target.",
   type: C.Types.Poison,
@@ -10,4 +11,4 @@ export const PoisonPowder: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: C.Statuses.Poison,
-};
+}));

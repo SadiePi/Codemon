@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Submission: Move = {
+export const Submission = moves.register(() => ({
   name: "Submission",
   description: "The user grabs the target and recklessly dives for the ground. This also damages the user a little.",
   type: C.Types.Fighting,
@@ -11,5 +12,5 @@ export const Submission: Move = {
   target: "Any Adjacent",
   makesContact: true,
   // recoil: 1 / 4,
-};
+}));
 // TODO proportionals recoil

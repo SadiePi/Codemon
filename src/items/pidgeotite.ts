@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Pidgeotite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Pidgeotite: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const KommoniumZ: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const KommoniumZ: Item = {} as Item;

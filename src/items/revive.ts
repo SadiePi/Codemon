@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Revive: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Revive: Item = {} as Item;

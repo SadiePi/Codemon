@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const FairyMemory: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const FairyMemory: Item = {} as Item;

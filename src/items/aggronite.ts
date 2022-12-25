@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Aggronite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Aggronite: Item = {} as Item;

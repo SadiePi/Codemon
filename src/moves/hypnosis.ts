@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Hypnosis: Move = {
+export const Hypnosis = moves.register(() => ({
   name: "Hypnosis",
   description: "The user employs hypnotic suggestion to make the target fall into a deep sleep.",
   type: C.Types.Psychic,
@@ -10,4 +11,4 @@ export const Hypnosis: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: C.Statuses.Sleep,
-};
+}));

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Pearl: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Pearl: Item = {} as Item;

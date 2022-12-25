@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Withdraw: Move = {
+export const Withdraw = moves.register(() => ({
   name: "Withdraw",
   description: "The user withdraws its body into its hard shell, raising its Defense stat.",
   type: C.Types.Water,
@@ -8,5 +9,5 @@ export const Withdraw: Move = {
   pp: 40, // max 64
   target: "Self",
   makesContact: false,
-  stage: { defense: 1 },
-};
+  stages: { defense: 1 },
+}));

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const WoodMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const WoodMail: Item = {} as Item;

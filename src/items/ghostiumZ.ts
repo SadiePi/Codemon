@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GhostiumZ: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GhostiumZ: Item = {} as Item;

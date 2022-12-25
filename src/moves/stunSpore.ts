@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const StunSpore: Move = {
+export const StunSpore = moves.register(() => ({
   name: "Stun Spore",
   description: "The user scatters a cloud of numbing powder that paralyzes the target.",
   type: C.Types.Grass,
@@ -10,4 +11,4 @@ export const StunSpore: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: C.Statuses.Paralysis,
-};
+}));

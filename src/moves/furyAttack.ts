@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const FuryAttack: Move = {
+export const FuryAttack = moves.register(() => ({
   name: "Fury Attack",
   description: "The target is jabbed repeatedly with a horn or beak two to five times in a row.",
   type: C.Types.Normal,
@@ -17,5 +18,5 @@ export const FuryAttack: Move = {
   //   if (hitsSoFar === 4) return 0.15;
   //   return 0;
   // },
-};
+}));
 // TODO multihit

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BachsFoodTin: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BachsFoodTin: Item = {} as Item;

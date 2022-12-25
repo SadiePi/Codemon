@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PokéToy: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PokéToy: Item = {} as Item;

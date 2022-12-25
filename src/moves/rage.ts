@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Rage: Move = {
+export const Rage = moves.register(() => ({
   name: "Rage",
   description:
     "As long as this move is in use, the power of rage raises the Attack stat each time the user is hit in battle.",
@@ -11,4 +12,4 @@ export const Rage: Move = {
   target: "Any Adjacent",
   makesContact: true,
   // TODO functionality
-};
+}));

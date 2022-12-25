@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SkullFossil: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SkullFossil: Item = {} as Item;

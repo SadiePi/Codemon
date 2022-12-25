@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Barrier: Move = {
+export const Barrier = moves.register(() => ({
   name: "Barrier",
   description: "The user throws up a sturdy wall that sharply raises its Defense stat.",
   type: C.Types.Psychic,
@@ -8,5 +9,5 @@ export const Barrier: Move = {
   pp: 20, // max 32
   target: "Self",
   makesContact: false,
-  stage: { defense: 2 },
-};
+  stages: { defense: 2 },
+}));

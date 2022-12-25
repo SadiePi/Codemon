@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const EonMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const EonMail: Item = {} as Item;

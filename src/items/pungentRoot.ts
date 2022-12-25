@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PungentRoot: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PungentRoot: Item = {} as Item;

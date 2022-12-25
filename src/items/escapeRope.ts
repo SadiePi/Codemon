@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const EscapeRope: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const EscapeRope: Item = {} as Item;

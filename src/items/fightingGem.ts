@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const FightingGem: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const FightingGem: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Confusion: Move = {
+export const Confusion = moves.register(() => ({
   name: "Confusion",
   description: "The target is hit by a weak telekinetic force. This may also confuse the target.",
   type: C.Types.Psychic,
@@ -10,4 +11,4 @@ export const Confusion: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: [C.Statuses.Confusion, 1 / 10],
-};
+}));

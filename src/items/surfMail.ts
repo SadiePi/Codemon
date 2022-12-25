@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SurfMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SurfMail: Item = {} as Item;

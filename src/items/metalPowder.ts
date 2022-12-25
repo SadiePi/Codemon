@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MetalPowder: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MetalPowder: Item = {} as Item;

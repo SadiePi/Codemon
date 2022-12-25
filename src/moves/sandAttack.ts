@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const SandAttack: Move = {
+export const SandAttack = moves.register(() => ({
   name: "Sand Attack",
   description: "Sand is hurled in the target's face, reducing the target's accuracy.",
   type: C.Types.Ground,
@@ -8,5 +9,5 @@ export const SandAttack: Move = {
   pp: 15,
   target: "Any Adjacent",
   makesContact: false,
-  stage: { accuracy: -1 },
-};
+  stages: { accuracy: -1 },
+}));

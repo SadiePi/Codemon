@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Fissure: Move = {
+export const Fissure = moves.register(() => ({
   name: "Fissure",
   description:
     "The user opens up a fissure in the ground and drops the target in. The target faints instantly if this attack hits.",
@@ -11,4 +12,4 @@ export const Fissure: Move = {
   target: "Any Adjacent",
   makesContact: false,
   faint: true,
-};
+}));

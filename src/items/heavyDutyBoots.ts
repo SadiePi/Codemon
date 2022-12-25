@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const HeavyDutyBoots: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const HeavyDutyBoots: Item = {} as Item;

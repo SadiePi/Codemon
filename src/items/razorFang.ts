@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const RazorFang: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const RazorFang: Item = {} as Item;

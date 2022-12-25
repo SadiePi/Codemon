@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BlueFlute: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BlueFlute: Item = {} as Item;

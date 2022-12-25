@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Spore: Move = {
+export const Spore = moves.register(() => ({
   name: "Spore",
   description: "The user scatters bursts of spores that induce sleep.",
   type: C.Types.Grass,
@@ -9,5 +10,5 @@ export const Spore: Move = {
   pp: 15,
   makesContact: false,
   status: C.Statuses.Sleep,
-};
+}));
 // TODO type consideration (miss grass types)

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Bonemerang: Move = {
+export const Bonemerang = moves.register(() => ({
   name: "Bonemerang",
   description: "The user throws the bone it holds. The bone loops around to hit the target twice—coming and going.",
   type: C.Types.Ground,
@@ -10,5 +11,5 @@ export const Bonemerang: Move = {
   power: 50,
   accuracy: 90,
   makesContact: false,
-};
+}));
 // TODO multihit moves

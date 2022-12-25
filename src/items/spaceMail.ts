@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SpaceMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SpaceMail: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const TownMap: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const TownMap: Item = {} as Item;

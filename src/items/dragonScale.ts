@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const DragonScale: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const DragonScale: Item = {} as Item;

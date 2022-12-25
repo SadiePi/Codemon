@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Scratch: Move = {
+export const Scratch = moves.register(() => ({
   name: "Scratch",
   description: "Hard, pointed, sharp claws rake the target to inflict damage.",
   type: C.Types.Normal,
@@ -9,4 +10,4 @@ export const Scratch: Move = {
   power: 40,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

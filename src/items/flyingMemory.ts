@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const FlyingMemory: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const FlyingMemory: Item = {} as Item;

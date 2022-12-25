@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Constrict: Move = {
+export const Constrict = moves.register(() => ({
   name: "Constrict",
   description:
     "The target is attacked with long, creeping tentacles, vines, or the like. This may also lower the target's Speed stat.",
@@ -10,5 +11,5 @@ export const Constrict: Move = {
   pp: 35,
   power: 10,
   makesContact: true,
-  stage: [{ speed: -1 }, 1 / 10],
-};
+  stages: [1 / 10, { speed: -1 }],
+}));

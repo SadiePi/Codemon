@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Gigantamix: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Gigantamix: Item = {} as Item;

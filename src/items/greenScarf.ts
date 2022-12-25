@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GreenScarf: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GreenScarf: Item = {} as Item;

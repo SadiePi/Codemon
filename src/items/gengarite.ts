@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Gengarite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Gengarite: Item = {} as Item;

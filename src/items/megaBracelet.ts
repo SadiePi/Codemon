@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MegaBracelet: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MegaBracelet: Item = {} as Item;

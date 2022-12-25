@@ -1,4 +1,5 @@
 export * from "./core/index.ts";
+import * as Builders from "./core/codex.ts";
 
 import * as Battles from "./battles/index.ts";
 import * as Species from "./species/index.ts";
@@ -12,18 +13,22 @@ import * as Items from "./items/index.ts";
 import * as Genders from "./genders/index.ts";
 
 const Codex = {
-  Battles,
-  Species,
-  Moves,
-  Types,
-  Natures,
-  Statuses,
-  Experience,
   Abilities,
-  Items,
+  Battles,
+  Experience,
   Genders,
+  Items,
+  Moves,
+  Natures,
+  Species,
+  Statuses,
+  Types,
 } as const;
 export default Codex;
+
+Builders.types.build();
+Builders.moves.build();
+Builders.species.build();
 
 // TODO use?
 type DeepMap<T, U> = T extends Record<string, unknown> ? { [K in keyof T]: DeepMap<T[K], U> } : U;

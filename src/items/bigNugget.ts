@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BigNugget: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BigNugget: Item = {} as Item;

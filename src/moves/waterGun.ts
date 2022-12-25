@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const WaterGun: Move = {
+export const WaterGun = moves.register(() => ({
   name: "Water Gun",
   description: "The target is blasted with a forceful shot of water.",
   type: C.Types.Water,
@@ -9,4 +10,4 @@ export const WaterGun: Move = {
   power: 40,
   target: "Any Adjacent",
   makesContact: false,
-};
+}));

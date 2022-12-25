@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Thunder: Move = {
+export const Thunder = moves.register(() => ({
   name: "Thunder",
   description:
     "A wicked thunderbolt is dropped on the target to inflict damage. This may also leave the target with paralysis.",
@@ -12,4 +13,4 @@ export const Thunder: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: [C.Statuses.Paralysis, 1 / 10],
-};
+}));

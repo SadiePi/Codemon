@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const EnigmaticCard: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const EnigmaticCard: Item = {} as Item;

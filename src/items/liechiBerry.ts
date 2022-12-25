@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const LiechiBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const LiechiBerry: Item = {} as Item;

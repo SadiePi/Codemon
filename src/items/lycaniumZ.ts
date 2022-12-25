@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const LycaniumZ: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const LycaniumZ: Item = {} as Item;

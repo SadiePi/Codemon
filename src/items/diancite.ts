@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Diancite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Diancite: Item = {} as Item;

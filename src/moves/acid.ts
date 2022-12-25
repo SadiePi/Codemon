@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Acid: Move = {
+export const Acid = moves.register(() => ({
   name: "Acid",
   description: "Opposing Pokémon are attacked with a spray of harsh acid. This may also lower their Sp. Def stats.",
   type: C.Types.Poison,
@@ -9,5 +10,5 @@ export const Acid: Move = {
   power: 40,
   target: "Every Adjacent Foe",
   makesContact: false,
-  stage: { specialDefense: -1 },
-};
+  stages: { specialDefense: -1 },
+}));

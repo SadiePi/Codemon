@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const NLunarizer: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const NLunarizer: Item = {} as Item;

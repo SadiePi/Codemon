@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BlunderPolicy: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BlunderPolicy: Item = {} as Item;

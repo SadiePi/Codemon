@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Substitute: Move = {
+export const Substitute = moves.register(() => ({
   name: "Substitute",
   description:
     "The user creates a substitute for itself using some of its HP. The substitute serves as the user's decoy.",
@@ -9,5 +10,5 @@ export const Substitute: Move = {
   category: "Status",
   pp: 10,
   makesContact: false,
-};
+}));
 // TODO substitute

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SmokePokeTail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SmokePokeTail: Item = {} as Item;

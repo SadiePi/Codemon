@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const QuickAttack: Move = {
+export const QuickAttack = moves.register(() => ({
   name: "Quick Attack",
   description: "The user lunges at the target at a speed that makes it almost invisible. This move always goes first.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const QuickAttack: Move = {
   priority: 1,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

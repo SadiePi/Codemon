@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const OccaBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const OccaBerry: Item = {} as Item;

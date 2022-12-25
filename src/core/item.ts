@@ -1,5 +1,5 @@
 // temporarily...
-export interface ItemType {
+export interface Item {
   name: string;
   description: string;
   price: number;
@@ -10,9 +10,9 @@ export interface ItemType {
   // fossil?: FossilInfo;
 }
 
-export interface Item {
-  type: ItemType;
+export interface ItemEntry {
+  type: Item;
   count: number;
 }
 
-export type Inventory = Item[];
+export type Inventory = ItemEntry[];

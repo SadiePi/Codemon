@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GrassiumZ: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GrassiumZ: Item = {} as Item;

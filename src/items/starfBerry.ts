@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const StarfBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const StarfBerry: Item = {} as Item;

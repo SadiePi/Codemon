@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const VsRecorder: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const VsRecorder: Item = {} as Item;

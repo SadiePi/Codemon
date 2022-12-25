@@ -1,6 +1,7 @@
 import C, { Codemon, Move } from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const JumpKick: Move = {
+export const JumpKick = moves.register(() => ({
   name: "Jump Kick",
   description: "The user jumps up high, then strikes with a kick. If the kick misses, the user hurts itself.",
   type: C.Types.Fighting,
@@ -13,4 +14,4 @@ export const JumpKick: Move = {
   crash: {
     hp: action => (action.source instanceof Codemon ? Math.floor(action.source.stats.hp.value() / 2) : 0),
   },
-};
+}));

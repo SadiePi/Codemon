@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Mawilite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Mawilite: Item = {} as Item;

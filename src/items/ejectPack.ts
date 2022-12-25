@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const EjectPack: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const EjectPack: Item = {} as Item;

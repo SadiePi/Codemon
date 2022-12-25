@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const SleepPowder: Move = {
+export const SleepPowder = moves.register(() => ({
   name: "Sleep Powder",
   description: "The user scatters a big cloud of sleep-inducing dust around the target.",
   type: C.Types.Grass,
@@ -10,4 +11,4 @@ export const SleepPowder: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: C.Statuses.Sleep,
-};
+}));

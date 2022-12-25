@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const SandTomb: Move = {
+export const SandTomb = moves.register(() => ({
   name: "Sand Tomb",
   description: "The user traps the target inside a harshly raging sandstorm for four to five turns.",
   type: C.Types.Ground,
@@ -10,5 +11,5 @@ export const SandTomb: Move = {
   accuracy: 85,
   target: "Any Adjacent",
   makesContact: false,
-};
+}));
 // TODO multiturn moves

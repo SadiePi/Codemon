@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const RockSlide: Move = {
+export const RockSlide = moves.register(() => ({
   name: "Rock Slide",
   description:
     "Large boulders are hurled at opposing Pokémon to inflict damage. This may also make the opposing Pokémon flinch.",
@@ -12,4 +13,4 @@ export const RockSlide: Move = {
   accuracy: 90,
   makesContact: false,
   status: [C.Statuses.Flinch, 3 / 10],
-};
+}));

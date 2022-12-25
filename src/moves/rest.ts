@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Rest: Move = {
+export const Rest = moves.register(() => ({
   name: "Rest",
   description:
     "The user goes to sleep for two turns. This fully restores the user's HP and heals any status conditions.",
@@ -9,5 +10,5 @@ export const Rest: Move = {
   category: "Status",
   pp: 5,
   makesContact: false,
-};
+}));
 // TODO multitutn moves

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PSNCureBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PSNCureBerry: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BasementKey: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BasementKey: Item = {} as Item;

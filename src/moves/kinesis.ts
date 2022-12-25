@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Kinesis: Move = {
+export const Kinesis = moves.register(() => ({
   name: "Kinesis",
   description: "The user distracts the target by bending a spoon. This lowers the target's accuracy.",
   type: C.Types.Psychic,
@@ -9,5 +10,5 @@ export const Kinesis: Move = {
   pp: 15,
   accuracy: 80,
   makesContact: false,
-  stage: { accuracy: -1 },
-};
+  stages: { accuracy: -1 },
+}));

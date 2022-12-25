@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const StringShot: Move = {
+export const StringShot = moves.register(() => ({
   name: "String Shot",
   description: "Opposing Pokémon are bound with silk blown from the user's mouth that harshly lowers the Speed stat.",
   type: C.Types.Bug,
@@ -9,5 +10,5 @@ export const StringShot: Move = {
   accuracy: 95,
   target: "Every Adjacent Foe",
   makesContact: false,
-  stage: { speed: -2 },
-};
+  stages: { speed: -2 },
+}));

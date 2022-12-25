@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PrisonBottle: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PrisonBottle: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const PoisonSting: Move = {
+export const PoisonSting = moves.register(() => ({
   name: "Poison Sting",
   description: "The user stabs the target with a poisonous stinger. This may also poison the target.",
   type: C.Types.Poison,
@@ -10,4 +11,4 @@ export const PoisonSting: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: [C.Statuses.Poison, 3 / 10],
-};
+}));

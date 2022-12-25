@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const POffinCase: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const POffinCase: Item = {} as Item;

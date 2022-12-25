@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GroundGem: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GroundGem: Item = {} as Item;

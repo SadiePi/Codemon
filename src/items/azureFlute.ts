@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const AzureFlute: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const AzureFlute: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const ViseGrip: Move = {
+export const ViseGrip = moves.register(() => ({
   name: "Vise Grip",
   description: "The target is gripped and squeezed from both sides to inflict damage.",
   type: C.Types.Normal,
@@ -9,4 +10,4 @@ export const ViseGrip: Move = {
   power: 55,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

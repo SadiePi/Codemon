@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const HoloCaster: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const HoloCaster: Item = {} as Item;

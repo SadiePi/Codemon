@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MaxEther: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MaxEther: Item = {} as Item;

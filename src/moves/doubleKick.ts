@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const DoubleKick: Move = {
+export const DoubleKick = moves.register(() => ({
   name: "Double Kick",
   description: "The target is quickly kicked twice in succession using both feet.",
   type: C.Types.Fighting,
@@ -10,4 +11,4 @@ export const DoubleKick: Move = {
   target: "Any Adjacent",
   makesContact: true,
   // hitAgain: h => h < 2,
-};
+}));

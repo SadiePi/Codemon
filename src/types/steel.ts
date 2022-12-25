@@ -1,6 +1,7 @@
-import C, { Type } from "../index.ts";
+import C from "../index.ts";
+import { types } from "../core/codex.ts";
 
-export const Steel: Type = {
+export const Steel = types.register(() => ({
   name: "Steel",
   color: "#B8B8D0",
   weaknesses: [C.Types.Fighting, C.Types.Ground, C.Types.Fire],
@@ -15,6 +16,6 @@ export const Steel: Type = {
     C.Types.Ice,
     C.Types.Dragon,
     C.Types.Fairy,
-  ],
+  ], // jfc
   immunities: [C.Types.Poison],
-};
+}));

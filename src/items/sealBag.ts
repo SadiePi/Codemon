@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SealBag: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SealBag: Item = {} as Item;

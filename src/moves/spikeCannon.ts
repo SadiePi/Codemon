@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const SpikeCannon: Move = {
+export const SpikeCannon = moves.register(() => ({
   name: "Spike Cannon",
   description: "Sharp spikes are shot at the target in rapid succession. Two to five times in a row.",
   type: C.Types.Normal,
@@ -9,5 +10,5 @@ export const SpikeCannon: Move = {
   pp: 15,
   power: 20,
   makesContact: false,
-};
+}));
 // TODO multihit moves

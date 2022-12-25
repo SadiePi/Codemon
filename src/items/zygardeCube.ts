@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ZygardeCube: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ZygardeCube: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const RevealGlass: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const RevealGlass: Item = {} as Item;

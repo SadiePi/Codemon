@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MiracleSeed: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MiracleSeed: Item = {} as Item;

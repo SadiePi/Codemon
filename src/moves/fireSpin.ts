@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const FireSpin: Move = {
+export const FireSpin = moves.register(() => ({
   name: "Fire Spin",
   description: "The target becomes trapped within a fierce vortex of fire that rages for four to five turns.",
   type: C.Types.Fire,
@@ -10,5 +11,5 @@ export const FireSpin: Move = {
   accuracy: 85,
   target: "Any Adjacent",
   makesContact: false,
-};
+}));
 // TODO multiturn moves

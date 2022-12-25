@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const WailmerPail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const WailmerPail: Item = {} as Item;

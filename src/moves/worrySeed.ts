@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const WorrySeed: Move = {
+export const WorrySeed = moves.register(() => ({
   name: "Worry Seed",
   description:
     "A seed that causes worry is planted on the target. It prevents sleep by making the target's Ability Insomnia.",
@@ -10,5 +11,5 @@ export const WorrySeed: Move = {
   priority: 0,
   target: "Any Adjacent",
   makesContact: false,
-};
+}));
 // TODO ability change

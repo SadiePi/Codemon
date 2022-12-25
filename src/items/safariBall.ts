@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SafariBall: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SafariBall: Item = {} as Item;

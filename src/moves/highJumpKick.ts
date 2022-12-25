@@ -1,6 +1,7 @@
 import C, { Move, Codemon } from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const HighJumpKick: Move = {
+export const HighJumpKick = moves.register(() => ({
   name: "High Jump Kick",
   description:
     "The target is attacked with a knee kick from a jump. If this move misses, the user takes damage instead.",
@@ -12,4 +13,4 @@ export const HighJumpKick: Move = {
   accuracy: 90,
   makesContact: true,
   crash: { hp: action => (action.source instanceof Codemon ? action.source.stats.hp.max / 2 : 0) },
-};
+}));

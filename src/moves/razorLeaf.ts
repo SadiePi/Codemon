@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const RazorLeaf: Move = {
+export const RazorLeaf = moves.register(() => ({
   name: "Razor Leaf",
   description: "Sharp-edged leaves are launched to slash at opposing Pokémon. Critical hits land more easily.",
   type: C.Types.Grass,
@@ -11,4 +12,4 @@ export const RazorLeaf: Move = {
   target: "Every Adjacent Foe",
   makesContact: false,
   criticalHitStage: 1,
-};
+}));

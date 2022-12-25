@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const DragonRage: Move = {
+export const DragonRage = moves.register(() => ({
   name: "Dragon Rage",
   description: "This attack hits the target with a shock wave of pure rage. This attack always inflicts 40 HP damage.",
   type: C.Types.Dragon,
@@ -9,4 +10,4 @@ export const DragonRage: Move = {
   target: "Any Adjacent",
   makesContact: false,
   hp: -40,
-};
+}));

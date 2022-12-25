@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Bind: Move = {
+export const Bind = moves.register(() => ({
   name: "Bind",
   description:
     "Things such as long bodies or tentacles are used to bind and squeeze the target for four to five turns.",
@@ -11,5 +12,5 @@ export const Bind: Move = {
   accuracy: 85,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));
 // TODO multiturn moves

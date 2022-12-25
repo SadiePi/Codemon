@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SpellTag: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SpellTag: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Bide: Move = {
+export const Bide = moves.register(() => ({
   name: "Bide",
   description: "The user endures attacks for two turns, then strikes back to cause double the damage taken.",
   type: C.Types.Normal,
@@ -9,5 +10,5 @@ export const Bide: Move = {
   priority: 1,
   target: "Self",
   makesContact: true,
-};
+}));
 // TODO multiturn moves

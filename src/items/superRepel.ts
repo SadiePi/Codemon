@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SuperRepel: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SuperRepel: Item = {} as Item;

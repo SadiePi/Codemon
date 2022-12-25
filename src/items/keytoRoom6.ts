@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const KeytoRoom6: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const KeytoRoom6: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Bulldoze: Move = {
+export const Bulldoze = moves.register(() => ({
   name: "Bulldoze",
   description:
     "The user tramples its target into the ground, dealing damage. This also lowers the target's action speed.",
@@ -10,5 +11,5 @@ export const Bulldoze: Move = {
   power: 60,
   target: "Every Adjacent",
   makesContact: false,
-  stage: { speed: -1 },
-};
+  stages: { speed: -1 },
+}));

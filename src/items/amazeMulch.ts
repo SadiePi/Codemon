@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const AmazeMulch: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const AmazeMulch: Item = {} as Item;

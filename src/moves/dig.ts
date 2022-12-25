@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Dig: Move = {
+export const Dig = moves.register(() => ({
   name: "Dig",
   description: "The user burrows into the ground, then attacks on the next turn.",
   type: C.Types.Ground,
@@ -10,5 +11,5 @@ export const Dig: Move = {
   target: "Any Adjacent",
   makesContact: true,
   status: C.Statuses.SemiInvulnerableTurn,
-};
+}));
 // TODO multiturn moves

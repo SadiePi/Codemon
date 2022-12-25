@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Sing: Move = {
+export const Sing = moves.register(() => ({
   name: "Sing",
   description: "A soothing lullaby is sung in a calming voice that puts the target into a deep slumber.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const Sing: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: C.Statuses.Sleep,
-};
+}));

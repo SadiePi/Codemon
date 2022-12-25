@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Wrap: Move = {
+export const Wrap = moves.register(() => ({
   name: "Wrap",
   description: "A long body, vines, or the like are used to wrap and squeeze the target for four to five turns.",
   type: C.Types.Normal,
@@ -10,5 +11,5 @@ export const Wrap: Move = {
   accuracy: 90,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));
 // TODO multiturn moves

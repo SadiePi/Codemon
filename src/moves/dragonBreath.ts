@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const DragonBreath: Move = {
+export const DragonBreath = moves.register(() => ({
   name: "Dragon Breath",
   description: "The user exhales a mighty gust that inflicts damage. This may also leave the target with paralysis.",
   type: C.Types.Dragon,
@@ -10,4 +11,4 @@ export const DragonBreath: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: [C.Statuses.Paralysis, 3 / 10],
-};
+}));

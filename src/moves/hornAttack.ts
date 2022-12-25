@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const HornAttack: Move = {
+export const HornAttack = moves.register(() => ({
   name: "Horn Attack",
   description: "The target is jabbed with a sharply pointed horn to inflict damage.",
   type: C.Types.Normal,
@@ -9,4 +10,4 @@ export const HornAttack: Move = {
   power: 65,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

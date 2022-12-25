@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Kangaskhanite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Kangaskhanite: Item = {} as Item;

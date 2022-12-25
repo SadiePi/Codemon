@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const NSolarizer: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const NSolarizer: Item = {} as Item;

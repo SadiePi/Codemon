@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const RollingKick: Move = {
+export const RollingKick = moves.register(() => ({
   name: "Rolling Kick",
   description: "The user lashes out with a quick, spinning kick. This may also make the target flinch.",
   type: C.Types.Fighting,
@@ -11,4 +12,4 @@ export const RollingKick: Move = {
   target: "Any Adjacent",
   makesContact: true,
   status: [C.Statuses.Flinch, 3 / 10],
-};
+}));

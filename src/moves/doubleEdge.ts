@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const DoubleEdge: Move = {
+export const DoubleEdge = moves.register(() => ({
   name: "Double-Edge",
   description:
     "A reckless, life-risking tackle in which the user rushes the target. This also damages the user quite a lot.",
@@ -11,5 +12,5 @@ export const DoubleEdge: Move = {
   target: "Any Adjacent",
   makesContact: true,
   // recoil: 1 / 4,
-};
+}));
 // TODO proportional recoil

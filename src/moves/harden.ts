@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Harden: Move = {
+export const Harden = moves.register(() => ({
   name: "Harden",
   description: "The user stiffens all the muscles in its body to raise its Defense stat.",
   type: C.Types.Normal,
@@ -8,5 +9,5 @@ export const Harden: Move = {
   pp: 30, // max 48
   target: "Self",
   makesContact: false,
-  stage: { defense: 1 },
-};
+  stages: { defense: 1 },
+}));

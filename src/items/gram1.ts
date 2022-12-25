@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Gram1: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Gram1: Item = {} as Item;

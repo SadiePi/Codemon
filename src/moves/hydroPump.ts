@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const HydroPump: Move = {
+export const HydroPump = moves.register(() => ({
   name: "Hydro Pump",
   description: "The target is blasted by a huge volume of water launched under great pressure.",
   type: C.Types.Water,
@@ -10,4 +11,4 @@ export const HydroPump: Move = {
   accuracy: 80,
   target: "Any Adjacent",
   makesContact: false,
-};
+}));

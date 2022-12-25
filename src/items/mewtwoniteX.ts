@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MewtwoniteX: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MewtwoniteX: Item = {} as Item;

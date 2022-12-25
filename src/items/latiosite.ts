@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Latiosite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Latiosite: Item = {} as Item;

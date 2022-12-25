@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MagmaEmblem: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MagmaEmblem: Item = {} as Item;

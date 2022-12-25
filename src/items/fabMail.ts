@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const FabMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const FabMail: Item = {} as Item;

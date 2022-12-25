@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const NaiveMint: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const NaiveMint: Item = {} as Item;

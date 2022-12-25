@@ -1,5 +1,7 @@
-import C, { Species } from "../index.ts";
-export const Garchomp: Species = {
+import C from "../index.ts";
+import { species } from "../core/codex.ts";
+
+export const Garchomp = species.register(() => ({
   name: "Garchomp",
   description:
     "The protuberances on its head serve as sensors. It can even detect distant prey. It is said that when one runs at high speed, its wings create blades of wind that can fell nearby trees.",
@@ -56,4 +58,4 @@ export const Garchomp: Species = {
     tutoring: [],
   },
   evolutions: [],
-};
+}));

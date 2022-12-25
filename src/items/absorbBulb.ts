@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const AbsorbBulb: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const AbsorbBulb: Item = {} as Item;

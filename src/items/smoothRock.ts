@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SmoothRock: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SmoothRock: Item = {} as Item;

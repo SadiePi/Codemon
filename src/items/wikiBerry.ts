@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const WikiBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const WikiBerry: Item = {} as Item;

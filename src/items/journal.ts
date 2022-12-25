@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Journal: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Journal: Item = {} as Item;

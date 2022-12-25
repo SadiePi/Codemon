@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ShockDrive: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ShockDrive: Item = {} as Item;

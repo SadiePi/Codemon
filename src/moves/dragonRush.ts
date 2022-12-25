@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const DragonRush: Move = {
+export const DragonRush = moves.register(() => ({
   name: "Dragon Rush",
   description:
     "The user tackles the target while exhibiting overwhelming menace. This may also make the target flinch.",
@@ -11,5 +12,5 @@ export const DragonRush: Move = {
   accuracy: 75,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));
 // TODO status consideration (boost against minimize)

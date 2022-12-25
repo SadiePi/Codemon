@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Teleport: Move = {
+export const Teleport = moves.register(() => ({
   name: "Teleport",
   description:
     "The user switches places with another party Pokémon. It may also be used to warp to the last Pokémon Center visited. If a wild Pokémon uses this move, it flees.",
@@ -11,4 +12,4 @@ export const Teleport: Move = {
   target: "Self",
   makesContact: false,
   eject: true,
-};
+}));

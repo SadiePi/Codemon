@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Sprayduck: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Sprayduck: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Counter: Move = {
+export const Counter = moves.register(() => ({
   name: "Counter",
   description: "A retaliation move that counters any physical attack, inflicting double the damage taken.",
   type: C.Types.Fighting,
@@ -9,5 +10,5 @@ export const Counter: Move = {
   priority: -5,
   target: "Self",
   makesContact: true,
-};
+}));
 // TODO counter

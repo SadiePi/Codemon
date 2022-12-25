@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const TriAttack: Move = {
+export const TriAttack = moves.register(() => ({
   name: "Tri Attack",
   description:
     "The user strikes with a simultaneous three-beam attack. This may also burn, freeze, or paralyze the target.",
@@ -15,5 +16,5 @@ export const TriAttack: Move = {
   //   [C.Statuses.Freeze, 1 / 5],
   //   [C.Statuses.Paralyze, 1 / 5],
   // ],
-};
+}));
 // TODO triattack

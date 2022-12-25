@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const DoubleTeam: Move = {
+export const DoubleTeam = moves.register(() => ({
   name: "Double Team",
   description: "By moving rapidly, the user makes illusory copies of itself to raise its evasiveness.",
   type: C.Types.Normal,
@@ -8,5 +9,5 @@ export const DoubleTeam: Move = {
   pp: 15, // max 24
   target: "Self",
   makesContact: false,
-  stage: { evasion: 1 },
-};
+  stages: { evasion: 1 },
+}));

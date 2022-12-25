@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const DampRock: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const DampRock: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const AcidArmor: Move = {
+export const AcidArmor = moves.register(() => ({
   name: "Acid Armor",
   description: "The user alters its cellular structure to liquefy itself, sharply raising its Defense stat.",
   type: C.Types.Poison,
@@ -8,5 +9,5 @@ export const AcidArmor: Move = {
   pp: 20,
   target: "Self",
   makesContact: false,
-  stage: { defense: 2 },
-};
+  stages: { defense: 2 },
+}));

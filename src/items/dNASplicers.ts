@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const DNASplicers: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const DNASplicers: Item = {} as Item;

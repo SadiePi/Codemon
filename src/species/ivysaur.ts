@@ -1,5 +1,7 @@
-import C, { Species } from "../index.ts";
-export const Ivysaur: Species = {
+import C from "../index.ts";
+import { species } from "../core/codex.ts";
+
+export const Ivysaur = species.register(() => ({
   name: "Ivysaur",
   description:
     "Exposure to sunlight adds to its strength. Sunlight also makes the bud on its back grow larger. When the bulb on its back grows too large, it appears to lose the ability to stand on its hind legs.",
@@ -49,4 +51,4 @@ export const Ivysaur: Species = {
     tutoring: C.Species.Bulbasaur.learnset.tutoring,
   },
   evolutions: [[C.Species.Venusaur, { level: 32 }]],
-};
+}));

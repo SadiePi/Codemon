@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Magmarizer: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Magmarizer: Item = {} as Item;

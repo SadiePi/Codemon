@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Reflect: Move = {
+export const Reflect = moves.register(() => ({
   name: "Reflect",
   description: "A wondrous wall of light is put up to reduce damage from physical attacks for five turns.",
   type: C.Types.Psychic,
@@ -8,5 +9,5 @@ export const Reflect: Move = {
   pp: 20, // max 32
   target: "Team",
   makesContact: false,
-};
+}));
 // TODO functionality

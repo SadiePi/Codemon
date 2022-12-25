@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PowerWeight: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PowerWeight: Item = {} as Item;

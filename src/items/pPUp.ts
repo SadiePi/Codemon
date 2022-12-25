@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PPUp: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PPUp: Item = {} as Item;

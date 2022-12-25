@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BigPearl: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BigPearl: Item = {} as Item;

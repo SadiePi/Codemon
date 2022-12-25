@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ContestCostume: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ContestCostume: Item = {} as Item;

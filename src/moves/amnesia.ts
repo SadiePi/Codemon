@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Amnesia: Move = {
+export const Amnesia = moves.register(() => ({
   name: "Amnesia",
   description:
     "The user temporarily empties its mind to forget its concerns. This sharply raises the user's Sp. Def stat.",
@@ -9,5 +10,5 @@ export const Amnesia: Move = {
   category: "Status",
   pp: 20,
   makesContact: false,
-  stage: { specialDefense: 2 },
-};
+  stages: { specialDefense: 2 },
+}));

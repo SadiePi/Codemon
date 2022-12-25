@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const DeepSeaTooth: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const DeepSeaTooth: Item = {} as Item;

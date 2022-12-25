@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const TailWhip: Move = {
+export const TailWhip = moves.register(() => ({
   name: "Tail Whip",
   description: "The user wags its tail cutely, making opposing Pokémon less wary and lowering their Defense stats.",
   type: C.Types.Normal,
@@ -8,5 +9,5 @@ export const TailWhip: Move = {
   pp: 30,
   target: "Every Adjacent Foe",
   makesContact: false,
-  stage: { defense: -1 },
-};
+  stages: { defense: -1 },
+}));

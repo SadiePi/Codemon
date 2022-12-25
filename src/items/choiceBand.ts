@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ChoiceBand: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ChoiceBand: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const HornDrill: Move = {
+export const HornDrill = moves.register(() => ({
   name: "Horn Drill",
   description:
     "The user stabs the target with a horn that rotates like a drill. The target faints instantly if this attack hits.",
@@ -10,4 +11,4 @@ export const HornDrill: Move = {
   target: "Any Adjacent",
   makesContact: true,
   faint: true,
-};
+}));

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SecretKeySinnoh: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SecretKeySinnoh: Item = {} as Item;

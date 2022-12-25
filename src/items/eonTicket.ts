@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const EonTicket: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const EonTicket: Item = {} as Item;

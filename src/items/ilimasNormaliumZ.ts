@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const IlimasNormaliumZ: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const IlimasNormaliumZ: Item = {} as Item;

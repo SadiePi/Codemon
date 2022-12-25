@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PrOfessorsMask: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PrOfessorsMask: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ApicotBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ApicotBerry: Item = {} as Item;

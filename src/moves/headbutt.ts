@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Headbutt: Move = {
+export const Headbutt = moves.register(() => ({
   name: "Headbutt",
   description:
     "The user sticks out its head and attacks by charging straight into the target. This may also make the target flinch.",
@@ -11,4 +12,4 @@ export const Headbutt: Move = {
   target: "Any Adjacent",
   makesContact: true,
   status: [C.Statuses.Flinch, 3 / 10],
-};
+}));

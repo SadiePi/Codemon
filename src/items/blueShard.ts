@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BlueShard: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BlueShard: Item = {} as Item;

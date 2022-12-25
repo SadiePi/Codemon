@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Smokescreen: Move = {
+export const Smokescreen = moves.register(() => ({
   name: "Smokescreen",
   description: "The user releases an obscuring cloud of smoke or ink. This lowers the target's accuracy.",
   type: C.Types.Normal,
@@ -8,5 +9,5 @@ export const Smokescreen: Move = {
   pp: 20, // max 32
   target: "Any Adjacent",
   makesContact: false,
-  stage: { accuracy: -1 },
-};
+  stages: { accuracy: -1 },
+}));

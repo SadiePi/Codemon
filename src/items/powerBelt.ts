@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PowerBelt: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PowerBelt: Item = {} as Item;

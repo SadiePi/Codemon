@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PsychicMemory: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PsychicMemory: Item = {} as Item;

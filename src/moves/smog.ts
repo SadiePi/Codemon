@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Smog: Move = {
+export const Smog = moves.register(() => ({
   name: "Smog",
   description: "The target is attacked with a discharge of filthy gases. This may also poison the target.",
   type: C.Types.Poison,
@@ -11,4 +12,4 @@ export const Smog: Move = {
   accuracy: 70,
   makesContact: false,
   status: [C.Statuses.Poison, 4 / 10],
-};
+}));

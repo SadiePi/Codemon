@@ -1,5 +1,7 @@
-import C, { Move } from "../index.ts";
-export const PayDay: Move = {
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
+
+export const PayDay = moves.register(() => ({
   name: "Pay Day",
   description: "Numerous coins are hurled at the target to inflict damage. Money is earned after the battle.",
   type: C.Types.Normal,
@@ -8,5 +10,5 @@ export const PayDay: Move = {
   power: 40,
   target: "Any Adjacent",
   makesContact: false,
-};
+}));
 // TODO payday

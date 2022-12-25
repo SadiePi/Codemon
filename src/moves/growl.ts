@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Growl: Move = {
+export const Growl = moves.register(() => ({
   name: "Growl",
   description:
     "The user growls in an endearing way, making opposing Pokémon less wary. This lowers their Attack stats.",
@@ -9,5 +10,5 @@ export const Growl: Move = {
   pp: 40, // max 64
   target: "Every Adjacent Foe",
   makesContact: false,
-  stage: { attack: -1 },
-};
+  stages: { attack: -1 },
+}));

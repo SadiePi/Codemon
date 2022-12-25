@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Agility: Move = {
+export const Agility = moves.register(() => ({
   name: "Agility",
   description: "The user relaxes and lightens its body to move faster. This sharply raises the Speed stat.",
   type: C.Types.Psychic,
@@ -8,5 +9,5 @@ export const Agility: Move = {
   pp: 30, // max 48
   target: "Self",
   makesContact: false,
-  stage: { speed: 2 },
-};
+  stages: { speed: 2 },
+}));

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const LegendaryClue2: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const LegendaryClue2: Item = {} as Item;

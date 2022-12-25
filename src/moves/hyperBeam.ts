@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const HyperBeam: Move = {
+export const HyperBeam = moves.register(() => ({
   name: "Hyper Beam",
   description: "The target is attacked with a powerful beam. The user can't move on the next turn.",
   type: C.Types.Normal,
@@ -10,5 +11,5 @@ export const HyperBeam: Move = {
   accuracy: 90,
   target: "Any Adjacent",
   makesContact: false,
-};
+}));
 // TODO multiturn moves

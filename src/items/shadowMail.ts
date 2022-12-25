@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ShadowMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ShadowMail: Item = {} as Item;

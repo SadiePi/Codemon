@@ -1,5 +1,7 @@
-import C, { Move } from "../index.ts";
-export const DoubleSlap: Move = {
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
+
+export const DoubleSlap = moves.register(() => ({
   name: "Double Slap",
   description: "The target is slapped repeatedly, back and forth, two to five times in a row.",
   type: C.Types.Normal,
@@ -10,5 +12,5 @@ export const DoubleSlap: Move = {
 
   accuracy: 85,
   power: 15,
-};
+}));
 // TODO multihit

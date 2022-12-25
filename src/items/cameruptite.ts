@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Cameruptite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Cameruptite: Item = {} as Item;

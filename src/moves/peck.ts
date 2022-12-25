@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Peck: Move = {
+export const Peck = moves.register(() => ({
   name: "Peck",
   description: "The target is jabbed with a sharply pointed beak or horn.",
   type: C.Types.Flying,
@@ -9,4 +10,4 @@ export const Peck: Move = {
   power: 35,
   target: "Any",
   makesContact: true,
-};
+}));

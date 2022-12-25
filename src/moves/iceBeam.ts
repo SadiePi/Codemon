@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const IceBeam: Move = {
+export const IceBeam = moves.register(() => ({
   name: "Ice Beam",
   description: "The target is struck with an icy-cold beam of energy. This may also leave the target frozen.",
   type: C.Types.Ice,
@@ -10,4 +11,4 @@ export const IceBeam: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: [C.Statuses.Freeze, 1 / 10],
-};
+}));

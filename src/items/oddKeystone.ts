@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const OddKeystone: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const OddKeystone: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const PinMissle: Move = {
+export const PinMissle = moves.register(() => ({
   name: "Pin Missile",
   description: "Sharp spikes are shot at the target in rapid succession. They hit two to five times in a row.",
   type: C.Types.Bug,
@@ -17,5 +18,5 @@ export const PinMissle: Move = {
   //   if (hitsSoFar === 4) return 0.15;
   //   return 0;
   // },
-};
+}));
 // TODO multihit moves

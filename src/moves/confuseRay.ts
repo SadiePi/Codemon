@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const ConfuseRay: Move = {
+export const ConfuseRay = moves.register(() => ({
   name: "Confuse Ray",
   description: "The target is exposed to a sinister ray that triggers confusion.",
   type: C.Types.Ghost,
@@ -9,4 +10,4 @@ export const ConfuseRay: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: C.Statuses.Confusion,
-};
+}));

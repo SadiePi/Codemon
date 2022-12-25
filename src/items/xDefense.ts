@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const XDefense: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const XDefense: Item = {} as Item;

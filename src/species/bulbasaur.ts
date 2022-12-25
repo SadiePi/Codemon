@@ -1,5 +1,7 @@
-import C, { Species } from "../index.ts";
-export const Bulbasaur: Species = {
+import C from "../index.ts";
+import { species } from "../core/codex.ts";
+
+export const Bulbasaur = species.register(() => ({
   name: "Bulbasaur",
   description:
     "There is a plant seed on its back right from the day this Pokémon is born. The seed slowly grows larger. While it is young, it uses the nutrients that are stored in the seed in order to grow.",
@@ -159,4 +161,4 @@ export const Bulbasaur: Species = {
     ],
     tutoring: [C.Moves.GrassPledge, C.Moves.GrassyGlide],
   },
-};
+}));

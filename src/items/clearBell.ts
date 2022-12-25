@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ClearBell: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ClearBell: Item = {} as Item;

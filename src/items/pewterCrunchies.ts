@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PewterCrunchies: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PewterCrunchies: Item = {} as Item;

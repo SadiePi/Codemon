@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const RockMemory: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const RockMemory: Item = {} as Item;

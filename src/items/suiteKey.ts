@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SuiteKey: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SuiteKey: Item = {} as Item;

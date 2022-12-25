@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const CrownPass: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const CrownPass: Item = {} as Item;

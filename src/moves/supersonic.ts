@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Supersonic: Move = {
+export const Supersonic = moves.register(() => ({
   name: "Supersonic",
   description: "The user generates odd sound waves from its body that confuse the target.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const Supersonic: Move = {
   target: "Any Adjacent",
   makesContact: false,
   status: C.Statuses.Confusion,
-};
+}));

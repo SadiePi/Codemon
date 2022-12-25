@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ChartiBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ChartiBerry: Item = {} as Item;

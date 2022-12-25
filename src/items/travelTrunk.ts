@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const TravelTrunk: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const TravelTrunk: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const FastBall: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const FastBall: Item = {} as Item;

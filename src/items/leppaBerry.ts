@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const LeppaBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const LeppaBerry: Item = {} as Item;

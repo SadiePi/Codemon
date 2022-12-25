@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Metronome: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Metronome: Item = {} as Item;

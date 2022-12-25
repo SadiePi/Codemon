@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const WeaknessPolicy: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const WeaknessPolicy: Item = {} as Item;

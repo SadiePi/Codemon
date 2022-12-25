@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PechaBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PechaBerry: Item = {} as Item;

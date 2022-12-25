@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Gust: Move = {
+export const Gust = moves.register(() => ({
   name: "Gust",
   description: "A gust of wind is whipped up by wings and launched at the target to inflict damage.",
   type: C.Types.Flying,
@@ -9,5 +10,5 @@ export const Gust: Move = {
   power: 40,
   target: "Any",
   makesContact: false,
-};
+}));
 // TODO during Fly, double power

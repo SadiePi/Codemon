@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const CoinCase: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const CoinCase: Item = {} as Item;

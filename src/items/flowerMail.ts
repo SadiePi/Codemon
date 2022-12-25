@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const FlowerMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const FlowerMail: Item = {} as Item;

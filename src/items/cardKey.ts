@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const CardKey: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const CardKey: Item = {} as Item;

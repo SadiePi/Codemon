@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Lick: Move = {
+export const Lick = moves.register(() => ({
   name: "Lick",
   description: "The target is licked with a long tongue, causing damage. It may also leave the target with paralysis.",
   type: C.Types.Ghost,
@@ -10,4 +11,4 @@ export const Lick: Move = {
   power: 30,
   makesContact: true,
   status: [C.Statuses.Paralysis, 3 / 10],
-};
+}));

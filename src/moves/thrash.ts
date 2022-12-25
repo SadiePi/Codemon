@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Thrash: Move = {
+export const Thrash = moves.register(() => ({
   name: "Thrash",
   description: "The user rampages and attacks for two to three turns. The user then becomes confused.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const Thrash: Move = {
   target: "Self",
   makesContact: true,
   status: C.Statuses.Thrashing,
-};
+}));

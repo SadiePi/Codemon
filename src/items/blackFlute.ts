@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BlackFlute: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BlackFlute: Item = {} as Item;

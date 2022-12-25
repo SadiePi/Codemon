@@ -1,7 +1,6 @@
 export default {
   codemon: {
     stats: {
-      defaultLevel: 5,
       maxIV: 32,
       maxStage: 6,
       minStage: -6,

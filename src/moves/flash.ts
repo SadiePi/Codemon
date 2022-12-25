@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Flash: Move = {
+export const Flash = moves.register(() => ({
   name: "Flash",
   description: "The user flashes a bright light that cuts the target's accuracy.",
   type: C.Types.Normal,
@@ -8,5 +9,5 @@ export const Flash: Move = {
   category: "Status",
   pp: 20,
   makesContact: false,
-  stage: { accuracy: -1 },
-};
+  stages: { accuracy: -1 },
+}));

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Crunch: Move = {
+export const Crunch = moves.register(() => ({
   name: "Crunch",
   description: "The user crunches up the target with sharp fangs. This may also lower the target's Defense stat.",
   type: C.Types.Dark,
@@ -9,5 +10,5 @@ export const Crunch: Move = {
   power: 80,
   target: "Any Adjacent",
   makesContact: true,
-  stage: [{ defense: -1 }, 2 / 10],
-};
+  stages: [1 / 5, { defense: -1 }],
+}));

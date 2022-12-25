@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SoniasBook: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SoniasBook: Item = {} as Item;

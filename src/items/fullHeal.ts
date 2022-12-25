@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const FullHeal: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const FullHeal: Item = {} as Item;

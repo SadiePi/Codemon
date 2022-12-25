@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const PetalDance: Move = {
+export const PetalDance = moves.register(() => ({
   name: "Petal Dance",
   description: "The user attacks the target with sharp petals that land on the target.",
   type: C.Types.Grass,
@@ -9,5 +10,5 @@ export const PetalDance: Move = {
   power: 120,
   target: "Random Adjacent Foe",
   makesContact: true,
-};
+}));
 // TODO multiturn moves

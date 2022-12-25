@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const WhippedDream: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const WhippedDream: Item = {} as Item;

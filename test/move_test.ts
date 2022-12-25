@@ -4,17 +4,17 @@ import C, { spawn } from "../src/index.ts";
 import { iKibble } from "./common.ts";
 
 Deno.test("Tackle basic info", () => {
-  const chompy = spawn({
+  const kibble = spawn({
     moves: [C.Moves.Tackle],
     ...iKibble,
   });
 
-  const tackle = chompy.moves[0];
+  const tackle = kibble.moves[0];
 
-  assertEquals(tackle.data.type.immunities.length, 1, "Wrong immunity count");
-  assertEquals(tackle.data.type.immunities[0].name, "Ghost", "Wrong immunity");
-  assertEquals(tackle.data.type.weaknesses.length, 1, "Wrong weakness count");
-  assertEquals(tackle.data.type.weaknesses[0].name, "Fighting", "Wrong weakness");
+  assertEquals(tackle.effects.type.immunities.length, 1, "Wrong immunity count");
+  assertEquals(tackle.effects.type.immunities[0].name, "Ghost", "Wrong immunity");
+  assertEquals(tackle.effects.type.weaknesses.length, 1, "Wrong weakness count");
+  assertEquals(tackle.effects.type.weaknesses[0].name, "Fighting", "Wrong weakness");
   assertNotEquals(tackle.PP.Boost(), 0, "Boost 1 failed");
   assertNotEquals(tackle.PP.Boost(), 0, "Boost 2 failed");
   assertNotEquals(tackle.PP.Boost(), 0, "Boost 3 failed");

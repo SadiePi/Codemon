@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Strength: Move = {
+export const Strength = moves.register(() => ({
   name: "Strength",
   description: "The target is slugged with a punch thrown at maximum power.",
   type: C.Types.Normal,
@@ -9,4 +10,4 @@ export const Strength: Move = {
   power: 80,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

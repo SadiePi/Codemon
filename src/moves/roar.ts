@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Roar: Move = {
+export const Roar = moves.register(() => ({
   name: "Roar",
   description:
     "The target is scared off, and a different Pokémon is dragged out. In the wild, this ends a battle against a single opponent.",
@@ -11,4 +12,4 @@ export const Roar: Move = {
   target: "Any Adjacent",
   makesContact: false,
   eject: true,
-};
+}));

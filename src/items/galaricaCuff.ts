@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GalaricaCuff: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GalaricaCuff: Item = {} as Item;

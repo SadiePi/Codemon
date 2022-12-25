@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Meditate: Move = {
+export const Meditate = moves.register(() => ({
   name: "Meditate",
   description: "The user meditates to awaken the power deep within its body and raise its Attack stat.",
   type: C.Types.Psychic,
@@ -8,5 +9,5 @@ export const Meditate: Move = {
   pp: 40, // max 64
   target: "Self",
   makesContact: false,
-  stage: { attack: 1 },
-};
+  stages: { attack: 1 },
+}));

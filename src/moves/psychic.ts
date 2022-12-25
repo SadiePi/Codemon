@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Psychic: Move = {
+export const Psychic = moves.register(() => ({
   name: "Psychic",
   description: "The target is hit by a strong telekinetic force. This may also lower the target's Sp. Def stat.",
   type: C.Types.Psychic,
@@ -9,5 +10,5 @@ export const Psychic: Move = {
   power: 90,
   target: "Any Adjacent",
   makesContact: false,
-  stage: [{ specialDefense: -1 }, 1 / 10],
-};
+  stages: [1 / 10, { specialDefense: -1 }],
+}));

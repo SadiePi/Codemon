@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const DowsingMachine: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const DowsingMachine: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const VineWhip: Move = {
+export const VineWhip = moves.register(() => ({
   name: "Vine Whip",
   description: "The target is struck with slender, whiplike vines to inflict damage.",
   type: C.Types.Grass,
@@ -9,4 +10,4 @@ export const VineWhip: Move = {
   power: 45,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

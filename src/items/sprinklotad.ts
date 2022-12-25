@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Sprinklotad: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Sprinklotad: Item = {} as Item;

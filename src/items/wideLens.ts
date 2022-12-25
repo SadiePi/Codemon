@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const WideLens: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const WideLens: Item = {} as Item;

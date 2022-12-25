@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const XSpDef: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const XSpDef: Item = {} as Item;

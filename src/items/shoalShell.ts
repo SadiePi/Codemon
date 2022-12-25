@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ShoalShell: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ShoalShell: Item = {} as Item;

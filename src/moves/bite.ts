@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Bite: Move = {
+export const Bite = moves.register(() => ({
   name: "Bite",
   description: "The target is bitten with viciously sharp fangs. This may also make the target flinch.",
   type: C.Types.Dark,
@@ -10,4 +11,4 @@ export const Bite: Move = {
   target: "Any Adjacent",
   makesContact: true,
   status: [C.Statuses.Flinch, 3 / 10],
-};
+}));

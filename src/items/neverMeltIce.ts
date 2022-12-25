@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const NeverMeltIce: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const NeverMeltIce: Item = {} as Item;

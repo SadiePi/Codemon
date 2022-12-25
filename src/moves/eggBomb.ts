@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const EggBomb: Move = {
+export const EggBomb = moves.register(() => ({
   name: "Egg Bomb",
   description: "A large egg is hurled at the target with maximum force to inflict damage.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const EggBomb: Move = {
   power: 100,
   accuracy: 75,
   makesContact: false,
-};
+}));

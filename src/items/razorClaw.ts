@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const RazorClaw: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const RazorClaw: Item = {} as Item;

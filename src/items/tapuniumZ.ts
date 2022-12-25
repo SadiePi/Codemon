@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const TapuniumZ: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const TapuniumZ: Item = {} as Item;

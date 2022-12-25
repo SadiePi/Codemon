@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const RelicVase: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const RelicVase: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BigRoot: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BigRoot: Item = {} as Item;

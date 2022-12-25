@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const FireStone: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const FireStone: Item = {} as Item;

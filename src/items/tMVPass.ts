@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const TMVPass: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const TMVPass: Item = {} as Item;

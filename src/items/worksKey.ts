@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const WorksKey: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const WorksKey: Item = {} as Item;

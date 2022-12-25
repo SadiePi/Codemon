@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const DizzyPunch: Move = {
+export const DizzyPunch = moves.register(() => ({
   name: "Dizzy Punch",
   description: "The target is hit with rhythmically launched punches. This may also leave the target confused.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const DizzyPunch: Move = {
   power: 70,
   makesContact: true,
   status: [C.Statuses.Confusion, 1 / 5],
-};
+}));

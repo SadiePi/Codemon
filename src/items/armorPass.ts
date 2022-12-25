@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ArmorPass: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ArmorPass: Item = {} as Item;

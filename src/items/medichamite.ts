@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Medichamite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Medichamite: Item = {} as Item;

@@ -1,12 +1,24 @@
-import { Ability, ReadyAction, EffectReciept, ActionTarget, ActionEffects } from "./battle.ts";
-import Experience, { ExperienceGroup, Learnset } from "./experience.ts";
+import { EffectReciept, EffectTarget, EffectContext } from "./battle.ts";
 import { MoveEntry, Move } from "./move.ts";
-import { BaseStats, EVYields, IStats, Stat, StatSet } from "./stats.ts";
-import { Action, Attack, Battle, getRandomNature, Nature } from "./index.ts";
-import { RequireAtLeastOne, weightedRandom } from "./util.ts";
-import { ItemType } from "./item.ts";
+import { BaseStats, EVYields, ExperienceGroup, IStatSet, Stat, StatSet } from "./stats.ts";
+import { Attack, Battle, getRandomNature, Nature } from "./index.ts";
+import { NonEmptyArray, NonEmptyPartial, randomize, Randomizer, weightedRandom } from "./util.ts";
+import { Item } from "./item.ts";
 
-type RangeOrExact = number | [number, number];
+export interface Ability {
+  name: string;
+  description: string;
+  apply: (self: Codemon, battle: Battle) => void | (() => void);
+  // TODO apply to map
+}
+
+export type Learnset = {
+  [level: number]: Move[];
+  machine?: Move[];
+  evolution?: Move[];
+  breeding?: [Species[], Move][];
+  tutoring?: Move[];
+};
 
 export type BodyType =
   | "Head"
@@ -24,13 +36,13 @@ export type BodyType =
   | "Insectoid"
   | "Finned";
 
-export interface Type {
+export type Type = {
   name: string;
   color: string; // TODO move to a palette file
   weaknesses: Type[];
   resistances: Type[];
   immunities: Type[];
-}
+};
 
 export interface Gender {
   //symbol: Image;
@@ -47,12 +59,12 @@ export type Species = {
   name: string;
   description: string;
   //graphics: Graphics
-  types: [Type, ...Type[]];
+  types: NonEmptyArray<Type>;
   abilities: {
-    normal: [Ability, ...Ability[]];
+    normal: NonEmptyArray<Ability>;
     hidden?: Ability;
   };
-  genders: [Gender, number][];
+  genders: Randomizer<Gender>;
   catchRate: number;
   eggCycles: number;
   height: number;
@@ -68,10 +80,10 @@ export type Species = {
   learnset: Learnset;
   evolutions: [
     Species,
-    RequireAtLeastOne<{
+    NonEmptyPartial<{
       level?: number;
       happiness?: number;
-      item?: ItemType;
+      item?: Item;
       time?: string;
       location?: string;
       trade?: boolean;
@@ -86,14 +98,23 @@ export type Species = {
   overrideNature?: (self: Codemon, inputNature: Nature) => Nature;
 };
 
+// since i'm allowing more than 2 abilities per species,
+// i'm defining that when the ability is a number, it
+// selects the ability at index (abilitySlot%abilitiesCount)
+type AbilitySelector = number | "hidden" | Ability;
+
 export interface ICodemon {
   species: Species;
   name?: string;
   gender?: Gender;
-  level?: RangeOrExact;
+  experience?: NonEmptyPartial<{
+    level?: number;
+    experience?: number;
+  }>;
   nature?: Nature;
-  stats?: IStats;
-  moves?: (Move | undefined)[];
+  stats?: IStatSet;
+  moves?: Record<number, Move>;
+  ability?: AbilitySelector;
 }
 
 type SpawnBankEntry = [options: ICodemon, weight: number];
@@ -103,34 +124,71 @@ export function spawn(from: ICodemon | SpawnBank): Codemon {
 }
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
-export class Codemon implements ActionTarget {
+export class Codemon implements EffectTarget {
   public species: Species;
-  public experience: Experience;
-  public stats: StatSet;
   public moves: MoveEntry[];
+  public stats: StatSet;
 
   constructor(options: ICodemon) {
     // TODO enforce sane values
     this.species = options.species;
-    this.name = options.name ?? this.species.name;
-    this.gender = options.gender ?? weightedRandom(options.species.genders);
-
     this.moves = [];
     // creating experience object automatically populates moves
-    this.experience = new Experience({
-      self: this,
-      group: options.species.experienceGroup,
-      level: Array.isArray(options.level)
-        ? options.level[0] + Math.floor(Math.random() * (options.level[1] - options.level[0]))
-        : options.level,
-    });
     if (options.moves)
-      this.moves = options.moves.map((m, s) =>
-        m ? new MoveEntry({ info: m, self: this }) : this.moves[s] ?? undefined
-      );
-    this.stats = new StatSet({ self: this, ...options.stats });
-    this._originalNature = this.temporaryNature = options.nature ?? getRandomNature();
+      for (const [slot, move] of Object.entries(options.moves))
+        this.moves[parseInt(slot)] = new MoveEntry({ self: this, move: move });
+    this.name = options.name ?? this.species.name;
+    this.gender = options.gender ?? randomize(this.species.genders);
+    this._originalAbility = this._ability =
+      options.ability ?? Math.floor(Math.random() * options.species.abilities.normal.length);
+    this._originalNature = this._nature = options.nature ?? getRandomNature();
+    this.stats = new StatSet(this, { ...options.stats });
   }
+
+  // abilities
+  private _originalAbility: AbilitySelector;
+  private _ability: AbilitySelector;
+  public get ability(): Ability {
+    if (this._ability === "hidden") return this.species.abilities.hidden ?? this.species.abilities.normal[0];
+    if (typeof this._ability === "number")
+      return this.species.abilities.normal[this._ability % this.species.abilities.normal.length];
+    return this._ability;
+  }
+  public set ability(ability: AbilitySelector) {
+    this._ability = ability;
+  }
+  public get originalAbility() {
+    return this._originalAbility;
+  }
+  public setOriginalAbility(ability: AbilitySelector, reset = true) {
+    this._originalAbility = ability;
+    if (reset) this.resetAbility();
+  }
+  public resetAbility() {
+    this._ability = this._originalAbility;
+  }
+  // end abilities
+
+  // nature
+  private _originalNature: Nature;
+  public _nature: Nature;
+  public get nature() {
+    return this._nature;
+  }
+  public set nature(nature: Nature) {
+    this._nature = nature;
+  }
+  public get originalNature() {
+    return this._originalNature;
+  }
+  public setOriginalNature(nature: Nature, reset = true) {
+    this._originalNature = nature;
+    if (reset) this.resetNature();
+  }
+  public resetNature() {
+    this._nature = this._originalNature;
+  }
+  // end nature
 
   public learnMove(move: Move, slot?: number) {
     if (slot === undefined) {
@@ -143,7 +201,7 @@ export class Codemon implements ActionTarget {
       }
     }
 
-    this.moves[slot] = new MoveEntry({ info: move, self: this });
+    this.moves[slot] = new MoveEntry({ move: move, self: this });
   }
 
   // Name
@@ -172,22 +230,6 @@ export class Codemon implements ActionTarget {
     this._gender = this.species.overrideSex?.(this, gender) ?? gender;
   }
 
-  // Stats & Nature
-  private _originalNature: Nature;
-  public get originalNature() {
-    return this.species.overrideNature?.(this, this._originalNature) ?? this._originalNature;
-  }
-  private temporaryNature: Nature;
-  public get nature() {
-    return this.species.overrideNature?.(this, this.temporaryNature) ?? this.temporaryNature;
-  }
-  public set nature(value: Nature) {
-    this.temporaryNature = this.species.overrideNature?.(this, value) ?? value;
-  }
-  public resetNature() {
-    this.nature = this.originalNature;
-  }
-
   public calculateTypeBoost(attackType: Type) {
     let boost = 1;
     this.species.types.forEach(type => {
@@ -204,7 +246,7 @@ export class Codemon implements ActionTarget {
     // TODO fix this
     base *= attack.stat;
     const defense = attack.category === "Physical" ? this.stats.defense : this.stats.specialDefense;
-    base /= defense.value(attack.critical != 1 && defense.stage < 0);
+    base /= defense.value(attack.critical != 1 && defense.stage.current < 0);
     base = base / 50 + 2;
 
     return (
@@ -219,140 +261,33 @@ export class Codemon implements ActionTarget {
       (attack.weather ?? 1)
     );
   }
-  /*
-  const stats: [PermanentStat, PermanentStat] =
-      this.data.category === "Physical" ? ["attack", "defense"] : ["specialAttack", "specialDefense"];
 
-    const critical = this.GetCriticalMultiplier();
-    const multitarget = targets.length > 1 ? C.codemon.moves.multitargetMultiplier : 1;
-    const random = 0.85 + Math.random() * 0.15;
-    const stab = this.user.species.types.includes(this.data.type) ? 1.5 : 1;
+  // deno-lint-ignore no-unused-vars
+  public recieveEffect(context: EffectContext): EffectReciept {
+    const reciept: EffectReciept = { messages: [] };
+    // TODO
 
-    let base = (2 * this.user.experience.level) / 5 + 2;
-    base *= this.data.power; // TODO apply effective power, not base
-    // TODO fix this
-    base *= this.user.stats[stats[0]].value(critical != 1 && this.user.stats[stats[0]].stage > 0);
-    base /= this.user.stats[stats[1]].value(critical != 1 && this.user.stats[stats[1]].stage < 0);
-    base = base / 50 + 2;
+    // if (context.effects.attack) {
+    //   const typeBoost = this.calculateTypeBoost(context.effects.attack.type);
+    //   const damage = this.calculateDamage(context.effects.attack);
 
-    return {
-      base,
-      critical,
-      stab,
-      weather: 1,
-      multitarget,
-      random,
-      other: 1,
-    };*/
-
-  public recieveAction(effects: ActionEffects, _action: Action, _battle: Battle): EffectReciept {
-    const reciept: EffectReciept = { target: this };
-    // if (effects.accuracy) { }
-    // if (effects.attack) { }
-    // if (effects.crash) { }
-    // if (effects.eject) { }
-    // if (effects.faint) { }
-    // if (effects.hp) { }
-    // if (effects.leech) { }
-    // if (effects.power) { }
-    // if (effects.preactions) { }
-    // if (effects.reactions) { }
-    // if (effects.recoil) { }
-    // if (effects.restrict) { }
-    // if (effects.stage) { }
-    // if (effects.status) { }
-    // if (effects.weather) { }
-
-    if (effects.attack) {
-      const typeBoost = this.calculateTypeBoost(effects.attack.type);
-      const damage = this.calculateDamage(effects.attack);
-      reciept.attack = {
-        typeBoost,
-        total: damage,
-      };
-
-      this.stats.hp.current -= damage;
-    }
-
-    // TODO ...
+    //   this.stats.hp.current -= damage;
+    // }
 
     return reciept;
   }
 
-  // public RecieveMove(usage: MoveUsage): MoveReciept {
-  //   // TODO apply abilities etc to move
-
-  //   let typeBoost = 1;
-  //   this.species.types.forEach(t => {
-  //     if (t.immunities.includes(usage.moveData.type)) typeBoost *= 0;
-  //     else if (t.resistances.includes(usage.moveData.type)) typeBoost /= 2;
-  //     else if (t.weaknesses.includes(usage.moveData.type)) typeBoost *= 2;
-  //   });
-
-  //   let damage = usage.damage
-  //     ? Math.floor(
-  //         usage.damage.base *
-  //           usage.damage.multitarget *
-  //           usage.damage.critical *
-  //           usage.damage.random *
-  //           usage.damage.stab *
-  //           typeBoost *
-  //           usage.damage.other
-  //       )
-  //     : 0;
-
-  //   this.stats.hp.current -= damage;
-  //   if (this.stats.hp.current <= 0) {
-  //     damage += this.stats.hp.current;
-  //     this.stats.hp.current = 0;
-  //   }
-
-  //   function applyEffect(effect: MoveEffect) {
-  //     switch (effect.type) {
-  //       case "StatMod":
-  //         if (effect.accuracy && 100 * Math.random() > effect.accuracy) return;
-  //     }
-  //   }
-
-  //   if (usage.moveData.effect) {
-  //     if (Array.isArray(usage.moveData.effect)) usage.moveData.effect.forEach(applyEffect);
-  //     else applyEffect(usage.moveData.effect);
-  //   }
-
-  //   // TODO: make this cleaner
-  //   // if (move.moveData.stageMods) {
-  //   //   ret.stageMods = move.moveData.stageMods;
-  //   //   if (move.moveData.stageMods.attack)
-  //   //     ret.stageMods.attack = this.stats.attack.modifyStage(move.moveData.stageMods.attack);
-  //   //   if (move.moveData.stageMods.defense)
-  //   //     ret.stageMods.defense = this.stats.defense.modifyStage(move.moveData.stageMods.defense);
-  //   //   if (move.moveData.stageMods.specialAttack)
-  //   //     ret.stageMods.specialAttack = this.stats.specialAttack.modifyStage(move.moveData.stageMods.specialAttack);
-  //   //   if (move.moveData.stageMods.specialDefense)
-  //   //     ret.stageMods.specialDefense = this.stats.specialDefense.modifyStage(move.moveData.stageMods.specialDefense);
-  //   //   if (move.moveData.stageMods.speed)
-  //   //     ret.stageMods.speed = this.stats.speed.modifyStage(move.moveData.stageMods.speed);
-  //   // }
-  //   return {
-  //     usage,
-  //     target: this,
-  //     damage,
-  //     fainted: this.stats.hp.current <= 0,
-  //     typeBoost,
-  //   } as MoveReciept;
-  // }
-
   public toString(short = false) {
-    const identity = `Level ${this.experience.level}, ${this.nature.name}, ${this.gender.name} ${this.species.name}${
-      this.name === this.species.name ? "" : " named " + this.name
-    }`;
-    if (short) return identity + ` (${this.stats.hp.current}/${this.stats.hp.value()})`;
+    if (short) return this.name + ` (${this.stats.hp.current}/${this.stats.hp.value()})`;
 
-    const stats = this.stats.toString();
+    const identity = `${this.name !== this.species.name ? `${this.name}: ` : ""}${this.nature.name}, ${
+      this.gender.name
+    } ${this.species.name}${this.name === this.species.name ? "" : " named " + this.name}`;
+
+    const stats = this.stats.toString().replace("\n", "\n\t");
 
     const moves = this.moves.map((m, i) => i + 1 + ". " + m.toString()).join("\n");
 
-    return `--- Codemon ---\n${identity}\n--- Stats ---\n${stats}\n--- Moves ---\n${moves}\n-------------`;
+    return `${identity}\n\t${stats}\n\t${moves}`;
   }
 }
-export default ActionTarget;

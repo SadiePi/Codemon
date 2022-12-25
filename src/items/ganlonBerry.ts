@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GanlonBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GanlonBerry: Item = {} as Item;

@@ -1,6 +1,7 @@
 import C, { Codemon, Move } from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const LowKick: Move = {
+export const LowKick = moves.register(() => ({
   name: "Low Kick",
   description:
     "A powerful low kick that makes the target fall over. The heavier the target, the greater the move's power.",
@@ -19,4 +20,4 @@ export const LowKick: Move = {
   },
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

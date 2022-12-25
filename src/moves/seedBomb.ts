@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const SeedBomb: Move = {
+export const SeedBomb = moves.register(() => ({
   name: "Seed Bomb",
   description: "The user slams a barrage of hard-shelled seeds down on the target from above.",
   type: C.Types.Grass,
@@ -9,4 +10,4 @@ export const SeedBomb: Move = {
   power: 80,
   target: "Any Adjacent",
   makesContact: false,
-};
+}));

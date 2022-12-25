@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Tackle: Move = {
+export const Tackle = moves.register(() => ({
   name: "Tackle",
   description: "A physical attack in which the user charges and slams into the target with its whole body.",
   type: C.Types.Normal,
@@ -9,4 +10,4 @@ export const Tackle: Move = {
   power: 40,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

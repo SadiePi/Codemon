@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MagoBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MagoBerry: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const CleanseTag: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const CleanseTag: Item = {} as Item;

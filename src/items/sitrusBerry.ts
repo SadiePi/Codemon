@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SitrusBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SitrusBerry: Item = {} as Item;

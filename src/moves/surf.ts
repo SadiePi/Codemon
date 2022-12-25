@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Surf: Move = {
+export const Surf = moves.register(() => ({
   name: "Surf",
   description: "The user attacks everything around it by swamping its surroundings with a giant wave.",
   type: C.Types.Water,
@@ -9,4 +10,4 @@ export const Surf: Move = {
   power: 90,
   target: "Every Adjacent",
   makesContact: false,
-};
+}));

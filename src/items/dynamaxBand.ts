@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const DynamaxBand: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const DynamaxBand: Item = {} as Item;

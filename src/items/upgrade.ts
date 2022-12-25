@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Upgrade: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Upgrade: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GSBall: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GSBall: Item = {} as Item;

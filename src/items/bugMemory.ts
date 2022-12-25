@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BugMemory: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BugMemory: Item = {} as Item;

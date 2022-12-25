@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const HyperPotion: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const HyperPotion: Item = {} as Item;

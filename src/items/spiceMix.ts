@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SpiceMix: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SpiceMix: Item = {} as Item;

@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Earthquake: Move = {
+export const Earthquake = moves.register(() => ({
   name: "Earthquake",
   description: "The user sets off an earthquake that strikes every Pokémon around it.",
   type: C.Types.Ground,
@@ -9,4 +10,4 @@ export const Earthquake: Move = {
   power: 100,
   target: "Every Adjacent",
   makesContact: false,
-};
+}));

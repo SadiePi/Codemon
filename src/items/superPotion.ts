@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SuperPotion: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SuperPotion: Item = {} as Item;

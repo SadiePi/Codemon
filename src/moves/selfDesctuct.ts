@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const SelfDesctuct: Move = {
+export const SelfDesctuct = moves.register(() => ({
   name: "Self-Destruct",
   description: "The user attacks everything around it by causing an explosion. The user faints upon using this move.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const SelfDesctuct: Move = {
   power: 200,
   makesContact: false,
   recoil: { faint: true },
-};
+}));

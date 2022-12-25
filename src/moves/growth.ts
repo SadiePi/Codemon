@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Growth: Move = {
+export const Growth = moves.register(() => ({
   name: "Growth",
   description: "The user's body grows all at once, raising the Attack and Sp. Atk stats.",
   type: C.Types.Normal,
@@ -8,5 +9,5 @@ export const Growth: Move = {
   pp: 20, // max 32
   target: "Self",
   makesContact: false,
-  stage: { attack: 1, specialAttack: 1 },
-};
+  stages: { attack: 1, specialAttack: 1 },
+}));

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const AdventureRules: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const AdventureRules: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const LookerTicket: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const LookerTicket: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const MaxHoney: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const MaxHoney: Item = {} as Item;

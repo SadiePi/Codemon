@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ResistFeather: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ResistFeather: Item = {} as Item;

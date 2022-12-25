@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const PurpleNectar: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const PurpleNectar: Item = {} as Item;

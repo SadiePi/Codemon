@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const EnergyRoot: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const EnergyRoot: Item = {} as Item;

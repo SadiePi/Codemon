@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const SkullBash: Move = {
+export const SkullBash = moves.register(() => ({
   name: "Skull Bash",
   description:
     "The user tucks in its head to raise its Defense in the first turn, then rams the target on the next turn.",
@@ -10,6 +11,6 @@ export const SkullBash: Move = {
   pp: 10,
   power: 130,
   makesContact: true,
-  stage: { defense: 1 },
-};
+  stages: { defense: 1 },
+}));
 // TODO multiturn moves

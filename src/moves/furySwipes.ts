@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const FurySwipes: Move = {
+export const FurySwipes = moves.register(() => ({
   name: "Fury Swipes",
   description: "The target is raked with sharp claws or scythes quickly two to five times in a row.",
   type: C.Types.Normal,
@@ -10,5 +11,5 @@ export const FurySwipes: Move = {
   power: 18,
   accuracy: 80,
   makesContact: true,
-};
+}));
 // TODO multihit moves

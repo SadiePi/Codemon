@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Crabhammer: Move = {
+export const Crabhammer = moves.register(() => ({
   name: "Crabhammer",
   description:
     "The target is hammered with a large pincer. This move has a heightened chance of landing a critical hit.",
@@ -12,4 +13,4 @@ export const Crabhammer: Move = {
   accuracy: 90,
   makesContact: true,
   criticalHitStage: 1,
-};
+}));

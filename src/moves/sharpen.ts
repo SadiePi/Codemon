@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Sharpen: Move = {
+export const Sharpen = moves.register(() => ({
   name: "Sharpen",
   description: "The user makes its edges more jagged, which raises its Attack stat.",
   type: C.Types.Normal,
@@ -8,5 +9,5 @@ export const Sharpen: Move = {
   category: "Status",
   pp: 30,
   makesContact: false,
-  stage: { attack: 1 },
-};
+  stages: { attack: 1 },
+}));

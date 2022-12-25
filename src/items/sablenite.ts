@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Sablenite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Sablenite: Item = {} as Item;

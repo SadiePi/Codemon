@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const ToxicPlate: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const ToxicPlate: Item = {} as Item;

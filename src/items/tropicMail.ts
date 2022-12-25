@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const TropicMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const TropicMail: Item = {} as Item;

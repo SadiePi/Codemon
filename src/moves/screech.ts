@@ -1,7 +1,8 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
 // why isn't this a status move apdabiouaboduiboiuafb
-export const Screech: Move = {
+export const Screech = moves.register(() => ({
   name: "Screech",
   description: "An earsplitting screech harshly lowers the target's Defense stat.",
   type: C.Types.Normal,
@@ -10,5 +11,5 @@ export const Screech: Move = {
   accuracy: 85,
   target: "Any Adjacent",
   makesContact: false,
-  stage: { defense: -2 },
-};
+  stages: { defense: -2 },
+}));

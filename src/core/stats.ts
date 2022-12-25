@@ -1,107 +1,127 @@
 import C from "../index.ts";
-import Conf from "./config.ts";
+import Config from "./config.ts";
 import { Codemon } from "./codemon.ts";
-import { randomChoice } from "./util.ts";
+import { unweightedRandom } from "./util.ts";
+import { EventEmitter } from "./external.ts";
 
-// Add new stats by editing these types
-export type PermanentStat = "hp" | "attack" | "defense" | "specialAttack" | "specialDefense" | "speed";
-export type BattleStat = "accuracy" | "evasion";
+// Add new stats by editing these two arrays
+// Type errors will show you where else you need to edit
+// Everything else will adapt automatically
+export const PermanentStats = ["hp", "attack", "defense", "specialAttack", "specialDefense", "speed"] as const;
+export const BattleStats = ["accuracy", "evasion"] as const;
 
-export type Stat = PermanentStat | BattleStat;
+export const Stats = [...PermanentStats, ...BattleStats] as const;
+export type PermanentStat = typeof PermanentStats[number];
+export type BattleStat = typeof BattleStats[number];
+export type Stat = typeof Stats[number];
 
+export type BaseStats = Record<PermanentStat, number>;
+export type EVYields = Partial<Record<PermanentStat, number>>;
+export type StageMods = Partial<Record<Exclude<Stat, "hp">, number>>;
+
+class StatStage {
+  private _stage;
+
+  public constructor(public readonly entry: BattleStatEntry, public power: number, stage?: number) {
+    this._stage = 0;
+    if (stage) this.modify(stage);
+  }
+
+  public get current() {
+    return this._stage;
+  }
+
+  public modify(modification: number) {
+    const old = this.current;
+    this._stage += modification;
+    this._stage = Math.max(Config.codemon.stats.minStage, Math.min(this._stage, Config.codemon.stats.maxStage));
+    if (this._stage !== old) this.entry.set.emit("stageChange", this.entry.stat, old, this.current);
+    return this._stage - old;
+  }
+
+  public reset() {
+    const old = this.current;
+    this._stage = 0;
+    if (this._stage !== old) this.entry.set.emit("stageReset", this.entry.stat, old);
+  }
+
+  // TODO this is broken
+  public multiplier(): number {
+    return this._stage > 0 ? (this.power + this._stage) / this.power : this.power / (this.power - this._stage);
+  }
+}
 interface IBattleStatEntry {
   stage?: number;
 }
 
-export class BattleStatEntry {
-  private _stage: number;
-  public get stage() {
-    return this._stage;
-  }
+class BattleStatEntry {
+  public stage: StatStage;
 
-  constructor(public readonly stat: Stat, args: IBattleStatEntry) {
-    this._stage = args?.stage ?? 0;
-  }
-
-  public modifyStage(modification: number) {
-    const old = this._stage;
-    this._stage += modification;
-    this._stage = Math.max(Conf.codemon.stats.minStage, Math.min(this._stage, Conf.codemon.stats.maxStage));
-    return this._stage - old;
-  }
-
-  public resetStage() {
-    this._stage = 0;
-  }
-
-  public stageMultiplier(effect: number): number {
-    return this.stage > 0 ? (this.stage + effect) / effect : effect / (this.stage + effect);
+  constructor(public readonly stat: Stat, public readonly set: StatSet, stagePower: number, args: IBattleStatEntry) {
+    this.stage = new StatStage(this, stagePower, args?.stage);
   }
 
   public toString() {
-    return `${this.stat}: ${this.stage}`;
+    return `${this.stat}: ${this.stage.current}`;
   }
 }
 
-interface IPermanentStatEntry {
-  stage?: number;
+interface IPermanentStatEntry extends IBattleStatEntry {
   individualValue?: number;
   effortValue?: number;
 }
-export class PermanentStatEntry extends BattleStatEntry {
+class PermanentStatEntry extends BattleStatEntry {
   public individualValue: number;
   public effortValue: number;
-  constructor(public readonly stat: Stat, public readonly self: Codemon, args: IPermanentStatEntry) {
-    super(stat, args);
-    this.individualValue = args.individualValue ?? Math.floor(Math.random() * Conf.codemon.stats.maxIV);
+  constructor(stat: Stat, set: StatSet, stagePower: number, args: IPermanentStatEntry) {
+    super(stat, set, stagePower, args);
+    if (!PermanentStats.includes(stat as PermanentStat)) throw new Error(`Invalid stat ${stat} for PermanentStatEntry`);
+    this.individualValue = args.individualValue ?? Math.floor(Math.random() * Config.codemon.stats.maxIV);
     this.effortValue = args.effortValue ?? 0;
   }
 
   public value(considerStage = false) {
     let val =
-      2 * this.self.species.baseStats[this.stat as PermanentStat] +
+      2 * this.set.self.species.baseStats[this.stat as PermanentStat] +
       this.individualValue +
       Math.floor(this.effortValue / 4);
-    val = Math.floor((val * this.self.experience.level) / 100) + 5;
+    val = Math.floor((val * this.set.level) / 100) + 5;
 
-    const nature = considerStage ? this.self.nature : this.self.originalNature;
+    const nature = considerStage ? this.set.self.nature : this.set.self.originalNature;
     const natureBuff = nature.buff === this.stat;
     const natureNerf = nature.nerf === this.stat;
-    if (natureBuff && !natureNerf) val *= 1 + Conf.codemon.nature.statEffect;
-    if (natureNerf && !natureBuff) val *= 1 - Conf.codemon.nature.statEffect;
+    if (natureBuff && !natureNerf) val *= 1 + Config.codemon.nature.statEffect;
+    if (natureNerf && !natureBuff) val *= 1 - Config.codemon.nature.statEffect;
     val = Math.floor(val);
 
     if (considerStage) {
-      val *= this.stageMultiplier(2);
+      val *= this.stage.multiplier();
       val = Math.floor(val);
     }
     return val;
   }
 
   public toString() {
-    return `${this.stat}: ${this.value(true)} (${this.stage}|${this.effortValue}|${this.individualValue})`;
+    return `${this.stat}: ${this.value(true)} ${this.stage.current ? `(${this.value(false)}) ` : ""}(${
+      this.individualValue
+    }|${this.effortValue}|${this.stage.current})`;
   }
 }
 
-export class HPStatEntry extends PermanentStatEntry {
+// disregards but doesn't disallow stage
+class HPStatEntry extends PermanentStatEntry {
   public current;
   public get max() {
     return this.value();
   }
-  constructor(self: Codemon, args: IPermanentStatEntry) {
-    super("hp" as Stat, self, args);
+  constructor(set: StatSet, args: IPermanentStatEntry) {
+    super("hp", set, 0, args);
     this.current = this.value();
   }
 
-  public value(_considerStage = false) {
-    let val =
-      2 * this.self.species.baseStats[this.stat as PermanentStat] +
-      this.individualValue +
-      Math.floor(this.effortValue / 4);
-    val = Math.floor((val * this.self.experience.level) / 100) + this.self.experience.level + 10;
-
-    val = Math.floor(val);
-    return val;
+  public value() {
+    const original = super.value(false);
+    return original + this.set.level + 5;
   }
 
   public toString() {
@@ -109,12 +129,33 @@ export class HPStatEntry extends PermanentStatEntry {
   }
 }
 
-type Stats = Record<PermanentStat, PermanentStatEntry> & Record<BattleStat, BattleStatEntry>;
+export type ExperienceGroup = (level: number) => number;
 
-export type IStats = Partial<Record<PermanentStat, IPermanentStatEntry>> &
-  Partial<Record<BattleStat, IBattleStatEntry>>;
+export interface LevelUpReciept {
+  oldLevel: number;
+  newLevel: number;
+  forcedPoints?: number;
+  statChange?: Record<PermanentStat, number>;
+}
 
-export class StatSet implements Stats {
+export interface AddExpReciept {
+  levelUps: Array<LevelUpReciept>;
+}
+
+type StatEntries = Record<PermanentStat, PermanentStatEntry> & Record<BattleStat, BattleStatEntry>;
+type IStatEntries = Partial<Record<PermanentStat, IPermanentStatEntry>> & Partial<Record<BattleStat, IBattleStatEntry>>;
+
+export type IStatSet = IStatEntries & { level?: number; points?: number };
+
+export class StatSet
+  extends EventEmitter<{
+    stageChange: [stat: Stat, old: number, current: number];
+    stageReset: [stat: Stat, old: number];
+    levelUp: [reciept: LevelUpReciept];
+    addExp: [reciept: AddExpReciept];
+  }>
+  implements StatEntries
+{
   public hp: HPStatEntry;
   public attack: PermanentStatEntry;
   public defense: PermanentStatEntry;
@@ -125,52 +166,68 @@ export class StatSet implements Stats {
   public accuracy: BattleStatEntry;
   public evasion: BattleStatEntry;
 
-  constructor(args: IStats & { self: Codemon }) {
-    // Feels like there should be a better way to do this
-    this.hp = new HPStatEntry(args.self, { ...args.hp });
-    this.attack = new PermanentStatEntry("attack", args.self, {
-      ...args.attack,
-    });
-    this.defense = new PermanentStatEntry("defense", args.self, {
-      ...args.defense,
-    });
-    this.specialAttack = new PermanentStatEntry("specialAttack", args.self, {
-      ...args.specialAttack,
-    });
-    this.specialDefense = new PermanentStatEntry("specialDefense", args.self, {
-      ...args.specialDefense,
-    });
-    this.speed = new PermanentStatEntry("speed", args.self, {
-      ...args.speed,
-    });
+  public level: number;
+  public points: number;
 
-    this.accuracy = new BattleStatEntry("accuracy", {
-      ...args.accuracy,
-    });
-    this.evasion = new BattleStatEntry("evasion", { ...args.evasion });
+  constructor(public readonly self: Codemon, args: IStatSet) {
+    super();
+    this.level = args.level ?? 1;
+    this.points = this.self.species.experienceGroup(this.level);
+    if (args.points) this.addExp(args.points);
+
+    this.hp = new HPStatEntry(this, args.hp ?? {});
+    this.attack = new PermanentStatEntry("attack", this, 2, args.attack ?? {});
+    this.defense = new PermanentStatEntry("defense", this, 2, args.defense ?? {});
+    this.specialAttack = new PermanentStatEntry("specialAttack", this, 2, args.specialAttack ?? {});
+    this.specialDefense = new PermanentStatEntry("specialDefense", this, 2, args.specialDefense ?? {});
+    this.speed = new PermanentStatEntry("speed", this, 2, args.speed ?? {});
+
+    this.accuracy = new BattleStatEntry("accuracy", this, 3, args.accuracy ?? {});
+    this.evasion = new BattleStatEntry("evasion", this, 3, args.evasion ?? {});
+  }
+
+  public async levelUp(): Promise<LevelUpReciept> {
+    const old = this.level;
+    this.level += 1;
+    const ret: LevelUpReciept = {
+      oldLevel: old,
+      newLevel: this.level,
+    };
+    if (this.points < this.self.species.experienceGroup(this.level)) {
+      const forcedPoints = this.self.species.experienceGroup(this.level) - this.points;
+      if (forcedPoints > 0) ret.forcedPoints = forcedPoints;
+      this.points = this.self.species.experienceGroup(this.level);
+    }
+    await this.wait("levelUp", ret);
+    return ret;
+  }
+
+  public async addExp(exp: number): Promise<AddExpReciept> {
+    this.points += exp;
+    const levelUps: LevelUpReciept[] = [];
+    while (this.self.species.experienceGroup(this.level) < this.points) {
+      levelUps.push(await this.levelUp());
+    }
+    this.wait("addExp", { levelUps });
+    return { levelUps };
   }
 
   public toString() {
-    return (
-      [this.hp, this.attack, this.defense, this.specialAttack, this.specialDefense, this.speed]
-        .map(s => s.toString())
-        .join("\n") +
-      "\n" +
-      [this.accuracy, this.evasion].map(s => s.toString()).join(", ")
-    );
+    const level = `Level: ${this.level} (${
+      this.points - this.self.species.experienceGroup(this.level)
+    }/${this.self.species.experienceGroup(this.level + 1)}))`;
+    const permanants = PermanentStats.map(s => this[s].toString()).join("\n");
+    const battles = BattleStats.map(s => this[s].toString()).join(", ");
+    return [level, permanants, battles].join("\n");
   }
 }
 
 export interface Nature {
   name: string;
-  buff: PermanentStat;
-  nerf: PermanentStat;
+  buff: Exclude<PermanentStat, "hp">;
+  nerf: Exclude<PermanentStat, "hp">;
 }
 
 export function getRandomNature(): Nature {
-  return randomChoice(Object.values(C.Natures));
+  return unweightedRandom(Object.values(C.Natures));
 }
-
-export type BaseStats = Record<PermanentStat, number>;
-export type EVYields = Partial<Record<PermanentStat, number>>;
-export type StageMods = Partial<Record<Exclude<Stat, "hp">, number>>;

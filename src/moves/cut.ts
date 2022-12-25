@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Cut: Move = {
+export const Cut = moves.register(() => ({
   name: "Cut",
   description: "The target is cut with a scythe or claw.",
   type: C.Types.Normal,
@@ -10,4 +11,4 @@ export const Cut: Move = {
   accuracy: 95,
   target: "Any Adjacent",
   makesContact: true,
-};
+}));

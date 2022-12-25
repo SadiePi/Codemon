@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Houndoominite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Houndoominite: Item = {} as Item;

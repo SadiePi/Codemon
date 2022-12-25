@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Heracronite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Heracronite: Item = {} as Item;

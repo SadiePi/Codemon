@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SplashPlate: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SplashPlate: Item = {} as Item;

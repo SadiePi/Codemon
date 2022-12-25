@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SmallBouquet: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SmallBouquet: Item = {} as Item;

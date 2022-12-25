@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const GlitterMail: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const GlitterMail: Item = {} as Item;

@@ -1,5 +1,7 @@
-import C, { Move } from "../index.ts";
-export const Guillotine: Move = {
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
+
+export const Guillotine = moves.register(() => ({
   name: "Guillotine",
   description: "A vicious, tearing attack with big pincers. The target faints instantly if this attack hits.",
   type: C.Types.Normal,
@@ -9,4 +11,4 @@ export const Guillotine: Move = {
   target: "Any Adjacent",
   makesContact: true,
   faint: true,
-};
+}));

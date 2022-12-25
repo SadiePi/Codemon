@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Gyaradosite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Gyaradosite: Item = {} as Item;

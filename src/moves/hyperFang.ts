@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const HyperFang: Move = {
+export const HyperFang = moves.register(() => ({
   name: "Hyper Fang",
   description: "The user bites hard on the target with its sharp front fangs. This may also make the target flinch.",
   type: C.Types.Normal,
@@ -11,4 +12,4 @@ export const HyperFang: Move = {
   accuracy: 90,
   makesContact: true,
   status: [C.Statuses.Flinch, 1 / 10],
-};
+}));

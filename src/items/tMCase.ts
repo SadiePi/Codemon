@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const TMCase: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const TMCase: Item = {} as Item;

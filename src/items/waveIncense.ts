@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const WaveIncense: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const WaveIncense: Item = {} as Item;

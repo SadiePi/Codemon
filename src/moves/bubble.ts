@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Bubble: Move = {
+export const Bubble = moves.register(() => ({
   name: "Bubble",
   description: "A spray of countless bubbles is jetted at the opposing Pokémon. This may also lower their Speed stat.",
   type: C.Types.Water,
@@ -9,5 +10,5 @@ export const Bubble: Move = {
   pp: 30,
   power: 40,
   makesContact: false,
-  stage: [{ speed: -1 }, 1 / 10],
-};
+  stages: [1 / 10, { speed: -1 }],
+}));

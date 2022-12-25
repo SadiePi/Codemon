@@ -1,6 +1,7 @@
 import C, { Move, Codemon } from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Synthesis: Move = {
+export const Synthesis = moves.register(() => ({
   name: "Synthesis",
   description: "The user restores its own HP. The amount of HP regained varies with the weather.",
   type: C.Types.Grass,
@@ -14,5 +15,5 @@ export const Synthesis: Move = {
     // if (weather === Weather.Sunny) return target.maxHp / 2;
     // if (weather === Weather.Rain) return target.maxHp / 4;
   },
-};
+}));
 // TODO weather consideration

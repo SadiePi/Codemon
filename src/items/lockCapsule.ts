@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const LockCapsule: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const LockCapsule: Item = {} as Item;

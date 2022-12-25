@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const Venusaurite: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const Venusaurite: Item = {} as Item;

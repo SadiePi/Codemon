@@ -1,6 +1,7 @@
-import C, { Move } from "../index.ts";
+import C from "../index.ts";
+import { moves } from "../core/codex.ts";
 
-export const Whirlwind: Move = {
+export const Whirlwind = moves.register(() => ({
   name: "Whirlwind",
   description:
     "The target is blown away, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",
@@ -10,4 +11,4 @@ export const Whirlwind: Move = {
   target: "Any Adjacent",
   makesContact: false,
   eject: true,
-};
+}));

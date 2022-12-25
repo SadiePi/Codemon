@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const CobaBerry: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const CobaBerry: Item = {} as Item;

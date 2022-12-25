@@ -2,16 +2,14 @@ import C, { spawn } from "../src/index.ts";
 import { iKibble } from "./common.ts";
 
 Deno.test("chompy", () => {
-  console.log();
-  console.log(spawn(iKibble).toString());
+  const kibble = spawn(iKibble);
+  console.log(JSON.stringify(kibble));
+  kibble.stats.attack.stage.modify(6);
+  console.log(kibble.toString());
+  console.log(JSON.stringify(kibble.nature));
 });
 
 Deno.test("generic", () => {
-  console.log();
-  console.log(
-    spawn({
-      species: C.Species.Bulbasaur,
-      level: 100,
-    }).toString()
-  );
+  const bulby = spawn({ species: C.Species.Bulbasaur });
+  console.log(bulby.toString());
 });

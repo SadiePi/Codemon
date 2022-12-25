@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const SilkScarf: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const SilkScarf: Item = {} as Item;

@@ -1,1 +1,2 @@
-import { ItemType } from "../index.ts"; export const BridgeMailV: ItemType = {} as ItemType;
+import { Item } from "../index.ts";
+export const BridgeMailV: Item = {} as Item;
