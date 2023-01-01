@@ -1,5 +1,3 @@
-// Ensure that the uranium demo entries are enabled in ../src/types/index.ts and ../src/species/index.ts
-
 import { Species, weighted } from "../../src/index.ts";
 import preload from "./preload.ts";
 

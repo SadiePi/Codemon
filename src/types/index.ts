@@ -1,5 +1,3 @@
-// export * from "../../demo/uranium/types.ts"; // uranium demo
-
 export * from "./normal.ts";
 export * from "./fighting.ts";
 export * from "./flying.ts";
