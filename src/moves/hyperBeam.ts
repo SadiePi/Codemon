@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const HyperBeam: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const HyperBeam: Move = preload.register<Move>((C: Codex) => ({
   name: "Hyper Beam",
   description: "The target is attacked with a powerful beam. The user can't move on the next turn.",
   type: C.Types.Normal,

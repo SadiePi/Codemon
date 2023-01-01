@@ -3,9 +3,10 @@ import { NonEmptyArray, weightedRandom } from "./util.ts";
 type Maybe<T> = T | undefined;
 type Definite<T> = T extends undefined ? never : T;
 
-export type Decider<T, Context = void> = T | ((context: Context) => T);
+export type Decider<T, Context = void> = T | ((context: Context) => Decider<T, Context>);
 export default function decide<T, Context>(decider: Decider<T, Context>, context: Context): T {
-  return decider instanceof Function ? decider(context) : decider;
+  while (decider instanceof Function) decider = decider(context);
+  return decider;
 }
 
 export type MultiDecider<T extends Record<string, unknown>, Context> = {
@@ -33,7 +34,7 @@ export function condition<T, Context>(
     if (otherwise) return decide(otherwise, context);
   };
 }
-export function chance<T, Context>(chance: number, effect: Decider<T, Context>): Maybe<Decider<T, Context>>;
+export function chance<T, Context>(chance: number, effect: Decider<T, Context>): Decider<Maybe<T>, Context>;
 export function chance<T, Context>(
   chance: number,
   effect: Decider<T, Context>,
@@ -44,21 +45,21 @@ export function chance<T, Context>(
   effect: Decider<T, Context>,
   otherwise?: Decider<T, Context>
 ): Decider<T | Maybe<T>, Context> {
-  return context => {
-    if (Math.random() < chance) return decide(effect, context);
-    if (otherwise) return decide(otherwise, context);
+  return _ => {
+    if (Math.random() < chance) return effect;
+    if (otherwise) return otherwise;
   };
 }
 
 export function oneOf<T, Context>(choices: NonEmptyArray<Decider<T, Context>>): Decider<T, Context> {
-  return context => {
-    return decide(choices[Math.floor(Math.random() * choices.length)], context);
+  return _ => {
+    return choices[Math.floor(Math.random() * choices.length)];
   };
 }
 
 export function weighted<T, Context>(entries: NonEmptyArray<[Decider<T, Context>, number]>): Decider<T, Context> {
-  return context => {
-    return decide(weightedRandom(entries), context);
+  return _ => {
+    return weightedRandom(entries);
   };
 }
 

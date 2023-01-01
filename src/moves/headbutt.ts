@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
+import { Codex, power, Move, chance } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Headbutt: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Headbutt: Move = preload.register<Move>((C: Codex) => ({
   name: "Headbutt",
   description:
     "The user sticks out its head and attacks by charging straight into the target. This may also make the target flinch.",

@@ -1,7 +1,8 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
 // why isn't this a status move apdabiouaboduiboiuafb
-export const Screech: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Screech: Move = preload.register<Move>((C: Codex) => ({
   name: "Screech",
   description: "An earsplitting screech harshly lowers the target's Defense stat.",
   type: C.Types.Normal,

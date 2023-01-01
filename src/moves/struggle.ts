@@ -1,4 +1,5 @@
-import { Codex, dexBuilder, power, PPScheme, Move } from "../index.ts";
+import { Codex, power, PPScheme, Move } from "../index.ts";
+import preload from "../preload.ts";
 
 // TODO this suddenly feels cumbersome...
 class StrugglePPScheme extends PPScheme {
@@ -28,7 +29,7 @@ class StrugglePPScheme extends PPScheme {
   }
 }
 
-export const Struggle: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Struggle: Move = preload.register<Move>((C: Codex) => ({
   name: "Struggle",
   description: "This attack is used in desperation only if the user has no PP. It also damages the user a little.",
   type: C.Types.Normal,

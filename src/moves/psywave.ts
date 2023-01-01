@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Move, Codemon } from "../index.ts";
+import { Codex, Move, Codemon } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Psywave: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Psywave: Move = preload.register<Move>((C: Codex) => ({
   name: "Psywave",
   description: "The target is attacked with an odd psychic wave. The attack varies in intensity.",
   type: C.Types.Psychic,
@@ -8,6 +9,6 @@ export const Psywave: Move = dexBuilder.register<Move>((C: Codex) => ({
   category: "Special",
   pp: 15,
   makesContact: false,
-  hp: action =>
-    action.source instanceof Codemon ? Math.floor((action.source.experience.level * (Math.random() * +50)) / 100) : 0,
+  hp: ({ action }) =>
+    action.source instanceof Codemon ? Math.floor((action.source.stats.level * (Math.random() * +50)) / 100) : 0,
 }));

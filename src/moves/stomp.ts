@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, chance, power, Move } from "../index.ts";
+import { Codex, chance, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Stomp: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Stomp: Move = preload.register<Move>((C: Codex) => ({
   name: "Stomp",
   description: "The target is stomped with a big foot. This may also make the target flinch.",
   type: C.Types.Normal,

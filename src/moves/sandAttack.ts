@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const SandAttack: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const SandAttack: Move = preload.register<Move>((C: Codex) => ({
   name: "Sand Attack",
   description: "Sand is hurled in the target's face, reducing the target's accuracy.",
   type: C.Types.Ground,

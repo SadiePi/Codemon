@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Explosion: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Explosion: Move = preload.register<Move>((C: Codex) => ({
   name: "Explosion",
   description:
     "The user attacks everything around it by causing a tremendous explosion. The user faints upon using this move.",

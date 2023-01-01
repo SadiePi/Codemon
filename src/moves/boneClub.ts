@@ -1,6 +1,7 @@
-import { chance, Codex, dexBuilder, power, Move } from "../index.ts";
+import { chance, Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const BoneClub: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const BoneClub: Move = preload.register<Move>((C: Codex) => ({
   name: "Bone Club",
   description: "The user clubs the target with a bone. This may also make the target flinch.",
   type: C.Types.Ground,

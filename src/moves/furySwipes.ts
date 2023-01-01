@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const FurySwipes: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const FurySwipes: Move = preload.register<Move>((C: Codex) => ({
   name: "Fury Swipes",
   description: "The target is raked with sharp claws or scythes quickly two to five times in a row.",
   type: C.Types.Normal,

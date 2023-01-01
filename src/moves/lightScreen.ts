@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const LightScreen: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const LightScreen: Move = preload.register<Move>((C: Codex) => ({
   name: "Light Screen",
   description: "A wondrous wall of light is put up to reduce damage from special attacks for five turns.",
   type: C.Types.Psychic,

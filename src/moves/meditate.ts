@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Meditate: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Meditate: Move = preload.register<Move>((C: Codex) => ({
   name: "Meditate",
   description: "The user meditates to awaken the power deep within its body and raise its Attack stat.",
   type: C.Types.Psychic,

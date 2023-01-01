@@ -1,1 +1,0 @@
-Yes, these files have errors. That's just because they aren't currently enabled, so the codex doesn't know about them, so the circular references are broken. To enable them, uncomment the lines in `../../src/*/index.ts` that say "uranium demo". They'll be at the top.

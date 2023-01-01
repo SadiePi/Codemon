@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const CometPunch: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const CometPunch: Move = preload.register<Move>((C: Codex) => ({
   name: "Comet Punch",
   description: "The target is hit with a flurry of punches that strike two to five times in a row.",
   type: C.Types.Normal,

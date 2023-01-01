@@ -1,6 +1,7 @@
-import { chance, Codex, dexBuilder, power, Move } from "../index.ts";
+import { chance, Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Bite: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Bite: Move = preload.register<Move>((C: Codex) => ({
   name: "Bite",
   description: "The target is bitten with viciously sharp fangs. This may also make the target flinch.",
   type: C.Types.Dark,

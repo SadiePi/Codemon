@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Bonemerang: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Bonemerang: Move = preload.register<Move>((C: Codex) => ({
   name: "Bonemerang",
   description: "The user throws the bone it holds. The bone loops around to hit the target twice—coming and going.",
   type: C.Types.Ground,

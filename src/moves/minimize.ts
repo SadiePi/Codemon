@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Minimize: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Minimize: Move = preload.register<Move>((C: Codex) => ({
   name: "Minimize",
   description: "The user compresses its body to make itself look smaller, which sharply raises its evasiveness.",
   type: C.Types.Normal,

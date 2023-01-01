@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const PoisonGas: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const PoisonGas: Move = preload.register<Move>((C: Codex) => ({
   name: "Poison Gas",
   description: "A cloud of poison gas is sprayed in the face of opposing Pokémon, poisoning those it hits.",
   type: C.Types.Poison,

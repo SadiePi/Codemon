@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Move } from "../index.ts";
+import { Codex, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Transform: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Transform: Move = preload.register<Move>((C: Codex) => ({
   name: "Transform",
   description: "The user transforms into a copy of the target right down to having the same move set.",
   type: C.Types.Normal,

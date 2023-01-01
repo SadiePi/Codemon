@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const DualChop: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const DualChop: Move = preload.register<Move>((C: Codex) => ({
   name: "Dual Chop",
   description: "The user attacks its target by hitting it with brutal strikes. The target is hit twice in a row.",
   type: C.Types.Dragon,

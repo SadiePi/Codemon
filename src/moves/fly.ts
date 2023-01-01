@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Fly: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Fly: Move = preload.register<Move>((C: Codex) => ({
   name: "Fly",
   description: "The user flies up into the sky and then strikes its target on the next turn.",
   type: C.Types.Flying,

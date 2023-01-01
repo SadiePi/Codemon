@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const EggBomb: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const EggBomb: Move = preload.register<Move>((C: Codex) => ({
   name: "Egg Bomb",
   description: "A large egg is hurled at the target with maximum force to inflict damage.",
   type: C.Types.Normal,

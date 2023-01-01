@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const DreamEater: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const DreamEater: Move = preload.register<Move>((C: Codex) => ({
   name: "Dream Eater",
   description:
     "The user eats the dreams of a sleeping target. The user's HP is restored by up to half the damage taken by the target.",

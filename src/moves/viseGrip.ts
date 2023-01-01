@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const ViseGrip: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const ViseGrip: Move = preload.register<Move>((C: Codex) => ({
   name: "Vise Grip",
   description: "The target is gripped and squeezed from both sides to inflict damage.",
   type: C.Types.Normal,

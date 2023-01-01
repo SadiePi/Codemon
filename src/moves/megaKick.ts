@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const MegaKick: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const MegaKick: Move = preload.register<Move>((C: Codex) => ({
   name: "Mega Kick",
   description: "The target is attacked by a kick launched with muscle-packed power.",
   type: C.Types.Normal,

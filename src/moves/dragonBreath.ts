@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
+import { Codex, power, Move, chance } from "../index.ts";
+import preload from "../preload.ts";
 
-export const DragonBreath: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const DragonBreath: Move = preload.register<Move>((C: Codex) => ({
   name: "Dragon Breath",
   description: "The user exhales a mighty gust that inflicts damage. This may also leave the target with paralysis.",
   type: C.Types.Dragon,

@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Move } from "../index.ts";
+import { Codex, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Teleport: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Teleport: Move = preload.register<Move>((C: Codex) => ({
   name: "Teleport",
   description:
     "The user switches places with another party Pokémon. It may also be used to warp to the last Pokémon Center visited. If a wild Pokémon uses this move, it flees.",

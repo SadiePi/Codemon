@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const PinMissle: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const PinMissle: Move = preload.register<Move>((C: Codex) => ({
   name: "Pin Missile",
   description: "Sharp spikes are shot at the target in rapid succession. They hit two to five times in a row.",
   type: C.Types.Bug,

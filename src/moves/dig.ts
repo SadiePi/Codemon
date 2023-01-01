@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Dig: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Dig: Move = preload.register<Move>((C: Codex) => ({
   name: "Dig",
   description: "The user burrows into the ground, then attacks on the next turn.",
   type: C.Types.Ground,

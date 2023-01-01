@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Kinesis: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Kinesis: Move = preload.register<Move>((C: Codex) => ({
   name: "Kinesis",
   description: "The user distracts the target by bending a spoon. This lowers the target's accuracy.",
   type: C.Types.Psychic,

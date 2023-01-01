@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Move, power } from "../index.ts";
+import { Codex, Move, power } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Amnesia: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Amnesia: Move = preload.register<Move>((C: Codex) => ({
   name: "Amnesia",
   description:
     "The user temporarily empties its mind to forget its concerns. This sharply raises the user's Sp. Def stat.",

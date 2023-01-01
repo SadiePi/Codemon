@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, chance, power, Move } from "../index.ts";
+import { Codex, chance, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Waterfall: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Waterfall: Move = preload.register<Move>((C: Codex) => ({
   name: "Waterfall",
   description: "The user charges at the target and may make it flinch.",
   type: C.Types.Water,

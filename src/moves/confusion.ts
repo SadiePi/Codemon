@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
+import { Codex, power, Move, chance } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Confusion: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Confusion: Move = preload.register<Move>((C: Codex) => ({
   name: "Confusion",
   description: "The target is hit by a weak telekinetic force. This may also confuse the target.",
   type: C.Types.Psychic,

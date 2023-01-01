@@ -1,20 +1,18 @@
 // Ensure that the uranium demo entries are enabled in ../src/types/index.ts and ../src/species/index.ts
 
-import C, { Species, weighted } from "../../src/index.ts";
-import dexBuilder from "../../src/core/codex.ts";
+import { Species, weighted } from "../../src/index.ts";
+import preload from "./preload.ts";
 
 // Define the Nucleon species, a Nuclear-type eeveelution
-export const Nucleon: Species = dexBuilder.register<Species>(() => ({
+export const Nucleon: Species = preload.register<Species>(C => ({
   name: "Nucleon",
   description: "A radioactive eeveelution.",
   //graphics: Graphics,
   types: [C.Types.Nuclear],
   abilities: {
-    normal: [{} as any],
-    hidden: {} as any,
+    normal: [C.Abilities.Atomize],
+    hidden: C.Abilities.GeigerSense,
   },
-  //normalAbility1: AbilityAtomize,
-  //specialAbility: AbilityGeigerSense,
   genders: weighted([
     [C.Genders.Male, 7],
     [C.Genders.Female, 1],
@@ -25,7 +23,7 @@ export const Nucleon: Species = dexBuilder.register<Species>(() => ({
   weight: 21.5,
   baseExperienceYield: 184,
   experienceGroup: C.Experience.MedFast,
-  //bodyStyle: BodyStyle,
+  bodyShape: "Quadruped",
   //footprint: Footprint,
   //typedexColor: TypedexColor,
   baseFriendship: 35,

@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Move, Codemon } from "../index.ts";
+import { Codex, Move, Codemon } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Synthesis: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Synthesis: Move = preload.register<Move>((C: Codex) => ({
   name: "Synthesis",
   description: "The user restores its own HP. The amount of HP regained varies with the weather.",
   type: C.Types.Grass,
@@ -8,7 +9,7 @@ export const Synthesis: Move = dexBuilder.register<Move>((C: Codex) => ({
   pp: 5, // max 8
   target: "Self",
   makesContact: false,
-  hp: (_, target, _battle) => {
+  hp: ({ target }) => {
     if (target instanceof Codemon) return target.stats.hp.max / 8;
     // const weather = battle.weather;
     // if (weather === Weather.Sunny) return target.maxHp / 2;

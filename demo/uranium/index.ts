@@ -1,13 +1,19 @@
 // Ensure that the uranium demo entries are enabled in ../src/types/index.ts and ../src/species/index.ts
 
-import C, { Codemon } from "../../src/index.ts";
+import preload from "./preload.ts"
+import C from "../../src/index.ts";
+import * as Species from "./species.ts";
+import * as Types from "./types.ts";
+import * as Abilities from "./abilities.ts";
 
-// Define an individual Nucleon named Nuke
-const nuke = new Codemon({
-  name: "Nuke",
-  species: C.Species.Nucleon,
-  moves: [C.Moves.Tackle],
-  stats: { level: 100, hp: { individualValue: 31, effortValue: 255 } },
-});
+export const UraniumCodex = {
+  ...C,
+  Species: { ...Species, ...C.Species },
+  Types: { ...Types, ...C.Types },
+  Abilities: { ...Abilities, ...C.Abilities },
+} as const;
+export type UraniumCodex = typeof UraniumCodex;
 
-console.log(`${nuke.stats.hp.value()}`);
+preload.build(UraniumCodex);
+
+export default UraniumCodex;

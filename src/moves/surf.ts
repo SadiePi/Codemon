@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Surf: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Surf: Move = preload.register<Move>((C: Codex) => ({
   name: "Surf",
   description: "The user attacks everything around it by swamping its surroundings with a giant wave.",
   type: C.Types.Water,

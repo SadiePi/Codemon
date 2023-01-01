@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Move } from "../index.ts";
+import { Codex, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const SleepPowder: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const SleepPowder: Move = preload.register<Move>((C: Codex) => ({
   name: "Sleep Powder",
   description: "The user scatters a big cloud of sleep-inducing dust around the target.",
   type: C.Types.Grass,

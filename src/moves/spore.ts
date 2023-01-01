@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Move } from "../index.ts";
+import { Codex, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Spore: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Spore: Move = preload.register<Move>((C: Codex) => ({
   name: "Spore",
   description: "The user scatters bursts of spores that induce sleep.",
   type: C.Types.Grass,

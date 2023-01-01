@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Hypnosis: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Hypnosis: Move = preload.register<Move>((C: Codex) => ({
   name: "Hypnosis",
   description: "The user employs hypnotic suggestion to make the target fall into a deep sleep.",
   type: C.Types.Psychic,

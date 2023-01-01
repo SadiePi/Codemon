@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Metronone: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Metronone: Move = preload.register<Move>((C: Codex) => ({
   name: "Metronome",
   description: "The user waggles a finger and stimulates its brain into randomly using nearly any move.",
   type: C.Types.Normal,

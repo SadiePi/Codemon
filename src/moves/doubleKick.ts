@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const DoubleKick: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const DoubleKick: Move = preload.register<Move>((C: Codex) => ({
   name: "Double Kick",
   description: "The target is quickly kicked twice in succession using both feet.",
   type: C.Types.Fighting,

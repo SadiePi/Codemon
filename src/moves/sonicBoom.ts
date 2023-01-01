@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const SonicBoom: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const SonicBoom: Move = preload.register<Move>((C: Codex) => ({
   name: "Sonic Boom",
   description: "The target is hit with a destructive shock wave that always inflicts 20 HP damage.",
   type: C.Types.Normal,

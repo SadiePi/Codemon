@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const DragonRush: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const DragonRush: Move = preload.register<Move>((C: Codex) => ({
   name: "Dragon Rush",
   description:
     "The user tackles the target while exhibiting overwhelming menace. This may also make the target flinch.",

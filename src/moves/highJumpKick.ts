@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Move, Codemon, power } from "../index.ts";
+import { Codex, Move, Codemon, power } from "../index.ts";
+import preload from "../preload.ts";
 
-export const HighJumpKick: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const HighJumpKick: Move = preload.register<Move>((C: Codex) => ({
   name: "High Jump Kick",
   description:
     "The target is attacked with a knee kick from a jump. If this move misses, the user takes damage instead.",
@@ -11,5 +12,5 @@ export const HighJumpKick: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(130),
   accuracy: 90,
   makesContact: true,
-  crash: { hp: action => (action.source instanceof Codemon ? action.source.stats.hp.max / 2 : 0) },
+  crash: { hp: reciept => (reciept.action.source instanceof Codemon ? reciept.action.source.stats.hp.max / 2 : 0) },
 }));

@@ -1,4 +1,5 @@
 // deno-lint-ignore-file no-unused-vars
+
 // this function is used to automatically generate files with placeholder exports for entries in ../*/arceus
 // it also rewrites index.ts to export all entries
 // TODO preserve other content in index.ts
@@ -27,6 +28,7 @@ function create_entries(dir: string, type: string) {
 
 // this function is used to transfer entries from a monolithic file to individual files
 // it also rewrites index.ts to export all entries
+// TODO out of date
 function transfer_entries(dir: string, source: string) {
   prompt(`This will transfer entries from ${Deno.cwd()}/${source} to ${Deno.cwd()}/${dir}. Press enter to continue.`);
   const file = Deno.readTextFileSync(`./${source}`);

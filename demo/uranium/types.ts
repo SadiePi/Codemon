@@ -1,10 +1,10 @@
 // Ensure that the uranium demo entries are enabled in ../src/types/index.ts and ../src/species/index.ts
 
-import C, { Type } from "../../src/index.ts";
-import dexBuilder from "../../src/core/codex.ts";
+import { Type } from "../../src/index.ts";
+import preload from "./preload.ts";
 
-export const Nuclear: Type = dexBuilder.register<Type>(
-  () => ({
+export const Nuclear: Type = preload.register<Type>(
+  C => ({
     name: "Nuclear",
     color: "#00FF00",
     weaknesses: [
@@ -31,7 +31,7 @@ export const Nuclear: Type = dexBuilder.register<Type>(
     resistances: [C.Types.Nuclear],
     immunities: [],
   }),
-  () => {
+  C => {
     // add weaknesses to other types
     [
       C.Types.Normal,
@@ -51,9 +51,9 @@ export const Nuclear: Type = dexBuilder.register<Type>(
       C.Types.Dark,
       C.Types.Fairy,
       C.Types.Poison,
-    ].forEach(type => type.weaknesses.push(Nuclear));
+    ].forEach(type => type.weaknesses.push(C.Types.Nuclear));
     // add resistances to other types
-    [C.Types.Steel].forEach(type => type.resistances.push(Nuclear));
+    [C.Types.Steel].forEach(type => type.resistances.push(C.Types.Nuclear));
     // add immunities to other types
     // none
   }

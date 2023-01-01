@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const QuickAttack: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const QuickAttack: Move = preload.register<Move>((C: Codex) => ({
   name: "Quick Attack",
   description: "The user lunges at the target at a speed that makes it almost invisible. This move always goes first.",
   type: C.Types.Normal,

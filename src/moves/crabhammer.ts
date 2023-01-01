@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Crabhammer: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Crabhammer: Move = preload.register<Move>((C: Codex) => ({
   name: "Crabhammer",
   description:
     "The target is hammered with a large pincer. This move has a heightened chance of landing a critical hit.",

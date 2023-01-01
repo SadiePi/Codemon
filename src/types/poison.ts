@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, Type } from "../index.ts";
+import { Codex, Type } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Poison: Type = dexBuilder.register<Type>((C: Codex) => ({
+export const Poison: Type = preload.register<Type>((C: Codex) => ({
   name: "Poison",
   color: "#A040A0",
   weaknesses: [C.Types.Ground, C.Types.Psychic],

@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Cut: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Cut: Move = preload.register<Move>((C: Codex) => ({
   name: "Cut",
   description: "The target is cut with a scythe or claw.",
   type: C.Types.Normal,

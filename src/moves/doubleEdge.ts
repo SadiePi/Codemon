@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const DoubleEdge: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const DoubleEdge: Move = preload.register<Move>((C: Codex) => ({
   name: "Double-Edge",
   description:
     "A reckless, life-risking tackle in which the user rushes the target. This also damages the user quite a lot.",

@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Thrash: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Thrash: Move = preload.register<Move>((C: Codex) => ({
   name: "Thrash",
   description: "The user rampages and attacks for two to three turns. The user then becomes confused.",
   type: C.Types.Normal,

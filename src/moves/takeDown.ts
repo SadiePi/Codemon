@@ -1,6 +1,7 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, power, Move } from "../index.ts";
+import preload from "../preload.ts";
 
-export const TakeDown: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const TakeDown: Move = preload.register<Move>((C: Codex) => ({
   name: "Take Down",
   description: "A reckless, full-body charge attack for slamming into the target. This also damages the user a little.",
   type: C.Types.Normal,

@@ -1,10 +1,10 @@
-import { Move, power } from "../index.ts";
-import * as Types from "../types/index.ts";
+import { Codex, Move, power } from "../index.ts";
+import preload from "../preload.ts";
 
-export const Pound: Move = dexBuilder.register<Move>((C: Codex) => ({
+export const Pound: Move = preload.register<Move>((C: Codex) => ({
   name: "Pound",
   description: "The target is physically pounded with a long tail, a foreleg, or the like.",
-  type: Types.Normal,
+  type: C.Types.Normal,
   category: "Physical",
   pp: 35,
   target: "Any Adjacent",
