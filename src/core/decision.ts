@@ -30,10 +30,11 @@ export function condition<T, Context>(
   otherwise?: Decider<T, Context>
 ): Decider<T | Maybe<T>, Context> {
   return (context: Context) => {
-    if (predicate(context)) return decide(effect, context);
-    if (otherwise) return decide(otherwise, context);
+    if (predicate(context)) return effect;
+    if (otherwise) return otherwise;
   };
 }
+
 export function chance<T, Context>(chance: number, effect: Decider<T, Context>): Decider<Maybe<T>, Context>;
 export function chance<T, Context>(
   chance: number,
