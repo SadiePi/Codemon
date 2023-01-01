@@ -31,7 +31,7 @@ export function Player(codemon: Codemon): BattleActor {
   };
 }
 
-export class TraditionalBattle extends Battle {
+export default class TraditionalBattle extends Battle {
   private round: Round;
   public combatants: BattleActor[];
 

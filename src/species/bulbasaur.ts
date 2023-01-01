@@ -1,6 +1,6 @@
 import { Codex, dexBuilder, weighted, Species } from "../index.ts";
 
-export const Bulbasaur: Species = dexBuilder.register<Species>((C: Codex) => ({
+export const Bulbasaur: Species = dexBuilder.register((C: Codex) => ({
   name: "Bulbasaur",
   description:
     "There is a plant seed on its back right from the day this Pokémon is born. The seed slowly grows larger. While it is young, it uses the nutrients that are stored in the seed in order to grow.",

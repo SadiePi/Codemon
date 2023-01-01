@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const Bubble: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Bubble",
@@ -9,5 +9,5 @@ export const Bubble: Move = dexBuilder.register<Move>((C: Codex) => ({
   pp: 30,
   attack: power(40),
   makesContact: false,
-  stages: [1 / 10, { speed: -1 }],
+  stages: chance(1 / 10, { speed: -1 }),
 }));

@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const Psychic: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Psychic",
@@ -9,5 +9,5 @@ export const Psychic: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(90),
   target: "Any Adjacent",
   makesContact: false,
-  stages: [1 / 10, { specialDefense: -1 }],
+  stages: chance(1 / 10, { specialDefense: -1 }),
 }));

@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const PoisonSting: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Poison Sting",
@@ -9,5 +9,5 @@ export const PoisonSting: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(15),
   target: "Any Adjacent",
   makesContact: false,
-  status: [C.Statuses.Poison, 3 / 10],
+  status: chance(3 / 10, C.Statuses.Poison),
 }));

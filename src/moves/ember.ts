@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const Ember: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Ember",
@@ -9,5 +9,5 @@ export const Ember: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(40),
   target: "Any Adjacent",
   makesContact: false,
-  status: [1 / 10, C.Statuses.Burn],
+  status: chance(1 / 10, C.Statuses.Burn),
 }));

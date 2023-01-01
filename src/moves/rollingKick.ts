@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const RollingKick: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Rolling Kick",
@@ -10,5 +10,5 @@ export const RollingKick: Move = dexBuilder.register<Move>((C: Codex) => ({
   accuracy: 85,
   target: "Any Adjacent",
   makesContact: true,
-  status: [C.Statuses.Flinch, 3 / 10],
+  status: chance(3 / 10, C.Statuses.Flinch),
 }));

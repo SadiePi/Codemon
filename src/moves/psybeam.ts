@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const Psybeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Psybeam",
@@ -9,5 +9,5 @@ export const Psybeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(65),
   target: "Any Adjacent",
   makesContact: false,
-  status: [C.Statuses.Confusion, 1 / 10],
+  status: chance(1 / 10, C.Statuses.Confusion),
 }));

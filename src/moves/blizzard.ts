@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const Blizzard: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Blizzard",
@@ -11,5 +11,5 @@ export const Blizzard: Move = dexBuilder.register<Move>((C: Codex) => ({
   accuracy: 70,
   target: "Every Adjacent Foe",
   makesContact: false,
-  status: [1 / 10, C.Statuses.Freeze],
+  status: chance(1 / 10, C.Statuses.Freeze),
 }));

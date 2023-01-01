@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const DragonBreath: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Dragon Breath",
@@ -9,5 +9,5 @@ export const DragonBreath: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(60),
   target: "Any Adjacent",
   makesContact: false,
-  status: [C.Statuses.Paralysis, 3 / 10],
+  status: chance(3 / 10, C.Statuses.Paralysis),
 }));

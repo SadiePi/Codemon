@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, Move, power } from "../index.ts";
+import { chance, Codex, dexBuilder, Move, power } from "../index.ts";
 
 export const AuroraBeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Aurora Beam",
@@ -9,5 +9,5 @@ export const AuroraBeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(65),
   target: "Any Adjacent",
   makesContact: false,
-  stages: [1 / 10, { attack: -1 }],
+  stages: chance(1 / 10, { attack: -1 }),
 }));

@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const HyperFang: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Hyper Fang",
@@ -10,5 +10,5 @@ export const HyperFang: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(80),
   accuracy: 90,
   makesContact: true,
-  status: [C.Statuses.Flinch, 1 / 10],
+  status: chance(1 / 10, C.Statuses.Flinch),
 }));

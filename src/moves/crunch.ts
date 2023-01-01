@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const Crunch: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Crunch",
@@ -9,5 +9,5 @@ export const Crunch: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(80),
   target: "Any Adjacent",
   makesContact: true,
-  stages: [1 / 5, { defense: -1 }],
+  stages: chance(1 / 5, { defense: -1 }),
 }));

@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { chance, Codex, dexBuilder, power, Move } from "../index.ts";
 
 export const BoneClub: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Bone Club",
@@ -10,5 +10,5 @@ export const BoneClub: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(65),
   accuracy: 85,
   makesContact: false,
-  status: [C.Statuses.Flinch, 1 / 10],
+  status: chance(1 / 10, C.Statuses.Flinch),
 }));

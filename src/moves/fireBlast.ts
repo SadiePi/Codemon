@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const FireBlast: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Fire Blast",
@@ -11,5 +11,5 @@ export const FireBlast: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(110),
   accuracy: 85,
   makesContact: false,
-  status: [C.Statuses.Burn, 1 / 10],
+  status: chance(1 / 10, C.Statuses.Burn),
 }));

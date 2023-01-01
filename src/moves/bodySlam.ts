@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { chance, Codex, dexBuilder, power, Move } from "../index.ts";
 
 export const BodySlam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Body Slam",
@@ -10,5 +10,5 @@ export const BodySlam: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(85),
   target: "Any Adjacent",
   makesContact: true,
-  status: [C.Statuses.Paralysis, 3 / 10],
+  status: chance(3 / 10, C.Statuses.Paralysis),
 }));

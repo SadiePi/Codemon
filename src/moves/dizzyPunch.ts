@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const DizzyPunch: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Dizzy Punch",
@@ -9,5 +9,5 @@ export const DizzyPunch: Move = dexBuilder.register<Move>((C: Codex) => ({
   pp: 10,
   attack: power(70),
   makesContact: true,
-  status: [C.Statuses.Confusion, 1 / 5],
+  status: chance(1 / 5, C.Statuses.Confusion),
 }));

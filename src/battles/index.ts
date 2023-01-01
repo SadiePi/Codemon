@@ -1,1 +1,1 @@
-export * from "./traditional.ts";
+export { default as TraditionalBattle } from "./traditional.ts";

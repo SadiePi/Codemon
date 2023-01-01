@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const Confusion: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Confusion",
@@ -9,5 +9,5 @@ export const Confusion: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(50),
   target: "Any Adjacent",
   makesContact: false,
-  status: [C.Statuses.Confusion, 1 / 10],
+  status: chance(1 / 10, C.Statuses.Confusion),
 }));

@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const Constrict: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Constrict",
@@ -10,5 +10,5 @@ export const Constrict: Move = dexBuilder.register<Move>((C: Codex) => ({
   pp: 35,
   attack: power(10),
   makesContact: true,
-  stages: [1 / 10, { speed: -1 }],
+  stages: chance(1 / 10, { speed: -1 }),
 }));

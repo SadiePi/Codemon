@@ -1,5 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
-import { chance, multiple } from "../core/decision.ts";
+import { Codex, dexBuilder, power, Move, chance, multiple } from "../index.ts";
 
 export const TriAttack: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Tri Attack",
@@ -11,10 +10,9 @@ export const TriAttack: Move = dexBuilder.register<Move>((C: Codex) => ({
   pp: 10,
   attack: power(80),
   makesContact: false,
-  status: multiple([
-    chance(1 / 5, C.Statuses.Burn),
-    chance(1 / 5, C.Statuses.Freeze),
-    chance(1 / 5, C.Statuses.Paralysis),
-  ]),
+  status: multiple(
+    [chance(1 / 5, C.Statuses.Burn), chance(1 / 5, C.Statuses.Freeze), chance(1 / 5, C.Statuses.Paralysis)],
+    true
+  ),
 }));
 // TODO triattack

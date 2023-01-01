@@ -3,13 +3,12 @@
 export * from "./core/index.ts";
 
 import CodexBuilder from "./core/codex.ts";
+export const dexBuilder = new CodexBuilder<Codex>();
 
 // const getter =
 //   <T>(obj: Record<string, T>) =>
 //   (name: string): T | undefined =>
 //     obj[name as keyof typeof obj];
-
-export const dexBuilder = new CodexBuilder<Codex>();
 
 import * as Abilities from "./abilities/index.ts";
 import * as Battles from "./battles/index.ts";

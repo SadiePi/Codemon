@@ -1,4 +1,4 @@
-import { Codex, dexBuilder, power, Move } from "../index.ts";
+import { Codex, dexBuilder, power, Move, chance } from "../index.ts";
 
 export const IceBeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Ice Beam",
@@ -9,5 +9,5 @@ export const IceBeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   attack: power(90),
   target: "Any Adjacent",
   makesContact: false,
-  status: [C.Statuses.Freeze, 1 / 10],
+  status: chance(1 / 10, C.Statuses.Freeze),
 }));
