@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Constrict = moves.register(() => ({
+export const Constrict: Move = dexBuilder.register<Move>(() => ({
   name: "Constrict",
   description:
     "The target is attacked with long, creeping tentacles, vines, or the like. This may also lower the target's Speed stat.",
@@ -9,7 +9,7 @@ export const Constrict = moves.register(() => ({
   target: "Any Adjacent",
   category: "Physical",
   pp: 35,
-  power: 10,
+  attack: power(10),
   makesContact: true,
   stages: [1 / 10, { speed: -1 }],
 }));

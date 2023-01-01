@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Growth = moves.register(() => ({
+export const Growth: Move = dexBuilder.register<Move>(() => ({
   name: "Growth",
   description: "The user's body grows all at once, raising the Attack and Sp. Atk stats.",
   type: C.Types.Normal,

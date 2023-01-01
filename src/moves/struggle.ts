@@ -1,5 +1,5 @@
-import C, { PPScheme } from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, PPScheme, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
 // TODO this suddenly feels cumbersome...
 class StrugglePPScheme extends PPScheme {
@@ -15,28 +15,28 @@ class StrugglePPScheme extends PPScheme {
   public get boosts(): number {
     return 0;
   }
-  public Use(pp = 1): boolean {
+  public use(): boolean {
     return true;
   }
-  public Restore(pp: number): number {
+  public restore(): number {
     return 0;
   }
-  public CanBoost(): boolean {
+  public canBoost(): boolean {
     return false;
   }
-  public Boost(): number {
+  public boost(): number {
     return 0;
   }
 }
 
-export const Struggle = moves.register(() => ({
+export const Struggle: Move = dexBuilder.register<Move>(() => ({
   name: "Struggle",
   description: "This attack is used in desperation only if the user has no PP. It also damages the user a little.",
   type: C.Types.Normal,
   category: "Physical",
   target: "Any Adjacent",
   pp: StrugglePPScheme,
-  power: 50,
+  attack: power(50),
   makesContact: true,
   // recoil: {  },
 }));

@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { types } from "../core/codex.ts";
+import C, { Type } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Fighting = types.register(() => ({
+export const Fighting: Type = dexBuilder.register<Type>(() => ({
   name: "Fighting",
   color: "#C03028",
   weaknesses: [C.Types.Flying, C.Types.Psychic, C.Types.Fairy],

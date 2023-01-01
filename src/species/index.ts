@@ -1,3 +1,5 @@
+// export * from "../../demo/uranium/species.ts"; // uranium demo
+
 export * from "./bulbasaur.ts";
 export * from "./ivysaur.ts";
 export * from "./venusaur.ts";

@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move, power } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Absorb = moves.register(() => ({
+export const Absorb: Move = dexBuilder.register<Move>(() => ({
   name: "Absorb",
   description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
   type: C.Types.Grass,

@@ -1,9 +1,12 @@
 export default {
+  locale: "en_US",
   codemon: {
     stats: {
       maxIV: 32,
+      maxEV: 255,
       maxStage: 6,
       minStage: -6,
+      allowHPStage: false,
     },
     moves: {
       maxPPBoosts: 3,
@@ -15,4 +18,4 @@ export default {
       statEffect: 0.1,
     },
   },
-};
+} as const;

@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Transform = moves.register(() => ({
+export const Transform: Move = dexBuilder.register<Move>(() => ({
   name: "Transform",
   description: "The user transforms into a copy of the target right down to having the same move set.",
   type: C.Types.Normal,

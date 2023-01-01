@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const StunSpore = moves.register(() => ({
+export const StunSpore: Move = dexBuilder.register<Move>(() => ({
   name: "Stun Spore",
   description: "The user scatters a cloud of numbing powder that paralyzes the target.",
   type: C.Types.Grass,

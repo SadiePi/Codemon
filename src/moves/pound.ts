@@ -1,8 +1,8 @@
-import { Move } from "../index.ts";
+import { Move, power } from "../index.ts";
 import * as Types from "../types/index.ts";
-import { moves } from "../core/codex.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Pound = moves.register(() => ({
+export const Pound: Move = dexBuilder.register<Move>(() => ({
   name: "Pound",
   description: "The target is physically pounded with a long tail, a foreleg, or the like.",
   type: Types.Normal,
@@ -11,5 +11,5 @@ export const Pound = moves.register(() => ({
   target: "Any Adjacent",
   makesContact: true,
 
-  power: 40,
+  attack: power(40),
 }));

@@ -1,14 +1,14 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Clamp = moves.register(() => ({
+export const Clamp: Move = dexBuilder.register<Move>(() => ({
   name: "Clamp",
   description: "The target is clamped and squeezed by the user's very thick and sturdy shell for four to five turns.",
   type: C.Types.Water,
   target: "Any Adjacent",
   category: "Physical",
   pp: 10,
-  power: 35,
+  attack: power(35),
   accuracy: 85,
   makesContact: true,
 }));

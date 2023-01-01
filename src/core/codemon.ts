@@ -1,9 +1,10 @@
-import { EffectReciept, EffectTarget, EffectContext } from "./battle.ts";
+import { EffectReciept, EffectTarget, EffectContext, AttackReciept } from "./battle.ts";
 import { MoveEntry, Move } from "./move.ts";
 import { BaseStats, EVYields, ExperienceGroup, IStatSet, Stat, StatSet } from "./stats.ts";
 import { Attack, Battle, getRandomNature, Nature } from "./index.ts";
-import { NonEmptyArray, NonEmptyPartial, randomize, Randomizer, weightedRandom } from "./util.ts";
+import { Mutable, NonEmptyArray, NonEmptyPartial, weightedRandom } from "./util.ts";
 import { Item } from "./item.ts";
+import decide, { Decider } from "./decision.ts";
 
 export interface Ability {
   name: string;
@@ -64,7 +65,7 @@ export type Species = {
     normal: NonEmptyArray<Ability>;
     hidden?: Ability;
   };
-  genders: Randomizer<Gender>;
+  genders: Decider<Gender, Codemon>;
   catchRate: number;
   eggCycles: number;
   height: number;
@@ -107,10 +108,6 @@ export interface ICodemon {
   species: Species;
   name?: string;
   gender?: Gender;
-  experience?: NonEmptyPartial<{
-    level?: number;
-    experience?: number;
-  }>;
   nature?: Nature;
   stats?: IStatSet;
   moves?: Record<number, Move>;
@@ -136,9 +133,9 @@ export class Codemon implements EffectTarget {
     // creating experience object automatically populates moves
     if (options.moves)
       for (const [slot, move] of Object.entries(options.moves))
-        this.moves[parseInt(slot)] = new MoveEntry({ self: this, move: move });
+        this.moves[parseInt(slot)] = new MoveEntry({ user: this, move: move });
     this.name = options.name ?? this.species.name;
-    this.gender = options.gender ?? randomize(this.species.genders);
+    this.gender = options.gender ?? decide(this.species.genders, this);
     this._originalAbility = this._ability =
       options.ability ?? Math.floor(Math.random() * options.species.abilities.normal.length);
     this._originalNature = this._nature = options.nature ?? getRandomNature();
@@ -171,7 +168,7 @@ export class Codemon implements EffectTarget {
 
   // nature
   private _originalNature: Nature;
-  public _nature: Nature;
+  private _nature: Nature;
   public get nature() {
     return this._nature;
   }
@@ -191,17 +188,10 @@ export class Codemon implements EffectTarget {
   // end nature
 
   public learnMove(move: Move, slot?: number) {
-    if (slot === undefined) {
-      slot = Math.floor(Math.random() * 4);
-      for (let i = 0; i < 4; i++) {
-        if (!this.moves[i]) {
-          slot = i;
-          break;
-        }
-      }
-    }
-
-    this.moves[slot] = new MoveEntry({ move: move, self: this });
+    const entry = new MoveEntry({ move: move, user: this });
+    slot = slot ?? this.moves.findIndex(move => move === undefined);
+    if (slot === -1) this.moves.push(entry);
+    else this.moves[slot] = entry;
   }
 
   // Name
@@ -240,41 +230,74 @@ export class Codemon implements EffectTarget {
     return boost;
   }
 
-  public calculateDamage(attack: Attack) {
+  public recieveAttack(attack: Attack): AttackReciept {
     let base = (2 * attack.level) / 5 + 2;
     base *= attack.power; // TODO apply effective power, not base
     // TODO fix this
     base *= attack.stat;
     const defense = attack.category === "Physical" ? this.stats.defense : this.stats.specialDefense;
-    base /= defense.value(attack.critical != 1 && defense.stage.current < 0);
+    base /= defense.value(true);
     base = base / 50 + 2;
 
-    return (
+    const typeBoost = this.calculateTypeBoost(attack.type);
+    const product =
       base *
-      this.calculateTypeBoost(attack.type) *
+      typeBoost *
       (attack.critical ?? 1) *
       (attack.random ?? 1) *
       (attack.stab ?? 1) *
       (attack.item ?? 1) *
       (attack.multitarget ?? 1) *
       (attack.other ?? 1) *
-      (attack.weather ?? 1)
-    );
+      (attack.weather ?? 1);
+    // const total = Math.floor(Math.min(product, this.stats.hp.current));
+    const total = Math.floor(product);
+
+    return {
+      attack,
+      total,
+      typeBoost,
+    };
   }
 
-  // deno-lint-ignore no-unused-vars
   public recieveEffect(context: EffectContext): EffectReciept {
-    const reciept: EffectReciept = { messages: [] };
+    const reciept: Mutable<EffectReciept> = { target: this, messages: [] };
     // TODO
 
-    // if (context.effects.attack) {
-    //   const typeBoost = this.calculateTypeBoost(context.effects.attack.type);
-    //   const damage = this.calculateDamage(context.effects.attack);
+    if (context.effect.attack) {
+      const attack = this.recieveAttack(context.effect.attack);
+      this.stats.hp.current -= attack.total;
+      reciept.messages.push(`${this.name} took ${attack.total} damage!`);
+      if (this.stats.hp.current <= 0) {
+        this.stats.hp.current = 0;
+        reciept.faint = true;
+        reciept.messages.push(`${this.name} fainted!`);
+      } else {
+        reciept.messages.push(`${this.name} has ${this.stats.hp.current}/${this.stats.hp.max} HP left!`);
+      }
+      reciept.attack = attack;
+    }
 
-    //   this.stats.hp.current -= damage;
-    // }
+    if (context.effect.faint) {
+      this.stats.hp.current = 0;
+      reciept.faint = true;
+      reciept.messages.push(`${this.name} fainted!`);
+    }
 
-    return reciept;
+    if (context.effect.stages) {
+      reciept.stages = {};
+      for (const [stat, stage] of Object.entries(context.effect.stages)) {
+        if (stage === 0) continue;
+        const statObj = this.stats[stat as Stat];
+        const actual = statObj.stage.modify(stage);
+        if (actual !== 0) {
+          reciept.messages.push(`${this.name}'s ${statObj.stat} ${stage > 0 ? "rose" : "fell"} by ${actual} stages!`);
+          reciept.stages[stat as Stat] = actual;
+        }
+      }
+    }
+
+    return reciept as EffectReciept;
   }
 
   public toString(short = false) {

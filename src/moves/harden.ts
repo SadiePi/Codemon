@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Harden = moves.register(() => ({
+export const Harden: Move = dexBuilder.register<Move>(() => ({
   name: "Harden",
   description: "The user stiffens all the muscles in its body to raise its Defense stat.",
   type: C.Types.Normal,

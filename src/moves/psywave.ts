@@ -1,7 +1,7 @@
 import C, { Move, Codemon } from "../index.ts";
-import { moves } from "../core/codex.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Psywave = moves.register(() => ({
+export const Psywave: Move = dexBuilder.register<Move>(() => ({
   name: "Psywave",
   description: "The target is attacked with an odd psychic wave. The attack varies in intensity.",
   type: C.Types.Psychic,

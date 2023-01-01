@@ -1,7 +1,7 @@
 import C from "./config.ts";
 import { Action, ActionSource } from "./battle.ts";
 import { Codemon, EffectSource, Type } from "./index.ts";
-import { ActionUseContext, Attack, EffectDecider } from "../index.ts";
+import { ActionUseContext } from "../index.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
 
@@ -27,14 +27,13 @@ export type Move = EffectSource & {
   type: Type;
   category: DamageCategory;
   priority?: number;
-  power?: number;
   pp: number | { new (): PPScheme };
   makesContact: boolean;
   criticalHitStage?: number;
 };
 
 export interface IMoveEntry {
-  self: Codemon;
+  user: Codemon;
   move: Move;
 }
 
@@ -43,26 +42,28 @@ export class MoveEntry implements ActionSource {
   public targetingCategory: TargetingCategory;
   public effects: Move;
   public user: Codemon;
-  public PP: PPScheme;
+  public pp: PPScheme;
 
   constructor(args: IMoveEntry) {
     this.effects = args.move;
-    this.user = args.self;
-    this.PP = typeof this.effects.pp === "number" ? new PPScheme(this.effects.pp) : new this.effects.pp();
+    this.user = args.user;
+    this.pp = typeof this.effects.pp === "number" ? new PPScheme(this.effects.pp) : new this.effects.pp();
     this.priority = this.effects.priority;
     this.targetingCategory = this.effects.target;
   }
 
   useAction(context: ActionUseContext): Action {
-    if (!this.PP.Use()) console.log("TODO: Fail without remaining PP");
+    if (!this.pp.use()) console.log("TODO: Fail without remaining PP");
     // TODO: Handle conflicting power and attack effects
     // for now, explicit attack effects simply override the power
     // TODO: Generate attack effect from power
-    return new Action({
-      effects: this.effects,
+    const ret = new Action({
+      effect: this.effects,
       source: this,
       targets: context.targets,
     });
+    ret.messages.push(`${this.user.name} used ${this.effects.name}!`);
+    return ret;
   }
 
   // TODO: Complete this; it's only the rudimentary random check
@@ -109,7 +110,7 @@ export class MoveEntry implements ActionSource {
   }*/
 
   public toString() {
-    return `${this.effects.name} - ${this.effects.type.name}/${this.effects.category} - ${this.PP.current}/${this.PP.max} (${this.PP.boosts})`;
+    return `${this.effects.name} - ${this.effects.type.name}/${this.effects.category} - ${this.pp.current}/${this.pp.max} (${this.pp.boosts})`;
   }
 }
 
@@ -132,13 +133,13 @@ export class PPScheme {
     this.base = this._max = this._current = base;
   }
 
-  public Use(pp = 1): boolean {
+  public use(pp = 1): boolean {
     if (this._current < pp) return false;
     this._current -= pp;
     return true;
   }
 
-  public Restore(pp: number): number {
+  public restore(pp: number): number {
     pp = pp ?? this._max - this._current;
     const prev = this._current;
     this._current += pp;
@@ -146,12 +147,12 @@ export class PPScheme {
     return this._current - prev;
   }
 
-  public CanBoost(): boolean {
+  public canBoost(): boolean {
     return this._boosts < C.codemon.moves.maxPPBoosts;
   }
 
-  public Boost(): number {
-    if (!this.CanBoost()) return 0;
+  public boost(): number {
+    if (!this.canBoost()) return 0;
     this._boosts++;
     const change = this.base * C.codemon.moves.ppBoostMultiplier;
     this._max += change;

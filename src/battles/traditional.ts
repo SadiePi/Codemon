@@ -141,7 +141,7 @@ export class TraditionalBattle extends Battle {
     for (const target of action.targets) {
       const effect = decideEffects(action, target, this);
       await this.wait("effect", effect, target, action);
-      const reciept = await target.recieveEffect({ effects: effect, action, battle: this });
+      const reciept = await target.recieveEffect({ effect: effect, action, battle: this });
       await this.wait("effectReciept", reciept);
       effects.push(reciept);
     }

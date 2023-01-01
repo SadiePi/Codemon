@@ -1,0 +1,82 @@
+import { NonEmptyArray, weightedRandom } from "./util.ts";
+
+type Maybe<T> = T | undefined;
+type Definite<T> = T extends undefined ? never : T;
+
+export type Decider<T, Context = void> = T | ((context: Context) => T);
+export default function decide<T, Context>(decider: Decider<T, Context>, context: Context): T {
+  return decider instanceof Function ? decider(context) : decider;
+}
+
+export type MultiDecider<T extends Record<string, unknown>, Context> = {
+  [K in keyof T]: Decider<T[K], Context>;
+};
+// For technical reasons, a universal multiDecide function seems to be impossible.
+// You'll have to define your own.
+
+export function condition<T, Context>(
+  predicate: (context: Context) => boolean,
+  effect: Decider<T, Context>
+): Decider<Maybe<T>, Context>;
+export function condition<T, Context>(
+  predicate: (context: Context) => boolean,
+  effect: Decider<T, Context>,
+  otherwise: Decider<T, Context>
+): Decider<T, Context>;
+export function condition<T, Context>(
+  predicate: (context: Context) => boolean,
+  effect: Decider<T, Context>,
+  otherwise?: Decider<T, Context>
+): Decider<T | Maybe<T>, Context> {
+  return (context: Context) => {
+    if (predicate(context)) return decide(effect, context);
+    if (otherwise) return decide(otherwise, context);
+  };
+}
+export function chance<T, Context>(chance: number, effect: Decider<T, Context>): Maybe<Decider<T, Context>>;
+export function chance<T, Context>(
+  chance: number,
+  effect: Decider<T, Context>,
+  otherwise: Decider<T, Context>
+): Decider<T, Context>;
+export function chance<T, Context>(
+  chance: number,
+  effect: Decider<T, Context>,
+  otherwise?: Decider<T, Context>
+): Decider<T | Maybe<T>, Context> {
+  return context => {
+    if (Math.random() < chance) return decide(effect, context);
+    if (otherwise) return decide(otherwise, context);
+  };
+}
+
+export function oneOf<T, Context>(choices: NonEmptyArray<Decider<T, Context>>): Decider<T, Context> {
+  return context => {
+    return decide(choices[Math.floor(Math.random() * choices.length)], context);
+  };
+}
+
+export function weighted<T, Context>(entries: NonEmptyArray<[Decider<T, Context>, number]>): Decider<T, Context> {
+  return context => {
+    return decide(weightedRandom(entries), context);
+  };
+}
+
+export function multiple<T, Context>(
+  effect: NonEmptyArray<Decider<T, Context>>,
+  filterMaybe: true
+): Decider<Definite<T>[], Context>;
+export function multiple<T, Context>(
+  effect: NonEmptyArray<Decider<T, Context>>,
+  filterMaybe: false
+): Decider<T[], Context>;
+export function multiple<T, Context>(
+  effect: NonEmptyArray<Decider<T, Context>>,
+  filterMaybe = true
+): Decider<(T | Definite<T>)[], Context> {
+  return context => {
+    const result = effect.map(e => decide(e, context));
+    if (filterMaybe) return result.filter((x): x is Definite<T> => x !== undefined);
+    return result;
+  };
+}

@@ -17,7 +17,7 @@ export type Stat = typeof Stats[number];
 
 export type BaseStats = Record<PermanentStat, number>;
 export type EVYields = Partial<Record<PermanentStat, number>>;
-export type StageMods = Partial<Record<Exclude<Stat, "hp">, number>>;
+export type StageMods = Partial<Record<Stat, number>>;
 
 class StatStage {
   private _stage;
@@ -47,7 +47,7 @@ class StatStage {
 
   // TODO this is broken
   public multiplier(): number {
-    return this._stage > 0 ? (this.power + this._stage) / this.power : this.power / (this.power - this._stage);
+    return this.current > 0 ? (this.power + this.current) / this.power : this.power / (this.power - this.current);
   }
 }
 interface IBattleStatEntry {
@@ -122,6 +122,22 @@ class HPStatEntry extends PermanentStatEntry {
   public value() {
     const original = super.value(false);
     return original + this.set.level + 5;
+  }
+
+  public get percent() {
+    return this.current / this.max;
+  }
+
+  public heal(amount: number) {
+    const change = Math.min(amount, this.max - this.current);
+    this.current += change;
+    return change;
+  }
+
+  public damage(amount: number) {
+    const change = Math.min(amount, this.current);
+    this.current -= change;
+    return change;
   }
 
   public toString() {
@@ -210,6 +226,16 @@ export class StatSet
     }
     this.wait("addExp", { levelUps });
     return { levelUps };
+  }
+
+  public get pointsToNextLevel() {
+    return this.self.species.experienceGroup(this.level + 1) - this.points;
+  }
+
+  public get percentToNextLevel() {
+    return (
+      this.points / (this.self.species.experienceGroup(this.level + 1) - this.self.species.experienceGroup(this.level))
+    );
   }
 
   public toString() {

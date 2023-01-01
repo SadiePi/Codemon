@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const WorrySeed = moves.register(() => ({
+export const WorrySeed: Move = dexBuilder.register<Move>(() => ({
   name: "Worry Seed",
   description:
     "A seed that causes worry is planted on the target. It prevents sleep by making the target's Ability Insomnia.",

@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { species } from "../core/codex.ts";
+import C, { weighted, Species } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Bulbasaur = species.register(() => ({
+export const Bulbasaur: Species = dexBuilder.register<Species>(() => ({
   name: "Bulbasaur",
   description:
     "There is a plant seed on its back right from the day this Pokémon is born. The seed slowly grows larger. While it is young, it uses the nutrients that are stored in the seed in order to grow.",
@@ -18,10 +18,10 @@ export const Bulbasaur = species.register(() => ({
     normal: [C.Abilities.Overgrow],
     hidden: C.Abilities.Chlorophyll,
   },
-  genders: [
+  genders: weighted([
     [C.Genders.Male, 7],
     [C.Genders.Female, 1],
-  ],
+  ]),
   evYields: { specialAttack: 1 },
   baseExperienceYield: 64,
   evolutions: [

@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const DefenseCurl = moves.register(() => ({
+export const DefenseCurl: Move = dexBuilder.register<Move>(() => ({
   name: "Defense Curl",
   description: "The user curls up to conceal weak spots and raise its Defense stat.",
   type: C.Types.Normal,

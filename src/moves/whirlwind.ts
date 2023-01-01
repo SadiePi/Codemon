@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Whirlwind = moves.register(() => ({
+export const Whirlwind: Move = dexBuilder.register<Move>(() => ({
   name: "Whirlwind",
   description:
     "The target is blown away, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",

@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const StringShot = moves.register(() => ({
+export const StringShot: Move = dexBuilder.register<Move>(() => ({
   name: "String Shot",
   description: "Opposing Pokémon are bound with silk blown from the user's mouth that harshly lowers the Speed stat.",
   type: C.Types.Bug,

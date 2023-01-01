@@ -1,22 +1,22 @@
-import C, { Codemon, Move } from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Codemon, Move, power } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const LowKick = moves.register(() => ({
+export const LowKick: Move = dexBuilder.register<Move>(() => ({
   name: "Low Kick",
   description:
     "A powerful low kick that makes the target fall over. The heavier the target, the greater the move's power.",
   type: C.Types.Fighting,
   category: "Physical",
   pp: 20,
-  power: (_, target) => {
+  attack: (_, target, __) => {
     if (!(target instanceof Codemon)) return;
     const w = target.species.weight;
-    if (w < 10) return 20;
-    if (w < 25) return 40;
-    if (w < 50) return 60;
-    if (w < 100) return 80;
-    if (w < 200) return 100;
-    return 120;
+    if (w < 10) return power(20)(_, target, __);
+    if (w < 25) return power(40)(_, target, __);
+    if (w < 50) return power(60)(_, target, __);
+    if (w < 100) return power(80)(_, target, __);
+    if (w < 200) return power(100)(_, target, __);
+    return power(120)(_, target, _);
   },
   target: "Any Adjacent",
   makesContact: true,

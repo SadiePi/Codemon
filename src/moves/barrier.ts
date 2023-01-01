@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move, power } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Barrier = moves.register(() => ({
+export const Barrier: Move = dexBuilder.register<Move>(() => ({
   name: "Barrier",
   description: "The user throws up a sturdy wall that sharply raises its Defense stat.",
   type: C.Types.Psychic,

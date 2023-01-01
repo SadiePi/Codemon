@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Sing = moves.register(() => ({
+export const Sing: Move = dexBuilder.register<Move>(() => ({
   name: "Sing",
   description: "A soothing lullaby is sung in a calming voice that puts the target into a deep slumber.",
   type: C.Types.Normal,

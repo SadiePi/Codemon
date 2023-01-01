@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Minimize = moves.register(() => ({
+export const Minimize: Move = dexBuilder.register<Move>(() => ({
   name: "Minimize",
   description: "The user compresses its body to make itself look smaller, which sharply raises its evasiveness.",
   type: C.Types.Normal,

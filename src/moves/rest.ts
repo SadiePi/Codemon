@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Rest = moves.register(() => ({
+export const Rest: Move = dexBuilder.register<Move>(() => ({
   name: "Rest",
   description:
     "The user goes to sleep for two turns. This fully restores the user's HP and heals any status conditions.",

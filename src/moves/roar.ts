@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Roar = moves.register(() => ({
+export const Roar: Move = dexBuilder.register<Move>(() => ({
   name: "Roar",
   description:
     "The target is scared off, and a different Pokémon is dragged out. In the wild, this ends a battle against a single opponent.",

@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Meditate = moves.register(() => ({
+export const Meditate: Move = dexBuilder.register<Move>(() => ({
   name: "Meditate",
   description: "The user meditates to awaken the power deep within its body and raise its Attack stat.",
   type: C.Types.Psychic,

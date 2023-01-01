@@ -1,11 +1,42 @@
 # Codemon
 
-My attempt at a fully modular reimplementation of Pokémon. This implementation is being done in Typescript, but I'd eventually like to make implementations of this library in many common languages.
+A WIP fully modular reimplementation of Pokémon. This implementation is being done in Typescript with Deno, but I'd eventually like to make implementations of this library in many common languages.
 
-My current plan is to eventually have a full, CLI-only game in `/demo`. Further graphics will have to be done by developers using this library.
+Currently, the following features are more or less complete and fully modular:
 
-I do know about Pokémon Essentials, though I've never personally used it, but this is being designed to work in more than just RPG Maker. I'm also trying to reference PE as little as possible to not be influenced by design decisions its creators made. I want this to be something actually new (except for Pokémon itself obviously)
+- Species
+- Codex (Pokédex)
+- Individual Codemon (Pokémon)
+- Moves
+- Types
+- Stats
+- Natures
+- Leveling
+- Genders (🏳️‍⚧️)
+- Abstract Battle System
 
-# Important Note!!!
+With these well on their way:
 
-All raw data (like base stats, not implementation details) is manually copied directly from Bulbapedia. I did not discover any of it myself, and I'm not sure if it's 100% accurate.
+- Traditional battle using the above
+- Abilities
+- Items
+- Weather
+- Status Effects
+- AI Controllers
+- Abstract Player Controller
+
+And these planned for the future:
+
+- Evolution
+- Breeding
+- Trainers
+- Locales
+- Abstract World Map (for use in MVC)
+
+The Codex currently has placeholder entries for all traditional Species, Moves, Types, Natures, Abilities, Items, Weathers, and Status Effects. Most are just placeholders, but all types, all gen 1 moves, and a few Pokémon been translated from their entries on (Bulbapedia)[bulbapedia.bulbagarden.net].
+
+My current long-term plan is to have a full, CLI-only game in `/demo/game`. Further graphics will have to be done by developers using this library.
+
+## Contributing
+
+I'd prefer for the core functionality to remain a personal project, but I would appreciate contributions to flesh out the Bulbapedia translations and find things that this doesn't support yet. If you'd like to contribute, please open an issue or pull request.

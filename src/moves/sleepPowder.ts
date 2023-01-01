@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const SleepPowder = moves.register(() => ({
+export const SleepPowder: Move = dexBuilder.register<Move>(() => ({
   name: "Sleep Powder",
   description: "The user scatters a big cloud of sleep-inducing dust around the target.",
   type: C.Types.Grass,

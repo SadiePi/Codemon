@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Mist = moves.register(() => ({
+export const Mist: Move = dexBuilder.register<Move>(() => ({
   name: "Mist",
   description:
     "The user cloaks itself and its allies in a white mist that prevents any of their stats from being lowered for five turns.",

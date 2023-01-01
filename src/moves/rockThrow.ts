@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const RockThrow = moves.register(() => ({
+export const RockThrow: Move = dexBuilder.register<Move>(() => ({
   name: "Rock Throw",
   description: "The user picks up and throws a small rock at the target to attack.",
   type: C.Types.Rock,
@@ -9,6 +9,6 @@ export const RockThrow = moves.register(() => ({
   target: "Any Adjacent",
   makesContact: false,
   pp: 15, // max 24
-  power: 50,
+  attack: power(50),
   accuracy: 90,
 }));

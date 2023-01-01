@@ -1,7 +1,7 @@
 import C, { Move, Codemon } from "../index.ts";
-import { moves } from "../core/codex.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Synthesis = moves.register(() => ({
+export const Synthesis: Move = dexBuilder.register<Move>(() => ({
   name: "Synthesis",
   description: "The user restores its own HP. The amount of HP regained varies with the weather.",
   type: C.Types.Grass,

@@ -1,16 +1,16 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { chance, power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Twineedle = moves.register(() => ({
+export const Twineedle: Move = dexBuilder.register<Move>(() => ({
   name: "Twineedle",
   description:
     "The user damages the target twice in succession by jabbing it with two spikes. This may also poison the target.",
   type: C.Types.Bug,
   category: "Physical",
   pp: 20,
-  power: 25,
+  attack: power(25),
   target: "Any Adjacent",
   makesContact: false,
-  status: [C.Statuses.Poison, 2 / 10],
+  status: chance(2 / 10, C.Statuses.Poison),
 }));
 // TODO multihit moves

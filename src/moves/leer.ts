@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Leer = moves.register(() => ({
+export const Leer: Move = dexBuilder.register<Move>(() => ({
   name: "Leer",
   description: "The user gives opposing Pokémon an intimidating leer that lowers the Defense stat.",
   type: C.Types.Normal,

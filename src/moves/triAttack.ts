@@ -1,7 +1,8 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
+import { chance, multiple } from "../core/decision.ts";
 
-export const TriAttack = moves.register(() => ({
+export const TriAttack: Move = dexBuilder.register<Move>(() => ({
   name: "Tri Attack",
   description:
     "The user strikes with a simultaneous three-beam attack. This may also burn, freeze, or paralyze the target.",
@@ -9,12 +10,12 @@ export const TriAttack = moves.register(() => ({
   target: "Any Adjacent",
   category: "Special",
   pp: 10,
-  power: 80,
+  attack: power(80),
   makesContact: false,
-  // status: [
-  //   [C.Statuses.Burn, 1 / 5],
-  //   [C.Statuses.Freeze, 1 / 5],
-  //   [C.Statuses.Paralyze, 1 / 5],
-  // ],
+  status: multiple([
+    chance(1 / 5, C.Statuses.Burn),
+    chance(1 / 5, C.Statuses.Freeze),
+    chance(1 / 5, C.Statuses.Paralysis),
+  ]),
 }));
 // TODO triattack

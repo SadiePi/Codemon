@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { species } from "../core/codex.ts";
+import C, { Species, weighted } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Garchomp = species.register(() => ({
+export const Garchomp: Species = dexBuilder.register<Species>(() => ({
   name: "Garchomp",
   description:
     "The protuberances on its head serve as sensors. It can even detect distant prey. It is said that when one runs at high speed, its wings create blades of wind that can fell nearby trees.",
@@ -11,10 +11,10 @@ export const Garchomp = species.register(() => ({
     normal: [C.Abilities.SandVeil],
     hidden: C.Abilities.RoughSkin,
   },
-  genders: [
+  genders: weighted([
     [C.Genders.Female, 1],
     [C.Genders.Male, 1],
-  ],
+  ]),
   catchRate: 45,
   eggCycles: 120,
   height: 1.9,

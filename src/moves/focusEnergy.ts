@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const FocusEnergy = moves.register(() => ({
+export const FocusEnergy: Move = dexBuilder.register<Move>(() => ({
   name: "Focus Energy",
   description: "The user takes a deep breath and focuses so that critical hits land more easily.",
   type: C.Types.Normal,

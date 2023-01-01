@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Smokescreen = moves.register(() => ({
+export const Smokescreen: Move = dexBuilder.register<Move>(() => ({
   name: "Smokescreen",
   description: "The user releases an obscuring cloud of smoke or ink. This lowers the target's accuracy.",
   type: C.Types.Normal,

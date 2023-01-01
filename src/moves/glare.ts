@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Glare = moves.register(() => ({
+export const Glare: Move = dexBuilder.register<Move>(() => ({
   name: "Glare",
   description: "The user intimidates the target with the pattern on its belly to cause paralysis.",
   type: C.Types.Normal,

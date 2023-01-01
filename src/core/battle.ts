@@ -1,25 +1,32 @@
-import { EventEmitter } from "https://raw.githubusercontent.com/SadiePi/event-with-wait/master/mod.ts";
-import { Codemon, DamageCategory, Type } from "./index.ts";
+import { EventEmitter } from "./external.ts";
+import decide, { Decider } from "./decision.ts";
+import { Codemon, DamageCategory, MoveEntry, Type } from "./index.ts";
 
 import { TargetingCategory } from "./move.ts";
 import { StageMods } from "./stats.ts";
+import { Immutable } from "./util.ts";
 
-type EventHandler<E extends Record<string, unknown[]>> = {
-  [K in keyof E]?: (...event: E[K]) => void;
-};
+// type EventHandler<E extends Record<string, unknown[]>> = {
+//   [K in keyof E]?: (...event: E[K]) => void;
+// };
 
 export type StatusEffectEvents = {
   beforeApply: [entry: StatusEffectEntry, target: EffectTarget, source: Action, battle: Battle];
   // TODO ...
 };
 
-export interface StatusEffect extends EventHandler<StatusEffectEvents> {
+export interface StatusEffect {
   name: string;
   description: string;
-  volatile: boolean;
-  apply: (entry: StatusEffectEntry, target: EffectTarget, source: Action, battle: Battle) => void | (() => void);
-  // TODO shouldUnapply: (target: Codemon, action: Action battle: Battle) => boolean;
+  apply: (target: EffectTarget, source: Action, battle: Battle) => void | (() => void);
   // TODO apply to map
+
+  // below are common properties of status effects that could very well
+  // be implemented in the apply function, but it's nice to have the
+  // option to have the engine handle them for you
+  volatile?: boolean; // remove on exit from battle
+  duration?: number; // remove after this many turns
+  // TODO volatile and duration should be mutually exclusive
 }
 
 export class StatusEffectEntry extends EventEmitter<StatusEffectEvents> {
@@ -35,31 +42,31 @@ export interface Weather {
   // TODO apply to map
 }
 
+type SingleOrArray<T> = T | T[];
+
 // TODO this belongs in ../battles/traditional.ts but
 // that would lead to type parameters everywhere again
 export interface Effects {
   /** Normal attack on the target */
   attack?: Attack;
   /** Apply status effects */
-  status?: StatusEffect | StatusEffect[];
+  status?: SingleOrArray<StatusEffect>;
   /** Change weather */
   weather?: Weather;
   /** Recover proportion (out of 1) of damage dealt */
   leech?: number;
   /** Raw HP change */
   hp?: number;
-  /** Instant faint */
-  faint?: boolean;
   /** Stat stage changes */
   stages?: StageMods;
   /** Remove from battle without fainting */
   eject?: boolean;
-  /** Weather or not this effect should repeat */
-  repeat?: boolean;
   /** End the battle immediately */
   end?: boolean;
-  /** Catch-all custom effect */
-  custom?: (target: EffectTarget, action: Action, battle: Battle) => void;
+  /** Instant faint */
+  faint?: boolean;
+  // /** Catch-all custom effect */
+  // custom?: (action: Action, target: EffectTarget, battle: Battle) => void;
 }
 
 export interface Attack {
@@ -89,55 +96,47 @@ export interface Attack {
   other?: number;
 }
 
-export interface AttackReciept {
-  readonly attack: Attack;
-  readonly typeBoost: number;
-  readonly total: number;
-}
+export type AttackReciept = Immutable<{
+  attack: Attack;
+  typeBoost: number;
+  total: number;
+}>;
 
-export type EffectDecider<T> = T | [number, T, T?] | ((action: Action, target: EffectTarget, battle: Battle) => T); // decider function
-// TODO more deciders
-
-function decideEffect<T>(decider: EffectDecider<T>, action: Action, target: EffectTarget, battle: Battle): T {
-  if (decider instanceof Function) return decider(action, target, battle);
-  if (Array.isArray(decider)) {
-    const first = decider[0];
-    if (typeof first === "number") {
-      if (Math.random() < decider[0]) return decider[1];
-      else if (decider[2]) return decider[2];
-    }
-  }
-  return decider as T;
-}
+export type EffectDeciderContext = Immutable<{
+  action: Action;
+  target: EffectTarget;
+  battle: Battle;
+}>;
 
 export type EffectParams = {
-  [effect in keyof Effects]: EffectDecider<Effects[effect]>;
+  [effect in keyof Effects]: Decider<Effects[effect], EffectDeciderContext>;
 } & {
   accuracy?: number;
+  recoil?: EffectParams;
+  crash?: EffectParams;
 };
 
 export function decideEffects(action: Action, target: EffectTarget, battle: Battle) {
-  const effects = action.effects;
-  if (Math.random() < (effects.accuracy ?? 1.1)) return {};
+  const effects = action.effect;
+  const context = { action, target, battle };
+  if (Math.random() > (effects.accuracy ?? 1.1)) return {};
   const ret: Effects = {};
-  const attack = decideEffect(effects.attack, action, target, battle);
+  const attack = decide(effects.attack, context);
   if (attack) ret.attack = attack;
-  const status = decideEffect(effects.status, action, target, battle);
+  const status = decide(effects.status, context);
   if (status) ret.status = status;
-  const weather = decideEffect(effects.weather, action, target, battle);
+  const weather = decide(effects.weather, context);
   if (weather) ret.weather = weather;
-  const leech = decideEffect(effects.leech, action, target, battle);
+  const leech = decide(effects.leech, context);
   if (leech) ret.leech = leech;
-  const hp = decideEffect(effects.hp, action, target, battle);
+  const hp = decide(effects.hp, context);
   if (hp) ret.hp = hp;
-  const faint = decideEffect(effects.faint, action, target, battle);
+  const faint = decide(effects.faint, context);
   if (faint) ret.faint = faint;
-  const stages = decideEffect(effects.stages, action, target, battle);
+  const stages = decide(effects.stages, context);
   if (stages) ret.stages = stages;
-  const eject = decideEffect(effects.eject, action, target, battle);
+  const eject = decide(effects.eject, context);
   if (eject) ret.eject = eject;
-  const repeat = decideEffect(effects.repeat, action, target, battle);
-  if (repeat) ret.repeat = repeat;
   return ret;
 }
 
@@ -145,18 +144,20 @@ export type EffectSource = EffectParams & {
   name: string;
   description: string;
   target: TargetingCategory;
-  accuracy?: number;
 };
 
-export type EffectReciept = {
-  readonly messages: BattleMessage[];
-  readonly attack?: AttackReciept;
-} & {
-  readonly [effect in Exclude<keyof Effects, "attack">]?: Effects[effect];
-};
+export type EffectReciept = Immutable<
+  {
+    target: EffectTarget;
+    messages: BattleMessage[];
+    attack?: AttackReciept;
+  } & {
+    [effect in Exclude<keyof Effects, "attack">]?: Effects[effect];
+  }
+>;
 
 export interface EffectContext {
-  effects: Effects;
+  effect: Effects;
   action: Action;
   battle: Battle;
 }
@@ -169,16 +170,16 @@ export interface EffectTarget {
 // there may be a better way
 export class Action {
   public source: ActionSource; // Note to self, Subject,
-  public effects: EffectParams; // Verb
+  public effect: EffectParams; // Verb
   public targets: EffectTarget[]; // Object,
   public preactions: ReadyAction[] = [];
   public reactions: ReadyAction[] = [];
   public messages: BattleMessage[] = [];
 
-  constructor(args: { source: ActionSource; targets: EffectTarget[]; effects: EffectParams }) {
+  constructor(args: { source: ActionSource; targets: EffectTarget[]; effect: EffectParams }) {
     this.source = args.source;
     this.targets = args.targets;
-    this.effects = args.effects;
+    this.effect = args.effect;
   }
 }
 
@@ -293,8 +294,8 @@ export interface BattleReciept {
 
 export function flattenActionMessages(action: ActionReciept, into: BattleMessage[] = []) {
   for (const preaction of action.preactions) flattenActionMessages(preaction, into);
-  for (const effect of action.effects) into.push(...effect.messages);
   into.push(...action.messages);
+  for (const effect of action.effects) into.push(...effect.messages);
   for (const reaction of action.reactions) flattenActionMessages(reaction, into);
   return into;
 }
@@ -310,4 +311,62 @@ export function flattenBattleMessages(battle: BattleReciept, into: BattleMessage
   for (const round of battle.rounds) flattenRoundMessages(round, into);
   into.push(...battle.messages);
   return into;
+}
+
+export function recoil(target: EffectTarget, effect: EffectParams): ReadyAction {
+  const recoil: ActionSource = {
+    priority: 0,
+    targetingCategory: "Self",
+    useAction: () =>
+      new Action({
+        source: recoil,
+        targets: [target],
+        effect,
+      }),
+  };
+  return {
+    source: recoil,
+    targets: [target],
+  };
+}
+
+export function crash(target: EffectTarget, effect: EffectParams): ReadyAction {
+  const crash: ActionSource = {
+    priority: 0,
+    targetingCategory: "Self",
+    useAction: () =>
+      new Action({
+        source: crash,
+        targets: [target],
+        effect,
+      }),
+  };
+  return {
+    source: crash,
+    targets: [target],
+  };
+}
+
+// Battle utility functions
+
+/** A completely normal attack */
+export function power(power: number): Decider<Attack, EffectDeciderContext> {
+  return ({ action }) => {
+    if (!(action.source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
+    const level = action.source.user.stats.level;
+    const type = action.source.effects.type;
+    const category = action.source.effects.category;
+    if (category === "Status") throw new Error("Status moves cannot be used as attacks");
+    const stats = action.source.user.stats;
+    const stat = stats[category === "Physical" ? "attack" : "specialAttack"].value(true);
+
+    return {
+      level,
+      power,
+      stat,
+      type,
+      category,
+      // TODO critical, item, stab, weather, multitarget, random, other
+    };
+  };
 }

@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const DoubleSlap = moves.register(() => ({
+export const DoubleSlap: Move = dexBuilder.register<Move>(() => ({
   name: "Double Slap",
   description: "The target is slapped repeatedly, back and forth, two to five times in a row.",
   type: C.Types.Normal,
@@ -11,6 +11,6 @@ export const DoubleSlap = moves.register(() => ({
   makesContact: true,
 
   accuracy: 85,
-  power: 15,
+  attack: power(15),
 }));
 // TODO multihit

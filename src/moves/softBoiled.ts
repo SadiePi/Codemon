@@ -1,7 +1,7 @@
 import C, { Move, Codemon } from "../index.ts";
-import { moves } from "../core/codex.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const SoftBoiled = moves.register(() => ({
+export const SoftBoiled: Move = dexBuilder.register<Move>(() => ({
   name: "Soft-Boiled",
   description: "The user restores its own HP by up to half of its max HP.",
   type: C.Types.Normal,

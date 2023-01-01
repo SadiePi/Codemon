@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const DragonRage = moves.register(() => ({
+export const DragonRage: Move = dexBuilder.register<Move>(() => ({
   name: "Dragon Rage",
   description: "This attack hits the target with a shock wave of pure rage. This attack always inflicts 40 HP damage.",
   type: C.Types.Dragon,

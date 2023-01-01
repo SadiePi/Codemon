@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const Splash = moves.register(() => ({
+export const Splash: Move = dexBuilder.register<Move>(() => ({
   name: "Splash",
   description: "The user just flops and splashes around to no effect at all.",
   type: C.Types.Normal,

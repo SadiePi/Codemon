@@ -1,7 +1,7 @@
 import C, { Codemon, Move } from "../index.ts";
-import { moves } from "../core/codex.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const NightShade = moves.register(() => ({
+export const NightShade: Move = dexBuilder.register<Move>(() => ({
   name: "Night Shade",
   description: "The user makes the target see a frightening mirage. It inflicts damage equal to the user's level.",
   type: C.Types.Ghost,

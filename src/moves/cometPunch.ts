@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const CometPunch = moves.register(() => ({
+export const CometPunch: Move = dexBuilder.register<Move>(() => ({
   name: "Comet Punch",
   description: "The target is hit with a flurry of punches that strike two to five times in a row.",
   type: C.Types.Normal,
@@ -10,7 +10,7 @@ export const CometPunch = moves.register(() => ({
   target: "Any Adjacent",
   makesContact: true,
 
-  power: 18,
+  attack: power(18),
   accuracy: 85,
 }));
 // TODO multihit

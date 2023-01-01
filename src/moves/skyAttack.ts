@@ -1,17 +1,17 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { chance, power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const SkyAttack = moves.register(() => ({
+export const SkyAttack: Move = dexBuilder.register<Move>(() => ({
   name: "Sky Attack",
   description: "A second-turn attack move where critical hits land more easily. This may also make the target flinch.",
   type: C.Types.Flying,
   target: "Any",
   category: "Physical",
   pp: 5,
-  power: 140,
+  attack: power(140),
   accuracy: 90,
   makesContact: true,
   criticalHitStage: 1,
-  status: [C.Statuses.Flinch, 1 / 3],
+  status: chance(1 / 3, C.Statuses.Flinch),
 }));
 // TODO multiturn moves

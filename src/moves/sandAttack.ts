@@ -1,7 +1,7 @@
-import C from "../index.ts";
-import { moves } from "../core/codex.ts";
+import C, { power, Move } from "../index.ts";
+import dexBuilder from "../core/codex.ts";
 
-export const SandAttack = moves.register(() => ({
+export const SandAttack: Move = dexBuilder.register<Move>(() => ({
   name: "Sand Attack",
   description: "Sand is hurled in the target's face, reducing the target's accuracy.",
   type: C.Types.Ground,
