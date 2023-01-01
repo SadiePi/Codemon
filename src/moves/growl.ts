@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Growl: Move = dexBuilder.register<Move>(() => ({
+export const Growl: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Growl",
   description:
     "The user growls in an endearing way, making opposing Pokémon less wary. This lowers their Attack stats.",

@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Guillotine: Move = dexBuilder.register<Move>(() => ({
+export const Guillotine: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Guillotine",
   description: "A vicious, tearing attack with big pincers. The target faints instantly if this attack hits.",
   type: C.Types.Normal,

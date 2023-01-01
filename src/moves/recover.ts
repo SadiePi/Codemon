@@ -1,7 +1,6 @@
-import C, { Codemon, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Codemon, Move } from "../index.ts";
 
-export const Recover: Move = dexBuilder.register<Move>(() => ({
+export const Recover: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Recover",
   description: "Restoring its own cells, the user restores its own HP by half of its max HP.",
   type: C.Types.Normal,

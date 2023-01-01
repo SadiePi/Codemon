@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Rage: Move = dexBuilder.register<Move>(() => ({
+export const Rage: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Rage",
   description:
     "As long as this move is in use, the power of rage raises the Attack stat each time the user is hit in battle.",

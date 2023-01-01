@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const FireBlast: Move = dexBuilder.register<Move>(() => ({
+export const FireBlast: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Fire Blast",
   description:
     "The target is attacked with an intense blast of all-consuming fire. This may also leave the target with a burn.",

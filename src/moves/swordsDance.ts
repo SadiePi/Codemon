@@ -1,7 +1,6 @@
-import C, { Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move } from "../index.ts";
 
-export const SwordsDance: Move = dexBuilder.register<Move>(() => ({
+export const SwordsDance: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Swords Dance",
   description: "A frenetic dance to uplift the fighting spirit. This sharply raises the user's Attack stat.",
   type: C.Types.Normal,

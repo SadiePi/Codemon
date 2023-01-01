@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Blizzard: Move = dexBuilder.register<Move>(() => ({
+export const Blizzard: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Blizzard",
   description:
     "A howling blizzard is summoned to strike opposing Pokémon. This may also leave the opposing Pokémon frozen.",

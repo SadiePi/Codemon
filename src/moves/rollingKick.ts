@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const RollingKick: Move = dexBuilder.register<Move>(() => ({
+export const RollingKick: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Rolling Kick",
   description: "The user lashes out with a quick, spinning kick. This may also make the target flinch.",
   type: C.Types.Fighting,

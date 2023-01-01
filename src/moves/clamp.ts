@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Clamp: Move = dexBuilder.register<Move>(() => ({
+export const Clamp: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Clamp",
   description: "The target is clamped and squeezed by the user's very thick and sturdy shell for four to five turns.",
   type: C.Types.Water,

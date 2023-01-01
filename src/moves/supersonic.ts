@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Supersonic: Move = dexBuilder.register<Move>(() => ({
+export const Supersonic: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Supersonic",
   description: "The user generates odd sound waves from its body that confuse the target.",
   type: C.Types.Normal,

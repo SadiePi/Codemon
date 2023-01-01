@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const RockSlide: Move = dexBuilder.register<Move>(() => ({
+export const RockSlide: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Rock Slide",
   description:
     "Large boulders are hurled at opposing Pokémon to inflict damage. This may also make the opposing Pokémon flinch.",

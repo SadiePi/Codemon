@@ -1,7 +1,6 @@
-import C, { Species, weighted } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Species, weighted } from "../index.ts";
 
-export const Ivysaur: Species = dexBuilder.register<Species>(() => ({
+export const Ivysaur: Species = dexBuilder.register<Species>((C: Codex) => ({
   name: "Ivysaur",
   description:
     "Exposure to sunlight adds to its strength. Sunlight also makes the bud on its back grow larger. When the bulb on its back grows too large, it appears to lose the ability to stand on its hind legs.",

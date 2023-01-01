@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Bulldoze: Move = dexBuilder.register<Move>(() => ({
+export const Bulldoze: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Bulldoze",
   description:
     "The user tramples its target into the ground, dealing damage. This also lowers the target's action speed.",

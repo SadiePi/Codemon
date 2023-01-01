@@ -1,7 +1,6 @@
-import C, { Codemon, Move, power } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Codemon, Move, power } from "../index.ts";
 
-export const LowKick: Move = dexBuilder.register<Move>(() => ({
+export const LowKick: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Low Kick",
   description:
     "A powerful low kick that makes the target fall over. The heavier the target, the greater the move's power.",

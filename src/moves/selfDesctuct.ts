@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const SelfDesctuct: Move = dexBuilder.register<Move>(() => ({
+export const SelfDesctuct: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Self-Destruct",
   description: "The user attacks everything around it by causing an explosion. The user faints upon using this move.",
   type: C.Types.Normal,

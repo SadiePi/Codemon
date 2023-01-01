@@ -1,7 +1,6 @@
-import C, { Move, power } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move, power } from "../index.ts";
 
-export const Bide: Move = dexBuilder.register<Move>(() => ({
+export const Bide: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Bide",
   description: "The user endures attacks for two turns, then strikes back to cause double the damage taken.",
   type: C.Types.Normal,

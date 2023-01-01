@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const IcePunch: Move = dexBuilder.register<Move>(() => ({
+export const IcePunch: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Ice Punch",
   description: "The target is punched with an icy fist. This may also leave the target frozen.",
   type: C.Types.Ice,

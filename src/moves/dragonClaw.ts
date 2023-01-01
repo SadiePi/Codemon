@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const DragonClaw: Move = dexBuilder.register<Move>(() => ({
+export const DragonClaw: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Dragon Claw",
   description: "The user slashes the target with huge sharp claws.",
   type: C.Types.Dragon,

@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const HyperFang: Move = dexBuilder.register<Move>(() => ({
+export const HyperFang: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Hyper Fang",
   description: "The user bites hard on the target with its sharp front fangs. This may also make the target flinch.",
   type: C.Types.Normal,

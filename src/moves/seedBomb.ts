@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const SeedBomb: Move = dexBuilder.register<Move>(() => ({
+export const SeedBomb: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Seed Bomb",
   description: "The user slams a barrage of hard-shelled seeds down on the target from above.",
   type: C.Types.Grass,

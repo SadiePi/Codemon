@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Fissure: Move = dexBuilder.register<Move>(() => ({
+export const Fissure: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Fissure",
   description:
     "The user opens up a fissure in the ground and drops the target in. The target faints instantly if this attack hits.",

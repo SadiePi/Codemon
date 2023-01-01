@@ -1,7 +1,6 @@
-import C, { chance, power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, chance, power, Move } from "../index.ts";
 
-export const Smog: Move = dexBuilder.register<Move>(() => ({
+export const Smog: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Smog",
   description: "The target is attacked with a discharge of filthy gases. This may also poison the target.",
   type: C.Types.Poison,

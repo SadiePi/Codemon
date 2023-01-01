@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const PayDay: Move = dexBuilder.register<Move>(() => ({
+export const PayDay: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Pay Day",
   description: "Numerous coins are hurled at the target to inflict damage. Money is earned after the battle.",
   type: C.Types.Normal,

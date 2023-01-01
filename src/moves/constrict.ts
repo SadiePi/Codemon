@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Constrict: Move = dexBuilder.register<Move>(() => ({
+export const Constrict: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Constrict",
   description:
     "The target is attacked with long, creeping tentacles, vines, or the like. This may also lower the target's Speed stat.",

@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Crunch: Move = dexBuilder.register<Move>(() => ({
+export const Crunch: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Crunch",
   description: "The user crunches up the target with sharp fangs. This may also lower the target's Defense stat.",
   type: C.Types.Dark,

@@ -45,4 +45,4 @@ function transfer_entries(dir: string, source: string) {
 }
 
 // transfer_entries("moves", "moves.ts");
-create_entries("weather", "Weather");
+// create_entries("weather", "Weather");

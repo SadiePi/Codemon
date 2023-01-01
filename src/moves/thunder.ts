@@ -1,7 +1,6 @@
-import C, { chance, power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, chance, power, Move } from "../index.ts";
 
-export const Thunder: Move = dexBuilder.register<Move>(() => ({
+export const Thunder: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Thunder",
   description:
     "A wicked thunderbolt is dropped on the target to inflict damage. This may also leave the target with paralysis.",

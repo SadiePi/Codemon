@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Bind: Move = dexBuilder.register<Move>(() => ({
+export const Bind: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Bind",
   description:
     "Things such as long bodies or tentacles are used to bind and squeeze the target for four to five turns.",

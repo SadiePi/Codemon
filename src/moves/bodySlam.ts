@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const BodySlam: Move = dexBuilder.register<Move>(() => ({
+export const BodySlam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Body Slam",
   description:
     "The user drops onto the target with its full body weight. This may also leave the target with paralysis.",

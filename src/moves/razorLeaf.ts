@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const RazorLeaf: Move = dexBuilder.register<Move>(() => ({
+export const RazorLeaf: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Razor Leaf",
   description: "Sharp-edged leaves are launched to slash at opposing Pokémon. Critical hits land more easily.",
   type: C.Types.Grass,

@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const PoisonPowder: Move = dexBuilder.register<Move>(() => ({
+export const PoisonPowder: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Poison Powder",
   description: "The user scatters a cloud of poisonous dust that poisons the target.",
   type: C.Types.Poison,

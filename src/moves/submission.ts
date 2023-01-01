@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Submission: Move = dexBuilder.register<Move>(() => ({
+export const Submission: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Submission",
   description: "The user grabs the target and recklessly dives for the ground. This also damages the user a little.",
   type: C.Types.Fighting,

@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const SonicBoom: Move = dexBuilder.register<Move>(() => ({
+export const SonicBoom: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Sonic Boom",
   description: "The target is hit with a destructive shock wave that always inflicts 20 HP damage.",
   type: C.Types.Normal,

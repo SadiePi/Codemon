@@ -1,7 +1,6 @@
-import C, { Move, Codemon } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move, Codemon } from "../index.ts";
 
-export const SuperFang: Move = dexBuilder.register<Move>(() => ({
+export const SuperFang: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Super Fang",
   description: "The user chomps hard on the target with its sharp front fangs. This cuts the target's HP in half.",
   type: C.Types.Normal,

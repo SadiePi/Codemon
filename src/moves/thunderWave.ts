@@ -1,7 +1,6 @@
-import C, { Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move } from "../index.ts";
 
-export const ThunderWave: Move = dexBuilder.register<Move>(() => ({
+export const ThunderWave: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Thunder Wave",
   description: "The user launches a weak jolt of electricity that paralyzes the target.",
   type: C.Types.Electric,

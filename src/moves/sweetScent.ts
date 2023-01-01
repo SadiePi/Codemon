@@ -1,7 +1,6 @@
-import C, { Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move } from "../index.ts";
 
-export const SweetScent: Move = dexBuilder.register<Move>(() => ({
+export const SweetScent: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Sweet Scent",
   description: "A sweet scent that harshly lowers opposing Pokémon's evasiveness.",
   type: C.Types.Normal,

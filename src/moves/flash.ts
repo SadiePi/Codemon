@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Flash: Move = dexBuilder.register<Move>(() => ({
+export const Flash: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Flash",
   description: "The user flashes a bright light that cuts the target's accuracy.",
   type: C.Types.Normal,

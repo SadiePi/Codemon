@@ -1,7 +1,6 @@
-import C, { Codemon, Move, power } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Codemon, Move, power } from "../index.ts";
 
-export const JumpKick: Move = dexBuilder.register<Move>(() => ({
+export const JumpKick: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Jump Kick",
   description: "The user jumps up high, then strikes with a kick. If the kick misses, the user hurts itself.",
   type: C.Types.Fighting,

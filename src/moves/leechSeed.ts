@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const LeechSeed: Move = dexBuilder.register<Move>(() => ({
+export const LeechSeed: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Leech Seed",
   description: "A seed is planted on the target. It steals some HP from the target every turn.",
   type: C.Types.Grass,

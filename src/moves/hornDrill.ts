@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const HornDrill: Move = dexBuilder.register<Move>(() => ({
+export const HornDrill: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Horn Drill",
   description:
     "The user stabs the target with a horn that rotates like a drill. The target faints instantly if this attack hits.",

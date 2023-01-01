@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Headbutt: Move = dexBuilder.register<Move>(() => ({
+export const Headbutt: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Headbutt",
   description:
     "The user sticks out its head and attacks by charging straight into the target. This may also make the target flinch.",

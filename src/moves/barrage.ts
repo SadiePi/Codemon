@@ -1,7 +1,6 @@
-import C, { Move, power } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move, power } from "../index.ts";
 
-export const Barrage: Move = dexBuilder.register<Move>(() => ({
+export const Barrage: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Barrage",
   description: "Round objects are hurled at the target to strike two to five times in a row.",
   type: C.Types.Normal,

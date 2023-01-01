@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const WingAttack: Move = dexBuilder.register<Move>(() => ({
+export const WingAttack: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Wing Attack",
   description: "The target is struck with large, imposing wings spread wide to inflict damage.",
   type: C.Types.Flying,

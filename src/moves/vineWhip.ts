@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const VineWhip: Move = dexBuilder.register<Move>(() => ({
+export const VineWhip: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Vine Whip",
   description: "The target is struck with slender, whiplike vines to inflict damage.",
   type: C.Types.Grass,

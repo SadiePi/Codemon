@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const WaterGun: Move = dexBuilder.register<Move>(() => ({
+export const WaterGun: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Water Gun",
   description: "The target is blasted with a forceful shot of water.",
   type: C.Types.Water,

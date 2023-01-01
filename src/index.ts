@@ -1,10 +1,15 @@
+// TODO should this all be in /demo/traditional/?
+
 export * from "./core/index.ts";
-import dexBuilder from "./core/codex.ts";
+
+import CodexBuilder from "./core/codex.ts";
 
 // const getter =
 //   <T>(obj: Record<string, T>) =>
 //   (name: string): T | undefined =>
 //     obj[name as keyof typeof obj];
+
+export const dexBuilder = new CodexBuilder<Codex>();
 
 import * as Abilities from "./abilities/index.ts";
 import * as Battles from "./battles/index.ts";
@@ -29,10 +34,8 @@ const Codex = {
   Statuses,
   Types,
 } as const;
+export type Codex = typeof Codex;
+
+dexBuilder.build(Codex);
+
 export default Codex;
-
-dexBuilder.build();
-
-// TODO use?
-type DeepMap<T, U> = T extends Record<string, unknown> ? { [K in keyof T]: DeepMap<T[K], U> } : U;
-export type DiscoveryMap = DeepMap<typeof Codex, boolean>;

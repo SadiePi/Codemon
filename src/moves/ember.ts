@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Ember: Move = dexBuilder.register<Move>(() => ({
+export const Ember: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Ember",
   description: "The target is attacked with small flames. This may also leave the target with a burn.",
   type: C.Types.Fire,

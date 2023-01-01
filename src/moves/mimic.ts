@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Mimic: Move = dexBuilder.register<Move>(() => ({
+export const Mimic: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Mimic",
   description:
     "The user copies the target's last move. The move can be used during battle until the Pokémon is switched out.",

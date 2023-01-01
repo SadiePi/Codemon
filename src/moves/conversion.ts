@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Conversion: Move = dexBuilder.register<Move>(() => ({
+export const Conversion: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Conversion",
   description:
     "The user changes its type to become the same type as the move at the top of the list of moves it knows.",

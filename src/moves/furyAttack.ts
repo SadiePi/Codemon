@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const FuryAttack: Move = dexBuilder.register<Move>(() => ({
+export const FuryAttack: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Fury Attack",
   description: "The target is jabbed repeatedly with a horn or beak two to five times in a row.",
   type: C.Types.Normal,

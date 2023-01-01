@@ -1,8 +1,7 @@
 import { Move, power } from "../index.ts";
 import * as Types from "../types/index.ts";
-import dexBuilder from "../core/codex.ts";
 
-export const Pound: Move = dexBuilder.register<Move>(() => ({
+export const Pound: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Pound",
   description: "The target is physically pounded with a long tail, a foreleg, or the like.",
   type: Types.Normal,

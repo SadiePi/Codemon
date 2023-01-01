@@ -1,7 +1,6 @@
-import C, { chance, power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, chance, power, Move } from "../index.ts";
 
-export const ThunderPunch: Move = dexBuilder.register<Move>(() => ({
+export const ThunderPunch: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Thunder Punch",
   description: "The target is punched with an electrified fist. This may also leave the target with paralysis.",
   type: C.Types.Electric,

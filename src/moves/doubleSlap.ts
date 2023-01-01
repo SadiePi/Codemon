@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const DoubleSlap: Move = dexBuilder.register<Move>(() => ({
+export const DoubleSlap: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Double Slap",
   description: "The target is slapped repeatedly, back and forth, two to five times in a row.",
   type: C.Types.Normal,

@@ -1,7 +1,6 @@
-import C, { Move, power } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move, power } from "../index.ts";
 
-export const AuroraBeam: Move = dexBuilder.register<Move>(() => ({
+export const AuroraBeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Aurora Beam",
   description: "The target is hit with a rainbow-colored beam. This may also lower the target's Attack stat.",
   type: C.Types.Ice,

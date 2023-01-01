@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const DizzyPunch: Move = dexBuilder.register<Move>(() => ({
+export const DizzyPunch: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Dizzy Punch",
   description: "The target is hit with rhythmically launched punches. This may also leave the target confused.",
   type: C.Types.Normal,

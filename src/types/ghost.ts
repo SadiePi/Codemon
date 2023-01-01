@@ -1,7 +1,6 @@
-import C, { Type } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Type } from "../index.ts";
 
-export const Ghost: Type = dexBuilder.register<Type>(() => ({
+export const Ghost: Type = dexBuilder.register<Type>((C: Codex) => ({
   name: "Ghost",
   color: "#705898",
   weaknesses: [C.Types.Ghost, C.Types.Dark],

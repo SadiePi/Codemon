@@ -1,7 +1,6 @@
-import C, { Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move } from "../index.ts";
 
-export const Toxic: Move = dexBuilder.register<Move>(() => ({
+export const Toxic: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Toxic",
   description: "A move that leaves the target badly poisoned. Its poison damage worsens every turn.",
   type: C.Types.Poison,

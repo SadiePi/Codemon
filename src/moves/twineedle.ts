@@ -1,7 +1,6 @@
-import C, { chance, power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, chance, power, Move } from "../index.ts";
 
-export const Twineedle: Move = dexBuilder.register<Move>(() => ({
+export const Twineedle: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Twineedle",
   description:
     "The user damages the target twice in succession by jabbing it with two spikes. This may also poison the target.",

@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Slam: Move = dexBuilder.register<Move>(() => ({
+export const Slam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Slam",
   description: "The target is slammed with a long tail, vines, or the like to inflict damage.",
   type: C.Types.Normal,

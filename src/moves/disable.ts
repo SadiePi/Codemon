@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Disable: Move = dexBuilder.register<Move>(() => ({
+export const Disable: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Disable",
   description: "For four turns, this move prevents the target from using the move it last used.",
   type: C.Types.Normal,

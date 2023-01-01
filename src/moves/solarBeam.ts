@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const SolarBeam: Move = dexBuilder.register<Move>(() => ({
+export const SolarBeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Solar Beam",
   description: "In this two-turn attack, the user gathers light, then blasts a bundled beam on the next turn.",
   type: C.Types.Grass,

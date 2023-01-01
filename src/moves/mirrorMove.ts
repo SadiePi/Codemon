@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const MirrorMove: Move = dexBuilder.register<Move>(() => ({
+export const MirrorMove: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Mirror Move",
   description: "The user counters the target by mimicking the target's last move.",
   type: C.Types.Flying,

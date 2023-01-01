@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const BubbleBeam: Move = dexBuilder.register<Move>(() => ({
+export const BubbleBeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Bubble Beam",
   description: "A spray of bubbles is forcefully ejected at the target. This may also lower the target's Speed stat.",
   type: C.Types.Water,

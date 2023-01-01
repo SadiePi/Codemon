@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const PinMissle: Move = dexBuilder.register<Move>(() => ({
+export const PinMissle: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Pin Missile",
   description: "Sharp spikes are shot at the target in rapid succession. They hit two to five times in a row.",
   type: C.Types.Bug,

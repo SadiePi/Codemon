@@ -1,8 +1,7 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 import { chance, multiple } from "../core/decision.ts";
 
-export const TriAttack: Move = dexBuilder.register<Move>(() => ({
+export const TriAttack: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Tri Attack",
   description:
     "The user strikes with a simultaneous three-beam attack. This may also burn, freeze, or paralyze the target.",

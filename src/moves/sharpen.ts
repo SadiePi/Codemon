@@ -1,7 +1,6 @@
-import C, { Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move } from "../index.ts";
 
-export const Sharpen: Move = dexBuilder.register<Move>(() => ({
+export const Sharpen: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Sharpen",
   description: "The user makes its edges more jagged, which raises its Attack stat.",
   type: C.Types.Normal,

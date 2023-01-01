@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Lick: Move = dexBuilder.register<Move>(() => ({
+export const Lick: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Lick",
   description: "The target is licked with a long tongue, causing damage. It may also leave the target with paralysis.",
   type: C.Types.Ghost,

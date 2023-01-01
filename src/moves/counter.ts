@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Counter: Move = dexBuilder.register<Move>(() => ({
+export const Counter: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Counter",
   description: "A retaliation move that counters any physical attack, inflicting double the damage taken.",
   type: C.Types.Fighting,

@@ -1,7 +1,6 @@
-import C, { Move, power } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move, power } from "../index.ts";
 
-export const Acid: Move = dexBuilder.register<Move>(() => ({
+export const Acid: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Acid",
   description: "Opposing Pokémon are attacked with a spray of harsh acid. This may also lower their Sp. Def stats.",
   type: C.Types.Poison,

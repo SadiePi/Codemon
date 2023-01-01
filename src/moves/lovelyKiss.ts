@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const LovelyKiss: Move = dexBuilder.register<Move>(() => ({
+export const LovelyKiss: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Lovely Kiss",
   description:
     "With a scary face, the user tries to force a kiss on the target. If it succeeds, the target falls asleep.",

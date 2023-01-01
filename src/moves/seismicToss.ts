@@ -1,7 +1,6 @@
-import C, { Codemon, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Codemon, Move } from "../index.ts";
 
-export const SeismicToss: Move = dexBuilder.register<Move>(() => ({
+export const SeismicToss: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Seismic Toss",
   description: "The target is thrown using the power of gravity. It inflicts damage equal to the user's level.",
   type: C.Types.Fighting,

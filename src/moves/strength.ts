@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Strength: Move = dexBuilder.register<Move>(() => ({
+export const Strength: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Strength",
   description: "The target is slugged with a punch thrown at maximum power.",
   type: C.Types.Normal,

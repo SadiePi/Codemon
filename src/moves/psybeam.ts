@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Psybeam: Move = dexBuilder.register<Move>(() => ({
+export const Psybeam: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Psybeam",
   description: "The target is attacked with a peculiar ray. This may also leave the target confused.",
   type: C.Types.Psychic,

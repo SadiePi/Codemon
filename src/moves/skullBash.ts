@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const SkullBash: Move = dexBuilder.register<Move>(() => ({
+export const SkullBash: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Skull Bash",
   description:
     "The user tucks in its head to raise its Defense in the first turn, then rams the target on the next turn.",

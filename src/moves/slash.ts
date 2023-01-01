@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Slash: Move = dexBuilder.register<Move>(() => ({
+export const Slash: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Slash",
   description: "The target is attacked with a slash of claws or blades. Critical hits land more easily.",
   type: C.Types.Normal,

@@ -1,7 +1,6 @@
-import C, { Move, power } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, Move, power } from "../index.ts";
 
-export const Agility: Move = dexBuilder.register<Move>(() => ({
+export const Agility: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Agility",
   description: "The user relaxes and lightens its body to move faster. This sharply raises the Speed stat.",
   type: C.Types.Psychic,

@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const RazorWind: Move = dexBuilder.register<Move>(() => ({
+export const RazorWind: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Razor Wind",
   description:
     "In this two-turn attack, blades of wind hit opposing Pokémon on the second turn. Critical hits land more easily.",

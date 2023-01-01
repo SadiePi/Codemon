@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const FireSpin: Move = dexBuilder.register<Move>(() => ({
+export const FireSpin: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Fire Spin",
   description: "The target becomes trapped within a fierce vortex of fire that rages for four to five turns.",
   type: C.Types.Fire,

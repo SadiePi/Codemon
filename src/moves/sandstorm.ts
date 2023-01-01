@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const Sandstorm: Move = dexBuilder.register<Move>(() => ({
+export const Sandstorm: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Sandstorm",
   description:
     "A five-turn sandstorm is summoned to hurt all combatants except the Rock, Ground, and Steel C.Types. It raises the Sp. Def stat of Rock C.Types.",

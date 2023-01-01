@@ -1,7 +1,6 @@
-import C, { power, Move } from "../index.ts";
-import dexBuilder from "../core/codex.ts";
+import { Codex, dexBuilder, power, Move } from "../index.ts";
 
-export const MegaDrain: Move = dexBuilder.register<Move>(() => ({
+export const MegaDrain: Move = dexBuilder.register<Move>((C: Codex) => ({
   name: "Mega Drain",
   description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
   type: C.Types.Grass,
