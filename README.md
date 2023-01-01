@@ -33,7 +33,7 @@ And these planned for the future:
 - Locales
 - Abstract World Map (for use in MVC)
 
-The Codex currently has placeholder entries for all traditional Species, Moves, Types, Natures, Abilities, Items, Weathers, and Status Effects. Most are just placeholders, but all types, all gen 1 moves, and a few Pokémon been translated from their entries on (Bulbapedia)[bulbapedia.bulbagarden.net].
+The Codex currently has placeholder entries for all traditional Species, Moves, Types, Natures, Abilities, Items, Weathers, and Status Effects. Most are just placeholders, but all types, all gen 1 moves, and a few Pokémon been translated from their entries on [Bulbapedia](bulbapedia.bulbagarden.net).
 
 My current long-term plan is to have a full, CLI-only game in `/demo/game`. Further graphics will have to be done by developers using this library.
 
