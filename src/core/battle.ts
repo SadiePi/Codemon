@@ -65,8 +65,6 @@ export interface Effects {
   end?: boolean;
   /** Instant faint */
   faint?: boolean;
-  // /** Catch-all custom effect */
-  // custom?: (action: Action, target: EffectTarget, battle: Battle) => void;
 }
 
 export interface Attack {
