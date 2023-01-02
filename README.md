@@ -41,4 +41,4 @@ My current long-term plan is to have a full, CLI-only game in `/demo/game`. Furt
 
 ## Contributing
 
-I'd prefer for the core functionality to remain a personal project, but I would appreciate contributions to flesh out the Bulbapedia translations and find things that this doesn't support yet. If you'd like to contribute, please open an issue or pull request.
+I'd prefer for the core functionality to remain a personal project, but I would appreciate contributions to flesh out the data translations and find things that this doesn't support yet. If you'd like to contribute, please open an issue or pull request.
