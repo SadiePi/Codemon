@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const SandTomb: Move = preload.register<Move>((C: Codex) => ({
+export const SandTomb: Move = loader.register<Move>((C: Codex) => ({
   name: "Sand Tomb",
   description: "The user traps the target inside a harshly raging sandstorm for four to five turns.",
   type: C.Types.Ground,

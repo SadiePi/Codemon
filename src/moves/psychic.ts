@@ -1,7 +1,7 @@
 import { Codex, power, Move, chance } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Psychic: Move = preload.register<Move>((C: Codex) => ({
+export const Psychic: Move = loader.register<Move>((C: Codex) => ({
   name: "Psychic",
   description: "The target is hit by a strong telekinetic force. This may also lower the target's Sp. Def stat.",
   type: C.Types.Psychic,

@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const QuickAttack: Move = preload.register<Move>((C: Codex) => ({
+export const QuickAttack: Move = loader.register<Move>((C: Codex) => ({
   name: "Quick Attack",
   description: "The user lunges at the target at a speed that makes it almost invisible. This move always goes first.",
   type: C.Types.Normal,

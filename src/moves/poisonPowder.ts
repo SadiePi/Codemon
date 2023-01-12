@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const PoisonPowder: Move = preload.register<Move>((C: Codex) => ({
+export const PoisonPowder: Move = loader.register<Move>((C: Codex) => ({
   name: "Poison Powder",
   description: "The user scatters a cloud of poisonous dust that poisons the target.",
   type: C.Types.Poison,

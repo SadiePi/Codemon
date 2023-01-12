@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Wrap: Move = preload.register<Move>((C: Codex) => ({
+export const Wrap: Move = loader.register<Move>((C: Codex) => ({
   name: "Wrap",
   description: "A long body, vines, or the like are used to wrap and squeeze the target for four to five turns.",
   type: C.Types.Normal,

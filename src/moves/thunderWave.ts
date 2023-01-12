@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const ThunderWave: Move = preload.register<Move>((C: Codex) => ({
+export const ThunderWave: Move = loader.register<Move>((C: Codex) => ({
   name: "Thunder Wave",
   description: "The user launches a weak jolt of electricity that paralyzes the target.",
   type: C.Types.Electric,

@@ -1,7 +1,7 @@
-import { Codex, Move, power } from "../index.ts";
-import preload from "../preload.ts";
+import { Codex, Move } from "../index.ts";
+import loader from "../loader.ts";
 
-export const AcidArmor: Move = preload.register<Move>((C: Codex) => ({
+export const AcidArmor: Move = loader.register<Move>((C: Codex) => ({
   name: "Acid Armor",
   description: "The user alters its cellular structure to liquefy itself, sharply raising its Defense stat.",
   type: C.Types.Poison,

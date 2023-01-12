@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Rage: Move = preload.register<Move>((C: Codex) => ({
+export const Rage: Move = loader.register<Move>((C: Codex) => ({
   name: "Rage",
   description:
     "As long as this move is in use, the power of rage raises the Attack stat each time the user is hit in battle.",

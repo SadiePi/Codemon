@@ -1,7 +1,7 @@
 import { Codex, Type } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Ghost: Type = preload.register<Type>((C: Codex) => ({
+export const Ghost: Type = loader.register<Type>((C: Codex) => ({
   name: "Ghost",
   color: "#705898",
   weaknesses: [C.Types.Ghost, C.Types.Dark],

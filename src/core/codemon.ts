@@ -1,10 +1,13 @@
-import { EffectReciept, EffectTarget, EffectContext, AttackReciept } from "./battle.ts";
+import { EffectReciept, EffectContext, AttackReciept, Combatant } from "./battle.ts";
 import { MoveEntry, Move } from "./move.ts";
 import { BaseStats, EVYields, ExperienceGroup, IStatSet, Stat, StatSet } from "./stats.ts";
 import { Attack, Battle, getRandomNature, Nature } from "./index.ts";
 import { Mutable, NonEmptyArray, NonEmptyPartial, weightedRandom } from "./util.ts";
 import { Item } from "./item.ts";
 import decide, { Decider } from "./decision.ts";
+import { Trainer } from "./trainer.ts";
+import C from "../index.ts";
+import Config from "./config.ts"
 
 export interface Ability {
   name: string;
@@ -112,6 +115,7 @@ export interface ICodemon {
   stats?: IStatSet;
   moves?: Record<number, Move>;
   ability?: AbilitySelector;
+  trainer?: Trainer;
 }
 
 type SpawnBankEntry = [options: ICodemon, weight: number];
@@ -121,10 +125,11 @@ export function spawn(from: ICodemon | SpawnBank): Codemon {
 }
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
-export class Codemon implements EffectTarget {
+export class Codemon implements Combatant {
   public species: Species;
   public moves: MoveEntry[];
   public stats: StatSet;
+  public trainer: Trainer;
 
   constructor(options: ICodemon) {
     // TODO enforce sane values
@@ -140,6 +145,7 @@ export class Codemon implements EffectTarget {
       options.ability ?? Math.floor(Math.random() * options.species.abilities.normal.length);
     this._originalNature = this._nature = options.nature ?? getRandomNature();
     this.stats = new StatSet(this, { ...options.stats });
+    this.trainer = options.trainer ?? C.Trainers.Wild;
   }
 
   // abilities
@@ -220,7 +226,7 @@ export class Codemon implements EffectTarget {
     this._gender = this.species.overrideSex?.(this, gender) ?? gender;
   }
 
-  public calculateTypeBoost(attackType: Type) {
+  public calculateTypeMultiplier(attackType: Type) {
     let boost = 1;
     this.species.types.forEach(type => {
       if (type.immunities.includes(attackType)) boost *= 0;
@@ -239,10 +245,10 @@ export class Codemon implements EffectTarget {
     base /= defense.value(true);
     base = base / 50 + 2;
 
-    const typeBoost = this.calculateTypeBoost(attack.type);
+    const typeMultiplier = this.calculateTypeMultiplier(attack.type);
     const product =
       base *
-      typeBoost *
+      typeMultiplier *
       (attack.critical ?? 1) *
       (attack.random ?? 1) *
       (attack.stab ?? 1) *
@@ -251,12 +257,12 @@ export class Codemon implements EffectTarget {
       (attack.other ?? 1) *
       (attack.weather ?? 1);
     // const total = Math.floor(Math.min(product, this.stats.hp.current));
-    const total = Math.floor(product);
+    const total = Math.floor(Config.battle.limitDamageToRemainingHP ? Math.min(product, this.stats.hp.current) : product)
 
     return {
       attack,
       total,
-      typeBoost,
+      typeMultiplier,
     };
   }
 

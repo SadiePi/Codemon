@@ -1,7 +1,7 @@
 import { Codex, Move, Codemon } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Synthesis: Move = preload.register<Move>((C: Codex) => ({
+export const Synthesis: Move = loader.register<Move>((C: Codex) => ({
   name: "Synthesis",
   description: "The user restores its own HP. The amount of HP regained varies with the weather.",
   type: C.Types.Grass,

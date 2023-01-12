@@ -1,7 +1,7 @@
 import { Codex, Move, Codemon } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const SoftBoiled: Move = preload.register<Move>((C: Codex) => ({
+export const SoftBoiled: Move = loader.register<Move>((C: Codex) => ({
   name: "Soft-Boiled",
   description: "The user restores its own HP by up to half of its max HP.",
   type: C.Types.Normal,

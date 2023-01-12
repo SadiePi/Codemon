@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Toxic: Move = preload.register<Move>((C: Codex) => ({
+export const Toxic: Move = loader.register<Move>((C: Codex) => ({
   name: "Toxic",
   description: "A move that leaves the target badly poisoned. Its poison damage worsens every turn.",
   type: C.Types.Poison,

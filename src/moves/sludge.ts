@@ -1,7 +1,7 @@
 import { Codex, chance, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Sludge: Move = preload.register<Move>((C: Codex) => ({
+export const Sludge: Move = loader.register<Move>((C: Codex) => ({
   name: "Sludge",
   description: "Unsanitary sludge is hurled at the target. This may also poison the target.",
   type: C.Types.Poison,

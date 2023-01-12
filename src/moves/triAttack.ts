@@ -1,7 +1,7 @@
 import { Codex, power, Move, chance, multiple } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const TriAttack: Move = preload.register<Move>((C: Codex) => ({
+export const TriAttack: Move = loader.register<Move>((C: Codex) => ({
   name: "Tri Attack",
   description:
     "The user strikes with a simultaneous three-beam attack. This may also burn, freeze, or paralyze the target.",

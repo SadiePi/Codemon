@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const FurySwipes: Move = preload.register<Move>((C: Codex) => ({
+export const FurySwipes: Move = loader.register<Move>((C: Codex) => ({
   name: "Fury Swipes",
   description: "The target is raked with sharp claws or scythes quickly two to five times in a row.",
   type: C.Types.Normal,

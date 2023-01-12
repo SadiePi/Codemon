@@ -1,7 +1,7 @@
 import { Codex, chance, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Smog: Move = preload.register<Move>((C: Codex) => ({
+export const Smog: Move = loader.register<Move>((C: Codex) => ({
   name: "Smog",
   description: "The target is attacked with a discharge of filthy gases. This may also poison the target.",
   type: C.Types.Poison,

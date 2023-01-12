@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const MirrorMove: Move = preload.register<Move>((C: Codex) => ({
+export const MirrorMove: Move = loader.register<Move>((C: Codex) => ({
   name: "Mirror Move",
   description: "The user counters the target by mimicking the target's last move.",
   type: C.Types.Flying,

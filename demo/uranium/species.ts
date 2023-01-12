@@ -1,8 +1,8 @@
 import { Species, weighted } from "../../src/index.ts";
-import preload from "./preload.ts";
+import loader from "./loader.ts";
 
 // Define the Nucleon species, a Nuclear-type eeveelution
-export const Nucleon: Species = preload.register<Species>(C => ({
+export const Nucleon: Species = loader.register<Species>(C => ({
   name: "Nucleon",
   description: "A radioactive eeveelution.",
   //graphics: Graphics,

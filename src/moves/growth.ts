@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Growth: Move = preload.register<Move>((C: Codex) => ({
+export const Growth: Move = loader.register<Move>((C: Codex) => ({
   name: "Growth",
   description: "The user's body grows all at once, raising the Attack and Sp. Atk stats.",
   type: C.Types.Normal,

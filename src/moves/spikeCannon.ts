@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const SpikeCannon: Move = preload.register<Move>((C: Codex) => ({
+export const SpikeCannon: Move = loader.register<Move>((C: Codex) => ({
   name: "Spike Cannon",
   description: "Sharp spikes are shot at the target in rapid succession. Two to five times in a row.",
   type: C.Types.Normal,

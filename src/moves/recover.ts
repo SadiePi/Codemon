@@ -1,7 +1,7 @@
 import { Codex, Codemon, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Recover: Move = preload.register<Move>((C: Codex) => ({
+export const Recover: Move = loader.register<Move>((C: Codex) => ({
   name: "Recover",
   description: "Restoring its own cells, the user restores its own HP by half of its max HP.",
   type: C.Types.Normal,

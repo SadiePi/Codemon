@@ -1,7 +1,7 @@
 import { Codex, Move, Codemon } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const SuperFang: Move = preload.register<Move>((C: Codex) => ({
+export const SuperFang: Move = loader.register<Move>((C: Codex) => ({
   name: "Super Fang",
   description: "The user chomps hard on the target with its sharp front fangs. This cuts the target's HP in half.",
   type: C.Types.Normal,

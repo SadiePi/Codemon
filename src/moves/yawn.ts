@@ -1,4 +1,4 @@
-import { Move } from "../index.ts";
-import preload from "../preload.ts";
-
-export const Yawn = {} as Move;
+import { Codex, Move } from "../index.ts";
+import loader from "../loader.ts";
+    
+export const Yawn: Move = loader.register((C: Codex) => ({} as Move));

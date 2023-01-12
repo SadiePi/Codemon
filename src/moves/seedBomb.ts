@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const SeedBomb: Move = preload.register<Move>((C: Codex) => ({
+export const SeedBomb: Move = loader.register<Move>((C: Codex) => ({
   name: "Seed Bomb",
   description: "The user slams a barrage of hard-shelled seeds down on the target from above.",
   type: C.Types.Grass,

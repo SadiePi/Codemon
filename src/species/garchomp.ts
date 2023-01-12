@@ -1,7 +1,7 @@
 import { Codex, Species, weighted } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Garchomp: Species = preload.register<Species>((C: Codex) => ({
+export const Garchomp: Species = loader.register<Species>((C: Codex) => ({
   name: "Garchomp",
   description:
     "The protuberances on its head serve as sensors. It can even detect distant prey. It is said that when one runs at high speed, its wings create blades of wind that can fell nearby trees.",

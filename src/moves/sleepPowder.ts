@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const SleepPowder: Move = preload.register<Move>((C: Codex) => ({
+export const SleepPowder: Move = loader.register<Move>((C: Codex) => ({
   name: "Sleep Powder",
   description: "The user scatters a big cloud of sleep-inducing dust around the target.",
   type: C.Types.Grass,

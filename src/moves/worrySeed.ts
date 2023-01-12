@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const WorrySeed: Move = preload.register<Move>((C: Codex) => ({
+export const WorrySeed: Move = loader.register<Move>((C: Codex) => ({
   name: "Worry Seed",
   description:
     "A seed that causes worry is planted on the target. It prevents sleep by making the target's Ability Insomnia.",

@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const HydroPump: Move = preload.register<Move>((C: Codex) => ({
+export const HydroPump: Move = loader.register<Move>((C: Codex) => ({
   name: "Hydro Pump",
   description: "The target is blasted by a huge volume of water launched under great pressure.",
   type: C.Types.Water,

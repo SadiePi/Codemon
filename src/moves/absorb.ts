@@ -1,7 +1,7 @@
-import { Codex, Move, power } from "../index.ts";
-import preload from "../preload.ts";
+import { Codex, Move } from "../index.ts";
+import loader from "../loader.ts";
 
-export const Absorb: Move = preload.register<Move>((C: Codex) => ({
+export const Absorb: Move = loader.register<Move>((C: Codex) => ({
   name: "Absorb",
   description: "A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.",
   type: C.Types.Grass,

@@ -1,4 +1,4 @@
 import { Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
 export const SoulStealing7StarStrike = {} as Move;

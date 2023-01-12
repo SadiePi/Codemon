@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const PetalDance: Move = preload.register<Move>((C: Codex) => ({
+export const PetalDance: Move = loader.register<Move>((C: Codex) => ({
   name: "Petal Dance",
   description: "The user attacks the target with sharp petals that land on the target.",
   type: C.Types.Grass,

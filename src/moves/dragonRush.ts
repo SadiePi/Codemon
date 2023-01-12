@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const DragonRush: Move = preload.register<Move>((C: Codex) => ({
+export const DragonRush: Move = loader.register<Move>((C: Codex) => ({
   name: "Dragon Rush",
   description:
     "The user tackles the target while exhibiting overwhelming menace. This may also make the target flinch.",

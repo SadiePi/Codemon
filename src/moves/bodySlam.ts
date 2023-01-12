@@ -1,7 +1,7 @@
 import { chance, Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const BodySlam: Move = preload.register<Move>((C: Codex) => ({
+export const BodySlam: Move = loader.register<Move>((C: Codex) => ({
   name: "Body Slam",
   description:
     "The user drops onto the target with its full body weight. This may also leave the target with paralysis.",

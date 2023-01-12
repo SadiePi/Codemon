@@ -1,7 +1,7 @@
 import { Codex, power, Move, chance } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Lick: Move = preload.register<Move>((C: Codex) => ({
+export const Lick: Move = loader.register<Move>((C: Codex) => ({
   name: "Lick",
   description: "The target is licked with a long tongue, causing damage. It may also leave the target with paralysis.",
   type: C.Types.Ghost,

@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Spore: Move = preload.register<Move>((C: Codex) => ({
+export const Spore: Move = loader.register<Move>((C: Codex) => ({
   name: "Spore",
   description: "The user scatters bursts of spores that induce sleep.",
   type: C.Types.Grass,

@@ -1,24 +1,25 @@
 import { EventEmitter } from "./external.ts";
-import decide, { Decider } from "./decision.ts";
-import { Codemon, DamageCategory, MoveEntry, Type } from "./index.ts";
+import decide, { Decider, MultiDecider } from "./decision.ts";
+import { DamageCategory, MoveEntry, Type } from "./index.ts";
 
 import { TargetingCategory } from "./move.ts";
 import { StageMods } from "./stats.ts";
 import { Immutable } from "./util.ts";
+import { Trainer } from "./trainer.ts";
 
 // type EventHandler<E extends Record<string, unknown[]>> = {
 //   [K in keyof E]?: (...event: E[K]) => void;
 // };
 
 export type StatusEffectEvents = {
-  beforeApply: [entry: StatusEffectEntry, target: EffectTarget, source: Action, battle: Battle];
+  beforeApply: [entry: StatusEffectEntry, target: Combatant, source: Action, battle: Battle];
   // TODO ...
 };
 
 export interface StatusEffect {
   name: string;
   description: string;
-  apply: (target: EffectTarget, source: Action, battle: Battle) => void | (() => void);
+  apply: (target: Combatant, source: Action, battle: Battle) => void | (() => void);
   // TODO apply to map
 
   // below are common properties of status effects that could very well
@@ -40,13 +41,21 @@ export interface Weather {
   description: string;
   apply: (source: Action, battle: Battle) => void | (() => void);
   // TODO apply to map
+
+  // below are common properties of weather effects that could very well
+  // be implemented in the apply function, but it's nice to have the
+  // option to have the engine handle them for you
+  duration?: Decider<number, Battle>; // remove after this many turns
+  statStages?: Decider<StageMods, { source: Action, battle: Battle }>;
+
+
 }
 
 type SingleOrArray<T> = T | T[];
 
 // TODO this belongs in ../battles/traditional.ts but
 // that would lead to type parameters everywhere again
-export interface Effects {
+export type Effects = {
   /** Normal attack on the target */
   attack?: Attack;
   /** Apply status effects */
@@ -96,28 +105,26 @@ export interface Attack {
 
 export type AttackReciept = Immutable<{
   attack: Attack;
-  typeBoost: number;
+  typeMultiplier: number;
   total: number;
 }>;
 
 export type EffectDeciderContext = Immutable<{
   action: Action;
-  target: EffectTarget;
+  target: Combatant;
   battle: Battle;
 }>;
 
-export type EffectParams = {
-  [effect in keyof Effects]: Decider<Effects[effect], EffectDeciderContext>;
-} & {
+export type EffectParams = MultiDecider<Effects, EffectDeciderContext> & {
   accuracy?: number;
   recoil?: EffectParams;
   crash?: EffectParams;
 };
 
-export function decideEffects(action: Action, target: EffectTarget, battle: Battle) {
+export function decideEffects(action: Action, target: Combatant, battle: Battle) {
   const effects = action.effect;
   const context = { action, target, battle };
-  if (Math.random() > (effects.accuracy ?? 1.1)) return {};
+  if (effects.accuracy && Math.random() > effects.accuracy) return {};
   const ret: Effects = {};
   const attack = decide(effects.attack, context);
   if (attack) ret.attack = attack;
@@ -146,7 +153,7 @@ export type EffectSource = EffectParams & {
 
 export type EffectReciept = Immutable<
   {
-    target: EffectTarget;
+    target: Combatant;
     messages: BattleMessage[];
     attack?: AttackReciept;
   } & {
@@ -154,27 +161,19 @@ export type EffectReciept = Immutable<
   }
 >;
 
-export interface EffectContext {
-  effect: Effects;
-  action: Action;
-  battle: Battle;
-}
-
-export interface EffectTarget {
-  recieveEffect(context: EffectContext): EffectReciept | Promise<EffectReciept>;
-}
-
 // this is only a class so i can initialize the arrays here instead of everywhere else
 // there may be a better way
 export class Action {
   public source: ActionSource; // Note to self, Subject,
   public effect: EffectParams; // Verb
-  public targets: EffectTarget[]; // Object,
+  public targets: Combatant[]; // Object,
+  public actionReciepts: ActionReciept[] = []; // running list of past actions for this action
+  public effectReciepts: EffectReciept[] = []; // running list of effects for this action
   public preactions: ReadyAction[] = [];
   public reactions: ReadyAction[] = [];
   public messages: BattleMessage[] = [];
 
-  constructor(args: { source: ActionSource; targets: EffectTarget[]; effect: EffectParams }) {
+  constructor(args: { source: ActionSource; targets: Combatant[]; effect: EffectParams }) {
     this.source = args.source;
     this.targets = args.targets;
     this.effect = args.effect;
@@ -183,7 +182,7 @@ export class Action {
 
 export interface ActionUseContext {
   battle: Battle;
-  targets: EffectTarget[];
+  targets: Combatant[];
 }
 
 export interface ActionSource {
@@ -194,7 +193,7 @@ export interface ActionSource {
 
 export interface ReadyAction {
   source: ActionSource;
-  targets: EffectTarget[];
+  targets: Combatant[];
 }
 
 export interface ActionReciept {
@@ -211,7 +210,7 @@ export interface ActionReciept {
 export interface Round {
   readonly number: number;
   preactions: ReadyAction[];
-  reciepts: ActionReciept[]; // running list of past actions this round
+  actions: ActionReciept[]; // running list of past actions this round
   messages: BattleMessage[];
   reactions: ReadyAction[];
 }
@@ -227,20 +226,21 @@ export interface RoundReciept {
 export type BattleMessage = string; // TODO include animation info etc
 
 type BattleEvents = {
+  
   /** The start of the battle, before anything has happened */
-  start: [combatants: BattleActor[]];
+  start: [combatants: Combatant[]];
   /** The start of a round, before actions have been chosen */
   round: [round: Round];
   /** An actor has decided on an action */
-  readyAction: [action: ReadyAction];
+  ready: [action: ReadyAction];
   /** All actors have decided on an action */
-  ready: [actions: ReadyAction[]];
+  allReady: [actions: ReadyAction[]];
   /** An action is about to be executed */
   beforeAction: [action: ReadyAction];
   /** An action has been executed, but its effects haven't been sent to the targets yet */
   action: [action: Action];
   /** An effect is about to be sent to a target */
-  effect: [effect: Effects, target: EffectTarget, action: Action];
+  effect: [effect: Effects, target: Combatant, action: Action];
   /** An effect has been sent to a target */
   effectReciept: [reciept: EffectReciept];
   /** The end of an action, before reactions are run */
@@ -256,19 +256,21 @@ type BattleEvents = {
 };
 
 export interface TargetChoice {
-  targets: EffectTarget[];
+  targets: Combatant[];
   count: "All" | number;
   random?: boolean;
 }
-export interface BattleController {
-  action: (combatant: BattleActor, battle: Battle) => Promise<ActionSource> | ActionSource;
-  target: (combatant: BattleActor, ready: ActionSource, choice: TargetChoice) => EffectTarget[];
-  apply?: (battle: Battle) => void; // for player interfaces
-}
 
-export interface BattleActor {
-  self: Codemon; // TODO more, like substitute
-  controller: BattleController;
+export type EffectContext = Immutable<{
+  effect: Effects;
+  action: Action;
+  battle: Battle;
+}>
+
+// Codemon, substitute, unidentified ghost, etc
+export interface Combatant {
+  trainer: Trainer,
+  recieveEffect: (context: EffectContext) => EffectReciept
 }
 
 export abstract class Battle extends EventEmitter<BattleEvents> {
@@ -278,15 +280,14 @@ export abstract class Battle extends EventEmitter<BattleEvents> {
   abstract runRound(): Promise<RoundReciept>;
   abstract runAction(action: ReadyAction): Promise<ActionReciept>;
   abstract sortActions(actions: ReadyAction[]): ReadyAction[];
-  abstract getCurrentRound(): Round;
-  abstract getAction(combatant: BattleActor): ReadyAction | Promise<ReadyAction>;
+  abstract getRound(): Round;
   abstract getActions(): Promise<ReadyAction[]>;
-  abstract getTargets(source: ActionSource): TargetChoice | Promise<TargetChoice>;
+  abstract getAction(combatant: Combatant): ReadyAction | Promise<ReadyAction>;
 }
 
 export interface BattleReciept {
   readonly rounds: RoundReciept[];
-  readonly remaining: BattleActor[];
+  readonly remaining: Combatant[];
   readonly messages: BattleMessage[];
 }
 
@@ -311,7 +312,7 @@ export function flattenBattleMessages(battle: BattleReciept, into: BattleMessage
   return into;
 }
 
-export function recoil(target: EffectTarget, effect: EffectParams): ReadyAction {
+export function recoil(target: Combatant, effect: EffectParams): ReadyAction {
   const recoil: ActionSource = {
     priority: 0,
     targetingCategory: "Self",
@@ -328,7 +329,7 @@ export function recoil(target: EffectTarget, effect: EffectParams): ReadyAction 
   };
 }
 
-export function crash(target: EffectTarget, effect: EffectParams): ReadyAction {
+export function crash(target: Combatant, effect: EffectParams): ReadyAction {
   const crash: ActionSource = {
     priority: 0,
     targetingCategory: "Self",

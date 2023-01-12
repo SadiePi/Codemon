@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const DualChop: Move = preload.register<Move>((C: Codex) => ({
+export const DualChop: Move = loader.register<Move>((C: Codex) => ({
   name: "Dual Chop",
   description: "The user attacks its target by hitting it with brutal strikes. The target is hit twice in a row.",
   type: C.Types.Dragon,

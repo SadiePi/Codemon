@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const PinMissle: Move = preload.register<Move>((C: Codex) => ({
+export const PinMissle: Move = loader.register<Move>((C: Codex) => ({
   name: "Pin Missile",
   description: "Sharp spikes are shot at the target in rapid succession. They hit two to five times in a row.",
   type: C.Types.Bug,

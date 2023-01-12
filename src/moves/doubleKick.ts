@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const DoubleKick: Move = preload.register<Move>((C: Codex) => ({
+export const DoubleKick: Move = loader.register<Move>((C: Codex) => ({
   name: "Double Kick",
   description: "The target is quickly kicked twice in succession using both feet.",
   type: C.Types.Fighting,

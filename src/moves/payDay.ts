@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const PayDay: Move = preload.register<Move>((C: Codex) => ({
+export const PayDay: Move = loader.register<Move>((C: Codex) => ({
   name: "Pay Day",
   description: "Numerous coins are hurled at the target to inflict damage. Money is earned after the battle.",
   type: C.Types.Normal,

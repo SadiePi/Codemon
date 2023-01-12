@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Dig: Move = preload.register<Move>((C: Codex) => ({
+export const Dig: Move = loader.register<Move>((C: Codex) => ({
   name: "Dig",
   description: "The user burrows into the ground, then attacks on the next turn.",
   type: C.Types.Ground,

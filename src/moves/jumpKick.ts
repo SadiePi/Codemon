@@ -1,7 +1,7 @@
 import { Codex, Codemon, Move, power } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const JumpKick: Move = preload.register<Move>((C: Codex) => ({
+export const JumpKick: Move = loader.register<Move>((C: Codex) => ({
   name: "Jump Kick",
   description: "The user jumps up high, then strikes with a kick. If the kick misses, the user hurts itself.",
   type: C.Types.Fighting,

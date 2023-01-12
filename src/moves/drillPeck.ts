@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const DrillPeck: Move = preload.register<Move>((C: Codex) => ({
+export const DrillPeck: Move = loader.register<Move>((C: Codex) => ({
   name: "Drill Peck",
   description: "A corkscrewing attack that strikes the target with a sharp beak acting as a drill.",
   type: C.Types.Flying,

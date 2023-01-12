@@ -79,7 +79,7 @@ export class MoveEntry implements ActionSource {
   }
 
   private GetCriticalMultiplier(): number {
-    return this.TryCriticalHit() ? C.codemon.moves.criticalMultiplier : 1;
+    return this.TryCriticalHit() ? C.moves.criticalMultiplier : 1;
   }
 
   /*private GetAttack(usage: ReadyAction, targets: ActionTarget[], _battle: Battle): Attack {
@@ -148,13 +148,13 @@ export class PPScheme {
   }
 
   public canBoost(): boolean {
-    return this._boosts < C.codemon.moves.maxPPBoosts;
+    return this._boosts < C.moves.maxPPBoosts;
   }
 
   public boost(): number {
     if (!this.canBoost()) return 0;
     this._boosts++;
-    const change = this.base * C.codemon.moves.ppBoostMultiplier;
+    const change = this.base * C.moves.ppBoostMultiplier;
     this._max += change;
     this._current += change;
     return change;

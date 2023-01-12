@@ -1,7 +1,7 @@
 import { Codex, weighted, Species } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Bulbasaur: Species = preload.register((C: Codex) => ({
+export const Bulbasaur: Species = loader.register((C: Codex) => ({
   name: "Bulbasaur",
   description:
     "There is a plant seed on its back right from the day this Pokémon is born. The seed slowly grows larger. While it is young, it uses the nutrients that are stored in the seed in order to grow.",
@@ -26,7 +26,6 @@ export const Bulbasaur: Species = preload.register((C: Codex) => ({
   baseExperienceYield: 64,
   evolutions: [
     [C.Species.Ivysaur, { level: 16 }],
-    [C.Species.Pikachu, { item: C.Items.SunStone }],
   ],
   experienceGroup: C.Experience.MedSlow,
   catchRate: 45,

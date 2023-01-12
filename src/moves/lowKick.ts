@@ -1,7 +1,7 @@
 import { Codex, Codemon, Move, power } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const LowKick: Move = preload.register<Move>((C: Codex) => ({
+export const LowKick: Move = loader.register<Move>((C: Codex) => ({
   name: "Low Kick",
   description:
     "A powerful low kick that makes the target fall over. The heavier the target, the greater the move's power.",

@@ -1,4 +1,4 @@
 import { Species } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 export const Graveler = {} as Species;
 export const GravelerAlola = {} as Species;

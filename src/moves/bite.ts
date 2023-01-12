@@ -1,7 +1,7 @@
 import { chance, Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Bite: Move = preload.register<Move>((C: Codex) => ({
+export const Bite: Move = loader.register<Move>((C: Codex) => ({
   name: "Bite",
   description: "The target is bitten with viciously sharp fangs. This may also make the target flinch.",
   type: C.Types.Dark,

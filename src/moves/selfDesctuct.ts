@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const SelfDesctuct: Move = preload.register<Move>((C: Codex) => ({
+export const SelfDesctuct: Move = loader.register<Move>((C: Codex) => ({
   name: "Self-Destruct",
   description: "The user attacks everything around it by causing an explosion. The user faints upon using this move.",
   type: C.Types.Normal,

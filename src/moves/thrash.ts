@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Thrash: Move = preload.register<Move>((C: Codex) => ({
+export const Thrash: Move = loader.register<Move>((C: Codex) => ({
   name: "Thrash",
   description: "The user rampages and attacks for two to three turns. The user then becomes confused.",
   type: C.Types.Normal,

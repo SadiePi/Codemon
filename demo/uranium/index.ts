@@ -1,4 +1,4 @@
-import preload from "./preload.ts"
+import loader from "./loader.ts"
 import C from "../../src/index.ts";
 import * as Species from "./species.ts";
 import * as Types from "./types.ts";
@@ -12,6 +12,6 @@ export const UraniumCodex = {
 } as const;
 export type UraniumCodex = typeof UraniumCodex;
 
-preload.build(UraniumCodex);
+loader.build(UraniumCodex);
 
 export default UraniumCodex;

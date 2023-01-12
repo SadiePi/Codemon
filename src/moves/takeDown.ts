@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const TakeDown: Move = preload.register<Move>((C: Codex) => ({
+export const TakeDown: Move = loader.register<Move>((C: Codex) => ({
   name: "Take Down",
   description: "A reckless, full-body charge attack for slamming into the target. This also damages the user a little.",
   type: C.Types.Normal,

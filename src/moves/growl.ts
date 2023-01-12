@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Growl: Move = preload.register<Move>((C: Codex) => ({
+export const Growl: Move = loader.register<Move>((C: Codex) => ({
   name: "Growl",
   description:
     "The user growls in an endearing way, making opposing Pokémon less wary. This lowers their Attack stats.",

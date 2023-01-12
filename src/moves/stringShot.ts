@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const StringShot: Move = preload.register<Move>((C: Codex) => ({
+export const StringShot: Move = loader.register<Move>((C: Codex) => ({
   name: "String Shot",
   description: "Opposing Pokémon are bound with silk blown from the user's mouth that harshly lowers the Speed stat.",
   type: C.Types.Bug,

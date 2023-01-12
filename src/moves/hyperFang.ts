@@ -1,7 +1,7 @@
 import { Codex, power, Move, chance } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const HyperFang: Move = preload.register<Move>((C: Codex) => ({
+export const HyperFang: Move = loader.register<Move>((C: Codex) => ({
   name: "Hyper Fang",
   description: "The user bites hard on the target with its sharp front fangs. This may also make the target flinch.",
   type: C.Types.Normal,

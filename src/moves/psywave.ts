@@ -1,7 +1,7 @@
 import { Codex, Move, Codemon } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Psywave: Move = preload.register<Move>((C: Codex) => ({
+export const Psywave: Move = loader.register<Move>((C: Codex) => ({
   name: "Psywave",
   description: "The target is attacked with an odd psychic wave. The attack varies in intensity.",
   type: C.Types.Psychic,

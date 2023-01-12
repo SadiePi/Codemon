@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Tackle: Move = preload.register<Move>((C: Codex) => ({
+export const Tackle: Move = loader.register<Move>((C: Codex) => ({
   name: "Tackle",
   description: "A physical attack in which the user charges and slams into the target with its whole body.",
   type: C.Types.Normal,

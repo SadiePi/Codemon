@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Swift: Move = preload.register<Move>((C: Codex) => ({
+export const Swift: Move = loader.register<Move>((C: Codex) => ({
   name: "Swift",
   description: "Star-shaped rays are shot at the opposing Pokémon. This attack never misses.",
   type: C.Types.Normal,

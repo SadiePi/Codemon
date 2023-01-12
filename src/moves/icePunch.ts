@@ -1,7 +1,7 @@
 import { Codex, power, Move, chance } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const IcePunch: Move = preload.register<Move>((C: Codex) => ({
+export const IcePunch: Move = loader.register<Move>((C: Codex) => ({
   name: "Ice Punch",
   description: "The target is punched with an icy fist. This may also leave the target frozen.",
   type: C.Types.Ice,

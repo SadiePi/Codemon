@@ -1,3 +1,6 @@
+// The structure of this file came to me all at once. I have no idea if it's
+// unique or good, but I'm going to use it for now.
+
 import { NonEmptyArray, weightedRandom } from "./util.ts";
 
 type Maybe<T> = T | undefined;
@@ -28,7 +31,7 @@ export function condition<T, Context>(
   predicate: (context: Context) => boolean,
   effect: Decider<T, Context>,
   otherwise?: Decider<T, Context>
-): Decider<T | Maybe<T>, Context> {
+): Decider<Maybe<T>, Context> {
   return (context: Context) => {
     if (predicate(context)) return effect;
     if (otherwise) return otherwise;

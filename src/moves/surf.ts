@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Surf: Move = preload.register<Move>((C: Codex) => ({
+export const Surf: Move = loader.register<Move>((C: Codex) => ({
   name: "Surf",
   description: "The user attacks everything around it by swamping its surroundings with a giant wave.",
   type: C.Types.Water,

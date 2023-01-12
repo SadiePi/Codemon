@@ -1,7 +1,7 @@
 import { chance, Codex, Move, power } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const AuroraBeam: Move = preload.register<Move>((C: Codex) => ({
+export const AuroraBeam: Move = loader.register<Move>((C: Codex) => ({
   name: "Aurora Beam",
   description: "The target is hit with a rainbow-colored beam. This may also lower the target's Attack stat.",
   type: C.Types.Ice,

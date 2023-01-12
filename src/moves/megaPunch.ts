@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const MegaPunch: Move = preload.register<Move>((C: Codex) => ({
+export const MegaPunch: Move = loader.register<Move>((C: Codex) => ({
   name: "Mega Punch",
   description: "The target is slugged by a punch thrown with muscle-packed power.",
   type: C.Types.Normal,

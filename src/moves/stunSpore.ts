@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const StunSpore: Move = preload.register<Move>((C: Codex) => ({
+export const StunSpore: Move = loader.register<Move>((C: Codex) => ({
   name: "Stun Spore",
   description: "The user scatters a cloud of numbing powder that paralyzes the target.",
   type: C.Types.Grass,

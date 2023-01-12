@@ -1,7 +1,7 @@
+import { Combatant } from "../core/battle.ts";
 import {
   MoveEntry,
   TargetChoice,
-  Codemon,
   EffectReciept,
   ActionReciept,
   ActionSource,
@@ -9,33 +9,14 @@ import {
   ReadyAction,
   RoundReciept,
   decideEffects,
-  BattleActor,
-  BattleController,
   Round,
 } from "../index.ts";
 
-export const AIController: BattleController = {} as BattleController; // TODO
-export const PlayerConsoleController: BattleController = {} as BattleController; // TODO
-
-export function AI(codemon: Codemon): BattleActor {
-  return {
-    self: codemon,
-    controller: AIController,
-  };
-}
-
-export function Player(codemon: Codemon): BattleActor {
-  return {
-    self: codemon,
-    controller: PlayerConsoleController,
-  };
-}
-
 export default class TraditionalBattle extends Battle {
   private round: Round;
-  public combatants: BattleActor[];
+  public combatants: Combatant[];
 
-  constructor(...combatants: BattleActor[]) {
+  constructor(...combatants: Combatant[]) {
     super();
     this.combatants = combatants;
     this.round = {
@@ -47,7 +28,7 @@ export default class TraditionalBattle extends Battle {
   getTargets(source: ActionSource): TargetChoice {
     // TODO apply targeting category filter
     return {
-      targets: this.combatants.map(c => c.self),
+      targets: this.combatants,
       count: 1,
       random: true,
     };
@@ -69,21 +50,21 @@ export default class TraditionalBattle extends Battle {
     this.round = {
       number: this.round.number + 1,
       preactions: [],
-      reciepts: [],
+      actions: [],
       messages: [],
       reactions: [],
     };
-    await this.wait("round", this.getCurrentRound());
+    await this.wait("round", this.getRound());
 
     const actions = await this.getActions();
-    await this.wait("ready", actions);
+    await this.wait("allReady", actions);
 
     const reciepts: ActionReciept[] = [];
     for (const action of this.sortActions(actions)) reciepts.push(await this.runAction(action));
 
-    await this.wait("roundEnd", this.getCurrentRound());
+    await this.wait("roundEnd", this.getRound());
     const reactionReciepts: ActionReciept[] = [];
-    for (const reaction of this.sortActions(this.getCurrentRound().reactions))
+    for (const reaction of this.sortActions(this.getRound().reactions))
       reactionReciepts.push(await this.runAction(reaction));
 
     const reciept: RoundReciept = {
@@ -99,18 +80,18 @@ export default class TraditionalBattle extends Battle {
     return reciept;
   }
 
-  async getAction(combatant: BattleActor) {
-    const sourcing = combatant.controller.action(combatant, this);
+  async getAction(combatant: Combatant) {
+    const sourcing = combatant.trainer.strategy.chooseAction(combatant, this);
     const source = await sourcing;
     const choice = await this.getTargets(source);
-    const targets = combatant.controller.target(combatant, source, choice);
+    const targets = combatant.trainer.strategy.chooseTarget(source, combatant, choice, this);
     const ready = { source, targets };
-    await this.wait("readyAction", ready);
+    await this.wait("ready", ready);
     return ready;
   }
 
   async getActions() {
-    const actions = [];
+    const actions: ReadyAction[] = [];
     for (const combatant of this.combatants) actions.push(await this.getAction(combatant));
     return actions;
   }
@@ -163,7 +144,7 @@ export default class TraditionalBattle extends Battle {
     return reciept;
   }
 
-  getCurrentRound() {
+  getRound() {
     return this.round;
   }
 }

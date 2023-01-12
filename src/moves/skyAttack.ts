@@ -1,7 +1,7 @@
 import { Codex, chance, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const SkyAttack: Move = preload.register<Move>((C: Codex) => ({
+export const SkyAttack: Move = loader.register<Move>((C: Codex) => ({
   name: "Sky Attack",
   description: "A second-turn attack move where critical hits land more easily. This may also make the target flinch.",
   type: C.Types.Flying,

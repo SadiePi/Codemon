@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Guillotine: Move = preload.register<Move>((C: Codex) => ({
+export const Guillotine: Move = loader.register<Move>((C: Codex) => ({
   name: "Guillotine",
   description: "A vicious, tearing attack with big pincers. The target faints instantly if this attack hits.",
   type: C.Types.Normal,

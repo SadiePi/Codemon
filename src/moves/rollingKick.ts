@@ -1,7 +1,7 @@
 import { Codex, power, Move, chance } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const RollingKick: Move = preload.register<Move>((C: Codex) => ({
+export const RollingKick: Move = loader.register<Move>((C: Codex) => ({
   name: "Rolling Kick",
   description: "The user lashes out with a quick, spinning kick. This may also make the target flinch.",
   type: C.Types.Fighting,

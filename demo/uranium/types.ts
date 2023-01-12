@@ -1,7 +1,7 @@
 import { Type } from "../../src/index.ts";
-import preload from "./preload.ts";
+import loader from "./loader.ts";
 
-export const Nuclear: Type = preload.register<Type>(
+export const Nuclear: Type = loader.register<Type>(
   C => ({
     name: "Nuclear",
     color: "#00FF00",

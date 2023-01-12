@@ -1,7 +1,7 @@
 import { Codex, chance, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Thunder: Move = preload.register<Move>((C: Codex) => ({
+export const Thunder: Move = loader.register<Move>((C: Codex) => ({
   name: "Thunder",
   description:
     "A wicked thunderbolt is dropped on the target to inflict damage. This may also leave the target with paralysis.",

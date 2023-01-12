@@ -1,7 +1,7 @@
 import { Codex, chance, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Twineedle: Move = preload.register<Move>((C: Codex) => ({
+export const Twineedle: Move = loader.register<Move>((C: Codex) => ({
   name: "Twineedle",
   description:
     "The user damages the target twice in succession by jabbing it with two spikes. This may also poison the target.",

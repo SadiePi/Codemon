@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Slam: Move = preload.register<Move>((C: Codex) => ({
+export const Slam: Move = loader.register<Move>((C: Codex) => ({
   name: "Slam",
   description: "The target is slammed with a long tail, vines, or the like to inflict damage.",
   type: C.Types.Normal,

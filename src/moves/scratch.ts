@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Scratch: Move = preload.register<Move>((C: Codex) => ({
+export const Scratch: Move = loader.register<Move>((C: Codex) => ({
   name: "Scratch",
   description: "Hard, pointed, sharp claws rake the target to inflict damage.",
   type: C.Types.Normal,

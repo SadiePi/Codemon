@@ -1,7 +1,7 @@
 import { Codex, Type } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Ground: Type = preload.register<Type>((C: Codex) => ({
+export const Ground: Type = loader.register<Type>((C: Codex) => ({
   name: "Ground",
   color: "#E0C068",
   weaknesses: [C.Types.Water, C.Types.Grass, C.Types.Ice],

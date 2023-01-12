@@ -1,7 +1,7 @@
 import { Codex, Codemon, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const NightShade: Move = preload.register<Move>((C: Codex) => ({
+export const NightShade: Move = loader.register<Move>((C: Codex) => ({
   name: "Night Shade",
   description: "The user makes the target see a frightening mirage. It inflicts damage equal to the user's level.",
   type: C.Types.Ghost,

@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Bulldoze: Move = preload.register<Move>((C: Codex) => ({
+export const Bulldoze: Move = loader.register<Move>((C: Codex) => ({
   name: "Bulldoze",
   description:
     "The user tramples its target into the ground, dealing damage. This also lowers the target's action speed.",

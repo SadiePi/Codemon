@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Splash: Move = preload.register<Move>((C: Codex) => ({
+export const Splash: Move = loader.register<Move>((C: Codex) => ({
   name: "Splash",
   description: "The user just flops and splashes around to no effect at all.",
   type: C.Types.Normal,

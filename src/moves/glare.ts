@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Glare: Move = preload.register<Move>((C: Codex) => ({
+export const Glare: Move = loader.register<Move>((C: Codex) => ({
   name: "Glare",
   description: "The user intimidates the target with the pattern on its belly to cause paralysis.",
   type: C.Types.Normal,

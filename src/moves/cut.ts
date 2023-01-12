@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Cut: Move = preload.register<Move>((C: Codex) => ({
+export const Cut: Move = loader.register<Move>((C: Codex) => ({
   name: "Cut",
   description: "The target is cut with a scythe or claw.",
   type: C.Types.Normal,

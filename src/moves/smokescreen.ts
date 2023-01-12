@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Smokescreen: Move = preload.register<Move>((C: Codex) => ({
+export const Smokescreen: Move = loader.register<Move>((C: Codex) => ({
   name: "Smokescreen",
   description: "The user releases an obscuring cloud of smoke or ink. This lowers the target's accuracy.",
   type: C.Types.Normal,

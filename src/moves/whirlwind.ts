@@ -1,7 +1,7 @@
 import { Codex, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Whirlwind: Move = preload.register<Move>((C: Codex) => ({
+export const Whirlwind: Move = loader.register<Move>((C: Codex) => ({
   name: "Whirlwind",
   description:
     "The target is blown away, and a different Pokémon is dragged out. In the wild, this ends a battle against a single Pokémon.",

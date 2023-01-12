@@ -1,7 +1,7 @@
 import { Codex, power, Move, chance } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const Psybeam: Move = preload.register<Move>((C: Codex) => ({
+export const Psybeam: Move = loader.register<Move>((C: Codex) => ({
   name: "Psybeam",
   description: "The target is attacked with a peculiar ray. This may also leave the target confused.",
   type: C.Types.Psychic,

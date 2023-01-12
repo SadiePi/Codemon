@@ -1,7 +1,7 @@
 import { Codex, power, Move } from "../index.ts";
-import preload from "../preload.ts";
+import loader from "../loader.ts";
 
-export const ConfuseRay: Move = preload.register<Move>((C: Codex) => ({
+export const ConfuseRay: Move = loader.register<Move>((C: Codex) => ({
   name: "Confuse Ray",
   description: "The target is exposed to a sinister ray that triggers confusion.",
   type: C.Types.Ghost,
