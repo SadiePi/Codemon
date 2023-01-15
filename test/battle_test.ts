@@ -1,4 +1,4 @@
-import C, { Codemon, flattenBattleMessages, flattenRoundMessages, spawn } from "../src/index.ts";
+import C, { Codemon, flattenBattleMessages, flattenRoundMessages, spawn } from "../src/mod.ts";
 import TraditionalBattle from "../src/battles/traditional.ts";
 import { iBulby } from "./common.ts";
 
@@ -13,7 +13,7 @@ Deno.test({
     const battle = new TraditionalBattle(bulby1, bulby2);
     const reciept = await battle.runRound();
 
-    console.log(flattenRoundMessages(reciept)); 
+    console.log(flattenRoundMessages(reciept));
   },
 });
 
@@ -24,12 +24,14 @@ Deno.test({
     const bulby2 = spawn({ ...iBulby, name: "Bulby 2" });
 
     const battle = new TraditionalBattle(bulby1, bulby2);
-    battle.on("battleReciept", (reciept) => {
+    battle.on("battleReciept", reciept => {
       reciept.messages.push(`Battle over!`);
-      reciept.messages.push(`Winner: ${reciept.remaining.map((c) => c instanceof Codemon ? c.name : "Non-Codemon").join(", ")}`);
+      reciept.messages.push(
+        `Winner: ${reciept.remaining.map(c => (c instanceof Codemon ? c.name : "Non-Codemon")).join(", ")}`
+      );
     });
-    
+
     const reciept = await battle.runBattle();
     console.log(flattenBattleMessages(reciept));
-  }
+  },
 });

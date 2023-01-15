@@ -11,13 +11,13 @@ import C, {
   Round,
   RoundReciept,
   spawn,
-} from "../src/index.ts";
+} from "../src/mod.ts";
 import { assertEquals, assertNotEquals } from "./common.ts";
 import { iBigBoi, iBulby, iGlassCannon, iKibble } from "./common.ts";
 
 async function runAction({ source, targets }: ReadyAction, battle: Battle = {} as Battle, debug = false) {
   // emit beforeAction
-  
+
   const action = source.useAction({ targets, battle });
   if (debug) console.log("Action", action);
 
@@ -52,7 +52,7 @@ async function runAction({ source, targets }: ReadyAction, battle: Battle = {} a
   // emit actionEnd
 
   const reactions = await Promise.all(action.reactions.map(reaction => runAction(reaction, battle, debug)));
-  
+
   const actionReciept: ActionReciept = {
     source,
     effects,
@@ -66,14 +66,18 @@ async function runAction({ source, targets }: ReadyAction, battle: Battle = {} a
   return actionReciept;
 }
 
-async function simulateRoundPipeline(combatants: Combatant[], battle: Battle = {} as Battle, debug = false): Promise<RoundReciept> {
+async function simulateRoundPipeline(
+  combatants: Combatant[],
+  battle: Battle = {} as Battle,
+  debug = false
+): Promise<RoundReciept> {
   const round: Round = {
     number: 0,
     preactions: [],
     actions: [],
     reactions: [],
     messages: [],
-  }
+  };
 
   // emit round
   const preactions = await Promise.all(round.preactions.map(preaction => runAction(preaction, battle, debug)));
@@ -82,7 +86,7 @@ async function simulateRoundPipeline(combatants: Combatant[], battle: Battle = {
   const actions = await Promise.all(readyActions.map(action => runAction(action, battle, debug)));
   // emit roundEnd
   const reactions = await Promise.all(round.reactions.map(reaction => runAction(reaction, battle, debug)));
-  
+
   const roundReciept: RoundReciept = {
     number: round.number,
     preactions,
@@ -96,7 +100,11 @@ async function simulateRoundPipeline(combatants: Combatant[], battle: Battle = {
 }
 
 // deno-lint-ignore no-unused-vars
-async function simulateBattlePipeline(combatants: Combatant[], battle: Battle = {} as Battle, debug = false): Promise<BattleReciept> {
+async function simulateBattlePipeline(
+  combatants: Combatant[],
+  battle: Battle = {} as Battle,
+  debug = false
+): Promise<BattleReciept> {
   // emit start
   const rounds: RoundReciept[] = [];
   while (combatants.length > 1) {
@@ -178,9 +186,11 @@ Deno.test("Spore - Status Effect", async () => {
   const bigBoi = spawn(iBigBoi);
   bulby.learnMove(C.Moves.Spore);
 
-  const actionReciept = await runAction({ 
+  const actionReciept = await runAction({
     combatant: bulby,
-    source: bulby.moves[0], targets: [bigBoi] });
+    source: bulby.moves[0],
+    targets: [bigBoi],
+  });
   const messages = flattenActionMessages(actionReciept);
   console.log(messages.join("\n"));
 

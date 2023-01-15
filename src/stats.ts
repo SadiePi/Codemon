@@ -1,15 +1,12 @@
-
 // Add new stats by editing these two arrays
 // Type errors will show you where else you need to edit
 // Everything else will adapt automatically
 export const PermanentStats = ["hp", "attack", "defense", "specialAttack", "specialDefense", "speed"] as const;
 export const BattleStats = ["accuracy", "evasion"] as const;
 
-import C from "./index.ts";
-import Config from "./config.ts";
-import { Codemon } from "./codemon.ts";
-import { unweightedRandom } from "./util.ts";
 import { EventEmitter } from "./external.ts";
+import C, { Codemon, config } from "./mod.ts";
+import { unweightedRandom } from "./util.ts";
 
 export const Stats = [...PermanentStats, ...BattleStats] as const;
 export type PermanentStat = typeof PermanentStats[number];
@@ -35,7 +32,7 @@ class StatStage {
   public modify(modification: number) {
     const old = this.current;
     this._stage += modification;
-    this._stage = Math.max(Config.stats.minStage, Math.min(this._stage, Config.stats.maxStage));
+    this._stage = Math.max(config.stats.minStage, Math.min(this._stage, config.stats.maxStage));
     if (this._stage !== old) this.entry.set.emit("stageChange", this.entry.stat, old, this.current);
     return this._stage - old;
   }
@@ -77,7 +74,7 @@ class PermanentStatEntry extends BattleStatEntry {
   constructor(stat: Stat, set: StatSet, stagePower: number, args: IPermanentStatEntry) {
     super(stat, set, stagePower, args);
     if (!PermanentStats.includes(stat as PermanentStat)) throw new Error(`Invalid stat ${stat} for PermanentStatEntry`);
-    this.individualValue = args.individualValue ?? Math.floor(Math.random() * Config.stats.maxIV);
+    this.individualValue = args.individualValue ?? Math.floor(Math.random() * config.stats.maxIV);
     this.effortValue = args.effortValue ?? 0;
   }
 
@@ -92,13 +89,12 @@ class PermanentStatEntry extends BattleStatEntry {
     const natureBuff = nature.buff === this.stat;
     const natureNerf = nature.nerf === this.stat;
     let natureEffect = 1;
-    if (natureBuff && !natureNerf) natureEffect *= 1 + Config.stats.natureEffect;
-    if (natureNerf && !natureBuff) natureEffect *= 1 - Config.stats.natureEffect;
-    if (nature.effect) natureEffect = nature.effect(this.stat)
+    if (natureBuff && !natureNerf) natureEffect *= 1 + config.stats.natureEffect;
+    if (natureNerf && !natureBuff) natureEffect *= 1 - config.stats.natureEffect;
+    if (nature.effect) natureEffect = nature.effect(this.stat);
     val = Math.floor(val * natureEffect);
 
-    if (considerStage)
-      val = Math.floor(val * this.stage.multiplier());
+    if (considerStage) val = Math.floor(val * this.stage.multiplier());
 
     return val;
   }

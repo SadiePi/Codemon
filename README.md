@@ -1,49 +1,38 @@
 # Codemon - FOSS Pokémon library
 
-[![Codemon](https://img.shields.io/badge/Codemon-0.0.1-blue)](https://www.codemon.dev)
-[![Deno](https://img.shields.io/badge/Deno-1.4.6-blue)](https://deno.land/)
-[![License](https://img.shields.io/badge/License-MIT-blue)](https://opensource.org/licenses/MIT)
+Codemon is a WIP Pokémon library for Typescript using Deno. It faithfully implements
+mechanics from the games, and is designed to be as easy to use as possible.
 
-Codemon is a fully modular Pokémon library. It is designed to make it easy to create your
-own Pokémon game, including new species, moves, types, and more. 
+## Usage
 
-This implementation is being done in Typescript with [Deno](https://deno.land), but I'd eventually like to make implementations of this library for many languages and platforms. All game information, including data and mechanics but not implementations, is being translated directly from [Bulbapedia](https://bulbapedia.bulbagarden.net).
+### Spawn a Pokémon
 
-Currently, the following features are more or less complete and fully modular:
+```ts
+import P, { Codemon } from "https://deno.land/x/codemon/mod.ts"; // note: not yet published
 
-- Species
-- Codex (Pokédex)
-- Individual Codemon (Pokémon)
-- Moves
-- Types
-- Stats
-- Natures
-- Leveling
-- Genders (🏳️‍⚧️)
-- Abstract Battle System
+const charmander = new Codemon({
+  species: P.Species.Charmander,
+  stats: { level: 5 },
+});
 
-With these well on their way:
+console.log(charmander.stats.hp.current);
+```
 
-- Traditional battle using the above
-- Abilities
-- Items
-- Weather
-- Status Effects
-- AI Controllers
-- Abstract Player Controller
+### TODO: More examples
 
-And these planned for the future:
+## Codex
 
-- Evolution
-- Breeding
-- Trainers
-- Locales
-- Abstract World Map (for use in MVC)
+The Codex acts as the Pokédex for the library, but with far more information than the games provide. It contains fully detailed information on every species, move, ability, item, and more.
 
-The Codex currently has entries for all traditional Species, Moves, Types, Natures, Abilities, Items, Weathers, and Status Effects. Yes, all of them, even ones that were removed from the official games. Most are just placeholders, but all types, all gen 1 moves, and a few Pokémon been translated.
+### Species
 
-My current long-term plan is to have all traditional data translated, and to have a full, CLI-only game in `/demo/game`. Further graphics will have to be done by developers using this library.
+```ts
 
 ## Contributing
 
-I'd prefer for the core functionality to remain a personal project, but I would appreciate contributions to flesh out the data translations and find things that this doesn't support yet. If you'd like to contribute, please open an issue or pull request.
+I'd prefer for this to remain a mostly solo project. That said, I would appreciate bug reports and PRs to flesh out entries in `codex/pokemon/`.
+```
+
+### Arceus files
+
+Arceus files (see `./codex/pokemon/.arceus`) are used to generate the proper structure and placeholder entries for the Codex. 

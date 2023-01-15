@@ -1,4 +1,4 @@
-import { config, Action, ActionSource, ActionUseContext, Codemon, EffectSource, Type } from "./index.ts";
+import { config, Action, ActionSource, ActionUseContext, Codemon, EffectSource, Type } from "./mod.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
 

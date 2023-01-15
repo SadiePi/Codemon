@@ -1,14 +1,19 @@
 // TODO change this to Competition and change TraditionalBattle to Battle
 
 import { EventEmitter } from "./external.ts";
-import { decide, Decider, MultiDecider } from "./decision.ts";
-import { DamageCategory, MoveEntry, Type } from "./index.ts";
-
-import { TargetingCategory } from "./move.ts";
-import { StageMods } from "./stats.ts";
+import {
+  config,
+  DamageCategory,
+  decide,
+  Decider,
+  MoveEntry,
+  MultiDecider,
+  StageMods,
+  TargetingCategory,
+  Trainer,
+  Type,
+} from "./mod.ts";
 import { Immutable } from "./util.ts";
-import { Trainer } from "./trainer.ts";
-import config from "./config.ts";
 
 // type EventHandler<E extends Record<string, unknown[]>> = {
 //   [K in keyof E]?: (...event: E[K]) => void;
@@ -49,9 +54,7 @@ export interface Weather {
   // be implemented in the apply function, but it's nice to have the
   // option to have the engine handle them for you
   duration?: Decider<number, Battle>; // remove after this many turns
-  statStages?: Decider<StageMods, { source: Action, battle: Battle }>;
-
-
+  statStages?: Decider<StageMods, { source: Action; battle: Battle }>;
 }
 
 type SingleOrArray<T> = T | T[];
@@ -77,7 +80,7 @@ export type Effects = {
   end?: boolean;
   /** Instant faint */
   faint?: boolean;
-}
+};
 
 export interface Attack {
   /** The level of the user */
@@ -230,7 +233,6 @@ export interface RoundReciept {
 export type BattleMessage = string; // TODO include animation info etc
 
 type BattleEvents = {
-  
   /** The start of the battle, before anything has happened */
   start: [combatants: Combatant[]];
   /** The start of a round, before actions have been chosen */
@@ -269,12 +271,12 @@ export type EffectContext = Immutable<{
   effect: Effects;
   action: Action;
   battle: Battle;
-}>
+}>;
 
 // Codemon, substitute, unidentified ghost, etc
 export interface Combatant {
-  trainer: Trainer,
-  recieveEffect: (context: EffectContext) => EffectReciept
+  trainer: Trainer;
+  recieveEffect: (context: EffectContext) => EffectReciept;
   getAction: (battle: Battle) => ReadyAction | Promise<ReadyAction>;
 }
 
@@ -283,7 +285,6 @@ export abstract class Battle extends EventEmitter<BattleEvents> {
     super();
   }
   // TODO history searching for things like move restrictions
-
 
   abstract runBattle(): Promise<BattleReciept>;
   abstract getRound(): Round;
@@ -372,11 +373,13 @@ export function power(power: number): Decider<Attack, EffectDeciderContext> {
     const stats = action.source.user.stats;
     const stat = stats[category === "Physical" ? "attack" : "specialAttack"].value(true);
     const critical = action.source.TryCriticalHit() ? action.source.GetCriticalMultiplier() : 1;
-    const random = Math.random() * (config.moves.maxRandomMultiplier - config.moves.minRandomMultiplier) + config.moves.minRandomMultiplier;
+    const random =
+      Math.random() * (config.moves.maxRandomMultiplier - config.moves.minRandomMultiplier) +
+      config.moves.minRandomMultiplier;
     const stab = action.source.user.species.types.includes(type) ? config.moves.stabMultiplier : 1;
     const multitarget = action.targets.length > 1 ? config.moves.multitargetMultiplier : 1;
 
-    console.log(`random is ${random}`)
+    console.log(`random is ${random}`);
     return {
       level,
       power,
@@ -388,7 +391,7 @@ export function power(power: number): Decider<Attack, EffectDeciderContext> {
       multitarget,
       weather: 1, // TODO
       random,
-      other: 1
+      other: 1,
     };
   };
 }

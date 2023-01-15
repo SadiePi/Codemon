@@ -11,8 +11,8 @@ import {
   Round,
   Codemon,
   Combatant,
-  recoil
-} from "../index.ts";
+  recoil,
+} from "../mod.ts";
 
 export default class TraditionalBattle extends Battle {
   private round: Round;
@@ -38,7 +38,7 @@ export default class TraditionalBattle extends Battle {
     await this.wait("start", this.combatants);
     const rounds: RoundReciept[] = [];
     while (this.combatants.length > 1) rounds.push(await this.runRound());
-    console.log(`${this.combatants.length} combatants remaining.`)
+    console.log(`${this.combatants.length} combatants remaining.`);
 
     const reciept = { remaining: this.combatants, rounds, messages: [] };
     await this.wait("battleReciept", reciept);
@@ -102,37 +102,36 @@ export default class TraditionalBattle extends Battle {
     const actions: ActionReciept[] = [];
     for (const action of this.sortActions(readys)) {
       const actionReciept = await this.runAction(action);
-      if(actionReciept) actions.push(actionReciept);
+      if (actionReciept) actions.push(actionReciept);
     }
     return actions;
   }
 
   async runAction(ready: ReadyAction) {
     const { source, targets, combatant } = ready;
-    if(combatant instanceof Codemon && combatant.stats.hp.current <= 0) return;
+    if (combatant instanceof Codemon && combatant.stats.hp.current <= 0) return;
     await this.wait("beforeAction", ready);
-    
+
     const action = source.useAction({
       targets: targets,
       battle: this,
     });
     await this.wait("action", action);
-    
+
     const preactions = await this.runActions(action.preactions);
 
-    const hit = true // TODO: implement hit chance
-    if(source instanceof MoveEntry) {
-      if(hit && action.effect.recoil) action.reactions.push(recoil(source.user, action.effect.recoil))
-      if(!hit && action.effect.crash) action.reactions.push(recoil(source.user, action.effect.crash))
+    const hit = true; // TODO: implement hit chance
+    if (source instanceof MoveEntry) {
+      if (hit && action.effect.recoil) action.reactions.push(recoil(source.user, action.effect.recoil));
+      if (!hit && action.effect.crash) action.reactions.push(recoil(source.user, action.effect.crash));
     }
-
 
     const effects: EffectReciept[] = [];
     for (const target of action.targets) {
       const effect = decideEffects(action, target, this);
       await this.wait("effect", effect, target, action);
       const reciept = target.recieveEffect({ effect: effect, action, battle: this });
-      if(reciept.faint || reciept.eject) this.combatants = this.combatants.filter(c => c !== target);
+      if (reciept.faint || reciept.eject) this.combatants = this.combatants.filter(c => c !== target);
       await this.wait("effectReciept", reciept);
       effects.push(reciept);
     }

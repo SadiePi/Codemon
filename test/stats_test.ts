@@ -1,5 +1,5 @@
 import { assertEquals } from "./common.ts";
-import { spawn } from "../src/index.ts";
+import { spawn } from "../src/mod.ts";
 import { iKibble } from "./common.ts";
 
 Deno.test({

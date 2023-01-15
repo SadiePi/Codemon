@@ -1,13 +1,29 @@
-import { BaseStats, EVYields, ExperienceGroup, IStatSet, Stat, StatSet } from "./stats.ts";
-import { Mutable, NonEmptyArray, NonEmptyPartial, weightedRandom } from "./util.ts";
-import { EffectReciept, EffectContext, AttackReciept, Combatant } from "./battle.ts";
-import { Attack, Battle, getRandomNature, Nature, ReadyAction } from "./index.ts";
-// import C from "../index.ts";
-import { decide, Decider } from "./decision.ts";
-import { MoveEntry, Move } from "./move.ts";
-import { Trainer, wild } from "./trainer.ts";
-import { Item } from "./item.ts";
-import Config from "./config.ts"
+import {
+  Attack,
+  AttackReciept,
+  BaseStats,
+  Battle,
+  Combatant,
+  config,
+  decide,
+  Decider,
+  EffectContext,
+  EffectReciept,
+  EVYields,
+  ExperienceGroup,
+  getRandomNature,
+  IStatSet,
+  Item,
+  Move,
+  MoveEntry,
+  Nature,
+  ReadyAction,
+  Stat,
+  StatSet,
+  Trainer,
+  wild,
+} from "./mod.ts";
+import { NonEmptyArray, NonEmptyPartial, weightedRandom, Mutable } from "./util.ts";
 
 export interface Ability {
   name: string;
@@ -198,7 +214,7 @@ export class Codemon implements Combatant {
     slot = slot ?? this.moves.findIndex(move => move === undefined);
     if (slot === -1) this.moves.push(entry);
     else this.moves[slot] = entry;
-    return slot
+    return slot;
   }
 
   // Name
@@ -258,7 +274,9 @@ export class Codemon implements Combatant {
       (attack.other ?? 1) *
       (attack.weather ?? 1);
     // const total = Math.floor(Math.min(product, this.stats.hp.current));
-    const total = Math.floor(Config.codemon.limitDamageToRemainingHP ? Math.min(product, this.stats.hp.current) : product)
+    const total = Math.floor(
+      config.codemon.limitDamageToRemainingHP ? Math.min(product, this.stats.hp.current) : product
+    );
 
     return {
       attack,
@@ -269,7 +287,7 @@ export class Codemon implements Combatant {
 
   public getAction(battle: Battle): ReadyAction {
     const action = this.trainer.strategy.chooseAction(this, battle);
-    const targetChoice = battle.getTargets(action, this)
+    const targetChoice = battle.getTargets(action, this);
     const targets = this.trainer.strategy.chooseTarget(action, this, targetChoice, battle);
     return { source: action, targets, combatant: this };
   }
@@ -311,7 +329,7 @@ export class Codemon implements Combatant {
       }
     }
 
-    if(context.effect.eject) reciept.eject = true;
+    if (context.effect.eject) reciept.eject = true;
 
     return reciept as EffectReciept;
   }

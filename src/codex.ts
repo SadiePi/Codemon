@@ -8,6 +8,25 @@ import { Move } from "./move.ts";
 import { ExperienceGroup, Nature } from "./stats.ts";
 import { Trainer } from "./trainer.ts";
 
+export class CodexBuilder<C extends Codex> {
+  private built = false;
+  private builders: [{}, (codex: C) => {}, ((codex: C) => void)?][] = [];
+
+  register<R extends {}>(builder: (codex: C) => R, after?: (codex: C) => void): R {
+    if (this.built) throw new Error("Codex already built");
+    const placeholder = {} as R;
+    this.builders.push([placeholder, builder, after]);
+    return placeholder;
+  }
+
+  build(codex: C) {
+    if (this.built) throw new Error("Don't call build() twice");
+    this.built = true;
+    this.builders.forEach(b => Object.assign(b[0], b[1](codex)));
+    this.builders.forEach(b => b[2]?.(codex));
+  }
+}
+
 export interface Codex {
   Abilities: Record<string, Ability>;
   Experience: Record<string, ExperienceGroup>;
@@ -21,29 +40,6 @@ export interface Codex {
   Types: Record<string, Type>;
   Weathers: Record<string, Weather>;
 }
-
-const builders: [{}, (C: Codex)=>{}, ((C: Codex)=>void)?][] = [];
-let built = false;
-
-export function register<R extends {}>(
-  builder: (codex: Codex) => R,
-  after?: (codex: Codex) => void
-): R {
-  if (built) throw new Error("Codex already built");
-  const placeholder = {} as R;
-  builders.push([placeholder, builder, after]);
-  return placeholder;
-}
-
-export function build(codex: Codex) {
-  if (built) throw new Error("Don't call build() twice");
-  built = true;
-  builders.forEach(b => Object.assign(b[0], b[1](codex)));
-  builders.forEach(b => b[2]?.(codex));
-  builders.length = 0;
-}
-
-
 
 // TODO use?
 type DeepMap<T, U> = T extends Record<string, unknown> ? { [K in keyof T]: DeepMap<T[K], U> } : U;

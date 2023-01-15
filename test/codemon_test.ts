@@ -1,20 +1,32 @@
 import { assertEquals, iBulby } from "./common.ts";
-import C, { spawn } from "../src/index.ts";
+import C, { spawn } from "../src/mod.ts";
 
 Deno.test("Basic", () => {
   const bulby = spawn(iBulby);
+  console.log("Spawned Bulby")
 
   assertEquals(bulby.species, C.Species.Bulbasaur);
+  console.log("Species is Bulbasaur")
   assertEquals(bulby.name, "Bulby");
+  console.log("Name is Bulby")
   assertEquals(bulby.gender, C.Genders.Male);
+  console.log("Gender is Male")
   assertEquals(bulby.nature, C.Natures.Quiet);
+  console.log("Nature is Quiet")
   assertEquals(bulby.stats.level, 15);
+  console.log("Level is 15")
   assertEquals(bulby.moves.length, 4);
+  console.log("Moves length is 4")
   assertEquals(bulby.moves[0].effects, C.Moves.Tackle);
+  console.log("Move 1 is Tackle")
   assertEquals(bulby.moves[1].effects, C.Moves.VineWhip);
+  console.log("Move 2 is Vine Whip")
   assertEquals(bulby.moves[2].effects, C.Moves.RazorLeaf);
+  console.log("Move 3 is Razor Leaf")
   assertEquals(bulby.moves[3].effects, C.Moves.SolarBeam);
+  console.log("Move 4 is Solar Beam")
   assertEquals(bulby.ability, C.Abilities.Overgrow);
+  console.log("Ability is Overgrow")
 });
 
 Deno.test("Modifications", () => {

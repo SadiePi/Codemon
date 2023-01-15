@@ -1,4 +1,4 @@
-import C, { ICodemon } from "../src/index.ts";
+import C, { ICodemon } from "../src/mod.ts";
 export { assertEquals, assertNotEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
 
 export const iKibble: ICodemon = {
@@ -46,7 +46,7 @@ export const iGlassCannon: ICodemon = {
   species: C.Species.Bulbasaur,
   stats: {
     level: 15,
-    hp: { individualValue: 0, effortValue: 0, },
+    hp: { individualValue: 0, effortValue: 0 },
     attack: { individualValue: 31, effortValue: 255, stage: 6 },
     speed: { individualValue: 31, effortValue: 255, stage: 6 },
   },
