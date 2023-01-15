@@ -1,4 +1,11 @@
-# Codemon - A fully modular Pokémon library
+# Codemon
+
+[![Codemon](https://img.shields.io/badge/Codemon-0.0.1-blue)]](https://www.codemon.dev)
+[![Deno](https://img.shields.io/badge/Deno-1.4.6-blue)]](https://deno.land/)
+[![License](https://img.shields.io/badge/License-MIT-blue)]](
+
+Codemon is a fully modular Pokémon library. It is designed to make it easy to create your
+own Pokémon game, including new species, moves, types, and more. 
 
 This implementation is being done in Typescript with [Deno](https://deno.land), but I'd eventually like to make implementations of this library for many languages and platforms. All game information, including data and mechanics but not implementations, is being translated directly from [Bulbapedia](https://bulbapedia.bulbagarden.net).
 
