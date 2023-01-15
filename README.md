@@ -1,8 +1,8 @@
-# Codemon
+# Codemon - FOSS Pokémon library
 
-[![Codemon](https://img.shields.io/badge/Codemon-0.0.1-blue)]](https://www.codemon.dev)
-[![Deno](https://img.shields.io/badge/Deno-1.4.6-blue)]](https://deno.land/)
-[![License](https://img.shields.io/badge/License-MIT-blue)]](
+[![Codemon](https://img.shields.io/badge/Codemon-0.0.1-blue)](https://www.codemon.dev)
+[![Deno](https://img.shields.io/badge/Deno-1.4.6-blue)](https://deno.land/)
+[![License](https://img.shields.io/badge/License-MIT-blue)](https://opensource.org/licenses/MIT)
 
 Codemon is a fully modular Pokémon library. It is designed to make it easy to create your
 own Pokémon game, including new species, moves, types, and more. 
