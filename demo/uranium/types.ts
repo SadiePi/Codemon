@@ -1,4 +1,4 @@
-import { Type } from "../../src/index.ts";
+import { Type } from "./index.ts";
 import loader from "./loader.ts";
 
 export const Nuclear: Type = loader.register<Type>(

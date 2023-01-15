@@ -1,5 +1,4 @@
-import C from "./index.ts";
-import { Codemon } from "../../src/index.ts";
+import C, { Codemon } from "./index.ts";
 
 // Define an individual Nucleon named Nuke
 const nuke = new Codemon({

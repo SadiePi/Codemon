@@ -1,51 +1,58 @@
+import { Combatant } from "../src/battle.ts";
 import C, {
   ActionReciept,
+  Battle,
+  BattleReciept,
   decideEffects,
   flattenActionMessages,
   MoveEntry,
   ReadyAction,
   recoil,
+  Round,
+  RoundReciept,
   spawn,
 } from "../src/index.ts";
 import { assertEquals, assertNotEquals } from "./common.ts";
 import { iBigBoi, iBulby, iGlassCannon, iKibble } from "./common.ts";
 
-async function simulateActionPipeline({ source, targets }: ReadyAction, debug = false) {
-  // deno-lint-ignore no-explicit-any
-  const battle = {} as any; // Normally this would be a Battle in progress
-
-  const action = source.useAction({
-    targets,
-    battle,
-  });
+async function runAction({ source, targets }: ReadyAction, battle: Battle = {} as Battle, debug = false) {
+  // emit beforeAction
+  
+  const action = source.useAction({ targets, battle });
   if (debug) console.log("Action", action);
 
-  const preactions = await Promise.all(action.preactions.map(preaction => simulateActionPipeline(preaction, debug)));
+  const preactions = await Promise.all(action.preactions.map(preaction => runAction(preaction, battle, debug)));
 
+  // emit action
   const hit = true; // TODO: implement hit chance
   if (source instanceof MoveEntry) {
     if (hit && action.effect.recoil) action.reactions.push(recoil(source.user, action.effect.recoil));
     if (!hit && action.effect.crash) action.reactions.push(recoil(source.user, action.effect.crash));
   }
+
   const effects = hit
     ? await Promise.all(
         action.targets.map(async target => {
           const effect = decideEffects(action, target, battle);
           // console.log("Effect", effect);
+          // emit effect
 
           const effectReciept = target.recieveEffect({
             effect,
             action,
             battle,
           });
+          // emit effectReciept
           if (debug) console.log("EffectReciept", effectReciept);
           return await effectReciept;
         })
       )
     : [];
 
-  const reactions = await Promise.all(action.reactions.map(reaction => simulateActionPipeline(reaction, debug)));
+  // emit actionEnd
 
+  const reactions = await Promise.all(action.reactions.map(reaction => runAction(reaction, battle, debug)));
+  
   const actionReciept: ActionReciept = {
     source,
     effects,
@@ -53,9 +60,60 @@ async function simulateActionPipeline({ source, targets }: ReadyAction, debug = 
     messages: action.messages,
     reactions,
   };
+  // emit actionReciept
   if (debug) console.log("ActionReciept", actionReciept);
 
   return actionReciept;
+}
+
+async function simulateRoundPipeline(combatants: Combatant[], battle: Battle = {} as Battle, debug = false): Promise<RoundReciept> {
+  const round: Round = {
+    number: 0,
+    preactions: [],
+    actions: [],
+    reactions: [],
+    messages: [],
+  }
+
+  // emit round
+  const preactions = await Promise.all(round.preactions.map(preaction => runAction(preaction, battle, debug)));
+  const readyActions = await Promise.all(combatants.map(combatant => combatant.getAction(battle) /* emit ready */));
+  // emit allReady
+  const actions = await Promise.all(readyActions.map(action => runAction(action, battle, debug)));
+  // emit roundEnd
+  const reactions = await Promise.all(round.reactions.map(reaction => runAction(reaction, battle, debug)));
+  
+  const roundReciept: RoundReciept = {
+    number: round.number,
+    preactions,
+    actions,
+    reactions,
+    messages: round.messages,
+  };
+  // emit roundReciept
+  if (debug) console.log("RoundReciept", roundReciept);
+  return roundReciept;
+}
+
+// deno-lint-ignore no-unused-vars
+async function simulateBattlePipeline(combatants: Combatant[], battle: Battle = {} as Battle, debug = false): Promise<BattleReciept> {
+  // emit start
+  const rounds: RoundReciept[] = [];
+  while (combatants.length > 1) {
+    const roundReciept = await simulateRoundPipeline(combatants, battle, debug);
+    rounds.push(roundReciept);
+    // emit roundReciept
+    if (debug) console.log("RoundReciept", roundReciept);
+  }
+  // emit battleEnd
+  const battleReciept: BattleReciept = {
+    rounds,
+    remaining: combatants,
+    messages: [],
+  };
+  // emit battleReciept
+  if (debug) console.log("BattleReciept", battleReciept);
+  return battleReciept;
 }
 
 Deno.test("Tackle - Basic Attack", async () => {
@@ -63,7 +121,7 @@ Deno.test("Tackle - Basic Attack", async () => {
   bulby.learnMove(C.Moves.Tackle);
   const bigBoi = spawn(iBigBoi);
 
-  const actionReciept = await simulateActionPipeline({ source: bulby.moves[0], targets: [bigBoi] });
+  const actionReciept = await runAction({ combatant: bulby, source: bulby.moves[0], targets: [bigBoi] });
   const messages = flattenActionMessages(actionReciept);
   console.log(messages.join("\n"));
 
@@ -81,7 +139,7 @@ Deno.test("Swords Dance - Stat Stage Modifications", async () => {
   // console.log("Kibble", kibble);
 
   const startingAttackStage = kibble.stats.attack.stage.current;
-  const actionReciept = await simulateActionPipeline({ source: kibble.moves[0], targets: [kibble] });
+  const actionReciept = await runAction({ combatant: kibble, source: kibble.moves[0], targets: [kibble] });
   const messages = flattenActionMessages(actionReciept);
   console.log(messages.join("\n"));
 
@@ -99,7 +157,8 @@ Deno.test("Explosion - Multitarget and recoil", async () => {
   const bigBoi2 = spawn(iBigBoi);
   const glassCannon = spawn(iGlassCannon);
 
-  const actionReciept = await simulateActionPipeline({
+  const actionReciept = await runAction({
+    combatant: kibble,
     source: kibble.moves[0],
     targets: [bulby, bigBoi, bigBoi2, glassCannon],
   });
@@ -119,7 +178,9 @@ Deno.test("Spore - Status Effect", async () => {
   const bigBoi = spawn(iBigBoi);
   bulby.learnMove(C.Moves.Spore);
 
-  const actionReciept = await simulateActionPipeline({ source: bulby.moves[0], targets: [bigBoi] });
+  const actionReciept = await runAction({ 
+    combatant: bulby,
+    source: bulby.moves[0], targets: [bigBoi] });
   const messages = flattenActionMessages(actionReciept);
   console.log(messages.join("\n"));
 

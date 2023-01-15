@@ -1,11 +1,10 @@
-import { Species, weighted } from "../../src/index.ts";
+import { Species, weighted } from "./index.ts";
 import loader from "./loader.ts";
 
 // Define the Nucleon species, a Nuclear-type eeveelution
-export const Nucleon: Species = loader.register<Species>(C => ({
+export const Nucleon = loader.register<Species>(C => ({
   name: "Nucleon",
   description: "A radioactive eeveelution.",
-  //graphics: Graphics,
   types: [C.Types.Nuclear],
   abilities: {
     normal: [C.Abilities.Atomize],
@@ -21,9 +20,6 @@ export const Nucleon: Species = loader.register<Species>(C => ({
   weight: 21.5,
   baseExperienceYield: 184,
   experienceGroup: C.Experience.MedFast,
-  bodyShape: "Quadruped",
-  //footprint: Footprint,
-  //typedexColor: TypedexColor,
   baseFriendship: 35,
   baseStats: {
     hp: 70,

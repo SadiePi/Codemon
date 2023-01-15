@@ -1,5 +1,6 @@
+export * from "../../src/index.ts";
+import C from "../pokemon/index.ts";
 import loader from "./loader.ts"
-import C from "../../src/index.ts";
 import * as Species from "./species.ts";
 import * as Types from "./types.ts";
 import * as Abilities from "./abilities.ts";

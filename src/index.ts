@@ -1,35 +1,13 @@
-export * from "./core/index.ts";
-import loader from "./loader.ts";
+import Codex from "../demo/pokemon/index.ts";
 
-import * as Abilities from "./abilities/index.ts";
-import * as Experience from "./experience/index.ts";
-import * as Genders from "./genders/index.ts";
-import * as Items from "./items/index.ts";
-import * as Locales from "./locales/index.ts";
-import * as Moves from "./moves/index.ts";
-import * as Natures from "./natures/index.ts";
-import * as Species from "./species/index.ts";
-import * as Statuses from "./statuses/index.ts";
-import * as Trainers from "./trainers/index.ts";
-import * as Types from "./types/index.ts";
-import * as Weathers from "./weather/index.ts";
+export * from "./battle.ts";
+export * from "./codemon.ts";
+export * from "./codex.ts";
+export * from "./item.ts";
+export * from "./move.ts";
+export * from "./stats.ts";
+export * from "./decision.ts";
+export * from "./trainer.ts";
+export { default as config } from "./config.ts";
 
-const C = {
-  Abilities,
-  Experience,
-  Genders,
-  Items,
-  Locales,
-  Moves,
-  Natures,
-  Species,
-  Statuses,
-  Trainers,
-  Types,
-  Weathers
-} as const;
-export type Codex = typeof C;
-
-loader.build(C);
-
-export default C;
+export default Codex;

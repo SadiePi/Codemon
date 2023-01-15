@@ -1,4 +1,3 @@
-import { Combatant } from "../core/battle.ts";
 import {
   MoveEntry,
   TargetChoice,
@@ -10,15 +9,16 @@ import {
   RoundReciept,
   decideEffects,
   Round,
+  Codemon,
+  Combatant,
+  recoil
 } from "../index.ts";
 
 export default class TraditionalBattle extends Battle {
   private round: Round;
-  public combatants: Combatant[];
 
   constructor(...combatants: Combatant[]) {
-    super();
-    this.combatants = combatants;
+    super(combatants);
     this.round = {
       number: 0,
     } as Round;
@@ -36,9 +36,9 @@ export default class TraditionalBattle extends Battle {
 
   async runBattle() {
     await this.wait("start", this.combatants);
-
     const rounds: RoundReciept[] = [];
     while (this.combatants.length > 1) rounds.push(await this.runRound());
+    console.log(`${this.combatants.length} combatants remaining.`)
 
     const reciept = { remaining: this.combatants, rounds, messages: [] };
     await this.wait("battleReciept", reciept);
@@ -55,39 +55,30 @@ export default class TraditionalBattle extends Battle {
       reactions: [],
     };
     await this.wait("round", this.getRound());
+    const preactions = await this.runActions(this.getRound().preactions);
 
-    const actions = await this.getActions();
-    await this.wait("allReady", actions);
+    const readys = await this.getActions();
+    await this.wait("allReady", readys);
 
-    const reciepts: ActionReciept[] = [];
-    for (const action of this.sortActions(actions)) reciepts.push(await this.runAction(action));
+    const actions = await this.runActions(readys);
 
     await this.wait("roundEnd", this.getRound());
-    const reactionReciepts: ActionReciept[] = [];
-    for (const reaction of this.sortActions(this.getRound().reactions))
-      reactionReciepts.push(await this.runAction(reaction));
+    const reactions = await this.runActions(this.getRound().reactions);
 
     const reciept: RoundReciept = {
       number: this.round.number,
-      preactions: [],
-      actions: reciepts,
-      reactions: reactionReciepts,
+      preactions,
+      actions,
+      reactions,
       messages: [],
     };
-
     await this.wait("roundReciept", reciept);
 
     return reciept;
   }
 
-  async getAction(combatant: Combatant) {
-    const sourcing = combatant.trainer.strategy.chooseAction(combatant, this);
-    const source = await sourcing;
-    const choice = await this.getTargets(source);
-    const targets = combatant.trainer.strategy.chooseTarget(source, combatant, choice, this);
-    const ready = { source, targets };
-    await this.wait("ready", ready);
-    return ready;
+  getAction(combatant: Combatant): ReadyAction | Promise<ReadyAction> {
+    return combatant.getAction(this);
   }
 
   async getActions() {
@@ -107,35 +98,53 @@ export default class TraditionalBattle extends Battle {
     });
   }
 
-  async runAction(ready: ReadyAction): Promise<ActionReciept> {
+  async runActions(readys: ReadyAction[]) {
+    const actions: ActionReciept[] = [];
+    for (const action of this.sortActions(readys)) {
+      const actionReciept = await this.runAction(action);
+      if(actionReciept) actions.push(actionReciept);
+    }
+    return actions;
+  }
+
+  async runAction(ready: ReadyAction) {
+    const { source, targets, combatant } = ready;
+    if(combatant instanceof Codemon && combatant.stats.hp.current <= 0) return;
     await this.wait("beforeAction", ready);
-    const action = ready.source.useAction({
-      targets: ready.targets,
+    
+    const action = source.useAction({
+      targets: targets,
       battle: this,
     });
-
     await this.wait("action", action);
-    const preactions: ActionReciept[] = [];
-    for (const preaction of this.sortActions(action.preactions)) preactions.push(await this.runAction(preaction));
+    
+    const preactions = await this.runActions(action.preactions);
+
+    const hit = true // TODO: implement hit chance
+    if(source instanceof MoveEntry) {
+      if(hit && action.effect.recoil) action.reactions.push(recoil(source.user, action.effect.recoil))
+      if(!hit && action.effect.crash) action.reactions.push(recoil(source.user, action.effect.crash))
+    }
+
 
     const effects: EffectReciept[] = [];
     for (const target of action.targets) {
       const effect = decideEffects(action, target, this);
       await this.wait("effect", effect, target, action);
-      const reciept = await target.recieveEffect({ effect: effect, action, battle: this });
+      const reciept = target.recieveEffect({ effect: effect, action, battle: this });
+      if(reciept.faint || reciept.eject) this.combatants = this.combatants.filter(c => c !== target);
       await this.wait("effectReciept", reciept);
       effects.push(reciept);
     }
 
     await this.wait("actionEnd", action);
-    const reactions: ActionReciept[] = [];
-    for (const reaction of this.sortActions(action.reactions)) reactions.push(await this.runAction(reaction));
+    const reactions = await this.runActions(action.reactions);
 
     const reciept: ActionReciept = {
       preactions,
-      source: ready.source,
+      source,
       effects,
-      messages: [],
+      messages: action.messages,
       reactions,
     };
 
@@ -148,41 +157,3 @@ export default class TraditionalBattle extends Battle {
     return this.round;
   }
 }
-
-/*consoleInterface() {
-  this.on("start", () => {
-    console.log("Battle started!\n");
-    console.log("Combatants:");
-    console.log(this.combatants.map(c => c.toString(true)).join("\n"));
-    prompt("Press enter to continue...");
-    console.log();
-  });
-
-  this.on("round", round => {
-    console.log(`\nRound ${round}!`);
-  });
-
-  //this.on("ready", () => console.log("Actions ready!"));
-
-  this.on("action", action => {
-    if (action.source instanceof MoveEntry)
-      action.messages.push(`${action.source.user.name} used ${action.source.data.name}!`);
-    // TODO add other action types
-  });
-
-  this.on("effectReciept", reciept => {
-    if (reciept.target instanceof Codemon) {
-      if (reciept.attack) {
-        if (reciept.attack.typeBoost === 0) console.log("It had no effect!");
-        console.log(reciept.target.name + " took " + reciept.attack.total + " damage!");
-      }
-    }
-  });
-
-  this.on("roundEnd", reciept => {
-    console.log("\nRound " + reciept.round + " ended!");
-    console.log(reciept.messages.join("\n"));
-    prompt("Press enter to continue...");
-    console.log();
-  });
-}*/

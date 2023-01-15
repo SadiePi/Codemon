@@ -1,15 +1,12 @@
 import { assertEquals, assertNotEquals } from "./common.ts";
 
-import C, { spawn } from "../src/index.ts";
-import { iKibble } from "./common.ts";
+import C, { Codemon, MoveEntry } from "../src/index.ts";
 
 Deno.test("Tackle", () => {
-  const kibble = spawn({
-    ...iKibble,
-    moves: [C.Moves.Tackle],
-  });
-
-  const tackle = kibble.moves[0];
+  const tackle = new MoveEntry({
+    user: {} as Codemon,
+    move: C.Moves.Tackle,
+  })
 
   assertEquals(tackle.effects.type.immunities.length, 1, "Wrong immunity count");
   assertEquals(tackle.effects.type.immunities[0].name, "Ghost", "Wrong immunity");

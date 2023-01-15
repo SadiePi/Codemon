@@ -2,8 +2,8 @@ import C, { ICodemon } from "../src/index.ts";
 export { assertEquals, assertNotEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
 
 export const iKibble: ICodemon = {
-  species: C.Species.Garchomp,
   name: "Kibble",
+  species: C.Species.Garchomp,
   gender: C.Genders.Female,
   nature: C.Natures.Adamant,
   stats: {
@@ -18,14 +18,14 @@ export const iKibble: ICodemon = {
 };
 
 export const iBigBoi: ICodemon = {
-  species: C.Species.Garchomp,
   name: "Big Boi",
+  species: C.Species.Garchomp,
   stats: { level: 255 },
 };
 
 export const iBulby: ICodemon = {
-  species: C.Species.Bulbasaur,
   name: "Bulby",
+  species: C.Species.Bulbasaur,
   gender: C.Genders.Male,
   nature: C.Natures.Quiet,
   stats: {
@@ -37,22 +37,17 @@ export const iBulby: ICodemon = {
     specialDefense: { individualValue: 0, effortValue: 0 },
     speed: { individualValue: 0, effortValue: 0 },
   },
-  moves: [C.Moves.Tackle, C.Moves.VineWhip, C.Moves.RazorLeaf, C.Moves.SolarBeam],
+  moves: [C.Moves.Tackle, C.Moves.RazorLeaf, C.Moves.StunSpore, C.Moves.SolarBeam],
   ability: 0,
 };
 
 export const iGlassCannon: ICodemon = {
-  species: C.Species.Bulbasaur,
   name: "Glass Cannon",
+  species: C.Species.Bulbasaur,
   stats: {
-    level: 2,
-    speed: {
-      individualValue: 31,
-      effortValue: 255,
-    },
-    attack: {
-      individualValue: 255,
-      effortValue: 255,
-    },
+    level: 15,
+    hp: { individualValue: 0, effortValue: 0, },
+    attack: { individualValue: 31, effortValue: 255, stage: 6 },
+    speed: { individualValue: 31, effortValue: 255, stage: 6 },
   },
 };
