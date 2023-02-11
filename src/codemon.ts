@@ -335,7 +335,7 @@ export class Codemon implements Combatant {
   }
 
   public mutate(mutations: Partial<Species>) {
-    this.species = { ...this.species, ...mutations };
+    this.species = { ...this.species, name: `Mutated ${this.species.name}`, ...mutations }; // TODO fix duplicate "mutated" in name
   }
 
   public toString(short = false) {
