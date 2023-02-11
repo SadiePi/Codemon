@@ -1,7 +1,5 @@
 # Codemon - A Pokémon library for Deno
 
-[Codemon](https://img.shields.io/badge/Codemon-0.0.1-blue)
-
 Codemon is a WIP Pokémon library for Typescript using Deno. It faithfully implements
 mechanics from the games, and is designed to be as easy to use as possible.
 
@@ -153,11 +151,6 @@ export const Eevee: Species = loader.register(U => ({
 
 ```
 
-### Define a new Move
-  
-```ts
-
-
 ## Codex
 
 The Codex acts as the Pokédex for the library, but with far more information than the games provide. It contains fully detailed information on every species, move, ability, item, and more.
@@ -166,7 +159,3 @@ The Codex acts as the Pokédex for the library, but with far more information th
 ## Contributing
 
 I'd prefer for this to remain a mostly solo project. That said, I would appreciate bug reports and PRs to flesh out entries in `codex/pokemon/`.
-
-### Arceus files
-
-Arceus files (see `./codex/pokemon/.arceus`) are used to generate the proper structure and placeholder entries for the Codex. 
