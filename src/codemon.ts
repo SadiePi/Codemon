@@ -1,3 +1,4 @@
+import { Weather } from "./battle.ts";
 import {
   Attack,
   AttackReciept,
@@ -74,6 +75,28 @@ export interface Gender {
   };
 }
 
+type InternalEvoReasons = {
+  level: number;
+  happiness: number;
+  move: Move | Move[];
+  moveType: Type | Type[];
+  gender: Gender;
+}
+
+type ExternalEvoReasons = {
+  item: Item;
+  time: string;
+  location: string;
+  weather: Weather;
+  trade: boolean;
+  party: Species | Species[];
+  partyType: Type | Type[];
+}
+
+type EvoReasons = InternalEvoReasons & ExternalEvoReasons;
+
+export type Evolution = {species: Species} & NonEmptyPartial<EvoReasons>
+
 export interface Species {
   // Normal species definition information
   name: string;
@@ -98,18 +121,7 @@ export interface Species {
   baseStats: BaseStats;
   evYields: EVYields;
   learnset: Learnset;
-  evolutions: [
-    Species,
-    NonEmptyPartial<{
-      level?: number;
-      happiness?: number;
-      item?: Item;
-      time?: string;
-      location?: string;
-      trade?: boolean;
-      other?: string;
-    }>
-  ][];
+  evolutions: Evolution[];
 
   // Calculation overrides
   overrideName?: (self: Codemon, inputName: string) => string;
@@ -336,6 +348,26 @@ export class Codemon implements Combatant {
 
   public mutate(mutations: Partial<Species>) {
     this.species = { ...this.species, name: `Mutated ${this.species.name}`, ...mutations }; // TODO fix duplicate "mutated" in name
+  }
+
+  public evolve(evo: Evolution) {
+    // TODO double check evolution requirements
+    // TODO retain mutations
+    if(this.name === this.species.name) this.name = evo.species.name;
+    this.species = evo.species;
+  }
+
+  public getDesiredEvolutions(reasons?: Partial<ExternalEvoReasons>): Evolution[] {
+    return this.species.evolutions.filter(option => {
+      if(option.level && this.stats.level < option.level) return false;
+      if(option.item && reasons?.item !== option.item) return false;
+      if(option.trade && !reasons?.trade) return false;
+      // if(option.happiness && this.happiness < option.happiness) return false;
+      // if(option.time...)
+      // if(option.location...)
+      // TODO
+      return true;
+    })
   }
 
   public toString(short = false) {

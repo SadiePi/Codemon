@@ -24,7 +24,7 @@ export const Bulbasaur: Species = loader.register(P => ({
   ]),
   evYields: { specialAttack: 1 },
   baseExperienceYield: 64,
-  evolutions: [[P.Species.Ivysaur, { level: 16 }]],
+  evolutions: [{ species: P.Species.Ivysaur, level: 16 }],
   experienceGroup: P.Experience.MedSlow,
   catchRate: 45,
   eggCycles: 21, // (5396+1) / 257

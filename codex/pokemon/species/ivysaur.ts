@@ -1,27 +1,14 @@
-import { Species, weighted } from "../index.ts";
-import { loader } from "../loader.ts"
+import { Species } from "../index.ts";
+import loader from "../loader.ts"
 
 export const Ivysaur: Species = loader.register<Species>(P => ({
+  ...P.Species.Bulbasaur,
   name: "Ivysaur",
   description:
     "Exposure to sunlight adds to its strength. Sunlight also makes the bud on its back grow larger. When the bulb on its back grows too large, it appears to lose the ability to stand on its hind legs.",
-  types: [P.Types.Grass, P.Types.Poison],
-  genders: weighted([
-    [P.Genders.Male, 7],
-    [P.Genders.Female, 1],
-  ]),
-  abilities: {
-    normal: [P.Abilities.Overgrow],
-    hidden: P.Abilities.Chlorophyll,
-  },
-  catchRate: 45,
-  eggCycles: 21, // INCORRECT, REDO
-  height: 1,
-  weight: 13,
+  height: 1.0,
+  weight: 13.0,
   baseExperienceYield: 142,
-  experienceGroup: P.Experience.MedSlow,
-  bodyType: "Quadruped",
-  baseFriendship: 70,
   baseStats: {
     hp: 60,
     attack: 62,
@@ -50,5 +37,5 @@ export const Ivysaur: Species = loader.register<Species>(P => ({
     breeding: P.Species.Bulbasaur.learnset.breeding,
     tutoring: P.Species.Bulbasaur.learnset.tutoring,
   },
-  evolutions: [[P.Species.Venusaur, { level: 32 }]],
+  evolutions: [{species: P.Species.Venusaur, level: 32 }],
 }));

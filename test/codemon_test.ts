@@ -52,7 +52,7 @@ Deno.test("Modifications", () => {
   bulby.setOriginalNature(C.Natures.Impish, false);
   assertEquals(bulby.originalNature, C.Natures.Impish);
   assertEquals(bulby.nature, C.Natures.Bold);
-  
+
   bulby.resetNature();
   assertEquals(bulby.originalNature, C.Natures.Impish);
   assertEquals(bulby.nature, C.Natures.Impish);
@@ -102,3 +102,49 @@ Deno.test("Modifications", () => {
   bulby.ability = C.Abilities.SandVeil;
   assertEquals(bulby.ability, C.Abilities.SandVeil);
 });
+
+Deno.test("Evolution", async ()=>{
+  const bulby = spawn({
+    species: C.Species.Bulbasaur,
+    stats: {level: 15}
+  })
+
+  let options = bulby.getDesiredEvolutions();
+  assertEquals(options, []);
+  console.log("No evolutions available at level 15")
+
+  bulby.stats.addExp(bulby.stats.pointsToNextLevel);
+  assertEquals(bulby.stats.level, 16);
+  console.log("Now level 16")
+
+  options = bulby.getDesiredEvolutions();
+  assertEquals(options.length, 1);
+  assertEquals(options[0].species, C.Species.Ivysaur);
+  console.log("Ivysaur is available")
+
+  bulby.evolve(options[0]);
+  assertEquals(bulby.species, C.Species.Ivysaur);
+  console.log("Bulby is now Ivysaur")
+
+  await bulby.stats.levelUp(15);
+  assertEquals(bulby.stats.level, 31);
+  console.log("Bulby is now level 31")
+
+  options = bulby.getDesiredEvolutions();
+  assertEquals(options.length, 0);
+  console.log("No evolutions available at level 31")
+
+  await bulby.stats.levelUp();
+  assertEquals(bulby.stats.level, 32);
+  console.log("Bulby is now level 32")
+
+  options = bulby.getDesiredEvolutions();
+  assertEquals(options.length, 1);
+  assertEquals(options[0].species, C.Species.Venusaur);
+  console.log("Venusaur is available")
+
+  bulby.evolve(options[0]);
+  assertEquals(bulby.species, C.Species.Venusaur);
+  console.log("Bulby is now Venusaur");
+  console.log("Evolution chain complete")
+})
