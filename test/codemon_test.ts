@@ -40,15 +40,19 @@ Deno.test("Modifications", () => {
   bulby.nature = C.Natures.Hasty;
   assertEquals(bulby.nature, C.Natures.Hasty);
   assertEquals(bulby.originalNature, C.Natures.Quiet);
+
   bulby.setOriginalNature(C.Natures.Brave);
   assertEquals(bulby.originalNature, C.Natures.Brave);
   assertEquals(bulby.nature, C.Natures.Brave);
+
   bulby.nature = C.Natures.Bold;
   assertEquals(bulby.originalNature, C.Natures.Brave);
   assertEquals(bulby.nature, C.Natures.Bold);
+
   bulby.setOriginalNature(C.Natures.Impish, false);
   assertEquals(bulby.originalNature, C.Natures.Impish);
   assertEquals(bulby.nature, C.Natures.Bold);
+  
   bulby.resetNature();
   assertEquals(bulby.originalNature, C.Natures.Impish);
   assertEquals(bulby.nature, C.Natures.Impish);
