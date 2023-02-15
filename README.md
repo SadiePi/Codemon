@@ -187,10 +187,10 @@ export const Nucleon: Species = loader.register(U => ({
     normal: [U.Abilities.Atomize],
     hidden: U.Abilities.GeigerSense,
   },
-  genders: weighted([
+  genders: weighted(
     [U.Genders.Male, 7],
     [U.Genders.Female, 1],
-  ]),
+  ),
   catchRate: 45,
   eggCycles: 120,
   height: 0.7,
