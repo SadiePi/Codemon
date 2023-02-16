@@ -70,6 +70,10 @@ const kibble = spawn({
 });
 ```
 
+### Taking Control
+
+TODO trainers, console trainer
+
 ### Deciders
 
 TODO this'll be hard to explain
@@ -102,24 +106,7 @@ export const Nuclear: Type = loader.register<Type>(
     color: "#00FF00",
     weaknesses: [
       U.Types.Normal,
-      U.Types.Fire,
-      U.Types.Fighting,
-      U.Types.Water,
-      U.Types.Flying,
-      U.Types.Grass,
-      U.Types.Electric,
-      U.Types.Ground,
-      U.Types.Psychic,
-      U.Types.Rock,
-      U.Types.Ice,
-      U.Types.Bug,
-      U.Types.Dragon,
-      U.Types.Ghost,
-      U.Types.Dark,
-      U.Types.Steel,
-      U.Types.Fairy,
-      U.Types.Poison,
-      U.Types.Nuclear,
+      ...
     ],
     resistances: [U.Types.Nuclear],
     immunities: [],
@@ -129,22 +116,7 @@ export const Nuclear: Type = loader.register<Type>(
     addTypeRelation({
       weakness: [
         U.Types.Normal,
-        U.Types.Fire,
-        U.Types.Fighting,
-        U.Types.Water,
-        U.Types.Flying,
-        U.Types.Grass,
-        U.Types.Electric,
-        U.Types.Ground,
-        U.Types.Psychic,
-        U.Types.Rock,
-        U.Types.Ice,
-        U.Types.Bug,
-        U.Types.Dragon,
-        U.Types.Ghost,
-        U.Types.Dark,
-        U.Types.Fairy,
-        U.Types.Poison,
+        ...
       ],
       resistance: [U.Types.Steel],
       // no immunities
