@@ -159,6 +159,8 @@ export * from "./rockSlide.ts";
 export * from "./hyperFang.ts";
 export * from "./sharpen.ts";
 export * from "./conversion.ts";
+export * from "./conversion2.ts";
+export * from "./conversionNormal.ts";
 export * from "./triAttack.ts";
 export * from "./superFang.ts";
 export * from "./slash.ts";

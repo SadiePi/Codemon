@@ -1,13 +1,14 @@
-import { ActionSource, Battle, Combatant, TargetChoice } from "./mod.ts";
+import { ActionSource, Battle, Combatant, Decider, TargetChoice } from "./mod.ts";
 
 export interface Strategy {
-  chooseAction(combatant: Combatant, battle: Battle): ActionSource;
-  chooseTarget(action: ActionSource, combatant: Combatant, choice: TargetChoice, battle: Battle): Combatant[];
+  chooseAction: Decider<ActionSource, { combatant: Combatant; battle: Battle }>;
+  chooseTarget: Decider<
+    Combatant[],
+    { action: ActionSource; combatant: Combatant; choice: TargetChoice; battle: Battle }
+  >;
 }
 
 export interface Trainer {
   strategy: Strategy;
   // TODO
 }
-
-export const wild = {} as Trainer;

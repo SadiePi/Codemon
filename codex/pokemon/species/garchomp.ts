@@ -11,10 +11,10 @@ export const Garchomp: Species = loader.register<Species>(P => ({
     normal: [P.Abilities.SandVeil],
     hidden: P.Abilities.RoughSkin,
   },
-  genders: weighted([
+  genders: weighted(
     [P.Genders.Female, 1],
     [P.Genders.Male, 1],
-  ]),
+  ),
   catchRate: 45,
   eggCycles: 120,
   height: 1.9,

@@ -1,10 +1,12 @@
 import { Combatant } from "../src/battle.ts";
+import TraditionalBattle from "../src/battles/traditional.ts";
 import C, {
   ActionReciept,
   Battle,
   BattleReciept,
   decideEffects,
   flattenActionMessages,
+  flattenBattleMessages,
   MoveEntry,
   ReadyAction,
   recoil,

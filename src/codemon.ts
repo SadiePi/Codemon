@@ -1,4 +1,5 @@
 import { Weather } from "./battle.ts";
+import { getWildTrainer } from "./injections.ts";
 import {
   Attack,
   AttackReciept,
@@ -21,8 +22,7 @@ import {
   ReadyAction,
   Stat,
   StatSet,
-  Trainer,
-  wild,
+  Trainer
 } from "./mod.ts";
 import { NonEmptyArray, NonEmptyPartial, weightedRandom, Mutable } from "./util.ts";
 
@@ -63,6 +63,18 @@ export interface Type {
   weaknesses: Type[];
   resistances: Type[];
   immunities: Type[];
+}
+
+export interface TypePushTargets {
+  weakness?: Type[];
+  resistance?: Type[];
+  immunity?: Type[];  
+}
+
+export function addTypeRelation(targets: TypePushTargets, ...types: Type[]) {
+  targets.weakness?.forEach(target=>target.weaknesses.push(...types))
+  targets.resistance?.forEach(target=>target.resistances.push(...types))
+  targets.immunity?.forEach(target=>target.immunities.push(...types))
 }
 
 export interface Gender {
@@ -171,9 +183,9 @@ export class Codemon implements Combatant {
     this.gender = options.gender ?? decide(this.species.genders, this);
     this._originalAbility = this._ability =
       options.ability ?? Math.floor(Math.random() * options.species.abilities.normal.length);
-    this._originalNature = this._nature = options.nature ?? getRandomNature();
+    this._originalNature = this._nature = options.nature ?? getRandomNature(options);
     this.stats = new StatSet(this, { ...options.stats });
-    this.trainer = options.trainer ?? wild;
+    this.trainer = options.trainer ?? getWildTrainer();
   }
 
   // abilities
@@ -298,9 +310,9 @@ export class Codemon implements Combatant {
   }
 
   public getAction(battle: Battle): ReadyAction {
-    const action = this.trainer.strategy.chooseAction(this, battle);
-    const targetChoice = battle.getTargets(action, this);
-    const targets = this.trainer.strategy.chooseTarget(action, this, targetChoice, battle);
+    const action = decide(this.trainer.strategy.chooseAction, {combatant: this, battle});
+    const choice = battle.getTargets(action, this);
+    const targets = decide(this.trainer.strategy.chooseTarget, {action, combatant: this, choice, battle});
     return { source: action, targets, combatant: this };
   }
 

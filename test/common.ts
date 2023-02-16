@@ -1,4 +1,4 @@
-import C, { ICodemon } from "../src/mod.ts";
+import C, { ICodemon } from "../codex/pokemon/index.ts";
 export { assertEquals, assertNotEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
 
 export const iKibble: ICodemon = {
@@ -15,6 +15,7 @@ export const iKibble: ICodemon = {
     specialDefense: { individualValue: 23, effortValue: 84 },
     speed: { individualValue: 5, effortValue: 23 },
   },
+  ability: "hidden"
 };
 
 export const iBigBoi: ICodemon = {

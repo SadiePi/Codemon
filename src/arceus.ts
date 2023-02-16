@@ -1,6 +1,6 @@
 // THIS IS A WORK IN PROGRESS
 
-const TEST_MODE = true as const;
+const TEST_MODE = true;
 
 function writeFile(path: string, contents: string) {
   if(TEST_MODE) { console.log(contents); return }

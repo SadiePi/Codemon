@@ -4,7 +4,10 @@
 export const PermanentStats = ["hp", "attack", "defense", "specialAttack", "specialDefense", "speed"] as const;
 export const BattleStats = ["accuracy", "evasion"] as const;
 
+import { ICodemon } from "./codemon.ts";
+import { decide } from "./decision.ts";
 import { EventEmitter } from "./external.ts";
+import { getRandomNatureDecider } from "./injections.ts";
 import C, { Codemon, config } from "./mod.ts";
 import { unweightedRandom } from "./util.ts";
 
@@ -162,6 +165,7 @@ type IStatEntries = Partial<Record<PermanentStat, IPermanentStatEntry>> & Partia
 export type IStatSet = IStatEntries & { level?: number; points?: number };
 
 export class StatSet
+  // todo: this should be on Codemon, not StatSet
   extends EventEmitter<{
     stageChange: [stat: Stat, old: number, current: number];
     stageReset: [stat: Stat, old: number];
@@ -200,7 +204,15 @@ export class StatSet
     this.evasion = new BattleStatEntry("evasion", this, 3, args.evasion ?? {});
   }
 
-  public async levelUp(): Promise<LevelUpReciept> {
+  public async levelUp(): Promise<LevelUpReciept>
+  public async levelUp(levels: number): Promise<LevelUpReciept[]>
+  public async levelUp(levels?: number): Promise<LevelUpReciept | LevelUpReciept[]> {
+    if(levels) {
+      const ret: LevelUpReciept[] = [];
+      for(let i = 0; i < levels; i++) ret.push(await this.levelUp());
+      return ret;
+    }
+    
     const old = this.level;
     this.level += 1;
     const ret: LevelUpReciept = {
@@ -253,6 +265,6 @@ export interface Nature {
   effect?: (stat: Stat) => number;
 }
 
-export function getRandomNature(): Nature {
-  return unweightedRandom(Object.values(C.Natures));
+export function getRandomNature(iCodemon: ICodemon): Nature {
+  return decide(getRandomNatureDecider(), iCodemon)
 }

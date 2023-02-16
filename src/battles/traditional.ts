@@ -14,7 +14,7 @@ import {
   recoil,
 } from "../mod.ts";
 
-export default class TraditionalBattle extends Battle {
+export class TraditionalBattle extends Battle {
   private round: Round;
 
   constructor(...combatants: Combatant[]) {
@@ -156,3 +156,5 @@ export default class TraditionalBattle extends Battle {
     return this.round;
   }
 }
+
+export default TraditionalBattle

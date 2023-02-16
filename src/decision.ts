@@ -49,23 +49,30 @@ export function chance<T, Context>(
   effect: Decider<T, Context>,
   otherwise?: Decider<T, Context>
 ): Decider<T | Maybe<T>, Context> {
-  return _ => {
-    if (Math.random() < chance) return effect;
-    if (otherwise) return otherwise;
-  };
+  return condition(_ => Math.random() < chance, effect, otherwise);
 }
 
-export function oneOf<T, Context>(choices: NonEmptyArray<Decider<T, Context>>): Decider<T, Context> {
+export function oneOf<T, Context>(...choices: NonEmptyArray<Decider<T, Context>>): Decider<T, Context> {
   return _ => {
     return choices[Math.floor(Math.random() * choices.length)];
   };
 }
 
-export function weighted<T, Context>(entries: NonEmptyArray<[Decider<T, Context>, number]>): Decider<T, Context> {
+export function weighted<T, Context>(...entries: NonEmptyArray<[Decider<T, Context>, number]>): Decider<T, Context> {
   return _ => {
     return weightedRandom(entries);
   };
 }
+
+export function cycle<T, Context>(...choices: NonEmptyArray<Decider<T, Context>>): Decider<T, Context> {
+  let index = 0;
+  return _ => {
+    const choice = choices[index];
+    index = (index + 1) % choices.length;
+    return choice;
+  };
+}
+
 
 export function multiple<T, Context>(
   effect: NonEmptyArray<Decider<T, Context>>,

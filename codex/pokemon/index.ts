@@ -1,6 +1,8 @@
 export * from "../../src/mod.ts";
-import { Codex } from "../../src/codex.ts";
 import { loader } from "./loader.ts";
+import { NonEmptyArray } from "../../src/util.ts";
+import { Nature, oneOf } from "../../src/mod.ts";
+import { setRandomNatureDecider, setStruggleInfo, setWildTrainer } from "../../src/injections.ts";
 
 import * as Abilities from "./abilities/index.ts";
 import * as Experience from "./experience/index.ts";
@@ -14,7 +16,7 @@ import * as Trainers from "./trainers/index.ts";
 import * as Types from "./types/index.ts";
 import * as Weathers from "./weather/index.ts";
 
-const C = {
+const Pokedex = {
   Abilities,
   Experience,
   Genders,
@@ -27,7 +29,11 @@ const C = {
   Types,
   Weathers,
 } as const;
-export type Pokedex = typeof C;
+export type Pokedex = typeof Pokedex;
 
-loader.build(C);
-export default C;
+setWildTrainer(Trainers.Wild);
+setRandomNatureDecider(oneOf(...Object.values(Natures) as NonEmptyArray<Nature>)) // TODO egh...
+setStruggleInfo(Moves.Struggle);
+loader.build(Pokedex);
+
+export default Pokedex;

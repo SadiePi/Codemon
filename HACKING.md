@@ -16,5 +16,6 @@ To add or remove any of these, open `src/arceus` and add or remove entries. Read
 
 The following are supported but require more work:
 - Battle Types
+  - Create a class extending the `Battle` type
 - Stats
   - Open `src/core/stats.ts` and add or remove entries to either the `PermanentStats` or `BattleStats` arrays. Diligent strict typing throughout this project will then result in type errors that point you to other places you need to change. Those changes are straightforward, so I won't go into detail here (yet?).
