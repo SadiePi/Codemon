@@ -8,8 +8,7 @@ import { ICodemon } from "./codemon.ts";
 import { decide } from "./decision.ts";
 import { EventEmitter } from "./external.ts";
 import { getRandomNatureDecider } from "./injections.ts";
-import C, { Codemon, config } from "./mod.ts";
-import { unweightedRandom } from "./util.ts";
+import { Codemon, config } from "./mod.ts";
 
 export const Stats = [...PermanentStats, ...BattleStats] as const;
 export type PermanentStat = typeof PermanentStats[number];
