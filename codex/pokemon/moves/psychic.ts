@@ -1,5 +1,5 @@
 import { power, Move, chance } from "../index.ts";
-import { loader } from "../loader.ts"
+import loader from "../loader.ts"
 
 export const Psychic: Move = loader.register<Move>(P => ({
   name: "Psychic",

@@ -1,5 +1,5 @@
 import { Nature } from "../index.ts";
-import { loader } from "../loader.ts"
+import loader from "../loader.ts"
 
 export const Careful: Nature = {
   name: "Careful",

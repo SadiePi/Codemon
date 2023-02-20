@@ -9,9 +9,29 @@ import P, {
   Round,
   ActionUseContext,
 } from "../index.ts";
-import { loader } from "../loader.ts"
+import loader from "../loader.ts"
 
-export const Burn: StatusEffect = {
+// TODO make this MUCH less cumbersome
+const BurnDamage: ActionSource = {
+  targetingCategory: "Self",
+  useAction: (context: ActionUseContext): Action => {
+    if (context.targets.length !== 1) throw new Error("BurnDamage can only have one target");
+    const target = context.targets[0];
+    const action = new Action({
+      effect: {},
+      source: BurnDamage,
+      targets: [target],
+    });
+    if (target instanceof Codemon) {
+      const damage = Math.floor(target.stats.hp.max / 16);
+      action.effect.hp = -damage;
+      action.messages.push(`${target.name} took ${damage} damage from ${target.gender.pronouns.possessive} burn!`);
+    }
+    return action;
+  },
+};
+
+export const Burn: StatusEffect = loader.register(()=>({
   name: "Burn",
   description:
     "This Codemon is burned by searing heat! Take 1/16 of max HP as damage after each turn. Attack damage is halved.",
@@ -57,23 +77,4 @@ export const Burn: StatusEffect = {
       battle.off("roundEnd", burnIfDidntAttack);
     };
   },
-};
-
-const BurnDamage: ActionSource = {
-  targetingCategory: "Self",
-  useAction: (context: ActionUseContext): Action => {
-    if (context.targets.length !== 1) throw new Error("BurnDamage can only have one target");
-    const target = context.targets[0];
-    const action = new Action({
-      effect: {},
-      source: BurnDamage,
-      targets: [target],
-    });
-    if (target instanceof Codemon) {
-      const damage = Math.floor(target.stats.hp.max / 16);
-      action.effect.hp = -damage;
-      action.messages.push(`${target.name} took ${damage} damage from ${target.gender.pronouns.possessive} burn!`);
-    }
-    return action;
-  },
-};
+}));

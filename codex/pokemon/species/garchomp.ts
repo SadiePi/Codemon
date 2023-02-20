@@ -1,5 +1,5 @@
 import { Species, weighted } from "../index.ts";
-import { loader } from "../loader.ts"
+import loader from "../loader.ts"
 
 export const Garchomp: Species = loader.register<Species>(P => ({
   name: "Garchomp",

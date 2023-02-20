@@ -84,4 +84,10 @@ export const Nucleon: Species = loader.register(U => ({
     ]
   },
   evolutions: [],
-}));
+}), U=>{
+  U.Species.Eevee.evolutions.push({
+    species: U.Species.Nucleon,
+    level: 20,
+    partyType: U.Types.Nuclear
+  })
+});

@@ -1,5 +1,5 @@
 import { Move, power } from "../index.ts";
-import { loader } from "../loader.ts"
+import loader from "../loader.ts"
 
 export const Agility: Move = loader.register<Move>(P => ({
   name: "Agility",

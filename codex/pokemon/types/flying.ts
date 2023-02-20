@@ -1,5 +1,5 @@
 import { Type } from "../index.ts";
-import { loader } from "../loader.ts"
+import loader from "../loader.ts"
 
 export const Flying: Type = loader.register<Type>(P => ({
   name: "Flying",

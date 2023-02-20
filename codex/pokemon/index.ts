@@ -1,5 +1,5 @@
 export * from "../../src/mod.ts";
-import { loader } from "./loader.ts";
+import loader from "./loader.ts";
 import { NonEmptyArray } from "../../src/util.ts";
 import { Nature, oneOf } from "../../src/mod.ts";
 import { setRandomNatureDecider, setStruggleInfo, setWildTrainer } from "../../src/injections.ts";

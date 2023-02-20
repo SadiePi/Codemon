@@ -1,5 +1,5 @@
 import { power, Move, chance } from "../index.ts";
-import { loader } from "../loader.ts"
+import loader from "../loader.ts"
 
 export const RockSlide: Move = loader.register<Move>(P => ({
   name: "Rock Slide",

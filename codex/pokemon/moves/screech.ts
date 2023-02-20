@@ -1,5 +1,5 @@
 import { power, Move } from "../index.ts";
-import { loader } from "../loader.ts"
+import loader from "../loader.ts"
 
 // why isn't this a status move apdabiouaboduiboiuafb
 export const Screech: Move = loader.register<Move>(P => ({
