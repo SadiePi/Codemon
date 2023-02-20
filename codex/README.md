@@ -1,6 +1,6 @@
 # Codemon Codex
 
-This directory contains Codexes for Codemon. Codexes are collections of data for the core game and various fan-games, translated from various sources into a consistent format. 
+This directory contains Codexes for Codemon. Codexes are collections of data for the core game and various fan-games, translated from various sources into a consistent format.
 
 Data entry is an early work in progress, but I think the data structure is finally stable enough to be useful. Contributions are very welcome! I'd prefer for the core project to remain a solo project, but I'm happy to accept PRs for Codexes. Fleshing out the full Pokédex is my main priority, but I'm also happy to accept PRs for other games.
 
