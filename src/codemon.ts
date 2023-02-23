@@ -2,7 +2,6 @@ import { Weather } from "./battle.ts";
 import { getWildTrainer } from "./injections.ts";
 import {
   Attack,
-  AttackReciept,
   BaseStats,
   Battle,
   Combatant,
@@ -22,9 +21,11 @@ import {
   ReadyAction,
   Stat,
   StatSet,
-  Trainer
+  StatusEffect,
+  Trainer,
 } from "./mod.ts";
-import { NonEmptyArray, NonEmptyPartial, weightedRandom, Mutable } from "./util.ts";
+import { StageMods } from "./stats.ts";
+import { NonEmptyArray, NonEmptyPartial, weightedRandom, Mutable, SingleOrArray } from "./util.ts";
 
 export interface Ability {
   name: string;
@@ -68,13 +69,13 @@ export interface Type {
 export interface TypePushTargets {
   weakness?: Type[];
   resistance?: Type[];
-  immunity?: Type[];  
+  immunity?: Type[];
 }
 
 export function addTypeRelation(targets: TypePushTargets, ...types: Type[]) {
-  targets.weakness?.forEach(target=>target.weaknesses.push(...types))
-  targets.resistance?.forEach(target=>target.resistances.push(...types))
-  targets.immunity?.forEach(target=>target.immunities.push(...types))
+  targets.weakness?.forEach(target => target.weaknesses.push(...types));
+  targets.resistance?.forEach(target => target.resistances.push(...types));
+  targets.immunity?.forEach(target => target.immunities.push(...types));
 }
 
 export interface Gender {
@@ -93,7 +94,7 @@ type InternalEvoReasons = {
   move: Move | Move[];
   moveType: Type | Type[];
   gender: Gender;
-}
+};
 
 type ExternalEvoReasons = {
   item: Item;
@@ -103,11 +104,11 @@ type ExternalEvoReasons = {
   trade: boolean;
   party: Species | Species[];
   partyType: Type | Type[];
-}
+};
 
 type EvoReasons = InternalEvoReasons & ExternalEvoReasons;
 
-export type Evolution = {species: Species} & NonEmptyPartial<EvoReasons>
+export type Evolution = { species: Species } & NonEmptyPartial<EvoReasons>;
 
 export interface Species {
   // Normal species definition information
@@ -277,7 +278,25 @@ export class Codemon implements Combatant {
     return boost;
   }
 
-  public recieveAttack(attack: Attack): AttackReciept {
+  public getAction(battle: Battle): ReadyAction {
+    const action = decide(this.trainer.strategy.chooseAction, { combatant: this, battle });
+    const choice = battle.getTargets(action, this);
+    const targets = decide(this.trainer.strategy.chooseTarget, { action, combatant: this, choice, battle });
+    return { source: action, targets, combatant: this };
+  }
+
+  public recieveEffect(context: EffectContext): EffectReciept {
+    const reciept: Mutable<EffectReciept> = { target: this, messages: [] };
+    if (context.effect.attack) this.recieveAttack(context.effect.attack, reciept, context);
+    if (context.effect.faint) this.recieveFaint(reciept, context);
+    if (context.effect.stages) this.recieveStages(context.effect.stages, reciept, context);
+    if (context.effect.eject) this.recieveEject(reciept, context);
+    if (context.effect.status) this.recieveStatus(context.effect.status, reciept, context);
+    // TODO add more effects
+    return reciept as EffectReciept;
+  }
+
+  public recieveAttack(attack: Attack, reciept: Mutable<EffectReciept>, context: EffectContext) {
     let base = (2 * attack.level) / 5 + 2;
     base *= attack.power; // TODO apply effective power, not base
     // TODO fix this
@@ -287,6 +306,10 @@ export class Codemon implements Combatant {
     base = base / 50 + 2;
 
     const typeMultiplier = this.calculateTypeMultiplier(attack.type);
+    if (typeMultiplier === 0) reciept.messages.push(`It's ineffective!`);
+    else if (typeMultiplier < 1) reciept.messages.push(`It's not very effective...`);
+    else if (typeMultiplier > 1) reciept.messages.push(`It's super effective!`);
+
     const product =
       base *
       typeMultiplier *
@@ -302,60 +325,60 @@ export class Codemon implements Combatant {
       config.codemon.limitDamageToRemainingHP ? Math.min(product, this.stats.hp.current) : product
     );
 
-    return {
+    this.recieveHPChange(-total, reciept, context);
+    this.stats.hp.current -= total;
+    reciept.messages.push(`${this.name} took ${total} damage!`);
+    if (this.stats.hp.current <= 0) this.recieveFaint(reciept, context);
+    else
+      reciept.messages.push(
+        `${this.name} has ${this.stats.hp.current}/${this.stats.hp.max} HP left!${
+          this.stats.hp.percent < 0.25 ? "!!" : ""
+        }`
+      );
+
+    reciept.attack = {
       attack,
       total,
       typeMultiplier,
     };
   }
 
-  public getAction(battle: Battle): ReadyAction {
-    const action = decide(this.trainer.strategy.chooseAction, {combatant: this, battle});
-    const choice = battle.getTargets(action, this);
-    const targets = decide(this.trainer.strategy.chooseTarget, {action, combatant: this, choice, battle});
-    return { source: action, targets, combatant: this };
+  public recieveFaint(reciept: Mutable<EffectReciept>, _context: EffectContext) {
+    this.stats.hp.current = 0;
+    reciept.faint = true;
+    reciept.messages.push(`${this.name} fainted!`);
   }
 
-  public recieveEffect(context: EffectContext): EffectReciept {
-    const reciept: Mutable<EffectReciept> = { target: this, messages: [] };
-    // TODO
-
-    if (context.effect.attack) {
-      const attack = this.recieveAttack(context.effect.attack);
-      this.stats.hp.current -= attack.total;
-      reciept.messages.push(`${this.name} took ${attack.total} damage!`);
-      if (this.stats.hp.current <= 0) {
-        this.stats.hp.current = 0;
-        reciept.faint = true;
-        reciept.messages.push(`${this.name} fainted!`);
-      } else {
-        reciept.messages.push(`${this.name} has ${this.stats.hp.current}/${this.stats.hp.max} HP left!`);
-      }
-      reciept.attack = attack;
-    }
-
-    if (context.effect.faint) {
-      this.stats.hp.current = 0;
-      reciept.faint = true;
-      reciept.messages.push(`${this.name} fainted!`);
-    }
-
-    if (context.effect.stages) {
-      reciept.stages = {};
-      for (const [stat, stage] of Object.entries(context.effect.stages)) {
-        if (stage === 0) continue;
-        const statObj = this.stats[stat as Stat];
-        const actual = statObj.stage.modify(stage);
-        if (actual !== 0) {
-          reciept.messages.push(`${this.name}'s ${statObj.stat} ${stage > 0 ? "rose" : "fell"} by ${actual} stages!`);
-          reciept.stages[stat as Stat] = actual;
-        }
+  public recieveStages(stages: StageMods, reciept: Mutable<EffectReciept>, _context: EffectContext) {
+    reciept.stages = {};
+    for (const [stat, stage] of Object.entries<number>(stages)) {
+      if (stage === 0) continue;
+      const statObj = this.stats[stat as Stat];
+      const actual = statObj.stage.modify(stage);
+      if (actual !== 0) {
+        reciept.messages.push(`${this.name}'s ${statObj.stat} ${stage > 0 ? "rose" : "fell"} by ${actual} stages!`);
+        reciept.stages[stat as Stat] = actual;
       }
     }
+  }
 
-    if (context.effect.eject) reciept.eject = true;
+  public recieveEject(reciept: Mutable<EffectReciept>, _context: EffectContext) {
+    reciept.eject = true;
+    reciept.messages.push(`${this.name} was ejected!`);
+  }
 
-    return reciept as EffectReciept;
+  public recieveStatus(status: SingleOrArray<StatusEffect>, reciept: Mutable<EffectReciept>, context: EffectContext) {
+    const flat = [status].flat();
+    flat.forEach(status => status.apply(this, reciept, context));
+  }
+
+  public recieveHPChange(amount: number, reciept: Mutable<EffectReciept>, _context: EffectContext) {
+    const current = this.stats.hp.current;
+    this.stats.hp.current = Math.min(this.stats.hp.max, Math.max(0, this.stats.hp.current + amount));
+    const change = this.stats.hp.current - current;
+    if (change !== 0) reciept.messages.push(`${this.name} ${change > 0 ? "gained" : "lost"} ${Math.abs(change)} HP!`);
+    reciept.hp = change;
+    if (this.stats.hp.current <= 0) this.recieveFaint(reciept, _context);
   }
 
   public mutate(mutations: Partial<Species>) {
@@ -365,21 +388,21 @@ export class Codemon implements Combatant {
   public evolve(evo: Evolution) {
     // TODO double check evolution requirements
     // TODO retain mutations
-    if(this.name === this.species.name) this.name = evo.species.name;
+    if (this.name === this.species.name) this.name = evo.species.name;
     this.species = evo.species;
   }
 
   public getDesiredEvolutions(reasons?: Partial<ExternalEvoReasons>): Evolution[] {
     return this.species.evolutions.filter(option => {
-      if(option.level && this.stats.level < option.level) return false;
-      if(option.item && reasons?.item !== option.item) return false;
-      if(option.trade && !reasons?.trade) return false;
+      if (option.level && this.stats.level < option.level) return false;
+      if (option.item && reasons?.item !== option.item) return false;
+      if (option.trade && !reasons?.trade) return false;
       // if(option.happiness && this.happiness < option.happiness) return false;
       // if(option.time...)
       // if(option.location...)
       // TODO
       return true;
-    })
+    });
   }
 
   public toString(short = false) {

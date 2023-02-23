@@ -1,110 +1,168 @@
-// THIS IS A WORK IN PROGRESS
+const CATEGORIES = [
+  ["abilities", "Ability"],
+  ["experience", "ExperienceGroup"],
+  ["genders", "Gender"],
+  ["items", "Item"],
+  ["locales", "Locale"],
+  ["moves", "Move"],
+  ["natures", "Nature"],
+  ["species", "Species"],
+  ["statuses", "StatusEffect"],
+  ["strategies", "Strategy"],
+  ["trainers", "Trainer"],
+  ["types", "Type"],
+  ["weathers", "Weather"],
+] as const;
+type CATEGORIES = typeof CATEGORIES;
 
-const TEST_MODE = true;
+interface Arceus extends Partial<Record<CATEGORIES[number][0], string[]>> {
+  name: string;
+  format: "nested" | "spread" | "flat";
+  import?: {
+    name: string;
+    path: string;
+  }[];
+  library?: string;
 
-function writeFile(path: string, contents: string) {
-  if(TEST_MODE) { console.log(contents); return }
-  Deno.writeTextFileSync(path, contents);
+  // special entries that the library needs to know about
+  struggle: string; // which move to struggle with
+  wild: string; // the strategy wild Pokémon use
 }
 
-alert("This script will generate boilerplate code for your codex with placeholder entries based on your arceus file. Read about arceus files here: TODO")
+const wd = Deno.cwd();
+console.log(`Working directory: ${wd}`);
 
-const workingDirectory = Deno.cwd();
-
-let codexDirectory: string;
-do {
-  console.log()
-  console.log(`Working directory: ${workingDirectory}`)
-  codexDirectory = prompt("Enter the path from there to directory with your arceus file: ./", "") ?? ""
-  if(codexDirectory[0] !== ".") codexDirectory = `./${codexDirectory}`
-  if(codexDirectory.at(-1) !== "/") codexDirectory += "/"
-} while(!confirm(`Is this correct? ${codexDirectory}.arceus`))
-
-let codemonDirectory: string;
-do {
-  console.log()
-  console.log(`Codex directory: ${codexDirectory}`)
-  codemonDirectory = prompt("Lastly, I need the path from there to this library's directory: ./", "") ?? ""
-  if(codemonDirectory[0] !== ".") codemonDirectory = `./${codemonDirectory}`
-  if(codemonDirectory.at(-1) !== "/") codemonDirectory += "/"
-} while(!confirm(`Is this correct? ${codemonDirectory}index.ts`))
-
-// TODO read existing files and note changes
-
-const arceus = Deno.readTextFileSync(`${codexDirectory}.arceus`).split("\n")
-const codexType = arceus[0];
-
-const categories: [string, string[]][] = [];
-for (let i = 1; i < arceus.length; i += 2) 
-categories.push([arceus[i], arceus[i + 1].trim().split(" ")]);
-
-console.log("Creating loader.ts");
-const loader = `import CodexBuilder from "${codemonDirectory}codex.ts";
-import { ${codexType} } from "./index.ts";
-const loader = new CodexBuilder<${codexType}>();
-export default loader;`
-writeFile(`${codexDirectory}/loader.ts`, loader)
-
-
-const codexEntries: [string, string][] = [];
-
-for(const [category, entries] of categories) {
-  const [directory, type, codexEntry] = category.split(" - ");
-  console.log(`Creating ${codexType}.${codexEntry}`);
-  codexEntries.push([codexEntry, directory]);
-
-  try {
-    Deno.mkdirSync(`${codexDirectory}/${directory}`);
-  } catch (e) {
-    if (!(e instanceof Deno.errors.AlreadyExists)) throw e
-    // directory already exists, proceed
+// check for an arceus file
+try {
+  Deno.statSync(`${wd}/arceus.json`);
+} catch (e) {
+  if (e instanceof Deno.errors.NotFound) {
+    console.log("Arceus file not found");
+    Deno.exit(1);
   }
-  
-  const indexExports: string[] = [];
-  for(const entry of entries) {
-    if(!entry) continue;
-    const entryInCamelCase = entry[0].toLowerCase() + entry.slice(1);
-    if(entryInCamelCase === "index") throw new Error(`Entry name ${entry} is not allowed because it would conflict with the index.ts file. Rename it to something else.`);
-    indexExports.push(entryInCamelCase)
-
-    // check if file exists and skip if it does
-    try {
-      Deno.statSync(`${codexDirectory}/${directory}/${entryInCamelCase}.ts`);
-      // console.log(`Skipping ${entry} because ${entryInCamelCase}.ts already exists`)
-      continue;
-    } catch (e) {
-      if (!(e instanceof Deno.errors.NotFound)) throw e
-      // file doesn't exist, proceed
-    }
-
-    console.log(`Creating ${entry} in ${directory}/${entryInCamelCase}.ts`);
-    const content = `import { Codex, ${type} } from "${codexDirectory[1]==="."?"":"."}${codexDirectory}index.ts";
-import loader from "../loader.ts";
-    
-export const ${entry}: ${type} = loader.register((C: Codex) => ({} as ${type}));`
-    writeFile(`${codexDirectory}/${directory}/${entryInCamelCase}.ts`, content)
-  }
-
-  console.log(`Creating ${directory}/index.ts`);
-  const index = indexExports.map(entry => `export * from "./${entry}.ts";`).join("\n");
-  writeFile(`${codexDirectory}${directory}/index.ts`, index)
+  throw e;
 }
 
-console.log("Creating index.ts");
-const codex = `export * from "${codemonDirectory}index.ts";
+console.log("Reading arceus file");
+const arceus = JSON.parse(Deno.readTextFileSync(`${wd}/arceus.json`)) as Arceus;
+const library = arceus.library ?? "../../src/mod.ts";
+const letter = arceus.name[0].toUpperCase();
+
+const loader = `import { ${arceus.name} } from "./mod.ts";
+import { CodexBuilder } from "${arceus.library ?? "../../src/codex.ts"}";
+const loader: CodexBuilder<${arceus.name}> = new CodexBuilder<${arceus.name}>();
+export default loader;
+`;
+
+function header(name: string) {
+  return `import { ${name} } from "${library}";
 import loader from "./loader.ts";
+`;
+}
 
-${codexEntries.map(([entry, directory]) => `import * as ${entry} from "./${directory}/index.ts";`).join("\n")}
+function entry(name: string, type: string) {
+  return `export const ${name}: ${type} = loader.register<${type}>(${letter} => ({
+  // placeholder
+} as ${type}));  
+`;
+}
 
-const C = {
-${codexEntries.map(([entry])=>`  ${entry}`).join(",\n")}
-} as const;
-export type Codex = typeof C;
+// create the text for each entry
+const categories = CATEGORIES.map(([category, type]) => {
+  return arceus[category]?.map(name => entry(name, type)) ?? [];
+});
 
-loader.build(C);
+function toFileName(name: string) {
+  return `${name[0].toLowerCase()}${name.slice(1)}.ts`;
+}
 
-export default C;
-`
-writeFile(`${codexDirectory}/index.ts`, codex)
+function flatMod(): string {
+  const imports = [arceus.import ?? []].flat().map(i => `import ${i.name} from "${i.path}";`).join("\n");
+  const loader = `import loader from "./loader.ts";`
+  
+  const entries = CATEGORIES.map(([category, type]) => {
+    return arceus[category]?.map(name => `${name}: ${name},`).join("\n\n");
+  }).join("\n\n");
 
-console.log(`Done! You can now import your codex as default and the codemon library from ${codexDirectory}.ts`)
+  const codex = `export const ${arceus.name} = {
+  ${[arceus.import ?? []].flat().map(i => `...${i.name},`).join(",")}
+  
+}
+
+function spreadCategoryFile(type: string, entries: string[]) {
+  return `${header(type)}
+
+${entries.join("\n")}
+`;
+}
+
+function spreadMod(): string {
+  return "";
+}
+
+function nestedEntryFile(type: string, entry: string) {
+  return `${header(type)}
+
+${entry}
+`;
+}
+
+function nestedCategoryMod(names: string[]) {
+  return names.map(n => `export { ${n} } from "./${toFileName(n)}`).join("\n");
+}
+
+function nestedMod() {
+  return "";
+}
+
+function codex(name: string, categories: string[][]) {
+  ""
+
+async function createNestedCategory(name: string, type: string, names: string[], entries: string[]) {
+  // create the directory
+  await Deno.mkdir(name);
+
+  // create the mod.ts file
+  const mod = writeFile(`${name}/mod.ts`, nestedCategoryMod(names));
+
+  // create the entry files
+  const promises = entries.map((entry, i) => {
+    return writeFile(`${name}/${toFileName(names[i])}`, nestedEntryFile(type, entry));
+  });
+
+  // return promise.all
+  return Promise.all([...promises, mod]);
+}
+
+// write the files
+
+const te = new TextEncoder();
+async function writeFile(name: string, text: string) {
+  const file = await Deno.open(name, { create: true, write: true });
+  await file.write(te.encode(text));
+  file.close();
+}
+
+writeFile("loader.ts", loader);
+
+if (arceus.format === "flat") {
+  await writeFile("mod.ts", flatMod());
+} else if (arceus.format === "spread") {
+  await writeFile("mod.ts", spreadMod());
+  await Promise.all(
+    categories.map((category, i) => {
+      const [name, type] = CATEGORIES[i];
+      return writeFile(toFileName(name), spreadCategoryFile(type, category));
+    })
+  );
+} else if (arceus.format === "nested") {
+  await writeFile("mod.ts", spreadMod());
+  await Promise.all(
+    categories.map((category, i) => {
+      const [name, type] = CATEGORIES[i];
+      const names = arceus[name];
+      if (!names) return;
+      return createNestedCategory(name, type, names, category);
+    })
+  );
+}

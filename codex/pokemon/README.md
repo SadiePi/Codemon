@@ -2,7 +2,7 @@
 
 This is a [Codex](../README.md) containing standard Pokémon data. At the moment, there isn't perfect consistency in which generation data is from, but it's generally from the most recent generation or the most recent it was available in. The ultimate goal is to have a Codex for each generation. All data is sourced from [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Main_Page) and copied/translated by hand.
 
-This is an early work in progress, but I think the data structure is finally stable enough to be useful. Contributions are very welcome! I'd prefer for the core project to remain a solo project, but I'm happy to accept PRs for Codexes. Fleshing out the full Pokédex is my main priority, but I'm also happy to accept PRs for other games.
+This is an early work in progress, but I think the data structure is finally stable enough to be useful. Contributions are very welcome! Fleshing out this full Pokédex is my main priority, but I'm also happy to accept PRs for other games (though I'd prefer for `/src` to remain a solo project).
 
 ## Basic Usage
 
@@ -21,8 +21,20 @@ types[0].resistances; // [ P.Types.Fire, P.Types.Grass, P.Types.Poison, P.Types.
 
 const abilities = bulbasaur.abilities; // [ P.Abilities.Overgrow, P.Abilities.Chlorophyll ]
 abilities[0].apply.toString(); // TODO: add this
-
 ```
+
+## Currently Implemented
+
+- Abilities: None
+- Experience Groups: All
+- Items: None
+- Moves: All Gen 1, some others, not all effects
+- Natures: All
+- Species: Bulbasaur, Ivsaur, Venusaur, Garchomp
+- Statuses: Burn, Paralysis (mostly)
+- Trainers: (system still WIP)
+- Types: All
+- Weather: None
 
 ## Data Structure
 

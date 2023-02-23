@@ -13,7 +13,7 @@ import {
   Trainer,
   Type,
 } from "./mod.ts";
-import { Immutable } from "./util.ts";
+import { Immutable, SingleOrArray } from "./util.ts";
 
 // type EventHandler<E extends Record<string, unknown[]>> = {
 //   [K in keyof E]?: (...event: E[K]) => void;
@@ -27,7 +27,7 @@ export type StatusEffectEvents = {
 export interface StatusEffect {
   name: string;
   description: string;
-  apply: (target: Combatant, source: Action, battle: Battle) => void | (() => void);
+  apply: (target: Combatant, effect: EffectReciept, context: EffectContext) => void | (() => void);
   // TODO apply to map
 
   // below are common properties of status effects that could very well
@@ -56,8 +56,6 @@ export interface Weather {
   duration?: Decider<number, Battle>; // remove after this many turns
   statStages?: Decider<StageMods, { source: Action; battle: Battle }>;
 }
-
-type SingleOrArray<T> = T | T[];
 
 // TODO this belongs in ../battles/traditional.ts but
 // that would lead to type parameters everywhere again
@@ -379,7 +377,6 @@ export function power(power: number): Decider<Attack, EffectDeciderContext> {
     const stab = action.source.user.species.types.includes(type) ? config.moves.stabMultiplier : 1;
     const multitarget = action.targets.length > 1 ? config.moves.multitargetMultiplier : 1;
 
-    console.log(`random is ${random}`);
     return {
       level,
       power,

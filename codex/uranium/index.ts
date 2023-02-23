@@ -1,4 +1,3 @@
-export * from "../../src/mod.ts";
 import Pokedex from "../pokemon/index.ts";
 import * as Species from "./species.ts";
 import * as Types from "./types.ts";
