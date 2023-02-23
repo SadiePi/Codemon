@@ -203,15 +203,15 @@ export class StatSet
     this.evasion = new BattleStatEntry("evasion", this, 3, args.evasion ?? {});
   }
 
-  public async levelUp(): Promise<LevelUpReciept>
-  public async levelUp(levels: number): Promise<LevelUpReciept[]>
+  public async levelUp(): Promise<LevelUpReciept>;
+  public async levelUp(levels: number): Promise<LevelUpReciept[]>;
   public async levelUp(levels?: number): Promise<LevelUpReciept | LevelUpReciept[]> {
-    if(levels) {
+    if (levels) {
       const ret: LevelUpReciept[] = [];
-      for(let i = 0; i < levels; i++) ret.push(await this.levelUp());
+      for (let i = 0; i < levels; i++) ret.push(await this.levelUp());
       return ret;
     }
-    
+
     const old = this.level;
     this.level += 1;
     const ret: LevelUpReciept = {
@@ -265,5 +265,5 @@ export interface Nature {
 }
 
 export function getRandomNature(iCodemon: ICodemon): Nature {
-  return decide(getRandomNatureDecider(), iCodemon)
+  return decide(getRandomNatureDecider(), iCodemon);
 }

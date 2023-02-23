@@ -1,4 +1,6 @@
 import { UraniumCodex } from "./index.ts";
-import { CodexBuilder } from "../../src/codex.ts";
-const loader: CodexBuilder<UraniumCodex> = new CodexBuilder<UraniumCodex>();
+import codex from "../../src/codex.ts";
+const loader = codex<UraniumCodex>({
+  // config goes here
+});
 export default loader;

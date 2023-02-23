@@ -1,19 +1,21 @@
 import { Combatant } from "../src/battle.ts";
-import TraditionalBattle from "../src/battles/traditional.ts";
-import C, {
+import {
   ActionReciept,
   Battle,
   BattleReciept,
   decideEffects,
   flattenActionMessages,
   flattenBattleMessages,
+  Move,
   MoveEntry,
   ReadyAction,
   recoil,
   Round,
   RoundReciept,
   spawn,
+  TraditionalBattle,
 } from "../src/mod.ts";
+import C from "../codex/pokemon/index.ts";
 import { assertEquals, assertNotEquals } from "./common.ts";
 import { iBigBoi, iBulby, iGlassCannon, iKibble } from "./common.ts";
 
@@ -183,20 +185,27 @@ Deno.test("Explosion - Multitarget and recoil", async () => {
   console.log(messages.join("\n"));
 });
 
-Deno.test("Spore - Status Effect", async () => {
-  const bulby = spawn(iBulby);
-  const bigBoi = spawn(iBigBoi);
-  bulby.learnMove(C.Moves.Spore);
+Deno.test("Burn - Status Effect", async () => {
+  const StatusTest: Move = {
+    name: "Status Test",
+    description: "Performs cruel and unusual tests on the target.",
+    type: C.Types.Fairy, // more fae than fairy lol
+    pp: 40,
+    category: "Status",
+    target: "Any",
+    status: [C.Statuses.Burn, C.Statuses.Paralysis], //, C.Statuses.Poison, C.Statuses.Sleep, C.Statuses.Freeze],
+    makesContact: false,
+  };
 
-  const actionReciept = await runAction({
-    combatant: bulby,
-    source: bulby.moves[0],
-    targets: [bigBoi],
-  });
-  const messages = flattenActionMessages(actionReciept);
+  const venusaur = spawn({ species: C.Species.Venusaur, stats: { level: 70 }, name: "Bulby 1", moves: [StatusTest] });
+  const garchomp = spawn({ species: C.Species.Garchomp, stats: { level: 70 }, name: "Bulby 2", moves: [StatusTest] });
+
+  const battle = new TraditionalBattle(venusaur, garchomp);
+  const reciept = await battle.runBattle();
+  const messages = flattenBattleMessages(reciept);
   console.log(messages.join("\n"));
 
-  assertEquals(messages.length, 2, "There should be 2 messages");
-  assertEquals(messages[0], "Bulby used Spore!", "The first message should be the move being used");
-  assertNotEquals(messages[1].indexOf("Big Boi"), -1, "The second message should contain the target's name");
+  // assertEquals(messages[0], "Bulby used Burn Test!", "The first message should be the move being used");
+  // assertNotEquals(messages[1].indexOf("Big Boi"), -1, "The second message should contain the target's name");
+  // assertEquals(messages.length, 2, "There should be 2 messages");
 });

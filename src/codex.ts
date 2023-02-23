@@ -7,6 +7,8 @@ import { Item } from "./item.ts";
 import { Move } from "./move.ts";
 import { ExperienceGroup, Nature } from "./stats.ts";
 import { Trainer } from "./trainer.ts";
+import defaultConfig from "./config.ts";
+import { DeepPartial } from "./util.ts";
 
 export class CodexBuilder<C extends Codex> {
   private built = false;
@@ -19,28 +21,33 @@ export class CodexBuilder<C extends Codex> {
     return placeholder;
   }
 
-  build(codex: C) {
+  build(codex: C, config: DeepPartial<typeof defaultConfig>) {
     if (this.built) throw new Error("Don't call build() twice");
     this.built = true;
+    if (config) Object.assign(defaultConfig, config);
     this.builders.forEach(b => Object.assign(b[0], b[1](codex)));
     this.builders.forEach(b => b[2]?.(codex));
   }
 }
 
-export interface Codex {
-  Abilities: Record<string, Ability>;
-  Experience: Record<string, ExperienceGroup>;
-  Genders: Record<string, Gender>;
-  Items: Record<string, Item>;
-  Moves: Record<string, Move>;
-  Natures: Record<string, Nature>;
-  Species: Record<string, Species>;
-  Statuses: Record<string, StatusEffect>;
-  Trainers: Record<string, Trainer>;
-  Types: Record<string, Type>;
-  Weathers: Record<string, Weather>;
+export abstract class Codex {
+  public abstract Abilities: Record<string, Ability>;
+  public abstract Experience: Record<string, ExperienceGroup>;
+  public abstract Genders: Record<string, Gender>;
+  public abstract Items: Record<string, Item>;
+  public abstract Moves: Record<string, Move>;
+  public abstract Natures: Record<string, Nature>;
+  public abstract Species: Record<string, Species>;
+  public abstract Statuses: Record<string, StatusEffect>;
+  public abstract Trainers: Record<string, Trainer>;
+  public abstract Types: Record<string, Type>;
+  public abstract Weathers: Record<string, Weather>;
 }
 
 // TODO use?
 type DeepMap<T, U> = T extends Record<string, unknown> ? { [K in keyof T]: DeepMap<T[K], U> } : U;
 export type DiscoveryMap<Codex> = DeepMap<Codex, boolean>;
+
+export default function codex<C extends Codex>() {
+  return new CodexBuilder<C>();
+}
