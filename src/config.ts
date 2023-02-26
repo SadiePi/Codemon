@@ -1,7 +1,14 @@
 // these are the default settings for the most recent generation of Pokémon
 // best practice for changing these is with ./loader.ts in your Codex
-// be warned, sanity checks are not performed on these values (half lazy, half fun)
-export default {
+
+import { ICodemon } from "./codemon.ts";
+import { Decider } from "./decision.ts";
+import { Move } from "./move.ts";
+import { Nature } from "./stats.ts";
+import { Strategy } from "./trainer.ts";
+
+// be warned, sanity checks are NOT performed on these values (half lazy, half fun)
+export const config = {
   locale: "en_US",
   stats: {
     maxIV: 32,
@@ -27,4 +34,12 @@ export default {
     limitDamageToRemainingHP: true,
   },
   battle: {},
+
+  struggle: {} as Move,
+  wild: {} as Strategy,
+  randomNature: {} as Decider<Nature, ICodemon>,
 };
+
+export function isInitialized() {
+  return !!config.wild && !!config.randomNature && !!config.struggle;
+}

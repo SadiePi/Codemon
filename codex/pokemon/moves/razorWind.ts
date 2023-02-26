@@ -1,5 +1,5 @@
 import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import loader from "../loader.ts";
 
 export const RazorWind: Move = loader.register<Move>(P => ({
   name: "Razor Wind",
@@ -12,6 +12,5 @@ export const RazorWind: Move = loader.register<Move>(P => ({
   target: "Any Adjacent",
   makesContact: false,
   criticalHitStage: 1,
-  // TODO somehow
 }));
 // TODO multiturn moves

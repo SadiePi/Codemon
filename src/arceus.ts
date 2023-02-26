@@ -77,16 +77,21 @@ function toFileName(name: string) {
 }
 
 function flatMod(): string {
-  const imports = [arceus.import ?? []].flat().map(i => `import ${i.name} from "${i.path}";`).join("\n");
-  const loader = `import loader from "./loader.ts";`
-  
+  const imports = [arceus.import ?? []]
+    .flat()
+    .map(i => `import ${i.name} from "${i.path}";`)
+    .join("\n");
+  const loader = `import loader from "./loader.ts";`;
+
   const entries = CATEGORIES.map(([category, type]) => {
     return arceus[category]?.map(name => `${name}: ${name},`).join("\n\n");
   }).join("\n\n");
 
   const codex = `export const ${arceus.name} = {
-  ${[arceus.import ?? []].flat().map(i => `...${i.name},`).join(",")}
-  
+  ${[arceus.import ?? []]
+    .flat()
+    .map(i => `...${i.name},`)
+    .join(",")}`;
 }
 
 function spreadCategoryFile(type: string, entries: string[]) {
@@ -116,7 +121,8 @@ function nestedMod() {
 }
 
 function codex(name: string, categories: string[][]) {
-  ""
+  ("");
+}
 
 async function createNestedCategory(name: string, type: string, names: string[], entries: string[]) {
   // create the directory

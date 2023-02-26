@@ -1,8 +1,7 @@
 import { Action, Codemon, MoveEntry, StatusEffect } from "../index.ts";
-import P from "../index.ts";
 import loader from "../loader.ts";
 
-export const Paralysis: StatusEffect = loader.register(() => ({
+export const Paralysis: StatusEffect = loader.register(P => ({
   name: "Paralysis",
   description: "This Codemon is paralyzed! It might not be able to move!",
   volatile: true,
@@ -23,11 +22,12 @@ export const Paralysis: StatusEffect = loader.register(() => ({
     // TODO reduce speed by 50% when sorting actions
 
     context.battle.on("action", maybeDontMove);
-
     reciept.messages.push(`${target.name} was paralyzed!`);
 
-    return () => {
-      context.battle.off("action", maybeDontMove);
-    };
+    return () => context.battle.off("action", maybeDontMove);
   },
 }));
+
+Deno.test("Paralysis", () => {
+  // TODO
+});

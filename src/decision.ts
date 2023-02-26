@@ -1,12 +1,12 @@
 // The structure of this file came to me all at once. I have no idea if it's
 // unique or good, but I'm going to use it for now.
 
-import { NonEmptyArray, weightedRandom } from "./util.ts";
+import { weightedRandom } from "./util.ts";
 
 type Maybe<T> = T | undefined;
 type Definite<T> = T extends undefined ? never : T;
 
-export type Decider<T, Context = void> = T | ((context: Context) => Decider<T, Context>);
+export type Decider<T, Context = undefined> = T | ((context: Context) => Decider<T, Context>);
 export function decide<T, Context>(decider: Decider<T, Context>, context: Context): T {
   while (decider instanceof Function) decider = decider(context);
   return decider;
@@ -52,19 +52,15 @@ export function chance<T, Context>(
   return condition(_ => Math.random() < chance, effect, otherwise);
 }
 
-export function oneOf<T, Context>(...choices: NonEmptyArray<Decider<T, Context>>): Decider<T, Context> {
-  return _ => {
-    return choices[Math.floor(Math.random() * choices.length)];
-  };
+export function oneOf<T, Context>(...choices: Decider<T, Context>[]): Decider<T, Context> {
+  return _ => choices[Math.floor(Math.random() * choices.length)];
 }
 
-export function weighted<T, Context>(...entries: NonEmptyArray<[Decider<T, Context>, number]>): Decider<T, Context> {
-  return _ => {
-    return weightedRandom(entries);
-  };
+export function weighted<T, Context>(...entries: [Decider<T, Context>, number][]): Decider<T, Context> {
+  return _ => weightedRandom(entries);
 }
 
-export function cycle<T, Context>(...choices: NonEmptyArray<Decider<T, Context>>): Decider<T, Context> {
+export function cycle<T, Context>(...choices: Decider<T, Context>[]): Decider<T, Context> {
   let index = 0;
   return _ => {
     const choice = choices[index];
@@ -73,17 +69,10 @@ export function cycle<T, Context>(...choices: NonEmptyArray<Decider<T, Context>>
   };
 }
 
-
+export function multiple<T, Context>(effect: Decider<T, Context>[], filterMaybe: true): Decider<Definite<T>[], Context>;
+export function multiple<T, Context>(effect: Decider<T, Context>[], filterMaybe: false): Decider<T[], Context>;
 export function multiple<T, Context>(
-  effect: NonEmptyArray<Decider<T, Context>>,
-  filterMaybe: true
-): Decider<Definite<T>[], Context>;
-export function multiple<T, Context>(
-  effect: NonEmptyArray<Decider<T, Context>>,
-  filterMaybe: false
-): Decider<T[], Context>;
-export function multiple<T, Context>(
-  effect: NonEmptyArray<Decider<T, Context>>,
+  effect: Decider<T, Context>[],
   filterMaybe = true
 ): Decider<(T | Definite<T>)[], Context> {
   return context => {

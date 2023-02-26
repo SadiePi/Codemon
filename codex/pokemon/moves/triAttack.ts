@@ -1,5 +1,5 @@
-import { power, Move, chance, multiple } from "../index.ts";
-import loader from "../loader.ts"
+import { power, Move, chance, oneOf } from "../index.ts";
+import loader from "../loader.ts";
 
 export const TriAttack: Move = loader.register<Move>(P => ({
   name: "Tri Attack",
@@ -11,9 +11,5 @@ export const TriAttack: Move = loader.register<Move>(P => ({
   pp: 10,
   attack: power(80),
   makesContact: false,
-  status: multiple(
-    [chance(1 / 5, P.Statuses.Burn), chance(1 / 5, P.Statuses.Freeze), chance(1 / 5, P.Statuses.Paralysis)],
-    true
-  ),
+  status: chance(1 / 5, oneOf(P.Statuses.Burn, P.Statuses.Freeze, P.Statuses.Paralysis)),
 }));
-// TODO triattack

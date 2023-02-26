@@ -28,7 +28,7 @@ export const CausticBreath: Move = loader.register<Move>(U => ({
   stages: {
     defense: -1,
     specialDefense: -1,
-  }
+  },
 }));
 
 export const CoralBreak: Move = loader.register<Move>(U => ({
@@ -45,7 +45,8 @@ export const CoralBreak: Move = loader.register<Move>(U => ({
 
 export const DrainLife: Move = loader.register<Move>(U => ({
   name: "Drain Life",
-  description: "The user drains the foe's energy with its fangs. The user's HP is restored by half the damage inflicted.",
+  description:
+    "The user drains the foe's energy with its fangs. The user's HP is restored by half the damage inflicted.",
   type: U.Types.Dark,
   pp: 10,
   category: "Physical",
@@ -64,12 +65,13 @@ export const Expunge: Move = loader.register<Move>(U => ({
   category: "Special",
   attack: power(110),
   target: "Any Adjacent",
-  makesContact: true
+  makesContact: true,
 }));
 
 export const Fallout: Move = loader.register<Move>(U => ({
   name: "Fallout",
-  description: "Summons a five-turn nuclear fallout to hurt all combatants except the Nuclear and Steel types every turn.",
+  description:
+    "Summons a five-turn nuclear fallout to hurt all combatants except the Nuclear and Steel types every turn.",
   type: U.Types.Nuclear,
   pp: 10,
   category: "Status",
@@ -87,7 +89,7 @@ export const FissionBurst: Move = loader.register<Move>(U => ({
   attack: power(150),
   target: "Every Adjacent",
   makesContact: false,
-  recoil: { faint: true }
+  recoil: { faint: true },
 }));
 
 export const FlameImpact: Move = loader.register<Move>(U => ({
@@ -110,7 +112,7 @@ export const GammaRay: Move = loader.register<Move>(U => ({
   category: "Special",
   attack: power(40),
   target: "Any Foe",
-  makesContact: false
+  makesContact: false,
 }));
 
 export const GemstoneGlimmer: Move = loader.register<Move>(U => ({
@@ -123,24 +125,26 @@ export const GemstoneGlimmer: Move = loader.register<Move>(U => ({
   attack: power(75),
   target: "Any Adjacent",
   makesContact: false,
-  stages: chance(1/4, { accuracy: -1 }),
+  stages: chance(1 / 4, { accuracy: -1 }),
 }));
 
 export const GetLucky: Move = loader.register<Move>(U => ({
   name: "Get Lucky",
-  description: "The user locates the foe's weak spot and sends strong psychic waves to hit it. Raises critical chances.",
+  description:
+    "The user locates the foe's weak spot and sends strong psychic waves to hit it. Raises critical chances.",
   type: U.Types.Psychic,
   pp: 5,
   category: "Special",
   attack: power(70),
   target: "Any Adjacent",
   makesContact: false,
-  criticalHitStage: 1
+  criticalHitStage: 1,
 }));
 
 export const GoldenFist: Move = loader.register<Move>(U => ({
   name: "Golden Fist",
-  description: "The user slugs the opponent with a fist made of solid gold. Scatters coins which can be picked up after the battle.",
+  description:
+    "The user slugs the opponent with a fist made of solid gold. Scatters coins which can be picked up after the battle.",
   type: U.Types.Fighting,
   pp: 20,
   category: "Physical",
@@ -156,14 +160,15 @@ export const HalfLife: Move = loader.register<Move>(U => ({
   type: U.Types.Nuclear,
   pp: 20,
   category: "Special",
-  hp: c => (c instanceof Codemon) ? c.stats.hp.current / 2 : 0,
+  hp: c => (c instanceof Codemon ? c.stats.hp.current / 2 : 0),
   target: "Any Adjacent",
   makesContact: false,
 }));
 
 export const InfernalBlade: Move = loader.register<Move>(U => ({
   name: "Infernal Blade",
-  description: "The user slashes the foe with cursed fire, hits Fairy-type for super effective damage and may also burn.",
+  description:
+    "The user slashes the foe with cursed fire, hits Fairy-type for super effective damage and may also burn.",
   type: U.Types.Fire,
   pp: 10,
   accuracy: 95,
@@ -186,7 +191,7 @@ export const InstantCrush: Move = loader.register<Move>(U => ({
   makesContact: false,
 }));
 
-export const LaserPulse: Move = loader.register<Move>(U => ({
+export const LaserPulse: Move = loader.register(U => ({
   name: "Laser Pulse",
   description: "The user attack with a laser that cycles between Fire, Electric and Ice types.",
   type: U.Types.Normal,
@@ -199,7 +204,8 @@ export const LaserPulse: Move = loader.register<Move>(U => ({
 
 export const MetalCruncher: Move = loader.register<Move>(U => ({
   name: "Metal Cruncher",
-  description: "The user crunches up the target with metal fangs. It has a high chance of lowering the target's Defense.",
+  description:
+    "The user crunches up the target with metal fangs. It has a high chance of lowering the target's Defense.",
   type: U.Types.Steel,
   pp: 5,
   accuracy: 85,
@@ -207,7 +213,7 @@ export const MetalCruncher: Move = loader.register<Move>(U => ({
   attack: power(120),
   target: "Any Adjacent",
   makesContact: true,
-  stages: chance(17/20, { defense: -1 }),
+  stages: chance(17 / 20, { defense: -1 }),
 }));
 
 export const MetalWhip: Move = loader.register<Move>(U => ({
@@ -244,7 +250,7 @@ export const NuclearWaste: Move = loader.register<Move>(U => ({
   category: "Special",
   target: "Any Adjacent",
   makesContact: true,
-  status: U.Statuses.BadlyPoisoned
+  status: U.Statuses.BadlyPoisoned,
 }));
 
 export const NuclearWind: Move = loader.register<Move>(U => ({
@@ -273,7 +279,8 @@ export const OceansWrath: Move = loader.register<Move>(U => ({
 
 export const ProtonBeam: Move = loader.register<Move>(U => ({
   name: "Proton Beam",
-  description: "The user unleashes a powerful, radioactive blast on the enemy. However, it lowers the user's Special Attack by two stages.",
+  description:
+    "The user unleashes a powerful, radioactive blast on the enemy. However, it lowers the user's Special Attack by two stages.",
   type: U.Types.Nuclear,
   pp: 10,
   accuracy: 90,
@@ -305,7 +312,7 @@ export const Radioacid: Move = loader.register<Move>(U => ({
   attack: power(60),
   target: "Any Adjacent",
   makesContact: false,
-  status: chance(3/10, U.Statuses.Burn),
+  status: chance(3 / 10, U.Statuses.Burn),
 }));
 
 export const SkyFall: Move = loader.register<Move>(U => ({
@@ -318,7 +325,7 @@ export const SkyFall: Move = loader.register<Move>(U => ({
   attack: power(85),
   target: "Any Adjacent",
   makesContact: true,
-  status: chance(3/10, U.Statuses.Paralysis),
+  status: chance(3 / 10, U.Statuses.Paralysis),
 }));
 
 export const StickyTerrain: Move = loader.register<Move>(U => ({
@@ -334,7 +341,8 @@ export const StickyTerrain: Move = loader.register<Move>(U => ({
 
 export const Subduction: Move = loader.register<Move>(U => ({
   name: "Subduction",
-  description: "The user creates a massive earthquake that causes the land underneath the foe to rise up and crash down, inflicting damage.",
+  description:
+    "The user creates a massive earthquake that causes the land underneath the foe to rise up and crash down, inflicting damage.",
   type: U.Types.Ground,
   pp: 5,
   accuracy: 90,
@@ -360,7 +368,8 @@ export const SuddenStrike: Move = loader.register<Move>(U => ({
 
 export const Thunderstorm: Move = loader.register<Move>(U => ({
   name: "Thunderstorm",
-  description: "Summons a five-turn thunderstorm to hurt all combatants except the Ground and Electric types every other turn.",
+  description:
+    "Summons a five-turn thunderstorm to hurt all combatants except the Ground and Electric types every other turn.",
   type: U.Types.Electric,
   pp: 10,
   category: "Status",

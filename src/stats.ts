@@ -1,28 +1,42 @@
 // Add new stats by editing these two arrays
 // Type errors will show you where else you need to edit
 // Everything else will adapt automatically
+/** The basic stats of a Codemon */
 export const PermanentStats = ["hp", "attack", "defense", "specialAttack", "specialDefense", "speed"] as const;
+/** Temporary stats that modify the battle */
 export const BattleStats = ["accuracy", "evasion"] as const;
 
 import { ICodemon } from "./codemon.ts";
 import { decide } from "./decision.ts";
 import { EventEmitter } from "./external.ts";
-import { getRandomNatureDecider } from "./injections.ts";
 import { Codemon, config } from "./mod.ts";
 
+/** All possible stats in the game */
 export const Stats = [...PermanentStats, ...BattleStats] as const;
-export type PermanentStat = typeof PermanentStats[number];
-export type BattleStat = typeof BattleStats[number];
+/** All possible stats in the game */
 export type Stat = typeof Stats[number];
+/** The basic stats of a Codemon */
+export type PermanentStat = typeof PermanentStats[number];
+/** Temporary stats that modify the battle */
+export type BattleStat = typeof BattleStats[number];
 
+/** The Base Stats of a Codemon */
 export type BaseStats = Record<PermanentStat, number>;
+/** The EV Yield of a defeated Codemon */
 export type EVYields = Partial<Record<PermanentStat, number>>;
+/** Satge Modifications to a Stat in battle */
 export type StageMods = Partial<Record<Stat, number>>;
 
+/** The Stage of a Stat */
 class StatStage {
   private _stage;
 
-  public constructor(public readonly entry: BattleStatEntry, public power: number, stage?: number) {
+  public constructor(
+    /** The StatEntry this  */
+    public readonly entry: StatEntry,
+    public power: number,
+    stage?: number
+  ) {
     this._stage = 0;
     if (stage) this.modify(stage);
   }
@@ -45,19 +59,31 @@ class StatStage {
     if (this._stage !== old) this.entry.set.emit("stageReset", this.entry.stat, old);
   }
 
-  // TODO this is broken
+  // TODO this is broken and it's the main reason this class exists
   public multiplier(): number {
-    return this.current > 0 ? (this.power + this.current) / this.power : this.power / (this.power - this.current);
+    return this.current > 0 ? (this.power + this.current) / this.power : this.power / (this.power + this.current);
   }
 }
+/** The parameters for a BattleStatEntry */
 interface IBattleStatEntry {
   stage?: number;
 }
 
+/** A BattleStat in use */
 class BattleStatEntry {
+  /** The stage of this entry */
   public stage: StatStage;
 
-  constructor(public readonly stat: Stat, public readonly set: StatSet, stagePower: number, args: IBattleStatEntry) {
+  constructor(
+    /** Which stat this entry represents */
+    public readonly stat: Stat,
+    /** The StatSet this entry belongs to */
+    public readonly set: StatSet,
+    /** How effective stages are. Lower is stronger, min is 0+ε (small positive float) */
+    stagePower: number,
+    /** The parameters given from ICodemon */
+    args: IBattleStatEntry
+  ) {
     this.stage = new StatStage(this, stagePower, args?.stage);
   }
 
@@ -66,27 +92,35 @@ class BattleStatEntry {
   }
 }
 
+/** The parameters for a PermanentStatEntry */
 interface IPermanentStatEntry extends IBattleStatEntry {
   individualValue?: number;
   effortValue?: number;
 }
+/** A PermanentStat in use */
 class PermanentStatEntry extends BattleStatEntry {
+  /** The individual value (IV) of this stat */
   public individualValue: number;
+  /** The effort value (EV) of this stat */
   public effortValue: number;
   constructor(stat: Stat, set: StatSet, stagePower: number, args: IPermanentStatEntry) {
     super(stat, set, stagePower, args);
-    if (!PermanentStats.includes(stat as PermanentStat)) throw new Error(`Invalid stat ${stat} for PermanentStatEntry`);
+    if (!PermanentStats.includes(stat as PermanentStat))
+      throw new Error(`PermanentStatEntry: ${stat} is not a PermanentStat. Owner is ${set.self.name}`);
     this.individualValue = args.individualValue ?? Math.floor(Math.random() * config.stats.maxIV);
     this.effortValue = args.effortValue ?? 0;
   }
 
+  /** The value of this stat. Ignores stage by default, pass true to enable */
   public value(considerStage = false) {
+    // Base value. TODO? make this a decider in config
     let val =
       2 * this.set.self.species.baseStats[this.stat as PermanentStat] +
       this.individualValue +
       Math.floor(this.effortValue / 4);
     val = Math.floor((val * this.set.level) / 100) + 5;
 
+    // Apply nature effect, if any
     const nature = considerStage ? this.set.self.nature : this.set.self.originalNature;
     const natureBuff = nature.buff === this.stat;
     const natureNerf = nature.nerf === this.stat;
@@ -96,6 +130,7 @@ class PermanentStatEntry extends BattleStatEntry {
     if (nature.effect) natureEffect = nature.effect(this.stat);
     val = Math.floor(val * natureEffect);
 
+    // Apply stage if requested
     if (considerStage) val = Math.floor(val * this.stage.multiplier());
 
     return val;
@@ -108,15 +143,22 @@ class PermanentStatEntry extends BattleStatEntry {
   }
 }
 
-// disregards but doesn't disallow stage
+/**
+ *
+ */
+interface IHPStatEntry extends IPermanentStatEntry {
+  current?: number;
+}
+/** A custom PermanentStatEntry for HP */
 class HPStatEntry extends PermanentStatEntry {
   public current;
   public get max() {
     return this.value();
   }
-  constructor(set: StatSet, args: IPermanentStatEntry) {
-    super("hp", set, 0, args);
-    this.current = this.value();
+  constructor(set: StatSet, args: IHPStatEntry) {
+    super("hp", set, Number.MAX_SAFE_INTEGER, args);
+    this.current = args.current ?? this.value();
+    if (this.current > this.max) this.current = this.max;
   }
 
   public value() {
@@ -145,6 +187,8 @@ class HPStatEntry extends PermanentStatEntry {
   }
 }
 
+type StatEntry = PermanentStatEntry | BattleStatEntry | HPStatEntry;
+
 export type ExperienceGroup = (level: number) => number;
 
 export interface LevelUpReciept {
@@ -164,7 +208,7 @@ type IStatEntries = Partial<Record<PermanentStat, IPermanentStatEntry>> & Partia
 export type IStatSet = IStatEntries & { level?: number; points?: number };
 
 export class StatSet
-  // todo: this should be on Codemon, not StatSet
+  // todo: this should be on Codemon, not StatSet. or maybe both?
   extends EventEmitter<{
     stageChange: [stat: Stat, old: number, current: number];
     stageReset: [stat: Stat, old: number];
@@ -265,5 +309,5 @@ export interface Nature {
 }
 
 export function getRandomNature(iCodemon: ICodemon): Nature {
-  return decide(getRandomNatureDecider(), iCodemon);
+  return decide(config.randomNature, iCodemon);
 }

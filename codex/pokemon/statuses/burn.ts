@@ -1,4 +1,4 @@
-import P, {
+import {
   Action,
   ActionSource,
   Combatant,
@@ -31,7 +31,7 @@ const BurnDamage: ActionSource = {
   },
 };
 
-export const Burn: StatusEffect = loader.register(() => ({
+export const Burn: StatusEffect = loader.register(P => ({
   name: "Burn",
   description:
     "This Codemon is burned by searing heat! Take 1/16 of max HP as damage after each turn. Attack damage is halved.",
@@ -40,6 +40,8 @@ export const Burn: StatusEffect = loader.register(() => ({
   apply: (target, reciept, context) => {
     if (!(target instanceof Codemon)) return; // only applies to codemon
     if (target.species.types.includes(P.Types.Fire)) return; // immune
+
+    let attackedThisRound = false;
 
     // halve attack damage, damage after action, damage after round if didn't attack
     const halveDamageAndBurnIfAttack = (effect: Effects, _target: Combatant, action: Action) => {
@@ -57,7 +59,6 @@ export const Burn: StatusEffect = loader.register(() => ({
         targets: [target],
       });
     };
-    let attackedThisRound = false;
     const burnIfDidntAttack = (round: Round) => {
       if (!attackedThisRound) {
         round.reactions.push({

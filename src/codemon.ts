@@ -1,5 +1,3 @@
-import { Weather } from "./battle.ts";
-import { getWildTrainer } from "./injections.ts";
 import {
   Attack,
   BaseStats,
@@ -23,9 +21,14 @@ import {
   StatSet,
   StatusEffect,
   Trainer,
+  Weather,
+  StageMods,
+  NonEmptyArray,
+  NonEmptyPartial,
+  weightedRandom,
+  Mutable,
+  SingleOrArray,
 } from "./mod.ts";
-import { StageMods } from "./stats.ts";
-import { NonEmptyArray, NonEmptyPartial, weightedRandom, Mutable, SingleOrArray } from "./util.ts";
 
 export interface Ability {
   name: string;
@@ -159,10 +162,8 @@ export interface ICodemon {
   trainer?: Trainer;
 }
 
-type SpawnBankEntry = [options: ICodemon, weight: number];
-export type SpawnBank = [SpawnBankEntry, ...SpawnBankEntry[]];
-export function spawn(from: ICodemon | SpawnBank): Codemon {
-  return Array.isArray(from) ? spawn(weightedRandom(from)) : new Codemon(from);
+export function spawn(from: Decider<ICodemon>): Codemon {
+  return new Codemon(decide(from, undefined));
 }
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
@@ -186,7 +187,7 @@ export class Codemon implements Combatant {
       options.ability ?? Math.floor(Math.random() * options.species.abilities.normal.length);
     this._originalNature = this._nature = options.nature ?? getRandomNature(options);
     this.stats = new StatSet(this, { ...options.stats });
-    this.trainer = options.trainer ?? getWildTrainer();
+    this.trainer = options.trainer ?? { strategy: config.wild };
   }
 
   // abilities
@@ -205,6 +206,7 @@ export class Codemon implements Combatant {
     return this._originalAbility;
   }
   public setOriginalAbility(ability: AbilitySelector, reset = true) {
+    if (this._ability === this._originalAbility) this._ability = ability;
     this._originalAbility = ability;
     if (reset) this.resetAbility();
   }

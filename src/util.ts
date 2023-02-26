@@ -7,7 +7,7 @@ export type NonEmptyPartial<T extends Record<string, unknown>, Keys extends keyo
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
 
-export function weightedRandom<T>(entries: NonEmptyArray<[T, number]>): T {
+export function weightedRandom<T>(entries: [T, number][]): T {
   const total = entries.reduce((a, b) => a + b[1], 0);
   const rand = Math.random() * total;
   let current = 0;
@@ -35,11 +35,6 @@ export type Immutable<T> = { readonly [P in keyof T]: T[P] };
 // https://stackoverflow.com/questions/68988148/how-to-create-a-type-that-yields-keys-of-an-object-that-match-a-given-type
 export type KeysAssignableFrom<T, V> = { [K in keyof T]-?: [V] extends [T[K]] ? K : never }[keyof T];
 
-export function closure<T>(init?: T): [(t: T) => void, () => T] {
-  let value: T;
-  if (init) value = init;
-  return [(t: T) => (value = t), () => value];
-}
 export type SingleOrArray<T> = T | T[];
 
 export type DeepPartial<T> = {
