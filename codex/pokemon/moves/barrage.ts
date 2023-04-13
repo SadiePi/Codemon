@@ -1,4 +1,4 @@
-import { Move, power } from "../index.ts";
+import { Decider, EffectDeciderContext, Move, decide, multiHit, power, range } from "../index.ts";
 import loader from "../loader.ts";
 
 export const Barrage: Move = loader.register<Move>(P => ({
@@ -11,5 +11,5 @@ export const Barrage: Move = loader.register<Move>(P => ({
   attack: power(15),
   accuracy: 85,
   makesContact: false,
+  hitAgain: multiHit(2, 5),
 }));
-// TODO multihit moves

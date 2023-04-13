@@ -1,4 +1,5 @@
-import { ActionSource, Battle, Combatant, Decider, TargetChoice } from "./mod.ts";
+import { ActionSource, Combatant, Battle, TargetChoice } from "./battle.ts";
+import { Decider } from "./decision.ts";
 
 export interface Strategy {
   chooseAction: Decider<ActionSource, { combatant: Combatant; battle: Battle }>;

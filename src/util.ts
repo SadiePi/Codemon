@@ -7,15 +7,19 @@ export type NonEmptyPartial<T extends Record<string, unknown>, Keys extends keyo
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
 
-export function weightedRandom<T>(entries: [T, number][]): T {
-  const total = entries.reduce((a, b) => a + b[1], 0);
+export interface WeightedRandomEntry<T> {
+  entry: T;
+  weight: number;
+}
+export function weightedRandom<T>(entries: WeightedRandomEntry<T>[]): T {
+  const total = entries.reduce((a, b) => a + b.weight, 0);
   const rand = Math.random() * total;
   let current = 0;
-  for (const [item, weight] of entries) {
+  for (const { entry, weight } of entries) {
     current += weight;
-    if (rand < current) return item;
+    if (rand < current) return entry;
   }
-  throw new Error("Weighted random failed");
+  throw new Error("Weighted random failed!");
 }
 
 export function unweightedRandom<T>(entries: T[]): T {
@@ -44,3 +48,13 @@ export type DeepPartial<T> = {
     ? ReadonlyArray<DeepPartial<U>>
     : DeepPartial<T[P]>;
 };
+
+export function TODO<T>(message: string, mode: "warn"): T;
+export function TODO<T>(message: string, mode: "error"): never;
+export function TODO<T>(message: string, mode: "warn" | "error" = "warn"): T | never {
+  if (mode === "warn") {
+    console.warn(`TODO: ${message}`);
+    return { todo: message } as T;
+  }
+  throw new Error(message);
+}

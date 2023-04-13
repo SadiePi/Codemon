@@ -1,5 +1,5 @@
-import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { power, Move, multiHit } from "../index.ts";
+import loader from "../loader.ts";
 
 export const SpikeCannon: Move = loader.register<Move>(P => ({
   name: "Spike Cannon",
@@ -10,5 +10,5 @@ export const SpikeCannon: Move = loader.register<Move>(P => ({
   pp: 15,
   attack: power(20),
   makesContact: false,
+  hitAgain: multiHit(2, 5),
 }));
-// TODO multihit moves

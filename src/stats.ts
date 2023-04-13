@@ -6,10 +6,10 @@ export const PermanentStats = ["hp", "attack", "defense", "specialAttack", "spec
 /** Temporary stats that modify the battle */
 export const BattleStats = ["accuracy", "evasion"] as const;
 
-import { ICodemon } from "./codemon.ts";
+import { SpawnParams, Codemon } from "./codemon.ts";
 import { decide } from "./decision.ts";
 import { EventEmitter } from "./external.ts";
-import { Codemon, config } from "./mod.ts";
+import { config } from "./config.ts";
 
 /** All possible stats in the game */
 export const Stats = [...PermanentStats, ...BattleStats] as const;
@@ -207,14 +207,16 @@ type IStatEntries = Partial<Record<PermanentStat, IPermanentStatEntry>> & Partia
 
 export type IStatSet = IStatEntries & { level?: number; points?: number };
 
+export type StatEvents = {
+  stageChange: [stat: Stat, old: number, current: number];
+  stageReset: [stat: Stat, old: number];
+  levelUp: [reciept: LevelUpReciept];
+  addExp: [reciept: AddExpReciept];
+};
+
 export class StatSet
   // todo: this should be on Codemon, not StatSet. or maybe both?
-  extends EventEmitter<{
-    stageChange: [stat: Stat, old: number, current: number];
-    stageReset: [stat: Stat, old: number];
-    levelUp: [reciept: LevelUpReciept];
-    addExp: [reciept: AddExpReciept];
-  }>
+  extends EventEmitter<StatEvents>
   implements StatEntries
 {
   public hp: HPStatEntry;
@@ -308,6 +310,6 @@ export interface Nature {
   effect?: (stat: Stat) => number;
 }
 
-export function getRandomNature(iCodemon: ICodemon): Nature {
+export function getRandomNature(iCodemon: SpawnParams): Nature {
   return decide(config.randomNature, iCodemon);
 }

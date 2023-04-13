@@ -1,5 +1,5 @@
 import { Move, power } from "../index.ts";
-import loader from "../loader.ts"
+import loader from "../loader.ts";
 
 export const Bide: Move = loader.register<Move>(P => ({
   name: "Bide",
@@ -11,4 +11,4 @@ export const Bide: Move = loader.register<Move>(P => ({
   target: "Self",
   makesContact: true,
 }));
-// TODO multiturn moves
+// TODO bide effect

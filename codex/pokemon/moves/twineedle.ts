@@ -1,5 +1,5 @@
-import { chance, power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { chance, power, Move, multiHit } from "../index.ts";
+import loader from "../loader.ts";
 
 export const Twineedle: Move = loader.register<Move>(P => ({
   name: "Twineedle",
@@ -12,5 +12,5 @@ export const Twineedle: Move = loader.register<Move>(P => ({
   target: "Any Adjacent",
   makesContact: false,
   status: chance(2 / 10, P.Statuses.Poison),
+  hitAgain: multiHit(2, 2),
 }));
-// TODO multihit moves

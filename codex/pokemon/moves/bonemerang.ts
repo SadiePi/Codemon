@@ -1,5 +1,5 @@
-import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { power, Move, multiHit } from "../index.ts";
+import loader from "../loader.ts";
 
 export const Bonemerang: Move = loader.register<Move>(P => ({
   name: "Bonemerang",
@@ -11,5 +11,5 @@ export const Bonemerang: Move = loader.register<Move>(P => ({
   attack: power(50),
   accuracy: 90,
   makesContact: false,
+  hitAgain: multiHit(2, 2), // TODO make better
 }));
-// TODO multihit moves

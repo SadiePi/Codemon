@@ -1,5 +1,5 @@
 export * from "../../src/mod.ts";
-import { Codex, Nature, oneOf, NonEmptyArray } from "../../src/mod.ts";
+import { Codex, Nature, choose, NonEmptyArray } from "../../src/mod.ts";
 import loader from "./loader.ts";
 
 import * as Abilities from "./abilities/index.ts";
@@ -34,7 +34,7 @@ export type Pokedex = typeof P;
 loader.build(P, {
   struggle: Moves.Struggle,
   wild: Strategies.Wild,
-  randomNature: oneOf(...(Object.values(Natures) as NonEmptyArray<Nature>)),
+  randomNature: choose(...(Object.values(Natures) as NonEmptyArray<Nature>)),
 });
 
 export default P;

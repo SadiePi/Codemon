@@ -1,160 +1,156 @@
-import {
-  MoveEntry,
-  TargetChoice,
-  EffectReciept,
-  ActionReciept,
-  ActionSource,
-  Battle,
-  ReadyAction,
-  RoundReciept,
-  decideEffects,
-  Round,
-  Codemon,
-  Combatant,
-  recoil,
-} from "../mod.ts";
+// import {
+//   Battle,
+//   Round,
+//   Combatant,
+//   ActionSource,
+//   TargetChoice,
+//   RoundReciept,
+//   recoil,
+//   EffectReciept,
+// } from "../battle.ts";
+// import { Codemon } from "../codemon.ts";
+// import { MoveEntry } from "../move.ts";
 
-export class TraditionalBattle extends Battle {
-  private round: Round;
+export default {};
 
-  constructor(...combatants: Combatant[]) {
-    super(combatants);
-    this.round = {
-      number: 0,
-    } as Round;
-  }
+// export class TraditionalBattle extends Battle {
+//   private round: Round;
 
-  // deno-lint-ignore no-unused-vars
-  getTargets(source: ActionSource): TargetChoice {
-    // TODO apply targeting category filter
-    return {
-      targets: this.combatants,
-      count: 1,
-      random: true,
-    };
-  }
+//   constructor(...combatants: Combatant[]) {
+//     super(combatants);
+//     this.round = {
+//       number: 0,
+//     } as Round;
+//   }
 
-  async runBattle() {
-    await this.wait("start", this.combatants);
-    const rounds: RoundReciept[] = [];
-    while (this.combatants.length > 1) rounds.push(await this.runRound());
-    console.log(`${this.combatants.length} combatants remaining.`);
+//   // deno-lint-ignore no-unused-vars
+//   getTargets(source: ActionSource): TargetChoice {
+//     // TODO apply targeting category filter
+//     return {
+//       targets: this.combatants,
+//       count: 1,
+//       random: true,
+//     };
+//   }
 
-    const reciept = { remaining: this.combatants, rounds, messages: [] };
-    await this.wait("battleReciept", reciept);
+//   async runBattle() {
+//     await this.wait("start", this.combatants);
+//     const rounds: RoundReciept[] = [];
+//     while (this.combatants.length > 1) rounds.push(await this.runRound());
+//     console.log(`${this.combatants.length} combatants remaining.`);
 
-    return reciept;
-  }
+//     const reciept = { remaining: this.combatants, rounds, messages: [] };
+//     await this.wait("battleReciept", reciept);
 
-  async runRound() {
-    this.round = {
-      number: this.round.number + 1,
-      preactions: [],
-      actions: [],
-      messages: [],
-      reactions: [],
-    };
-    await this.wait("round", this.getRound());
-    const preactions = await this.runActions(this.getRound().preactions);
+//     return reciept;
+//   }
 
-    const readys = await this.getActions();
-    await this.wait("allReady", readys);
+//   async runRound() {
+//     this.round = {
+//       number: this.round.number + 1,
+//       actions: [],
+//     };
+//     await this.wait("round", this.getRound());
+//     const preactions = await this.runActions(this.getRound().preactions);
 
-    const actions = await this.runActions(readys);
+//     const readys = await this.getActions();
+//     await this.wait("allReady", readys);
 
-    await this.wait("roundEnd", this.getRound());
-    const reactions = await this.runActions(this.getRound().reactions);
+//     const actions = await this.runActions(readys);
 
-    const reciept: RoundReciept = {
-      number: this.round.number,
-      preactions,
-      actions,
-      reactions,
-      messages: [],
-    };
-    await this.wait("roundReciept", reciept);
+//     await this.wait("roundEnd", this.getRound());
+//     const reactions = await this.runActions(this.getRound().reactions);
 
-    return reciept;
-  }
+//     const reciept: RoundReciept = {
+//       number: this.round.number,
+//       preactions,
+//       actions,
+//       reactions,
+//       messages: [],
+//     };
+//     await this.wait("roundReciept", reciept);
 
-  getAction(combatant: Combatant): ReadyAction | Promise<ReadyAction> {
-    return combatant.getAction(this);
-  }
+//     return reciept;
+//   }
 
-  async getActions() {
-    const actions: ReadyAction[] = [];
-    for (const combatant of this.combatants) actions.push(await this.getAction(combatant));
-    return actions;
-  }
+//   getAction(combatant: Combatant): ReadyAction | Promise<ReadyAction> {
+//     return combatant.getAction(this);
+//   }
 
-  sortActions(actions: ReadyAction[]) {
-    return actions.sort((a, b) => {
-      const prioDiff = (a.source.priority ?? 0) - (b.source.priority ?? 0);
-      if (prioDiff !== 0) return prioDiff;
+//   async getActions() {
+//     const actions: ReadyAction[] = [];
+//     for (const combatant of this.combatants) actions.push(await this.getAction(combatant));
+//     return actions;
+//   }
 
-      const aSpeed = a.source instanceof MoveEntry ? a.source.user.stats.speed.value(true) : 0;
-      const bSpeed = b.source instanceof MoveEntry ? b.source.user.stats.speed.value(true) : 0;
-      return bSpeed - aSpeed;
-    });
-  }
+//   sortActions(actions: ReadyAction[]) {
+//     return actions.sort((a, b) => {
+//       const prioDiff = (a.source.priority ?? 0) - (b.source.priority ?? 0);
+//       if (prioDiff !== 0) return prioDiff;
 
-  async runActions(readys: ReadyAction[]) {
-    const actions: ActionReciept[] = [];
-    for (const action of this.sortActions(readys)) {
-      const actionReciept = await this.runAction(action);
-      if (actionReciept) actions.push(actionReciept);
-    }
-    return actions;
-  }
+//       const aSpeed = a.source instanceof MoveEntry ? a.source.user.stats.speed.value(true) : 0;
+//       const bSpeed = b.source instanceof MoveEntry ? b.source.user.stats.speed.value(true) : 0;
+//       return bSpeed - aSpeed;
+//     });
+//   }
 
-  async runAction(ready: ReadyAction) {
-    const { source, targets, combatant } = ready;
-    if (combatant instanceof Codemon && combatant.stats.hp.current <= 0) return;
-    await this.wait("beforeAction", ready);
+//   async runActions(readys: ReadyAction[]) {
+//     const actions: ActionReciept[] = [];
+//     for (const action of this.sortActions(readys)) {
+//       const actionReciept = await this.runAction(action);
+//       if (actionReciept) actions.push(actionReciept);
+//     }
+//     return actions;
+//   }
 
-    const action = source.useAction({
-      targets: targets,
-      battle: this,
-    });
-    await this.wait("action", action);
+//   async runAction(ready: ReadyAction) {
+//     const { source, targets, combatant } = ready;
+//     if (combatant instanceof Codemon && combatant.stats.hp.current <= 0) return;
+//     await this.wait("beforeAction", ready);
 
-    const preactions = await this.runActions(action.preactions);
+//     const action = source.useAction({
+//       targets: targets,
+//       battle: this,
+//     });
+//     await this.wait("action", action);
 
-    const hit = true; // TODO: implement hit chance
-    if (source instanceof MoveEntry) {
-      if (hit && action.effect.recoil) action.reactions.push(recoil(source.user, action.effect.recoil));
-      if (!hit && action.effect.crash) action.reactions.push(recoil(source.user, action.effect.crash));
-    }
+//     const preactions = await this.runActions(action.preactions);
 
-    const effects: EffectReciept[] = [];
-    for (const target of action.targets) {
-      const effect = decideEffects(action, target, this);
-      await this.wait("effect", effect, target, action);
-      const reciept = target.recieveEffect({ effect: effect, action, battle: this });
-      if (reciept.faint || reciept.eject) this.combatants = this.combatants.filter(c => c !== target);
-      await this.wait("effectReciept", reciept);
-      effects.push(reciept);
-    }
+//     const hit = true; // TODO: implement hit chance
+//     if (source instanceof MoveEntry) {
+//       if (hit && action.effect.recoil) action.reactions.push(recoil(source.user, action.effect.recoil));
+//       if (!hit && action.effect.crash) action.reactions.push(recoil(source.user, action.effect.crash));
+//     }
 
-    await this.wait("actionEnd", action);
-    const reactions = await this.runActions(action.reactions);
+//     const effects: EffectReciept[] = [];
+//     for (const target of action.targets) {
+//       const effect = decideEffects(action, target, this);
+//       await this.wait("effect", effect, target, action);
+//       const reciept = target.recieveEffect({ effect: effect, action, battle: this });
+//       if (reciept.faint || reciept.eject) this.combatants = this.combatants.filter(c => c !== target);
+//       await this.wait("effectReciept", reciept);
+//       effects.push(reciept);
+//     }
 
-    const reciept: ActionReciept = {
-      preactions,
-      source,
-      effects,
-      messages: action.messages,
-      reactions,
-    };
+//     await this.wait("actionEnd", action);
+//     const reactions = await this.runActions(action.reactions);
 
-    await this.wait("actionReciept", reciept);
+//     const reciept: ActionReciept = {
+//       preactions,
+//       source,
+//       effects,
+//       messages: action.messages,
+//       reactions,
+//     };
 
-    return reciept;
-  }
+//     await this.wait("actionReciept", reciept);
 
-  getRound() {
-    return this.round;
-  }
-}
+//     return reciept;
+//   }
 
-export default TraditionalBattle
+//   getRound() {
+//     return this.round;
+//   }
+// }
+
+// export default TraditionalBattle;

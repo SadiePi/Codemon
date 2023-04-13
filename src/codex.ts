@@ -1,16 +1,15 @@
 // I know what I'm doing, Deno.
 // deno-lint-ignore-file ban-types
 
-import { Weather } from "./battle.ts";
-import { Ability, Gender, Species, Type } from "./codemon.ts";
 import { Item } from "./item.ts";
 import { Move } from "./move.ts";
 import { ExperienceGroup, Nature } from "./stats.ts";
 import { Strategy, Trainer } from "./trainer.ts";
 import { config as currentConfig } from "./config.ts";
 import { DeepPartial } from "./util.ts";
-import { StatusEffect } from "./mod.ts";
 import { merge } from "./external.ts";
+import { Gender, Species, Type } from "./codemon.ts";
+import { Ability, StatusEffect, Weather } from "./status.ts";
 
 export class CodexBuilder<C extends Codex> {
   private built = false;

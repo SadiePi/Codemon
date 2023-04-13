@@ -1,4 +1,4 @@
-import { power, Move, chance, oneOf } from "../index.ts";
+import { power, Move, chance, choose } from "../index.ts";
 import loader from "../loader.ts";
 
 export const TriAttack: Move = loader.register<Move>(P => ({
@@ -11,5 +11,11 @@ export const TriAttack: Move = loader.register<Move>(P => ({
   pp: 10,
   attack: power(80),
   makesContact: false,
-  status: chance(1 / 5, oneOf(P.Statuses.Burn, P.Statuses.Freeze, P.Statuses.Paralysis)),
+  status: chance(1 / 5, choose(P.Statuses.Burn, P.Statuses.Freeze, P.Statuses.Paralysis)),
+  // alternatively, less accurate but more fun, and more flexible:
+  // status: multiple([
+  //   chance(1 / 5, P.Statuses.Burn),
+  //   chance(1 / 5, P.Statuses.Freeze),
+  //   chance(1 / 5, P.Statuses.Paralysis),
+  // ]),
 }));

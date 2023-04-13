@@ -1,5 +1,5 @@
-import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { power, Move, multiHit } from "../index.ts";
+import loader from "../loader.ts";
 
 export const CometPunch: Move = loader.register<Move>(P => ({
   name: "Comet Punch",
@@ -12,5 +12,5 @@ export const CometPunch: Move = loader.register<Move>(P => ({
 
   attack: power(18),
   accuracy: 85,
+  hitAgain: multiHit(2, 5),
 }));
-// TODO multihit

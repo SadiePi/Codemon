@@ -1,7 +1,7 @@
 // these are the default settings for the most recent generation of Pokémon
 // best practice for changing these is with ./loader.ts in your Codex
 
-import { ICodemon } from "./codemon.ts";
+import { SpawnParams } from "./codemon.ts";
 import { Decider } from "./decision.ts";
 import { Move } from "./move.ts";
 import { Nature } from "./stats.ts";
@@ -37,7 +37,7 @@ export const config = {
 
   struggle: {} as Move,
   wild: {} as Strategy,
-  randomNature: {} as Decider<Nature, ICodemon>,
+  randomNature: {} as Decider<Nature, SpawnParams>,
 };
 
 export function isInitialized() {

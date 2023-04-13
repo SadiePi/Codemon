@@ -1,5 +1,5 @@
-import { Move, power } from "../index.ts";
-import loader from "../loader.ts"
+import { Move, chance, power } from "../index.ts";
+import loader from "../loader.ts";
 
 export const Acid: Move = loader.register<Move>(P => ({
   name: "Acid",
@@ -10,5 +10,5 @@ export const Acid: Move = loader.register<Move>(P => ({
   attack: power(40),
   target: "Every Adjacent Foe",
   makesContact: false,
-  stages: { specialDefense: -1 },
+  stages: chance(1 / 10, { specialDefense: -1 }),
 }));

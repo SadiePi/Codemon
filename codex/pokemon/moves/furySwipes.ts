@@ -1,5 +1,5 @@
-import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { power, Move, multiHit } from "../index.ts";
+import loader from "../loader.ts";
 
 export const FurySwipes: Move = loader.register<Move>(P => ({
   name: "Fury Swipes",
@@ -11,5 +11,5 @@ export const FurySwipes: Move = loader.register<Move>(P => ({
   attack: power(18),
   accuracy: 80,
   makesContact: true,
+  hitAgain: multiHit(2, 5),
 }));
-// TODO multihit moves

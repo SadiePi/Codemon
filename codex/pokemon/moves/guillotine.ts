@@ -1,5 +1,5 @@
-import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { Move, Codemon } from "../index.ts";
+import loader from "../loader.ts";
 
 export const Guillotine: Move = loader.register<Move>(P => ({
   name: "Guillotine",
@@ -7,7 +7,16 @@ export const Guillotine: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Physical",
   pp: 5,
-  accuracy: 90,
+  accuracy: ({
+    action: {
+      params: { user },
+    },
+    target,
+  }) => {
+    const userLevel = user instanceof Codemon ? user.stats.level : 0;
+    const targetLevel = target instanceof Codemon ? target.stats.level : 0;
+    return 30 + userLevel - targetLevel;
+  },
   target: "Any Adjacent",
   makesContact: true,
   faint: true,

@@ -1,8 +1,6 @@
 // The structure of this file came to me all at once. I have no idea if it's
 // unique or good, but I'm going to use it for now.
 
-import { weightedRandom } from "./util.ts";
-
 type Maybe<T> = T | undefined;
 type Definite<T> = T extends undefined ? never : T;
 
@@ -15,8 +13,7 @@ export function decide<T, Context>(decider: Decider<T, Context>, context: Contex
 export type MultiDecider<T extends Record<string, unknown>, Context> = {
   [K in keyof T]: Decider<T[K], Context>;
 };
-// For technical reasons, a universal multiDecide function seems to be impossible.
-// You'll have to define your own.
+// For technical reasons, a universal multiDecide function is not possible.
 
 export function condition<T, Context>(
   predicate: (context: Context) => boolean,
@@ -52,12 +49,25 @@ export function chance<T, Context>(
   return condition(_ => Math.random() < chance, effect, otherwise);
 }
 
-export function oneOf<T, Context>(...choices: Decider<T, Context>[]): Decider<T, Context> {
+export function choose<T, Context>(...choices: Decider<T, Context>[]): Decider<T, Context> {
   return _ => choices[Math.floor(Math.random() * choices.length)];
 }
 
-export function weighted<T, Context>(...entries: [Decider<T, Context>, number][]): Decider<T, Context> {
-  return _ => weightedRandom(entries);
+interface WeightedRandomEntry<T> {
+  entry: T;
+  weight: number;
+}
+export function weighted<T, Context>(...entries: WeightedRandomEntry<Decider<T, Context>>[]): Decider<T, Context> {
+  return _ => {
+    const total = entries.reduce((a, b) => a + b.weight, 0);
+    const rand = Math.random() * total;
+    let current = 0;
+    for (const { entry, weight } of entries) {
+      current += weight;
+      if (rand < current) return entry;
+    }
+    throw new Error("Weighted random failed!");
+  };
 }
 
 export function cycle<T, Context>(...choices: Decider<T, Context>[]): Decider<T, Context> {
@@ -69,15 +79,34 @@ export function cycle<T, Context>(...choices: Decider<T, Context>[]): Decider<T,
   };
 }
 
-export function multiple<T, Context>(effect: Decider<T, Context>[], filterMaybe: true): Decider<Definite<T>[], Context>;
-export function multiple<T, Context>(effect: Decider<T, Context>[], filterMaybe: false): Decider<T[], Context>;
+export function multiple<T, Context>(effect: Decider<T, Context>[], filterMaybe: true): Decider<T[], Context>;
+export function multiple<T, Context>(effect: Decider<T, Context>[], filterMaybe: false): Decider<Maybe<T>[], Context>;
 export function multiple<T, Context>(
   effect: Decider<T, Context>[],
   filterMaybe = true
-): Decider<(T | Definite<T>)[], Context> {
+): Decider<T[] | Maybe<T>[], Context> {
   return context => {
     const result = effect.map(e => decide(e, context));
     if (filterMaybe) return result.filter((x): x is Definite<T> => x !== undefined);
     return result;
+  };
+}
+
+export function range(min: number, max: number): Decider<number> {
+  return _ => Math.random() * (max - min) + min;
+}
+
+export function fallback<T>(decider: Decider<Maybe<T>>, fallback: T): Decider<T> {
+  return context => decide(decider, context) ?? fallback;
+}
+
+export function timeout<T, Context>(
+  decider: Decider<Promise<T>, Context>,
+  duration: number,
+  fallback: T
+): Decider<Promise<T>, Context> {
+  return context => {
+    const timer = new Promise<T>(resolve => setTimeout(() => resolve(fallback), duration));
+    return Promise.race([decide(decider, context), timer]);
   };
 }

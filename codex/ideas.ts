@@ -1,5 +1,5 @@
 import { Move } from "../src/move.ts";
-import { oneOf } from "../src/decision.ts";
+import { choose } from "../src/decision.ts";
 import loader from "./pokemon/loader.ts";
 
 export const TwistOfFate: Move = loader.register<Move>(P => ({
@@ -10,7 +10,7 @@ export const TwistOfFate: Move = loader.register<Move>(P => ({
   category: "Special",
   target: "Any Adjacent",
   makesContact: false,
-  effect: oneOf([
+  effect: choose([
     P.Statuses.Burn,
     P.Statuses.Freeze,
     P.Statuses.Paralysis,

@@ -1,5 +1,5 @@
-import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { power, Move, multiHit } from "../index.ts";
+import loader from "../loader.ts";
 
 export const DualChop: Move = loader.register<Move>(P => ({
   name: "Dual Chop",
@@ -11,5 +11,5 @@ export const DualChop: Move = loader.register<Move>(P => ({
   accuracy: 90,
   target: "Any Adjacent",
   makesContact: true,
+  hitAgain: multiHit(2, 2),
 }));
-// TODO multihit moves

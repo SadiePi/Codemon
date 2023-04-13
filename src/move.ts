@@ -1,4 +1,7 @@
-import { config, Action, ActionSource, ActionUseContext, Codemon, EffectSource, Type } from "./mod.ts";
+import { Action, ActionSource, ActionUseContext, EffectParams, EffectSource, TargetContext } from "./battle.ts";
+import { Codemon, Type } from "./codemon.ts";
+import { config } from "./config.ts";
+import { Decider, decide, range } from "./decision.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
 
@@ -27,6 +30,8 @@ export type Move = EffectSource & {
   pp: number | { new (): PPScheme };
   makesContact: boolean;
   criticalHitStage?: number;
+  charge?: Decider<EffectParams>;
+  continue?: Decider<EffectParams>;
 };
 
 export interface IMoveEntry {
@@ -49,14 +54,19 @@ export class MoveEntry implements ActionSource {
     this.targetingCategory = this.effects.target;
   }
 
-  useAction(context: ActionUseContext): Action {
-    if (!this.pp.use()) console.log("TODO: Fail without remaining PP");
+  useAction(context: ActionUseContext): Action | null {
+    if (this.user.stats.hp.current <= 0) return null;
+    if (!this.pp.use()) return null;
+
     const ret = new Action({
+      battle: context.battle,
+      user: this.user,
       effect: this.effects,
       source: this,
-      targets: context.targets,
+      targets: context.plan.targets,
     });
-    ret.messages.push(`${this.user.name} used ${this.effects.name}!`);
+
+    ret.message(`${this.user.name} used ${this.effects.name}!`);
     return ret;
   }
 
@@ -125,4 +135,12 @@ export class PPScheme {
     this._current += change;
     return change;
   }
+}
+
+// Utility deciders for moves
+export function multiHit(min: number, max: number): Decider<boolean, TargetContext & { hitsSoFar: number }> {
+  const hits = decide(range(min, max), undefined);
+  return ({ hitsSoFar }) => {
+    return hitsSoFar < hits;
+  };
 }
