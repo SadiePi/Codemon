@@ -105,7 +105,7 @@ export type BattleEffectsReciept = BB["battleReciept"];
 export type Effects = TargetEffects & SourceEffects & BattleEffects;
 export type EffectsReciept = TargetEffectsReciept & SourceEffectsReciept & BattleEffectsReciept;
 
-export class TraditionalBattle extends EventEmitter<BattleEvents<P>> implements Battle<P> {
+export default class TraditionalBattle extends EventEmitter<BattleEvents<P>> implements Battle<P> {
   private combatants: Combatant[];
 
   async runBattle() {
