@@ -1,24 +1,110 @@
-// TODO change this to Competition and change TraditionalBattle to Battle
-
-import { Type } from "./codemon.ts";
-import { config } from "./config.ts";
 import { decide, Decider } from "./decision.ts";
 import { EventEmitter } from "./external.ts";
-import { DamageCategory, TargetingCategory, MoveEntry } from "./move.ts";
-import { StageMods } from "./stats.ts";
-import { StatusEffect, Weather } from "./status.ts";
-import { SingleOrArray } from "./util.ts";
+import { TargetingCategory } from "./move.ts";
 
 // type EventHandler<E extends Record<string, unknown[]>> = {
 //   [K in keyof E]?: (...event: E[K]) => void;
 // };
 
-type EffectType<Effect, Context, Extra = Record<never, never>> = {
+export type BattleBuilderParams<P extends BattleBuilderParams<P>> = {
+  target: EffectGroup<TargetContext<P>>;
+  source: EffectGroup<SourceContext<P>>;
+  battle: EffectGroup<BattleContext<P>>;
+};
+
+export type TargetEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<TargetContext<P>, P["target"]>;
+export type SourceEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<SourceContext<P>, P["source"]>;
+export type BattleEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<BattleContext<P>, P["battle"]>;
+export type Effects<P extends BattleBuilderParams<P>> = TargetEffects<P> & SourceEffects<P> & BattleEffects<P>;
+
+export type TargetEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<TargetContext<P>, P["target"]>;
+export type SourceEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<SourceContext<P>, P["source"]>;
+export type BattleEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<BattleContext<P>, P["battle"]>;
+export type EffectsReciept<P extends BattleBuilderParams<P>> = TargetEffectsReciept<P> &
+  SourceEffectsReciept<P> &
+  BattleEffectsReciept<P>;
+
+export type TargetContext<P extends BattleBuilderParams<P>> = {
+  user: Combatant<P>;
+  target: Combatant<P>;
+  action: Action<P>;
+};
+
+export type SourceContext<P extends BattleBuilderParams<P>> = {
+  combatant: Combatant<P>;
+  action: Action<P>;
+};
+
+export type BattleContext<P extends BattleBuilderParams<P>> = {
+  combatant: Combatant<P>;
+  action: Action<P>;
+};
+
+export type TargetEffectParams<P extends BattleBuilderParams<P>> = EffectGroupParams<TargetContext<P>, P["target"]>;
+export type SourceEffectParams<P extends BattleBuilderParams<P>> = EffectGroupParams<SourceContext<P>, P["source"]>;
+export type BattleEffectParams<P extends BattleBuilderParams<P>> = EffectGroupParams<BattleContext<P>, P["battle"]>;
+export type EffectParams<P extends BattleBuilderParams<P>> = TargetEffectParams<P> &
+  SourceEffectParams<P> &
+  BattleEffectParams<P>;
+
+export type Combatant<P extends BattleBuilderParams<P>> = EffectReciever<P, TargetContext<P>, P["target"]> &
+  EffectReciever<P, SourceContext<P>, P["source"]> & {
+    getAction: (battle: Battle<P>) => BattleBuilder<P>["actionPlan"];
+  };
+
+export type ActionPlan<P extends BattleBuilderParams<P>> = {
+  combatant: Combatant<P>;
+  source: ActionSource<P>;
+  targets: Combatant<P>[];
+};
+
+export type ActionUseContext<P extends BattleBuilderParams<P>> = {
+  battle: Battle<P>;
+  plan: ActionPlan<P>;
+};
+
+export type ActionSource<P extends BattleBuilderParams<P>> = {
+  priority?: number;
+  category: TargetingCategory;
+  useAction: (context: ActionUseContext<P>) => Action<P> | null;
+};
+
+export type BattleBuilder<P extends BattleBuilderParams<P>> = {
+  targetEffects: TargetEffects<P>;
+  sourceEffects: SourceEffects<P>;
+  battleEffects: BattleEffects<P>;
+
+  targetReciept: TargetEffectsReciept<P>;
+  sourceReciept: SourceEffectsReciept<P>;
+  battleReciept: BattleEffectsReciept<P>;
+
+  targetContext: {
+    user: Combatant<P>;
+    target: Combatant<P>;
+    action: Action<P>;
+  };
+  sourceContext: {
+    combatant: Combatant<P>;
+    action: Action<P>;
+  };
+  battleContext: {
+    combatant: Combatant<P>;
+    action: Action<P>;
+  };
+
+  combatant: Combatant<P>;
+
+  actionPlan: ActionPlan<P>;
+  actionUseContext: ActionUseContext<P>;
+  actionSource: ActionSource<P>;
+};
+
+export type EffectType<Context, Effect, Extra = Record<never, never>> = {
   effect: Decider<Effect | undefined, Context>;
   reciept: EffectTypeReciept<Effect, Extra>;
 };
 
-type BaseEffectReciept<E> =
+export type BaseEffectReciept<E> =
   | {
       success: true;
       messages: BattleMessage[];
@@ -29,248 +115,89 @@ type BaseEffectReciept<E> =
       messages: BattleMessage[];
     };
 
-type EffectTypeReciept<E, Extra = Record<never, never>> = BaseEffectReciept<E> & Extra;
+export type EffectTypeReciept<E, Extra = Record<never, never>> = BaseEffectReciept<E> & Extra;
 
-type EffectGroup = Record<string, EffectType<unknown, TargetContext | SourceContext | BattleContext, unknown>>;
-type EffectGroupReciept<G extends EffectGroup> = {
+export type EffectGroup<Context> = Record<string, EffectType<Context, unknown, unknown>>;
+export type EffectGroupReciept<C, G extends EffectGroup<C>> = {
   [K in keyof G]: G[K]["reciept"];
 };
 
-export interface Attack {
-  /** The level of the user */
-  level: number;
-  /** The power of the move */
-  power: number;
-  /** The relavent attack stat of the user */
-  stat: number;
-  /** The category of the move */
-  category: Exclude<DamageCategory, "Status">;
-  /** The type of the move */
-  type: Type;
-  /** Factor from critical hit */
-  critical?: number;
-  /** Factor from held item */
-  item?: number;
-  /** Factor from Same Type Attack Boost */
-  stab?: number;
-  /** Factor from influence of weather */
-  weather?: number;
-  /** Factor from multiple targets */
-  multitarget?: number;
-  /** Factor from Math.random() */
-  random?: number;
-  /** Factor from ✨Special✨ */
-  other?: number;
-}
-
-export interface BaseAttackReciept {
-  typeMultiplier: number;
-  total: number;
-  faint: boolean;
-}
-
-export type AttackReciept = EffectTypeReciept<Attack, BaseAttackReciept>;
-
-export interface HPReciept {
-  faint: boolean;
-}
-
-export type TargetContext = {
-  user: Combatant;
-  target: Combatant;
-  action: Action;
-};
-export type TargetEffect<E, Extra = Record<never, never>> = EffectType<E, TargetContext, Extra>;
-
-export type SourceContext = {
-  combatant: Combatant;
-  action: Action;
-};
-export type SourceEffect<E, Extra = Record<never, never>> = EffectType<E, SourceContext, Extra>;
-
-export type BattleContext = {
-  combatant: Combatant;
-  action: Action;
-  battle: Battle;
-};
-export type BattleEffect<E, Extra = Record<never, never>> = EffectType<E, BattleContext, Extra>;
-
-// for a combatant to recieve directly
-export type TargetEffects = {
-  attack: TargetEffect<Attack, BaseAttackReciept>;
-  status: TargetEffect<SingleOrArray<StatusEffect>>;
-  hp: TargetEffect<number, HPReciept>;
-  stages: TargetEffect<StageMods>;
-  faint: TargetEffect<boolean>;
-};
-
-export type TargetEffectsReciept = Partial<EffectGroupReciept<TargetEffects>>;
-
-// for a combatant to recieve indirectly, handled by the battle
-export type SourceEffects = {
-  leech: SourceEffect<number>;
-  recoil: SourceEffect<EffectParams<TargetEffects>>;
-  crash: SourceEffect<EffectParams<TargetEffects>>;
-};
-
-export type SourceEffectsReciept = Partial<EffectGroupReciept<SourceEffects>>;
-
-// for the battle itself to recieve
-export type BattleEffects = {
-  weather: BattleEffect<Weather>;
-  eject: BattleEffect<SingleOrArray<Combatant>>;
-  end: BattleEffect<boolean>;
-};
-
-export type BattleEffectsReciept = Partial<EffectGroupReciept<BattleEffects>>;
-
-export type EffectReciever<E extends EffectGroup> = {
+export type EffectReciever<P extends BattleBuilderParams<P>, C, E extends EffectGroup<C>> = {
   [K in keyof E as K extends string ? `receive${Capitalize<K>}` : never]-?: (
     effect: E[K]["effect"],
-    action: Action
+    action: Action<P>
   ) => E[K]["reciept"];
 } & {
-  receiveEffects: (effects: Partial<Effects<E>>, action: Action) => Partial<EffectGroupReciept<E>> | null;
+  receiveEffects: (
+    effects: Partial<EffectGroupEffects<C, E>>,
+    action: Action<P>
+  ) => Partial<EffectGroupReciept<C, E>> | null;
 };
 
-type target = EffectReciever<TargetEffects>;
-type source = EffectReciever<SourceEffects>;
-type battle = EffectReciever<BattleEffects>;
-
-type EffectTypes = TargetEffects & SourceEffects & BattleEffects;
-export type EffectReciept = EffectGroupReciept<EffectTypes>;
-
-export type EffectParams<G extends EffectGroup = EffectTypes> = {
+export type EffectGroupParams<C, G extends EffectGroup<C>> = {
   [K in keyof G]?: G[K]["effect"];
-} & {
-  accuracy?: Decider<number | boolean, TargetContext>; // boolean means never or always hit
 };
+// & {
+//  // accuracy?: Decider<number | boolean, TargetContext>; // boolean means never or always hit
+//};
 
-export type Effects<G extends EffectGroup = EffectTypes> = {
+export type EffectGroupEffects<C, G extends EffectGroup<C>> = {
   [K in keyof G]?: G[K]["effect"];
 };
 
-export function decideTargetEffects(
-  params: EffectParams<TargetEffects>,
-  context: TargetContext
-): Partial<Effects<TargetEffects> & { accuracy: number | boolean }> {
-  const effects = {} as Partial<Effects<TargetEffects> & { accuracy: number | boolean }>;
+export type EffectSource<P extends BattleBuilderParams<P>> = EffectGroupParams<TargetContext<P>, P["target"]> &
+  EffectGroupParams<SourceContext<P>, P["source"]> &
+  EffectGroupParams<BattleContext<P>, P["battle"]> & {
+    name: string;
+    description: string;
+    target: TargetingCategory;
+  };
 
-  effects.accuracy = decide(params.accuracy, context);
-  if (effects.accuracy === false) return effects;
-
-  const attack = decide(params.attack, context);
-  if (attack) effects.attack = attack;
-  const status = decide(params.status, context);
-  if (status) effects.status = status;
-  const hp = decide(params.hp, context);
-  if (hp) effects.hp = hp;
-  const stages = decide(params.stages, context);
-  if (stages) effects.stages = stages;
-  const faint = decide(params.faint, context);
-  if (faint) effects.faint = faint;
-
-  return effects;
+export interface ActionParams<P extends BattleBuilderParams<P>> {
+  battle: Battle<P>;
+  user: Combatant<P>;
+  source: ActionSource<P>;
+  effect: EffectParams<P>;
+  targets: Combatant<P>[];
+  parent?: Action<P>;
 }
 
-export function decideSourceEffects(
-  params: EffectParams<SourceEffects>,
-  context: SourceContext
-): Partial<Effects<SourceEffects>> {
-  const effects = {} as Partial<Effects<SourceEffects>>;
-
-  const leech = decide(params.leech, context);
-  if (leech) effects.leech = leech;
-  const recoil = decide(params.recoil, context);
-  if (recoil) effects.recoil = recoil;
-  const crash = decide(params.crash, context);
-  if (crash) effects.crash = crash;
-
-  return effects;
-}
-
-export function decideBattleEffects(
-  params: EffectParams<BattleEffects>,
-  context: BattleContext
-): Partial<Effects<BattleEffects>> {
-  const effects = {} as Partial<Effects<BattleEffects>>;
-
-  const weather = decide(params.weather, context);
-  if (weather) effects.weather = weather;
-  const end = decide(params.end, context);
-  if (end) effects.end = end;
-
-  return effects;
-}
-
-export type EffectSource = EffectParams & {
-  name: string;
-  description: string;
-  target: TargetingCategory;
-};
-
-export interface ActionUseContext {
-  battle: Battle;
-  plan: ActionPlan;
-}
-
-export interface ActionSource {
-  priority?: number;
-  targetingCategory: TargetingCategory;
-  useAction: (context: ActionUseContext) => Action | null; // null for failure
-}
-
-export interface ActionPlan {
-  combatant: Combatant;
-  source: ActionSource;
-  targets: Combatant[];
-}
-
-export interface ActionParams {
-  battle: Battle;
-  user: Combatant;
-  source: ActionSource;
-  effect: EffectParams;
-  targets: Combatant[];
-  parent?: Action;
-}
-
-export class Action extends EventEmitter<{
+export class Action<P extends BattleBuilderParams<P>> extends EventEmitter<{
   begin: [];
-  preaction: [preaction: Action];
-  preactionReciept: [reciept: ActionReciept];
-  afterPreactions: [reciepts: ActionReciept[]];
-  beforeReactions: [reciepts: ActionReciept[]];
-  reaction: [reaction: Action];
-  reactionReciept: [reciept: ActionReciept];
-  subaction: [subaction: Action];
-  subactionReciept: [reciept: ActionReciept];
+  preaction: [preaction: Action<P>];
+  preactionReciept: [reciept: ActionReciept<P>];
+  afterPreactions: [reciepts: ActionReciept<P>[]];
+  beforeReactions: [reciepts: ActionReciept<P>[]];
+  reaction: [reaction: Action<P>];
+  reactionReciept: [reciept: ActionReciept<P>];
+  subaction: [subaction: Action<P>];
+  subactionReciept: [reciept: ActionReciept<P>];
   message: [message: BattleMessage];
-  end: [reciept: ActionReciept];
+  end: [reciept: ActionReciept<P>];
 }> {
   private _allowPreactions = true;
-  private _preactions: ActionPlan[] = [];
-  private _preactionReciepts: ActionReciept[] = [];
+  private _preactions: ActionPlan<P>[] = [];
+  private _preactionReciepts: ActionReciept<P>[] = [];
   public get allowPreactions() {
     return this._allowPreactions;
   }
-  public addPreaction(action: ActionPlan) {
+  public addPreaction(action: ActionPlan<P>) {
     if (!this.allowPreactions) throw new Error("Preactions are not allowed at this time");
     this._preactions.push(action);
   }
 
   private _allowReactions = true;
-  private _reactions: ActionPlan[] = [];
-  private _reactionReciepts: ActionReciept[] = [];
+  private _reactions: ActionPlan<P>[] = [];
+  private _reactionReciepts: ActionReciept<P>[] = [];
   public get allowReactions() {
     return this._allowReactions;
   }
-  public addReaction(action: ActionPlan) {
+  public addReaction(action: ActionPlan<P>) {
     if (!this.allowReactions) throw new Error("Reactions are not allowed at this time");
     this._reactions.push(action);
   }
 
-  private _currentSubaction: Action | null = null;
+  private _currentSubaction: Action<P> | null = null;
   public get currentSubaction() {
     return this._currentSubaction;
   }
@@ -282,22 +209,22 @@ export class Action extends EventEmitter<{
 
   public cancel = false;
 
-  constructor(public params: ActionParams) {
+  constructor(public params: ActionParams<P>) {
     super();
   }
 
-  private _reciept: ActionReciept | null = null;
+  private _reciept: ActionReciept<P> | null = null;
   public get reciept() {
     return this._reciept;
   }
 
-  public async execute(battle: Battle): Promise<ActionReciept> {
+  public async execute(battle: Battle<P>): Promise<ActionReciept<P>> {
     if (this.reciept) throw new Error("Action has already been executed");
     const { targets, user } = this.params;
     await this.wait("begin");
 
     this._allowPreactions = false;
-    const preactions: ActionReciept[] = [];
+    const preactions: ActionReciept<P>[] = [];
     for (const plan of this._preactions) {
       const action = plan.source.useAction({ plan, battle });
       if (!action) continue;
@@ -314,7 +241,7 @@ export class Action extends EventEmitter<{
 
     let [applyRecoil, applyCrash] = [false, false];
 
-    const reciepts: Partial<EffectGroupReciept<TargetEffects>>[] = [];
+    const reciepts: Partial<TargetEffectsReciept<P>>[] = [];
     for (const target of targets) {
       const reciept = target.receiveEffects(this.params.effect, this);
 
@@ -342,7 +269,7 @@ export class Action extends EventEmitter<{
     if (applyCrash && crashEffect) this.addReaction(recoil(user, crashEffect));
 
     this._allowReactions = false;
-    const reactions: ActionReciept[] = [];
+    const reactions: ActionReciept<P>[] = [];
     for (const plan of this._reactions) {
       const action = plan.source.useAction({ plan, battle });
       if (!action) continue;
@@ -356,7 +283,7 @@ export class Action extends EventEmitter<{
       reactions.push(reciept);
     }
 
-    const reciept = {
+    const reciept: ActionReciept<P> = {
       preactions,
       reactions,
       messages: this._messages,
@@ -370,97 +297,82 @@ export class Action extends EventEmitter<{
   }
 }
 
-type ActionReciept = {
-  preactions: ActionReciept[];
-  reactions: ActionReciept[];
+export type ActionReciept<P extends BattleBuilderParams<P>> = {
+  preactions: ActionReciept<P>[];
+  reactions: ActionReciept<P>[];
   messages: BattleMessage[];
-  targetEffects: TargetEffectsReciept[];
-  sourceEffects: SourceEffectsReciept;
-  battleEffects: BattleEffectsReciept;
-};
-
-export type Combatant = EffectReciever<TargetEffects> & {
-  getAction: (battle: Battle) => ActionPlan | Promise<ActionParams>;
+  targetEffects: Partial<TargetEffectsReciept<P>>[];
+  sourceEffects: Partial<SourceEffectsReciept<P>>;
+  battleEffects: Partial<BattleEffectsReciept<P>>;
 };
 
 // this round system is still pretty rough
 // TODO make this better
 
-export interface Round {
+export interface Round<P extends BattleBuilderParams<P>> {
   readonly number: number;
-  actions: ActionReciept[];
+  actions: ActionReciept<P>[];
 }
 
-export type RoundReciept = EffectTypeReciept<Round>;
+export type RoundReciept<P extends BattleBuilderParams<P>> = EffectTypeReciept<Round<P>>;
 
 export type BattleMessage = string; // TODO include animation info etc
 
-type BattleEvents = {
+export type BattleEvents<P extends BattleBuilderParams<P>> = {
   /** The start of the battle, before anything has happened */
-  start: [combatants: Combatant[]];
+  start: [combatants: Combatant<P>[]];
   /** The start of a round, before actions have been chosen */
-  round: [round: Round];
+  round: [round: Round<P>];
   /** An actor has decided on an action */
-  ready: [action: ActionParams];
+  ready: [action: ActionParams<P>];
   /** All actors have decided on an action */
-  allReady: [actions: ActionParams[]];
+  allReady: [actions: ActionParams<P>[]];
   /** An action is about to be executed */
-  beforeAction: [action: ActionParams];
+  beforeAction: [action: ActionParams<P>];
   /** An action has been executed, but its effects haven't been sent to the targets yet */
-  action: [action: Action];
+  action: [action: Action<P>];
   /** An effect is about to be sent to a target */
-  effect: [effect: EffectTypes, target: Combatant, action: Action];
+  effect: [effect: Effects<P>, target: Combatant<P>, action: Action<P>];
   /** An effect has been sent to a target */
-  effectReciept: [reciept: EffectReciept];
+  effectReciept: [reciept: EffectsReciept<P>];
   /** The end of an action, before reactions are run */
-  actionEnd: [action: Action];
+  actionEnd: [action: Action<P>];
   /** An action has been executed, and its effects have been sent to the targets */
-  actionReciept: [reciept: ActionReciept];
+  actionReciept: [reciept: ActionReciept<P>];
   /** The end of a round, after all actions are done, before reactions are run */
-  roundEnd: [reciept: Round];
+  roundEnd: [reciept: Round<P>];
   /** The end of a round, after all actions and reactions are done */
-  roundReciept: [report: RoundReciept];
+  roundReciept: [report: RoundReciept<P>];
   /** The end of the battle, after all rounds are done */
-  battleReciept: [report: BattleReciept];
+  battleReciept: [report: BattleReciept<P>];
 };
 
-export interface TargetChoice {
-  targets: Combatant[];
+export interface TargetChoice<P extends BattleBuilderParams<P>> {
+  targets: Combatant<P>[];
   count: "All" | number;
   random?: boolean;
 }
 
-export abstract class Battle extends EventEmitter<BattleEvents> implements EffectReciever<BattleEffects> {
-  constructor(public combatants: Combatant[]) {
-    super();
-  }
-  // TODO history searching for things like move restrictions
+export type Battle<P extends BattleBuilderParams<P>> = EffectReciever<P, BattleContext<P>, P["battle"]> &
+  EventEmitter<BattleEvents<P>> & {
+    runBattle: (this: ThisType<Battle<P>>) => Promise<BattleReciept<P>>;
+    getRound: (this: ThisType<Battle<P>>) => Round<P>;
+    runRound: (this: ThisType<Battle<P>>) => Promise<RoundReciept<P>>;
+    getActions: (this: ThisType<Battle<P>>) => Promise<ActionPlan<P>[]>;
+    getAction: (this: ThisType<Battle<P>>, combatant: Combatant<P>) => ActionPlan<P> | Promise<ActionPlan<P>>;
+    getTargets: (
+      this: ThisType<Battle<P>>,
+      action: ActionSource<P>,
+      combatant: Combatant<P>
+    ) => TargetChoice<P> | Promise<TargetChoice<P>>;
+    sortActions: (this: ThisType<Battle<P>>, actions: ActionPlan<P>[]) => ActionPlan<P>[];
+    runActions(actions: ActionPlan<P>[]): Promise<ActionReciept<P>[]>;
+    runAction(action: ActionPlan<P>): Promise<ActionReciept<P>>;
+  };
 
-  abstract runBattle(): Promise<BattleReciept>;
-  abstract getRound(): Round;
-  abstract runRound(): Promise<RoundReciept>;
-  abstract getActions(): Promise<ActionPlan[]>;
-  abstract getAction(combatant: Combatant): ActionParams | Promise<ActionParams>;
-  abstract getTargets(action: ActionSource, combatant: Combatant): TargetChoice;
-  abstract sortActions(actions: ActionPlan[]): ActionPlan[];
-  abstract runActions(actions: ActionPlan[]): Promise<ActionReciept[]>;
-  abstract runAction(action: ActionPlan): Promise<ActionReciept | undefined>;
-
-  abstract receiveEffects(effects: Partial<Effects<BattleEffects>>): EffectGroupReciept<BattleEffects>;
-  abstract receiveWeather(
-    effect: Decider<Weather | undefined, BattleContext>,
-    action: Action
-  ): EffectReciept["weather"];
-  abstract receiveEnd(effect: Decider<boolean | undefined, BattleContext>, action: Action): EffectReciept["end"];
-  abstract receiveEject(
-    effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>,
-    action: Action
-  ): EffectReciept["eject"];
-}
-
-export interface BattleReciept {
-  readonly rounds: RoundReciept[];
-  readonly remaining: Combatant[];
+export interface BattleReciept<P extends BattleBuilderParams<P>> {
+  readonly rounds: RoundReciept<P>[];
+  readonly remaining: Combatant<P>[];
   readonly messages: BattleMessage[];
 }
 
@@ -485,10 +397,10 @@ export interface BattleReciept {
 //   return into;
 // }
 
-export function recoil(target: Combatant, effect: EffectParams<TargetEffects>): ActionPlan {
-  const recoil: ActionSource = {
+export function recoil<P extends BattleBuilderParams<P>>(target: Combatant<P>, effect: EffectParams<P>): ActionPlan<P> {
+  const recoil: ActionSource<P> = {
     priority: 0,
-    targetingCategory: "Self",
+    category: "Self",
     useAction: ctx =>
       new Action({
         battle: ctx.battle,
@@ -505,10 +417,10 @@ export function recoil(target: Combatant, effect: EffectParams<TargetEffects>): 
   };
 }
 
-export function crash(target: Combatant, effect: EffectParams): ActionPlan {
-  const crash: ActionSource = {
+export function crash<P extends BattleBuilderParams<P>>(target: Combatant<P>, effect: EffectParams<P>): ActionPlan<P> {
+  const crash: ActionSource<P> = {
     priority: 0,
-    targetingCategory: "Self",
+    category: "Self",
     useAction: ctx =>
       new Action({
         battle: ctx.battle,
@@ -522,40 +434,5 @@ export function crash(target: Combatant, effect: EffectParams): ActionPlan {
     combatant: target,
     source: crash,
     targets: [target],
-  };
-}
-
-// Battle utility functions
-
-/** A completely normal attack */
-export function power(power: number): Decider<Attack, TargetContext> {
-  return ({ action }) => {
-    if (!(action.params.source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
-    const level = action.params.source.user.stats.level;
-    const type = action.params.source.effects.type;
-    const category = action.params.source.effects.category;
-    if (category === "Status") throw new Error("Status moves cannot be used as attacks");
-    const stats = action.params.source.user.stats;
-    const stat = stats[category === "Physical" ? "attack" : "specialAttack"].value(true);
-    const critical = action.params.source.TryCriticalHit() ? action.params.source.GetCriticalMultiplier() : 1;
-    const random =
-      Math.random() * (config.moves.maxRandomMultiplier - config.moves.minRandomMultiplier) +
-      config.moves.minRandomMultiplier;
-    const stab = action.params.source.user.species.types.includes(type) ? config.moves.stabMultiplier : 1;
-    const multitarget = action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1;
-
-    return {
-      level,
-      power,
-      stat,
-      type,
-      category,
-      critical,
-      stab,
-      multitarget,
-      weather: 1, // TODO
-      random,
-      other: 1,
-    };
   };
 }

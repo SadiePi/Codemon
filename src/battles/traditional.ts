@@ -1,156 +1,257 @@
-// import {
-//   Battle,
-//   Round,
-//   Combatant,
-//   ActionSource,
-//   TargetChoice,
-//   RoundReciept,
-//   recoil,
-//   EffectReciept,
-// } from "../battle.ts";
-// import { Codemon } from "../codemon.ts";
-// import { MoveEntry } from "../move.ts";
+// deno-lint-ignore-file no-unused-vars
+import { Battle } from "../battle.ts";
+import { EventEmitter } from "../external.ts";
+import {
+  Action,
+  ActionPlan,
+  ActionReciept,
+  ActionSource,
+  BattleBuilder,
+  BattleEvents,
+  BattleReciept,
+  DamageCategory,
+  Decider,
+  EffectType,
+  EffectTypeReciept,
+  MoveEntry,
+  Round,
+  RoundReciept,
+  SingleOrArray,
+  StageMods,
+  StatusEffect,
+  TargetChoice,
+  Type,
+  Weather,
+  config,
+} from "../mod.ts";
 
-export default {};
+type P = {
+  target: TargetEffectsBuilder;
+  source: SourceEffectsBuilder;
+  battle: BattleEffectsBuilder;
+};
 
-// export class TraditionalBattle extends Battle {
-//   private round: Round;
+export type BB = BattleBuilder<P>;
 
-//   constructor(...combatants: Combatant[]) {
-//     super(combatants);
-//     this.round = {
-//       number: 0,
-//     } as Round;
-//   }
+export interface Attack {
+  /** The level of the user */
+  level: number;
+  /** The power of the move */
+  power: number;
+  /** The relavent attack stat of the user */
+  stat: number;
+  /** The category of the move */
+  category: Exclude<DamageCategory, "Status">;
+  /** The type of the move */
+  type: Type;
+  /** Factor from critical hit */
+  critical?: number;
+  /** Factor from held item */
+  item?: number;
+  /** Factor from Same Type Attack Boost */
+  stab?: number;
+  /** Factor from influence of weather */
+  weather?: number;
+  /** Factor from multiple targets */
+  multitarget?: number;
+  /** Factor from Math.random() */
+  random?: number;
+  /** Factor from ✨Special✨ */
+  other?: number;
+}
 
-//   // deno-lint-ignore no-unused-vars
-//   getTargets(source: ActionSource): TargetChoice {
-//     // TODO apply targeting category filter
-//     return {
-//       targets: this.combatants,
-//       count: 1,
-//       random: true,
-//     };
-//   }
+export interface BaseAttackReciept {
+  typeMultiplier: number;
+  total: number;
+  faint: boolean;
+}
 
-//   async runBattle() {
-//     await this.wait("start", this.combatants);
-//     const rounds: RoundReciept[] = [];
-//     while (this.combatants.length > 1) rounds.push(await this.runRound());
-//     console.log(`${this.combatants.length} combatants remaining.`);
+export type AttackReciept = EffectTypeReciept<Attack, BaseAttackReciept>;
 
-//     const reciept = { remaining: this.combatants, rounds, messages: [] };
-//     await this.wait("battleReciept", reciept);
+export interface HPReciept {
+  faint: boolean;
+}
 
-//     return reciept;
-//   }
+export type TargetEffectsBuilder = {
+  attack: EffectType<TargetContext, Attack, BaseAttackReciept>;
+  status: EffectType<TargetContext, SingleOrArray<StatusEffect>>;
+  hp: EffectType<TargetContext, number, HPReciept>;
+  stages: EffectType<TargetContext, StageMods>;
+  faint: EffectType<TargetContext, boolean>;
+};
 
-//   async runRound() {
-//     this.round = {
-//       number: this.round.number + 1,
-//       actions: [],
-//     };
-//     await this.wait("round", this.getRound());
-//     const preactions = await this.runActions(this.getRound().preactions);
+export type SourceEffectsBuilder = {
+  leech: EffectType<SourceContext, number>;
+  recoil: EffectType<SourceContext, TargetEffectsBuilder>;
+  crash: EffectType<SourceContext, TargetEffectsBuilder>;
+};
 
-//     const readys = await this.getActions();
-//     await this.wait("allReady", readys);
+export type BattleEffectsBuilder = {
+  weather: EffectType<BattleContext, Weather>;
+  eject: EffectType<BattleContext, SingleOrArray<Combatant>>;
+  end: EffectType<BattleContext, boolean>;
+};
 
-//     const actions = await this.runActions(readys);
+export type Combatant = BB["combatant"];
+export type TargetContext = BB["targetContext"];
+export type TargetEffects = BB["targetEffects"];
+export type TargetEffectsReciept = BB["targetReciept"];
+export type SourceContext = BB["sourceContext"];
+export type SourceEffects = BB["sourceEffects"];
+export type SourceEffectsReciept = BB["sourceReciept"];
+export type BattleContext = BB["battleContext"];
+export type BattleEffects = BB["battleEffects"];
+export type BattleEffectsReciept = BB["battleReciept"];
+export type Effects = TargetEffects & SourceEffects & BattleEffects;
+export type EffectsReciept = TargetEffectsReciept & SourceEffectsReciept & BattleEffectsReciept;
 
-//     await this.wait("roundEnd", this.getRound());
-//     const reactions = await this.runActions(this.getRound().reactions);
+export class TraditionalBattle extends EventEmitter<BattleEvents<P>> implements Battle<P> {
+  private combatants: Combatant[];
 
-//     const reciept: RoundReciept = {
-//       number: this.round.number,
-//       preactions,
-//       actions,
-//       reactions,
-//       messages: [],
-//     };
-//     await this.wait("roundReciept", reciept);
+  async runBattle() {
+    return {} as BattleReciept<{
+      target: TargetEffectsBuilder;
+      source: SourceEffectsBuilder;
+      battle: BattleEffectsBuilder;
+    }>;
+  }
 
-//     return reciept;
-//   }
+  constructor(combatants: Combatant[]) {
+    super();
+    this.combatants = combatants;
+  }
 
-//   getAction(combatant: Combatant): ReadyAction | Promise<ReadyAction> {
-//     return combatant.getAction(this);
-//   }
+  getRound(): Round<P> {
+    return {} as Round<P>;
+  }
 
-//   async getActions() {
-//     const actions: ReadyAction[] = [];
-//     for (const combatant of this.combatants) actions.push(await this.getAction(combatant));
-//     return actions;
-//   }
+  async runRound(): Promise<RoundReciept<P>> {
+    return {} as RoundReciept<P>;
+  }
 
-//   sortActions(actions: ReadyAction[]) {
-//     return actions.sort((a, b) => {
-//       const prioDiff = (a.source.priority ?? 0) - (b.source.priority ?? 0);
-//       if (prioDiff !== 0) return prioDiff;
+  getActions(): Promise<ActionPlan<P>[]> {
+    return Promise.resolve([]);
+  }
 
-//       const aSpeed = a.source instanceof MoveEntry ? a.source.user.stats.speed.value(true) : 0;
-//       const bSpeed = b.source instanceof MoveEntry ? b.source.user.stats.speed.value(true) : 0;
-//       return bSpeed - aSpeed;
-//     });
-//   }
+  getAction(combatant: Combatant): ActionPlan<P> | Promise<ActionPlan<P>> {
+    return {} as ActionPlan<P>;
+  }
 
-//   async runActions(readys: ReadyAction[]) {
-//     const actions: ActionReciept[] = [];
-//     for (const action of this.sortActions(readys)) {
-//       const actionReciept = await this.runAction(action);
-//       if (actionReciept) actions.push(actionReciept);
-//     }
-//     return actions;
-//   }
+  getTargets(action: ActionSource<P>, combatant: Combatant): TargetChoice<P> | Promise<TargetChoice<P>> {
+    return {} as TargetChoice<P>;
+  }
 
-//   async runAction(ready: ReadyAction) {
-//     const { source, targets, combatant } = ready;
-//     if (combatant instanceof Codemon && combatant.stats.hp.current <= 0) return;
-//     await this.wait("beforeAction", ready);
+  sortActions(actions: ActionPlan<P>[]): ActionPlan<P>[] {
+    return actions;
+  }
 
-//     const action = source.useAction({
-//       targets: targets,
-//       battle: this,
-//     });
-//     await this.wait("action", action);
+  async runActions(actions: ActionPlan<P>[]): Promise<ActionReciept<P>[]> {
+    return [];
+  }
 
-//     const preactions = await this.runActions(action.preactions);
+  async runAction(action: ActionPlan<P>): Promise<ActionReciept<P>> {
+    return {} as ActionReciept<P>;
+  }
 
-//     const hit = true; // TODO: implement hit chance
-//     if (source instanceof MoveEntry) {
-//       if (hit && action.effect.recoil) action.reactions.push(recoil(source.user, action.effect.recoil));
-//       if (!hit && action.effect.crash) action.reactions.push(recoil(source.user, action.effect.crash));
-//     }
+  receiveWeather(effect: Decider<Weather | undefined, BattleContext>, action: Action<P>) {
+    return {} as EffectTypeReciept<Weather, Record<never, never>>;
+  }
 
-//     const effects: EffectReciept[] = [];
-//     for (const target of action.targets) {
-//       const effect = decideEffects(action, target, this);
-//       await this.wait("effect", effect, target, action);
-//       const reciept = target.recieveEffect({ effect: effect, action, battle: this });
-//       if (reciept.faint || reciept.eject) this.combatants = this.combatants.filter(c => c !== target);
-//       await this.wait("effectReciept", reciept);
-//       effects.push(reciept);
-//     }
+  receiveEject(effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>, action: Action<P>) {
+    return {} as EffectTypeReciept<SingleOrArray<Combatant>, Record<never, never>>;
+  }
 
-//     await this.wait("actionEnd", action);
-//     const reactions = await this.runActions(action.reactions);
+  receiveEnd(effect: Decider<boolean | undefined, BattleContext>, action: Action<P>) {
+    return {} as EffectTypeReciept<boolean, Record<never, never>>;
+  }
 
-//     const reciept: ActionReciept = {
-//       preactions,
-//       source,
-//       effects,
-//       messages: action.messages,
-//       reactions,
-//     };
+  receiveEffects(effects: BattleEffects, action: Action<P>) {
+    return null;
+  }
+}
 
-//     await this.wait("actionReciept", reciept);
+// export function decideTargetEffects(
+//   params: EffectParams<TargetEffects>,
+//   context: TargetContext
+// ): Partial<EffectGroupEffects<TargetEffects> & { accuracy: number | boolean }> {
+//   const effects = {} as Partial<EffectGroupEffects<TargetEffects> & { accuracy: number | boolean }>;
 
-//     return reciept;
-//   }
+//   effects.accuracy = decide(params.accuracy, context);
+//   if (effects.accuracy === false) return effects;
 
-//   getRound() {
-//     return this.round;
-//   }
+//   const attack = decide(params.attack, context);
+//   if (attack) effects.attack = attack;
+//   const status = decide(params.status, context);
+//   if (status) effects.status = status;
+//   const hp = decide(params.hp, context);
+//   if (hp) effects.hp = hp;
+//   const stages = decide(params.stages, context);
+//   if (stages) effects.stages = stages;
+//   const faint = decide(params.faint, context);
+//   if (faint) effects.faint = faint;
+
+//   return effects;
 // }
 
-// export default TraditionalBattle;
+// export function decideSourceEffects(
+//   params: EffectParams<SourceEffects>,
+//   context: SourceContext
+// ): Partial<EffectGroupEffects<SourceEffects>> {
+//   const effects = {} as Partial<EffectGroupEffects<SourceEffects>>;
+
+//   const leech = decide(params.leech, context);
+//   if (leech) effects.leech = leech;
+//   const recoil = decide(params.recoil, context);
+//   if (recoil) effects.recoil = recoil;
+//   const crash = decide(params.crash, context);
+//   if (crash) effects.crash = crash;
+
+//   return effects;
+// }
+
+// export function decideBattleEffects(
+//   params: EffectParams<BattleEffects>,
+//   context: BattleContext
+// ): Partial<EffectGroupEffects<BattleEffects>> {
+//   const effects = {} as Partial<EffectGroupEffects<BattleEffects>>;
+
+//   const weather = decide(params.weather, context);
+//   if (weather) effects.weather = weather;
+//   const end = decide(params.end, context);
+//   if (end) effects.end = end;
+
+//   return effects;
+// }
+
+/** A completely normal attack */
+export function power(power: number): Decider<Attack, TargetContext> {
+  return ({ action }) => {
+    if (!(action.params.source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
+    const level = action.params.source.user.stats.level;
+    const type = action.params.source.effects.type;
+    const category = action.params.source.effects.category;
+    if (category === "Status") throw new Error("Status moves cannot be used as attacks");
+    const stats = action.params.source.user.stats;
+    const stat = stats[category === "Physical" ? "attack" : "specialAttack"].value(true);
+    const critical = action.params.source.TryCriticalHit() ? action.params.source.GetCriticalMultiplier() : 1;
+    const random =
+      Math.random() * (config.moves.maxRandomMultiplier - config.moves.minRandomMultiplier) +
+      config.moves.minRandomMultiplier;
+    const stab = action.params.source.user.species.types.includes(type) ? config.moves.stabMultiplier : 1;
+    const multitarget = action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1;
+
+    return {
+      level,
+      power,
+      stat,
+      type,
+      category,
+      critical,
+      stab,
+      multitarget,
+      weather: 1, // TODO
+      random,
+      other: 1,
+    };
+  };
+}
