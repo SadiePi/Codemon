@@ -1,4 +1,4 @@
-import { power, Move, multiHit } from "../index.ts";
+import { power, Move, multiHit } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const DoubleSlap: Move = loader.register<Move>(P => ({

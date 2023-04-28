@@ -1,4 +1,6 @@
-export * from "./battle.ts";
+import TraditionalBattle from "./battle/traditional.ts";
+
+export * from "./battle/core.ts";
 // export * from "./battles/index.ts";
 export * from "./codemon.ts";
 export * from "./codex.ts";

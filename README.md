@@ -1,7 +1,7 @@
 # Codemon - A Pokémon library for Deno
 
 Codemon is a WIP Pokémon library for Typescript using Deno. It faithfully implements
-mechanics from the games, and is designed to be as easy to use as possible.
+mechanics from the games, and is designed to be as flexible and easy to use as possible.
 
 This project is still in alpha. Usage details are far from final and probably won't be perfectly consistent even within this README, but the library is already usable for various nontrivial tasks.
 
@@ -85,7 +85,7 @@ We first update the Codex's [arceus file](./ARCEUS.md) to create the boilerplate
 TODO;
 ```
 
-Then we run `https://deno.land/x/codemon/src/arceus.ts` from the root of our Codex to generate/update the files.
+Then we run `https://deno.land/x/codemon/src/arceus.ts` from the root of our Codex to generate/update the files. (TODO: full command)
 
 ### Define a new Type
 
@@ -240,6 +240,8 @@ These are changes that are fully supported but will inevitably require a fork an
 ### Adding a new stat
 
 Open `src/stats.ts` and add or remove entries to either the `PermanentStats` or `BattleStats` arrays. Diligent strict typing throughout this project will then result in type errors that point you to other places you need to change. Those changes are straightforward, so I won't go into detail here (yet?). Of course, if it's a permanent stat you'll also need to give every species in your Codex a base value for your new stat.
+
+### Custom Battle functionality
 
 ## Contributing
 

@@ -1,5 +1,5 @@
-import { Species, weighted } from "../index.ts";
-import loader from "../loader.ts"
+import { Species, weighted } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const Garchomp: Species = loader.register<Species>(P => ({
   name: "Garchomp",
@@ -11,10 +11,7 @@ export const Garchomp: Species = loader.register<Species>(P => ({
     normal: [P.Abilities.SandVeil],
     hidden: P.Abilities.RoughSkin,
   },
-  genders: weighted(
-    [P.Genders.Female, 1],
-    [P.Genders.Male, 1],
-  ),
+  genders: weighted([P.Genders.Female, 1], [P.Genders.Male, 1]),
   catchRate: 45,
   eggCycles: 120,
   height: 1.9,

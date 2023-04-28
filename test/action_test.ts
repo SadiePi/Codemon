@@ -1,4 +1,4 @@
-import C, { Battle, spawn } from "../codex/pokemon/index.ts";
+import C, { Battle, spawn } from "../codex/pokemon/mod.ts";
 import { iBulby } from "./common.ts";
 
 Deno.test("Action - Tackle", async () => {

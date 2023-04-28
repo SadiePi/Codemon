@@ -92,6 +92,8 @@ function flatMod(): string {
     .flat()
     .map(i => `...${i.name},`)
     .join(",")}`;
+
+  return ""; // TODO complete this
 }
 
 function spreadCategoryFile(type: string, entries: string[]) {

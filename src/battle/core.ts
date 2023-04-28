@@ -1,16 +1,21 @@
-import { decide, Decider } from "./decision.ts";
-import { EventEmitter } from "./external.ts";
-import { TargetingCategory } from "./move.ts";
+import { Decider, decide } from "../decision.ts";
+import { EventEmitter } from "../external.ts";
 
-// type EventHandler<E extends Record<string, unknown[]>> = {
-//   [K in keyof E]?: (...event: E[K]) => void;
-// };
-
-export type BattleBuilderParams<P extends BattleBuilderParams<P>> = {
-  target: EffectGroup<TargetContext<P>>;
-  source: EffectGroup<SourceContext<P>>;
-  battle: EffectGroup<BattleContext<P>>;
-};
+export const TCQuantifiers = ["Every", "Any", "Random"] as const;
+export type TCQuantifier = (typeof TCQuantifiers)[number];
+export const TCPositions = ["Adjacent", "Non-Adjacent"] as const;
+export type TCPosition = (typeof TCPositions)[number];
+// TODO? export type TCType = "Normal" | "Fire" | "Water" | "Electric" | "Grass" | "Ice" | "Fighting" | "Poison" | "Ground" | "Flying" | "Psychic" | "Bug" | "Rock" | "Ghost" | "Dragon" | "Dark" | "Steel" | "Fairy"
+export const TCAlignment = ["Ally", "Foe"] as const;
+export type TCAlignment = (typeof TCAlignment)[number];
+export const TCSpecials = ["Self", "Team", "All"] as const;
+export type TCSpecial = (typeof TCSpecials)[number];
+export type TargetingCategory =
+  | TCSpecial
+  | TCQuantifier
+  | `${TCQuantifier} ${TCPosition}`
+  | `${TCQuantifier} ${TCAlignment}`
+  | `${TCQuantifier} ${TCPosition} ${TCAlignment}`;
 
 export type TargetEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<TargetContext<P>, P["target"]>;
 export type SourceEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<SourceContext<P>, P["source"]>;
@@ -46,58 +51,6 @@ export type BattleEffectParams<P extends BattleBuilderParams<P>> = EffectGroupPa
 export type EffectParams<P extends BattleBuilderParams<P>> = TargetEffectParams<P> &
   SourceEffectParams<P> &
   BattleEffectParams<P>;
-
-export type Combatant<P extends BattleBuilderParams<P>> = EffectReciever<P, TargetContext<P>, P["target"]> &
-  EffectReciever<P, SourceContext<P>, P["source"]> & {
-    getAction: (battle: Battle<P>) => BattleBuilder<P>["actionPlan"];
-  };
-
-export type ActionPlan<P extends BattleBuilderParams<P>> = {
-  combatant: Combatant<P>;
-  source: ActionSource<P>;
-  targets: Combatant<P>[];
-};
-
-export type ActionUseContext<P extends BattleBuilderParams<P>> = {
-  battle: Battle<P>;
-  plan: ActionPlan<P>;
-};
-
-export type ActionSource<P extends BattleBuilderParams<P>> = {
-  priority?: number;
-  category: TargetingCategory;
-  useAction: (context: ActionUseContext<P>) => Action<P> | null;
-};
-
-export type BattleBuilder<P extends BattleBuilderParams<P>> = {
-  targetEffects: TargetEffects<P>;
-  sourceEffects: SourceEffects<P>;
-  battleEffects: BattleEffects<P>;
-
-  targetReciept: TargetEffectsReciept<P>;
-  sourceReciept: SourceEffectsReciept<P>;
-  battleReciept: BattleEffectsReciept<P>;
-
-  targetContext: {
-    user: Combatant<P>;
-    target: Combatant<P>;
-    action: Action<P>;
-  };
-  sourceContext: {
-    combatant: Combatant<P>;
-    action: Action<P>;
-  };
-  battleContext: {
-    combatant: Combatant<P>;
-    action: Action<P>;
-  };
-
-  combatant: Combatant<P>;
-
-  actionPlan: ActionPlan<P>;
-  actionUseContext: ActionUseContext<P>;
-  actionSource: ActionSource<P>;
-};
 
 export type EffectType<Context, Effect, Extra = Record<never, never>> = {
   effect: Decider<Effect | undefined, Context>;
@@ -152,6 +105,23 @@ export type EffectSource<P extends BattleBuilderParams<P>> = EffectGroupParams<T
     description: string;
     target: TargetingCategory;
   };
+
+export type ActionPlan<P extends BattleBuilderParams<P>> = {
+  combatant: Combatant<P>;
+  source: ActionSource<P>;
+  targets: Combatant<P>[];
+};
+
+export type ActionUseContext<P extends BattleBuilderParams<P>> = {
+  battle: Battle<P>;
+  plan: ActionPlan<P>;
+};
+
+export type ActionSource<P extends BattleBuilderParams<P>> = {
+  priority?: number;
+  category: TargetingCategory;
+  useAction: (context: ActionUseContext<P>) => Action<P> | null;
+};
 
 export interface ActionParams<P extends BattleBuilderParams<P>> {
   battle: Battle<P>;
@@ -284,6 +254,7 @@ export class Action<P extends BattleBuilderParams<P>> extends EventEmitter<{
     }
 
     const reciept: ActionReciept<P> = {
+      success: true,
       preactions,
       reactions,
       messages: this._messages,
@@ -297,14 +268,76 @@ export class Action<P extends BattleBuilderParams<P>> extends EventEmitter<{
   }
 }
 
-export type ActionReciept<P extends BattleBuilderParams<P>> = {
-  preactions: ActionReciept<P>[];
-  reactions: ActionReciept<P>[];
-  messages: BattleMessage[];
-  targetEffects: Partial<TargetEffectsReciept<P>>[];
-  sourceEffects: Partial<SourceEffectsReciept<P>>;
-  battleEffects: Partial<BattleEffectsReciept<P>>;
+export type ActionReciept<P extends BattleBuilderParams<P>> =
+  | {
+      success: true;
+      preactions: ActionReciept<P>[];
+      reactions: ActionReciept<P>[];
+      messages: BattleMessage[];
+      targetEffects: Partial<TargetEffectsReciept<P>>[];
+      sourceEffects: Partial<SourceEffectsReciept<P>>;
+      battleEffects: Partial<BattleEffectsReciept<P>>;
+    }
+  | {
+      success: false;
+    };
+
+// type EventHandler<E extends Record<string, unknown[]>> = {
+//   [K in keyof E]?: (...event: E[K]) => void;
+// };
+
+export type BattleBuilderParams<P extends BattleBuilderParams<P>> = {
+  target: EffectGroup<TargetContext<P>>;
+  source: EffectGroup<SourceContext<P>>;
+  battle: EffectGroup<BattleContext<P>>;
 };
+
+export type BattleBuilder<P extends BattleBuilderParams<P>> = {
+  targetEffects: TargetEffects<P>;
+  sourceEffects: SourceEffects<P>;
+  battleEffects: BattleEffects<P>;
+  effects: TargetEffects<P> & SourceEffects<P> & BattleEffects<P>;
+
+  targetEffectsReciept: TargetEffectsReciept<P>;
+  sourceEffectsReciept: SourceEffectsReciept<P>;
+  battleEffectsReciept: BattleEffectsReciept<P>;
+  effectsReciept: TargetEffectsReciept<P> & SourceEffectsReciept<P> & BattleEffectsReciept<P>;
+
+  targetContext: {
+    user: Combatant<P>;
+    target: Combatant<P>;
+    action: Action<P>;
+  };
+  sourceContext: {
+    combatant: Combatant<P>;
+    action: Action<P>;
+  };
+  battleContext: {
+    combatant: Combatant<P>;
+    action: Action<P>;
+  };
+
+  combatant: Combatant<P>;
+  targetChoice: TargetChoice<P>;
+
+  action: Action<P>;
+  actionPlan: ActionPlan<P>;
+  actionUseContext: ActionUseContext<P>;
+  actionSource: ActionSource<P>;
+  actionReciept: ActionReciept<P>;
+
+  round: Round<P>;
+  roundReciept: RoundReciept<P>;
+
+  battle: Battle<P>;
+  battleReciept: BattleReciept<P>;
+  battleEvents: BattleEvents<P>;
+};
+
+export type Combatant<P extends BattleBuilderParams<P>> = EffectReciever<P, TargetContext<P>, P["target"]> &
+  EffectReciever<P, SourceContext<P>, P["source"]> & {
+    getAction: (battle: Battle<P>) => BattleBuilder<P>["actionPlan"];
+  };
 
 // this round system is still pretty rough
 // TODO make this better

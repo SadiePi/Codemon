@@ -1,8 +1,10 @@
-import { Gender } from "../index.ts";
-import loader from "../loader.ts"
+import { Gender } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const Male: Gender = {
   name: "Male",
+  displayName: "man",
+  shortCode: "m",
   pronouns: {
     subject: "he",
     object: "him",

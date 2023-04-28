@@ -1,4 +1,11 @@
-import C, { Codemon, flattenActionMessages, flattenBattleMessages, flattenRoundMessages, spawn, TraditionalBattle } from "../codex/pokemon/index.ts";
+import C, {
+  Codemon,
+  flattenActionMessages,
+  flattenBattleMessages,
+  flattenRoundMessages,
+  spawn,
+  TraditionalBattle,
+} from "../codex/pokemon/mod.ts";
 
 import { iBulby } from "./common.ts";
 
@@ -75,5 +82,5 @@ Deno.test({
 
     const reciept = await battle.runBattle();
     console.log(flattenBattleMessages(reciept));
-}});
-
+  },
+});

@@ -1,4 +1,4 @@
-import { Move } from "../index.ts";
+import { Move } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Harden: Move = loader.register<Move>(P => ({

@@ -1,4 +1,4 @@
-import { Strategy, Codemon, MoveEntry, config } from "../index.ts";
+import { Strategy, Codemon, MoveEntry, config } from "../mod.ts";
 
 export const Wild: Strategy = {
   chooseAction: ({ combatant }) => {

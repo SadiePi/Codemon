@@ -52,9 +52,7 @@ export type DeepPartial<T> = {
 export function TODO<T>(message: string, mode: "warn"): T;
 export function TODO<T>(message: string, mode: "error"): never;
 export function TODO<T>(message: string, mode: "warn" | "error" = "warn"): T | never {
-  if (mode === "warn") {
-    console.warn(`TODO: ${message}`);
-    return { todo: message } as T;
-  }
-  throw new Error(message);
+  if (mode === "error") throw new Error(`TODO: ${message}`);
+  console.warn(`TODO: ${message}`);
+  return { todo: message } as T;
 }

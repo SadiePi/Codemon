@@ -1,5 +1,5 @@
-import { Codemon, EffectTarget, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { Codemon, EffectTarget, Move } from "../mod.ts";
+import loader from "../loader.ts";
 
 declare function substitute(target: Codemon): EffectTarget;
 

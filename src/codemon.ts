@@ -1,18 +1,17 @@
 import {
   Combatant,
   Battle,
-  Attack,
-  EffectReciept,
   Action,
   TargetContext,
   BattleMessage,
-  Effects,
+  EffectGroupEffects,
   TargetEffects,
   TargetEffectsReciept,
   SourceEffects,
   SourceEffectsReciept,
   ActionPlan,
-} from "./battle.ts";
+} from "./battle/core.ts";
+import { Traditional } from "./battle/traditional.ts";
 import { config } from "./config.ts";
 import { Decider, decide, MultiDecider, choose } from "./decision.ts";
 import { Item } from "./item.ts";
@@ -81,11 +80,15 @@ export function addTypeRelation(targets: TypePushTargets, ...types: Type[]) {
 export interface Gender {
   //symbol: Image;
   name: string;
-  pronouns: {
+  displayName: string;
+  shortCode: string;
+  pronouns: SingleOrArray<{
     subject: string;
+    pluralSubject?: boolean;
     object: string;
     possessive: string;
-  };
+  }>;
+  color: string;
 }
 
 type InternalEvoReasons = {
@@ -167,7 +170,7 @@ export function spawn(from: Decider<SpawnParams>): Codemon {
 }
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
-export class Codemon implements Combatant {
+export class Codemon implements Combatant<Traditional> {
   public species: Species;
   public moves: MoveEntry[];
   public stats: StatSet;
@@ -263,11 +266,14 @@ export class Codemon implements Combatant {
   // Gender
   protected _gender: Gender = {
     name: "[Gender uninitialized]",
+    displayName: "thing",
+    shortCode: "[]",
     pronouns: {
       subject: "it",
       object: "it",
       possessive: "its",
     },
+    color: "#000000",
   };
   public get gender() {
     return this.species.overrideSex?.(this, this._gender) ?? this._gender;
@@ -294,7 +300,7 @@ export class Codemon implements Combatant {
   }
 
   public receiveEffects(
-    effects: Partial<Effects<TargetEffects & SourceEffects>>,
+    effects: Partial<EffectGroupEffects<TargetEffects & SourceEffects>>,
     action: Action
   ): TargetEffectsReciept & SourceEffectsReciept {
     const reciept: TargetEffectsReciept = {};

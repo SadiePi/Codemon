@@ -1,4 +1,4 @@
-import P from "../codex/pokemon/index.ts";
+import P from "../codex/pokemon/mod.ts";
 import { Codemon, SpawnParams } from "./codemon.ts";
 import { chance, decide, Decider, choose, range, weighted } from "./decision.ts";
 

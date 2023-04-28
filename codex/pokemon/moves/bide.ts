@@ -1,4 +1,4 @@
-import { Move, power } from "../index.ts";
+import { Move, power } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Bide: Move = loader.register<Move>(P => ({

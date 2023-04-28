@@ -1,37 +1,50 @@
-// deno-lint-ignore-file no-unused-vars
-import { Battle } from "../battle.ts";
 import { EventEmitter } from "../external.ts";
 import {
-  Action,
-  ActionPlan,
-  ActionReciept,
-  ActionSource,
-  BattleBuilder,
-  BattleEvents,
-  BattleReciept,
   DamageCategory,
   Decider,
-  EffectType,
-  EffectTypeReciept,
   MoveEntry,
-  Round,
-  RoundReciept,
   SingleOrArray,
   StageMods,
   StatusEffect,
-  TargetChoice,
   Type,
   Weather,
   config,
 } from "../mod.ts";
+import { BattleBuilder, EffectType } from "./core.ts";
 
-type P = {
+export type Traditional = {
   target: TargetEffectsBuilder;
   source: SourceEffectsBuilder;
   battle: BattleEffectsBuilder;
 };
 
-export type BB = BattleBuilder<P>;
+type BB = BattleBuilder<Traditional>;
+export type TargetEffects = BB["targetEffects"];
+export type SourceEffects = BB["sourceEffects"];
+export type BattleEffects = BB["battleEffects"];
+export type Effects = BB["effects"];
+export type TargetEffectsReciept = BB["targetEffectsReciept"];
+export type SourceEffectsReciept = BB["sourceEffectsReciept"];
+export type BattleEffectsReciept = BB["battleEffectsReciept"];
+export type EffectsReciept = BB["effectsReciept"];
+export type TargetContext = BB["targetContext"];
+export type SourceContext = BB["sourceContext"];
+export type BattleContext = BB["battleContext"];
+export type Combatant = BB["combatant"];
+export type TargetChoice = BB["targetChoice"];
+export type Action = BB["action"];
+export type ActionPlan = BB["actionPlan"];
+export type ActionUseContext = BB["actionUseContext"];
+export type ActionSource = BB["actionSource"];
+export type ActionReciept = BB["actionReciept"];
+export type Round = BB["round"];
+export type RoundReciept = BB["roundReciept"];
+export type Battle = BB["battle"];
+export type BattleReciept = BB["battleReciept"];
+export type BattleEvents = BB["battleEvents"];
+
+export type AttackReciept = TargetEffectsReciept["attack"];
+export type HPReciept = TargetEffectsReciept["hp"];
 
 export interface Attack {
   /** The level of the user */
@@ -66,23 +79,21 @@ export interface BaseAttackReciept {
   faint: boolean;
 }
 
-export type AttackReciept = EffectTypeReciept<Attack, BaseAttackReciept>;
-
-export interface HPReciept {
+export interface BaseHPReciept {
   faint: boolean;
 }
 
 export type TargetEffectsBuilder = {
   attack: EffectType<TargetContext, Attack, BaseAttackReciept>;
   status: EffectType<TargetContext, SingleOrArray<StatusEffect>>;
-  hp: EffectType<TargetContext, number, HPReciept>;
+  hp: EffectType<TargetContext, number, BaseHPReciept>;
   stages: EffectType<TargetContext, StageMods>;
   faint: EffectType<TargetContext, boolean>;
 };
 
 export type SourceEffectsBuilder = {
   leech: EffectType<SourceContext, number>;
-  recoil: EffectType<SourceContext, TargetEffectsBuilder>;
+  recoil: EffectType<SourceContext, Effects>;
   crash: EffectType<SourceContext, TargetEffectsBuilder>;
 };
 
@@ -92,28 +103,11 @@ export type BattleEffectsBuilder = {
   end: EffectType<BattleContext, boolean>;
 };
 
-export type Combatant = BB["combatant"];
-export type TargetContext = BB["targetContext"];
-export type TargetEffects = BB["targetEffects"];
-export type TargetEffectsReciept = BB["targetReciept"];
-export type SourceContext = BB["sourceContext"];
-export type SourceEffects = BB["sourceEffects"];
-export type SourceEffectsReciept = BB["sourceReciept"];
-export type BattleContext = BB["battleContext"];
-export type BattleEffects = BB["battleEffects"];
-export type BattleEffectsReciept = BB["battleReciept"];
-export type Effects = TargetEffects & SourceEffects & BattleEffects;
-export type EffectsReciept = TargetEffectsReciept & SourceEffectsReciept & BattleEffectsReciept;
-
-export default class TraditionalBattle extends EventEmitter<BattleEvents<P>> implements Battle<P> {
+export default class TraditionalBattle extends EventEmitter<BattleEvents> implements Battle {
   private combatants: Combatant[];
 
   async runBattle() {
-    return {} as BattleReciept<{
-      target: TargetEffectsBuilder;
-      source: SourceEffectsBuilder;
-      battle: BattleEffectsBuilder;
-    }>;
+    return {} as BattleReciept;
   }
 
   constructor(combatants: Combatant[]) {
@@ -121,51 +115,58 @@ export default class TraditionalBattle extends EventEmitter<BattleEvents<P>> imp
     this.combatants = combatants;
   }
 
-  getRound(): Round<P> {
-    return {} as Round<P>;
+  getRound(): Round {
+    return {} as Round;
   }
 
-  async runRound(): Promise<RoundReciept<P>> {
-    return {} as RoundReciept<P>;
+  async runRound(): Promise<RoundReciept> {
+    return {} as RoundReciept;
   }
 
-  getActions(): Promise<ActionPlan<P>[]> {
+  getActions(): Promise<ActionPlan[]> {
     return Promise.resolve([]);
   }
 
-  getAction(combatant: Combatant): ActionPlan<P> | Promise<ActionPlan<P>> {
-    return {} as ActionPlan<P>;
+  getAction(combatant: Combatant): ActionPlan | Promise<ActionPlan> {
+    return {} as ActionPlan;
   }
 
-  getTargets(action: ActionSource<P>, combatant: Combatant): TargetChoice<P> | Promise<TargetChoice<P>> {
-    return {} as TargetChoice<P>;
+  getTargets(action: ActionSource, combatant: Combatant): TargetChoice | Promise<TargetChoice> {
+    return {} as TargetChoice;
   }
 
-  sortActions(actions: ActionPlan<P>[]): ActionPlan<P>[] {
-    return actions;
+  sortActions(plans: ActionPlan[]): ActionPlan[] {
+    return plans;
   }
 
-  async runActions(actions: ActionPlan<P>[]): Promise<ActionReciept<P>[]> {
-    return [];
+  async runActions(plans: ActionPlan[]): Promise<ActionReciept[]> {
+    const reciepts = [];
+    for (const plan of plans) reciepts.push(await this.runAction(plan));
+    return reciepts;
   }
 
-  async runAction(action: ActionPlan<P>): Promise<ActionReciept<P>> {
-    return {} as ActionReciept<P>;
+  async runAction(plan: ActionPlan): Promise<ActionReciept> {
+    const action = plan.source.useAction({
+      plan,
+      battle: this,
+    });
+    if (!action) return { success: false };
+    return action.execute(this);
   }
 
-  receiveWeather(effect: Decider<Weather | undefined, BattleContext>, action: Action<P>) {
-    return {} as EffectTypeReciept<Weather, Record<never, never>>;
+  receiveWeather(effect: Decider<Weather | undefined, BattleContext>, action: Action) {
+    return {} as BattleEffectsReciept["weather"];
   }
 
-  receiveEject(effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>, action: Action<P>) {
-    return {} as EffectTypeReciept<SingleOrArray<Combatant>, Record<never, never>>;
+  receiveEject(effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>, action: Action) {
+    return {} as BattleEffectsReciept["eject"];
   }
 
-  receiveEnd(effect: Decider<boolean | undefined, BattleContext>, action: Action<P>) {
-    return {} as EffectTypeReciept<boolean, Record<never, never>>;
+  receiveEnd(effect: Decider<boolean | undefined, BattleContext>, action: Action) {
+    return {} as BattleEffectsReciept["end"];
   }
 
-  receiveEffects(effects: BattleEffects, action: Action<P>) {
+  receiveEffects(effects: BattleEffects, action: Action) {
     return null;
   }
 }
@@ -253,5 +254,13 @@ export function power(power: number): Decider<Attack, TargetContext> {
       random,
       other: 1,
     };
+  };
+}
+
+export function stab(type: Type): Decider<number, TargetContext> {
+  return ({ action }) => {
+    if (!(action.params.source instanceof MoveEntry)) throw new Error("stab() can only be used with moves");
+    const stab = action.params.source.user.species.types.includes(type) ? config.moves.stabMultiplier : 1;
+    return stab;
   };
 }

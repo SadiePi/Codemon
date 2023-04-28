@@ -3,12 +3,12 @@ import {
   Combatant,
   Codemon,
   MoveEntry,
-  Effects,
+  EffectGroupEffects,
   Round,
   StatusEffect,
   effectAction,
   volatile,
-} from "../index.ts";
+} from "../mod.ts";
 import loader from "../loader.ts";
 
 // TODO use Codemon events instead of battle events
@@ -27,7 +27,7 @@ export const Burn: StatusEffect = loader.register(P => ({
     let attackedThisRound = false;
 
     // halve attack damage, damage after action, damage after round if didn't attack
-    const halveDamageAndBurnIfAttack = (effect: Effects, _target: Combatant, action: Action) => {
+    const halveDamageAndBurnIfAttack = (effect: EffectGroupEffects, _target: Combatant, action: Action) => {
       if (!(action.source instanceof MoveEntry)) return;
       if (action.source.user !== target) return;
       if (!effect.attack) return;

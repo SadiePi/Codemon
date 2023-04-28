@@ -1,4 +1,4 @@
-import { Move, Codemon } from "../index.ts";
+import { Move, Codemon } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Guillotine: Move = loader.register<Move>(P => ({

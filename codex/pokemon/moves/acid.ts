@@ -1,14 +1,15 @@
-import { Move, chance, power } from "../index.ts";
+import { Move, chance, power } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Acid: Move = loader.register<Move>(P => ({
   name: "Acid",
   description: "Opposing Pokémon are attacked with a spray of harsh acid. This may also lower their Sp. Def stats.",
-  type: P.Types.Poison,
-  category: "Special",
-  pp: 30,
-  attack: power(40),
   target: "Every Adjacent Foe",
+  category: "Special",
+  type: P.Types.Poison,
+  pp: 30,
   makesContact: false,
+
+  attack: power(40),
   stages: chance(1 / 10, { specialDefense: -1 }),
 }));

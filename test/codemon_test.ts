@@ -1,32 +1,33 @@
 import { assertEquals, iBulby } from "./common.ts";
-import C, { spawn } from "../src/mod.ts";
+import { spawn } from "../src/mod.ts";
+import C from "../codex/pokemon/mod.ts";
 
 Deno.test("Basic", () => {
   const bulby = spawn(iBulby);
-  console.log("Spawned Bulby")
+  console.log("Spawned Bulby");
 
   assertEquals(bulby.species, C.Species.Bulbasaur);
-  console.log("Species is Bulbasaur")
+  console.log("Species is Bulbasaur");
   assertEquals(bulby.name, "Bulby");
-  console.log("Name is Bulby")
+  console.log("Name is Bulby");
   assertEquals(bulby.gender, C.Genders.Male);
-  console.log("Gender is Male")
+  console.log("Gender is Male");
   assertEquals(bulby.nature, C.Natures.Quiet);
-  console.log("Nature is Quiet")
+  console.log("Nature is Quiet");
   assertEquals(bulby.stats.level, 15);
-  console.log("Level is 15")
+  console.log("Level is 15");
   assertEquals(bulby.moves.length, 4);
-  console.log("Moves length is 4")
+  console.log("Moves length is 4");
   assertEquals(bulby.moves[0].effects, C.Moves.Tackle);
-  console.log("Move 1 is Tackle")
+  console.log("Move 1 is Tackle");
   assertEquals(bulby.moves[1].effects, C.Moves.VineWhip);
-  console.log("Move 2 is Vine Whip")
+  console.log("Move 2 is Vine Whip");
   assertEquals(bulby.moves[2].effects, C.Moves.RazorLeaf);
-  console.log("Move 3 is Razor Leaf")
+  console.log("Move 3 is Razor Leaf");
   assertEquals(bulby.moves[3].effects, C.Moves.SolarBeam);
-  console.log("Move 4 is Solar Beam")
+  console.log("Move 4 is Solar Beam");
   assertEquals(bulby.ability, C.Abilities.Overgrow);
-  console.log("Ability is Overgrow")
+  console.log("Ability is Overgrow");
 });
 
 Deno.test("Modifications", () => {
@@ -103,48 +104,48 @@ Deno.test("Modifications", () => {
   assertEquals(bulby.ability, C.Abilities.SandVeil);
 });
 
-Deno.test("Evolution", async ()=>{
+Deno.test("Evolution", async () => {
   const bulby = spawn({
     species: C.Species.Bulbasaur,
-    stats: {level: 15}
-  })
+    stats: { level: 15 },
+  });
 
   let options = bulby.getDesiredEvolutions();
   assertEquals(options, []);
-  console.log("No evolutions available at level 15")
+  console.log("No evolutions available at level 15");
 
   bulby.stats.addExp(bulby.stats.pointsToNextLevel);
   assertEquals(bulby.stats.level, 16);
-  console.log("Now level 16")
+  console.log("Now level 16");
 
   options = bulby.getDesiredEvolutions();
   assertEquals(options.length, 1);
   assertEquals(options[0].species, C.Species.Ivysaur);
-  console.log("Ivysaur is available")
+  console.log("Ivysaur is available");
 
   bulby.evolve(options[0]);
   assertEquals(bulby.species, C.Species.Ivysaur);
-  console.log("Bulby is now Ivysaur")
+  console.log("Bulby is now Ivysaur");
 
   await bulby.stats.levelUp(15);
   assertEquals(bulby.stats.level, 31);
-  console.log("Bulby is now level 31")
+  console.log("Bulby is now level 31");
 
   options = bulby.getDesiredEvolutions();
   assertEquals(options.length, 0);
-  console.log("No evolutions available at level 31")
+  console.log("No evolutions available at level 31");
 
   await bulby.stats.levelUp();
   assertEquals(bulby.stats.level, 32);
-  console.log("Bulby is now level 32")
+  console.log("Bulby is now level 32");
 
   options = bulby.getDesiredEvolutions();
   assertEquals(options.length, 1);
   assertEquals(options[0].species, C.Species.Venusaur);
-  console.log("Venusaur is available")
+  console.log("Venusaur is available");
 
   bulby.evolve(options[0]);
   assertEquals(bulby.species, C.Species.Venusaur);
   console.log("Bulby is now Venusaur");
-  console.log("Evolution chain complete")
-})
+  console.log("Evolution chain complete");
+});

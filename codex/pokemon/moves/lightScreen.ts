@@ -1,5 +1,5 @@
-import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import { power, Move } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const LightScreen: Move = loader.register<Move>(P => ({
   name: "Light Screen",

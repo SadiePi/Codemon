@@ -1,5 +1,5 @@
-import { Species } from "../index.ts";
-import loader from "../loader.ts"
+import { Species } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const Ivysaur: Species = loader.register<Species>(P => ({
   ...P.Species.Bulbasaur,
@@ -37,5 +37,5 @@ export const Ivysaur: Species = loader.register<Species>(P => ({
     breeding: P.Species.Bulbasaur.learnset.breeding,
     tutoring: P.Species.Bulbasaur.learnset.tutoring,
   },
-  evolutions: [{species: P.Species.Venusaur, level: 32 }],
+  evolutions: [{ species: P.Species.Venusaur, level: 32 }],
 }));

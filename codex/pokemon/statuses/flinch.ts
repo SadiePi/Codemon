@@ -4,12 +4,12 @@ import {
   Combatant,
   Codemon,
   MoveEntry,
-  Effects,
+  EffectGroupEffects,
   Round,
   StatusEffect,
   effectAction,
   volatile,
-} from "../index.ts";
+} from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Flinch: StatusEffect = loader.register(P => ({
@@ -23,7 +23,7 @@ export const Flinch: StatusEffect = loader.register(P => ({
     effect.messages.push(`${target.name} flinches!`);
 
     // lose turn to attack
-    const handleFlinch = (effect: Effects, _target: Combatant, action: Action) => {
+    const handleFlinch = (effect: EffectGroupEffects, _target: Combatant, action: Action) => {
       if (!(action.source instanceof MoveEntry)) return;
       if (action.source.user !== target) return;
 

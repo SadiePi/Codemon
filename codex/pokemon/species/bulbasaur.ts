@@ -1,4 +1,4 @@
-import { weighted, Species } from "../index.ts";
+import { weighted, Species } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Bulbasaur: Species = loader.register(P => ({

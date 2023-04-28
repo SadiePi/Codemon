@@ -1,14 +1,14 @@
-import { Codemon, Combatant, Trainer } from "../index.ts";
-import loader from "../loader.ts"
+import { Codemon, Combatant, Trainer } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const Console: Trainer = loader.register(P => ({
   strategy: {
     chooseAction: ({ combatant }) => {
-      if(!(combatant instanceof Codemon)) throw new Error("Console controlled must be a Codemon")
+      if (!(combatant instanceof Codemon)) throw new Error("Console controlled must be a Codemon");
       // use deno std lib to get user input
       // print each move info, and ask for user input
       // return the move
-      console.log(combatant.toString(true))
+      console.log(combatant.toString(true));
       const moves = combatant.moves;
       console.log("Choose a move:");
       moves.forEach((move, i) => console.log(`${i + 1}. ${move.toString()}`));

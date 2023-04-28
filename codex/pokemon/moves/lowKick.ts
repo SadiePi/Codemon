@@ -1,5 +1,5 @@
-import { Codemon, Move, power } from "../index.ts";
-import loader from "../loader.ts"
+import { Codemon, Move, power } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const LowKick: Move = loader.register<Move>(P => ({
   name: "Low Kick",

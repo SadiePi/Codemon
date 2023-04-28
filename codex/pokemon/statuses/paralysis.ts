@@ -1,4 +1,4 @@
-import { Action, Codemon, MoveEntry, StatusEffect, volatile } from "../index.ts";
+import { Action, Codemon, MoveEntry, StatusEffect, volatile } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Paralysis: StatusEffect = loader.register(P => ({
@@ -32,7 +32,3 @@ export const Paralysis: StatusEffect = loader.register(P => ({
     };
   },
 }));
-
-Deno.test("Paralysis", () => {
-  // TODO
-});

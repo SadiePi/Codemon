@@ -2,7 +2,7 @@ export * from "../../src/mod.ts";
 import { Codex } from "../../src/mod.ts";
 import loader from "./loader.ts";
 
-import Pokedex from "../pokemon/index.ts";
+import Pokedex from "../pokemon/mod.ts";
 import * as Species from "./species.ts";
 import * as Types from "./types.ts";
 import * as Abilities from "./abilities.ts";

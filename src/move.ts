@@ -1,25 +1,9 @@
-import { Action, ActionSource, ActionUseContext, EffectParams, EffectSource, TargetContext } from "./battle.ts";
+import { Action, ActionSource, ActionUseContext, EffectGroupParams, EffectSource, TargetContext } from "./battle.ts";
 import { Codemon, Type } from "./codemon.ts";
 import { config } from "./config.ts";
 import { Decider, decide, range } from "./decision.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
-
-export const TCQuantifiers = ["Every", "Any", "Random"] as const;
-export type TCQuantifier = typeof TCQuantifiers[number];
-export const TCPositions = ["Adjacent", "Non-Adjacent"] as const;
-export type TCPosition = typeof TCPositions[number];
-// TODO? export type TCType = "Normal" | "Fire" | "Water" | "Electric" | "Grass" | "Ice" | "Fighting" | "Poison" | "Ground" | "Flying" | "Psychic" | "Bug" | "Rock" | "Ghost" | "Dragon" | "Dark" | "Steel" | "Fairy"
-export const TCAlignment = ["Ally", "Foe"] as const;
-export type TCAlignment = typeof TCAlignment[number];
-export const TCSpecials = ["Self", "Team", "All"] as const;
-export type TCSpecial = typeof TCSpecials[number];
-export type TargetingCategory =
-  | TCSpecial
-  | TCQuantifier
-  | `${TCQuantifier} ${TCPosition}`
-  | `${TCQuantifier} ${TCAlignment}`
-  | `${TCQuantifier} ${TCPosition} ${TCAlignment}`;
 
 export type Move = EffectSource & {
   name: string;
@@ -30,8 +14,8 @@ export type Move = EffectSource & {
   pp: number | { new (): PPScheme };
   makesContact: boolean;
   criticalHitStage?: number;
-  charge?: Decider<EffectParams>;
-  continue?: Decider<EffectParams>;
+  charge?: Decider<EffectGroupParams>;
+  continue?: Decider<EffectGroupParams>;
 };
 
 export interface IMoveEntry {

@@ -1,5 +1,5 @@
-import { Move, Codemon } from "../index.ts";
-import loader from "../loader.ts"
+import { Move, Codemon } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const Synthesis: Move = loader.register<Move>(P => ({
   name: "Synthesis",

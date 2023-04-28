@@ -1,5 +1,5 @@
-import { power, Move, chance } from "../index.ts";
-import loader from "../loader.ts"
+import { power, Move, chance } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const Blizzard: Move = loader.register<Move>(P => ({
   name: "Blizzard",

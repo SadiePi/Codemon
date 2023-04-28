@@ -1,5 +1,5 @@
-import { Move } from "../index.ts";
-import loader from "../loader.ts"
+import { Move } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const ThunderWave: Move = loader.register<Move>(P => ({
   name: "Thunder Wave",

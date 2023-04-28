@@ -1,4 +1,4 @@
-import { power, Move, chance, choose } from "../index.ts";
+import { power, Move, chance, choose } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const TriAttack: Move = loader.register<Move>(P => ({

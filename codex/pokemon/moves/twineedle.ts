@@ -1,4 +1,4 @@
-import { chance, power, Move, multiHit } from "../index.ts";
+import { chance, power, Move, multiHit } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Twineedle: Move = loader.register<Move>(P => ({

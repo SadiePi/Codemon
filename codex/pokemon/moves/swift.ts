@@ -1,4 +1,4 @@
-import { power, Move } from "../index.ts";
+import { power, Move } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Swift: Move = loader.register<Move>(P => ({

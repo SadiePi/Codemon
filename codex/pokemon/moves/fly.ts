@@ -1,5 +1,4 @@
-import { EffectParams } from "../../uranium/index.ts";
-import { power, Move } from "../index.ts";
+import { power, Move } from "../mod.ts";
 import loader from "../loader.ts";
 import { SemiInvulnerableTurn } from "../statuses/semiInvulnerableTurn.ts";
 

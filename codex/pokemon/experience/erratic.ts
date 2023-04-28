@@ -1,5 +1,5 @@
-import { ExperienceGroup } from "../index.ts";
-import loader from "../loader.ts"
+import { ExperienceGroup } from "../mod.ts";
+import loader from "../loader.ts";
 
 export const Erratic: ExperienceGroup = (l: number) => {
   if (l <= 50) return (Math.pow(l, 3) * (100 - l)) / 50;
