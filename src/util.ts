@@ -56,3 +56,50 @@ export function TODO<T>(message: string, mode: "warn" | "error" = "warn"): T | n
   console.warn(`TODO: ${message}`);
   return { todo: message } as T;
 }
+
+/**
+ * Processes an array of items asynchronously with a given callback function.
+ *
+ * @template T The type of items in the input array.
+ * @template U The type of results.
+ * @param {T[]} items The array of items to be processed.
+ * @param {(item: T, index: number) => Promise<U>} callback The async function that processes an item.
+ * @param {number} [concurrency=1] The maximum number of concurrent promises. Defaults to 1.
+ * @returns {Promise<U[]>} A promise that resolves with an array of results once all items have been processed.
+ *                          The result for an item is at the same index as the item in the input array.
+ *                          If any promise rejects, the function rejects with the same reason.
+ *
+ * @example
+ * const items = [1, 2, 3, 4, 5];
+ * const callback = (item, index) => new Promise((resolve) => setTimeout(() => resolve(item * 2), 100 * item));
+ * sequentialAsync(items, callback, 2)
+ *     .then(console.log)  // Logs: [2, 4, 6, 8, 10]
+ *     .catch(console.error);
+ */
+export function sequentialAsync<T, U>(
+  items: T[],
+  callback: (item: T, index: number) => Promise<U>,
+  concurrency = 1
+): Promise<U[]> {
+  return new Promise((resolve, reject) => {
+    const results: U[] = [];
+    let index = 0;
+    let running = 0;
+    function run() {
+      while (running < concurrency && index < items.length) {
+        running++;
+        callback(items[index], index)
+          .then(result => {
+            results.push(result);
+            running--;
+            run();
+          })
+          .catch(reject);
+        index++;
+      }
+      if (running === 0) resolve(results);
+    }
+    run();
+  });
+  // thanks copilot 👍
+}

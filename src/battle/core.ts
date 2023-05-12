@@ -313,7 +313,6 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
     action: Action<P>;
   };
   battleContext: {
-    combatant: Combatant<P>;
     action: Action<P>;
   };
 
@@ -336,7 +335,7 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
 
 export type Combatant<P extends BattleBuilderParams<P>> = EffectReciever<P, TargetContext<P>, P["target"]> &
   EffectReciever<P, SourceContext<P>, P["source"]> & {
-    getAction: (battle: Battle<P>) => BattleBuilder<P>["actionPlan"];
+    getAction: (battle: Battle<P>) => Promise<BattleBuilder<P>["actionPlan"]>;
   };
 
 // this round system is still pretty rough
@@ -347,7 +346,10 @@ export interface Round<P extends BattleBuilderParams<P>> {
   actions: ActionReciept<P>[];
 }
 
-export type RoundReciept<P extends BattleBuilderParams<P>> = EffectTypeReciept<Round<P>>;
+export type RoundReciept<P extends BattleBuilderParams<P>> = {
+  round: Round<P>;
+  actions: ActionReciept<P>[];
+};
 
 export type BattleMessage = string; // TODO include animation info etc
 
@@ -388,19 +390,17 @@ export interface TargetChoice<P extends BattleBuilderParams<P>> {
 
 export type Battle<P extends BattleBuilderParams<P>> = EffectReciever<P, BattleContext<P>, P["battle"]> &
   EventEmitter<BattleEvents<P>> & {
-    runBattle: (this: ThisType<Battle<P>>) => Promise<BattleReciept<P>>;
     getRound: (this: ThisType<Battle<P>>) => Round<P>;
+    getTargets: (this: ThisType<Battle<P>>, action: ActionSource<P>, combatant: Combatant<P>) => TargetChoice<P>;
+    sortPlans: (this: ThisType<Battle<P>>, actions: ActionPlan<P>[]) => ActionPlan<P>[];
+    isOver: (this: ThisType<Battle<P>>) => boolean;
+
+    runBattle: (this: ThisType<Battle<P>>) => Promise<BattleReciept<P>>;
     runRound: (this: ThisType<Battle<P>>) => Promise<RoundReciept<P>>;
-    getActions: (this: ThisType<Battle<P>>) => Promise<ActionPlan<P>[]>;
-    getAction: (this: ThisType<Battle<P>>, combatant: Combatant<P>) => ActionPlan<P> | Promise<ActionPlan<P>>;
-    getTargets: (
-      this: ThisType<Battle<P>>,
-      action: ActionSource<P>,
-      combatant: Combatant<P>
-    ) => TargetChoice<P> | Promise<TargetChoice<P>>;
-    sortActions: (this: ThisType<Battle<P>>, actions: ActionPlan<P>[]) => ActionPlan<P>[];
-    runActions(actions: ActionPlan<P>[]): Promise<ActionReciept<P>[]>;
-    runAction(action: ActionPlan<P>): Promise<ActionReciept<P>>;
+    getPlans: (this: ThisType<Battle<P>>) => Promise<ActionPlan<P>[]>;
+    getPlan: (this: ThisType<Battle<P>>, combatant: Combatant<P>) => Promise<ActionPlan<P>>;
+    runPlans(actions: ActionPlan<P>[]): Promise<ActionReciept<P>[]>;
+    runPlan(action: ActionPlan<P>): Promise<ActionReciept<P>>;
   };
 
 export interface BattleReciept<P extends BattleBuilderParams<P>> {
@@ -409,6 +409,7 @@ export interface BattleReciept<P extends BattleBuilderParams<P>> {
   readonly messages: BattleMessage[];
 }
 
+// TODO update these
 // export function flattenActionMessages(action: ActionReciept, into: BattleMessage[] = []) {
 //   for (const preaction of action.preactions) flattenActionMessages(preaction, into);
 //   into.push(...action.messages);

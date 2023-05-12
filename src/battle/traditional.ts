@@ -1,3 +1,4 @@
+import { decide } from "../decision.ts";
 import { EventEmitter } from "../external.ts";
 import {
   DamageCategory,
@@ -10,6 +11,7 @@ import {
   Weather,
   config,
 } from "../mod.ts";
+import { sequentialAsync } from "../util.ts";
 import { BattleBuilder, EffectType } from "./core.ts";
 
 export type Traditional = {
@@ -42,9 +44,6 @@ export type RoundReciept = BB["roundReciept"];
 export type Battle = BB["battle"];
 export type BattleReciept = BB["battleReciept"];
 export type BattleEvents = BB["battleEvents"];
-
-export type AttackReciept = TargetEffectsReciept["attack"];
-export type HPReciept = TargetEffectsReciept["hp"];
 
 export interface Attack {
   /** The level of the user */
@@ -103,12 +102,28 @@ export type BattleEffectsBuilder = {
   end: EffectType<BattleContext, boolean>;
 };
 
-export default class TraditionalBattle extends EventEmitter<BattleEvents> implements Battle {
-  private combatants: Combatant[];
+export type AttackReciept = TargetEffectsReciept["attack"];
+export type StatusReciept = TargetEffectsReciept["status"];
+export type HPReciept = TargetEffectsReciept["hp"];
+export type StagesReciept = TargetEffectsReciept["stages"];
+export type FaintReciept = TargetEffectsReciept["faint"];
 
-  async runBattle() {
-    return {} as BattleReciept;
-  }
+export type LeechReciept = SourceEffectsReciept["leech"];
+export type RecoilReciept = SourceEffectsReciept["recoil"];
+export type CrashReciept = SourceEffectsReciept["crash"];
+
+export type WeatherReciept = BattleEffectsReciept["weather"];
+export type WeatherEffectParam = BattleEffects["weather"];
+export type EjectReciept = BattleEffectsReciept["eject"];
+export type EndReciept = BattleEffectsReciept["end"];
+
+export default class TraditionalBattle extends EventEmitter<BattleEvents> implements Battle {
+  protected combatants: Combatant[];
+  protected round: Round = {
+    number: 0,
+    actions: [],
+  };
+  // protected conditions: BattleConditions ???
 
   constructor(combatants: Combatant[]) {
     super();
@@ -119,33 +134,60 @@ export default class TraditionalBattle extends EventEmitter<BattleEvents> implem
     return {} as Round;
   }
 
-  async runRound(): Promise<RoundReciept> {
-    return {} as RoundReciept;
-  }
-
-  getActions(): Promise<ActionPlan[]> {
-    return Promise.resolve([]);
-  }
-
-  getAction(combatant: Combatant): ActionPlan | Promise<ActionPlan> {
-    return {} as ActionPlan;
-  }
-
-  getTargets(action: ActionSource, combatant: Combatant): TargetChoice | Promise<TargetChoice> {
+  getTargets(action: ActionSource, combatant: Combatant): TargetChoice {
     return {} as TargetChoice;
   }
 
-  sortActions(plans: ActionPlan[]): ActionPlan[] {
+  sortPlans(plans: ActionPlan[]): ActionPlan[] {
     return plans;
   }
 
-  async runActions(plans: ActionPlan[]): Promise<ActionReciept[]> {
-    const reciepts = [];
-    for (const plan of plans) reciepts.push(await this.runAction(plan));
-    return reciepts;
+  isOver(): boolean {
+    return this.combatants.length <= 1;
   }
 
-  async runAction(plan: ActionPlan): Promise<ActionReciept> {
+  async runBattle(): Promise<BattleReciept> {
+    const rounds = [];
+    while (!this.isOver()) {
+      this.round = {
+        number: this.round.number + 1,
+        actions: [],
+      };
+      const reciept = await this.runRound();
+      rounds.push(reciept);
+    }
+    return {
+      rounds,
+      remaining: this.combatants,
+      messages: [],
+    };
+  }
+
+  async runRound(): Promise<RoundReciept> {
+    const plans = await this.getPlans();
+    const sortedPlans = this.sortPlans(plans);
+    const reciepts = await this.runPlans(sortedPlans);
+    return {
+      round: this.getRound(),
+      actions: reciepts,
+    };
+  }
+
+  getPlans(): Promise<ActionPlan[]> {
+    // TODO more rebust system for getting actions
+    return Promise.all(this.combatants.map(c => this.getPlan(c)));
+  }
+
+  getPlan(combatant: Combatant): Promise<ActionPlan> {
+    return combatant.getAction(this);
+  }
+
+  runPlans(plans: ActionPlan[]): Promise<ActionReciept[]> {
+    return sequentialAsync(plans, plan => this.runPlan(plan));
+  }
+
+  // deno-lint-ignore require-await
+  async runPlan(plan: ActionPlan): Promise<ActionReciept> {
     const action = plan.source.useAction({
       plan,
       battle: this,
@@ -154,75 +196,59 @@ export default class TraditionalBattle extends EventEmitter<BattleEvents> implem
     return action.execute(this);
   }
 
-  receiveWeather(effect: Decider<Weather | undefined, BattleContext>, action: Action) {
-    return {} as BattleEffectsReciept["weather"];
+  receiveWeather(effect: Decider<Weather | undefined, BattleContext>, action: Action): WeatherReciept {
+    const weather = decide(effect, { action });
+    if (!weather)
+      return {
+        success: false,
+        messages: [],
+      };
+    // TODO handle weather
+    return {
+      success: true,
+      messages: [],
+      actual: weather,
+    };
   }
 
-  receiveEject(effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>, action: Action) {
-    return {} as BattleEffectsReciept["eject"];
+  receiveEject(effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>, action: Action): EjectReciept {
+    const targets = decide(effect, { action });
+    if (!targets)
+      return {
+        success: false,
+        messages: [],
+      };
+    // TODO handle eject
+    return {
+      success: true,
+      messages: [],
+      actual: targets,
+    };
   }
 
-  receiveEnd(effect: Decider<boolean | undefined, BattleContext>, action: Action) {
-    return {} as BattleEffectsReciept["end"];
+  receiveEnd(effect: Decider<boolean | undefined, BattleContext>, action: Action): EndReciept {
+    const end = decide(effect, { action });
+    if (!end)
+      return {
+        success: false,
+        messages: [],
+      };
+    // TODO handle end
+    return {
+      success: true,
+      messages: [],
+      actual: end,
+    };
   }
 
-  receiveEffects(effects: BattleEffects, action: Action) {
-    return null;
+  receiveEffects(effects: BattleEffects, action: Action): BattleEffectsReciept {
+    const reciept = {} as BattleEffectsReciept;
+    if (effects.weather) reciept.weather = this.receiveWeather(effects.weather, action);
+    if (effects.eject) reciept.eject = this.receiveEject(effects.eject, action);
+    if (effects.end) reciept.end = this.receiveEnd(effects.end, action);
+    return reciept;
   }
 }
-
-// export function decideTargetEffects(
-//   params: EffectParams<TargetEffects>,
-//   context: TargetContext
-// ): Partial<EffectGroupEffects<TargetEffects> & { accuracy: number | boolean }> {
-//   const effects = {} as Partial<EffectGroupEffects<TargetEffects> & { accuracy: number | boolean }>;
-
-//   effects.accuracy = decide(params.accuracy, context);
-//   if (effects.accuracy === false) return effects;
-
-//   const attack = decide(params.attack, context);
-//   if (attack) effects.attack = attack;
-//   const status = decide(params.status, context);
-//   if (status) effects.status = status;
-//   const hp = decide(params.hp, context);
-//   if (hp) effects.hp = hp;
-//   const stages = decide(params.stages, context);
-//   if (stages) effects.stages = stages;
-//   const faint = decide(params.faint, context);
-//   if (faint) effects.faint = faint;
-
-//   return effects;
-// }
-
-// export function decideSourceEffects(
-//   params: EffectParams<SourceEffects>,
-//   context: SourceContext
-// ): Partial<EffectGroupEffects<SourceEffects>> {
-//   const effects = {} as Partial<EffectGroupEffects<SourceEffects>>;
-
-//   const leech = decide(params.leech, context);
-//   if (leech) effects.leech = leech;
-//   const recoil = decide(params.recoil, context);
-//   if (recoil) effects.recoil = recoil;
-//   const crash = decide(params.crash, context);
-//   if (crash) effects.crash = crash;
-
-//   return effects;
-// }
-
-// export function decideBattleEffects(
-//   params: EffectParams<BattleEffects>,
-//   context: BattleContext
-// ): Partial<EffectGroupEffects<BattleEffects>> {
-//   const effects = {} as Partial<EffectGroupEffects<BattleEffects>>;
-
-//   const weather = decide(params.weather, context);
-//   if (weather) effects.weather = weather;
-//   const end = decide(params.end, context);
-//   if (end) effects.end = end;
-
-//   return effects;
-// }
 
 /** A completely normal attack */
 export function power(power: number): Decider<Attack, TargetContext> {

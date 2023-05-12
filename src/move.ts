@@ -1,11 +1,21 @@
-import { Action, ActionSource, ActionUseContext, EffectGroupParams, EffectSource, TargetContext } from "./battle.ts";
+import {
+  Action,
+  ActionSource,
+  ActionUseContext,
+  BattleBuilderParams,
+  EffectGroupParams,
+  EffectSource,
+  Effects,
+  TargetContext,
+  TargetingCategory,
+} from "./battle/core.ts";
 import { Codemon, Type } from "./codemon.ts";
 import { config } from "./config.ts";
 import { Decider, decide, range } from "./decision.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
 
-export type Move = EffectSource & {
+export type Move<P extends BattleBuilderParams<P>> = EffectSource<P> & {
   name: string;
   description: string;
   type: Type;
@@ -14,35 +24,35 @@ export type Move = EffectSource & {
   pp: number | { new (): PPScheme };
   makesContact: boolean;
   criticalHitStage?: number;
-  charge?: Decider<EffectGroupParams>;
-  continue?: Decider<EffectGroupParams>;
+  charge?: Decider<Effects<P>>;
+  continue?: Decider<Effects<P>>;
 };
 
-export interface IMoveEntry {
+export interface IMoveEntry<P extends BattleBuilderParams<P>> {
   user: Codemon;
-  move: Move;
+  move: Move<P>;
 }
 
-export class MoveEntry implements ActionSource {
+export class MoveEntry<P extends BattleBuilderParams<P>> implements ActionSource<P> {
   public priority?: number;
-  public targetingCategory: TargetingCategory;
-  public effects: Move;
+  public category: TargetingCategory;
+  public effects: Move<P>;
   public user: Codemon;
   public pp: PPScheme;
 
-  constructor(args: IMoveEntry) {
+  constructor(args: IMoveEntry<P>) {
     this.effects = args.move;
     this.user = args.user;
     this.pp = typeof this.effects.pp === "number" ? new PPScheme(this.effects.pp) : new this.effects.pp();
     this.priority = this.effects.priority;
-    this.targetingCategory = this.effects.target;
+    this.category = this.effects.target;
   }
 
-  useAction(context: ActionUseContext): Action | null {
+  useAction(context: ActionUseContext<P>): Action<P> | null {
     if (this.user.stats.hp.current <= 0) return null;
     if (!this.pp.use()) return null;
 
-    const ret = new Action({
+    const ret = new Action<P>({
       battle: context.battle,
       user: this.user,
       effect: this.effects,
@@ -122,7 +132,10 @@ export class PPScheme {
 }
 
 // Utility deciders for moves
-export function multiHit(min: number, max: number): Decider<boolean, TargetContext & { hitsSoFar: number }> {
+export function multiHit<P extends BattleBuilderParams<P>>(
+  min: number,
+  max: number
+): Decider<boolean, TargetContext<P> & { hitsSoFar: number }> {
   const hits = decide(range(min, max), undefined);
   return ({ hitsSoFar }) => {
     return hitsSoFar < hits;
