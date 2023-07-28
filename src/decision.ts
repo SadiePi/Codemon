@@ -13,7 +13,28 @@ export function decide<T, Context>(decider: Decider<T, Context>, context: Contex
 export type MultiDecider<T extends Record<string, unknown>, Context> = {
   [K in keyof T]: Decider<T[K], Context>;
 };
-// For technical reasons, a universal multiDecide function is not possible.
+/**
+ * For obscure technical reasons, a universal multiDecide function is not possible.
+ * However, the following is the recommended structure for implementing such a function:
+ *
+ * ```
+ * interface T { a: number; b: string; }
+ * interface Context { c: boolean; }
+ *
+ * function multiDecideT(
+ *   deciders: MultiDecider<T, Context>,
+ *   context: Context
+ * ): T {
+ *   const result: Partial<T> = {};
+ *   const a = decide(deciders.a, context);
+ *   if (a !== undefined) result.a = a;
+ *   const b = decide(deciders.b, context);
+ *   if (b !== undefined) result.b = b;
+ *   return result as T;
+ * }
+ * ```
+ */
+export const multiDecide = undefined as never;
 
 export function condition<T, Context>(
   predicate: (context: Context) => boolean,
