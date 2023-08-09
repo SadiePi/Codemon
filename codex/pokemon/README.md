@@ -9,7 +9,7 @@ This is an early work in progress, but I think the data structure is finally sta
 Import the Codex and inspect the data (see [/README.md](../../README.md) for actual usage):
 
 ```ts
-import P from "https://deno.land/x/codemon/codex/pokemon/index.ts"; // note: not yet published
+import P from "https://deno.land/x/codemon/codex/pokemon/mod.ts"; // note: not yet published
 
 const bulbasaur = P.Species.Bulbasaur;
 bulbasaur.name; // "Bulbasaur"

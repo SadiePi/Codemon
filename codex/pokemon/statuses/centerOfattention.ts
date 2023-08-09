@@ -1,4 +1,4 @@
-import { StatusEffect } from "../mod.ts";
+import { BaseStatusEffect } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const CenterOfattention: StatusEffect = {} as StatusEffect;
+export const CenterOfattention: BaseStatusEffect = {} as BaseStatusEffect;

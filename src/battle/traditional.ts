@@ -1,49 +1,38 @@
 import { decide } from "../decision.ts";
 import { EventEmitter } from "../external.ts";
-import {
-  DamageCategory,
-  Decider,
-  MoveEntry,
-  SingleOrArray,
-  StageMods,
-  StatusEffect,
-  Type,
-  Weather,
-  config,
-} from "../mod.ts";
-import { sequentialAsync } from "../util.ts";
-import { BattleBuilder, EffectType } from "./core.ts";
+import { Codemon, DamageCategory, Decider, MoveEntry, SingleOrArray, StageMods, Type, config } from "../mod.ts";
+import { TODO, sequentialAsync } from "../util.ts";
+import { Round } from "./core/action.ts";
+import { BattleBuilder, BattleBuilderParams } from "./core/battle.ts";
+import { EffectType } from "./core/effect.ts";
 
-export type Traditional = {
-  target: TargetEffectsBuilder;
-  source: SourceEffectsBuilder;
-  battle: BattleEffectsBuilder;
-};
-
-type BB = BattleBuilder<Traditional>;
-export type TargetEffects = BB["targetEffects"];
-export type SourceEffects = BB["sourceEffects"];
-export type BattleEffects = BB["battleEffects"];
-export type Effects = BB["effects"];
-export type TargetEffectsReciept = BB["targetEffectsReciept"];
-export type SourceEffectsReciept = BB["sourceEffectsReciept"];
-export type BattleEffectsReciept = BB["battleEffectsReciept"];
-export type EffectsReciept = BB["effectsReciept"];
-export type TargetContext = BB["targetContext"];
-export type SourceContext = BB["sourceContext"];
-export type BattleContext = BB["battleContext"];
-export type Combatant = BB["combatant"];
-export type TargetChoice = BB["targetChoice"];
-export type Action = BB["action"];
-export type ActionPlan = BB["actionPlan"];
-export type ActionUseContext = BB["actionUseContext"];
-export type ActionSource = BB["actionSource"];
-export type ActionReciept = BB["actionReciept"];
-export type Round = BB["round"];
-export type RoundReciept = BB["roundReciept"];
-export type Battle = BB["battle"];
-export type BattleReciept = BB["battleReciept"];
-export type BattleEvents = BB["battleEvents"];
+export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
+  readonly name: "traditional";
+  message: string; // TODO animations
+  combatant: Codemon;
+  conditions: {
+    weather: BattleCondition;
+  };
+  target: {
+    attack: TargetEffect<Attack, BaseAttackReciept>;
+    status: TargetEffect<SingleOrArray<StatusEffect>>;
+    hp: TargetEffect<number, BaseHPReciept>;
+    stages: TargetEffect<StageMods>;
+    faint: TargetEffect<boolean>;
+    ball: TargetEffect<number, BaseBallReciept>;
+  };
+  source: {
+    leech: SourceEffect<number, unknown>; // TODO
+    recoil: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>;
+    crash: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>;
+  };
+  battle: {
+    weather: BattleEffect<BattleCondition>;
+    eject: BattleEffect<SingleOrArray<Combatant>>;
+    end: BattleEffect<boolean>;
+  };
+}
+type T = TraditionalBBP; // for brevity
 
 export interface Attack {
   /** The level of the user */
@@ -82,77 +71,89 @@ export interface BaseHPReciept {
   faint: boolean;
 }
 
-export type TargetEffectsBuilder = {
-  attack: EffectType<TargetContext, Attack, BaseAttackReciept>;
-  status: EffectType<TargetContext, SingleOrArray<StatusEffect>>;
-  hp: EffectType<TargetContext, number, BaseHPReciept>;
-  stages: EffectType<TargetContext, StageMods>;
-  faint: EffectType<TargetContext, boolean>;
-};
-
-export type SourceEffectsBuilder = {
-  leech: EffectType<SourceContext, number>;
-  recoil: EffectType<SourceContext, Effects>;
-  crash: EffectType<SourceContext, TargetEffectsBuilder>;
-};
-
-export type BattleEffectsBuilder = {
-  weather: EffectType<BattleContext, Weather>;
-  eject: EffectType<BattleContext, SingleOrArray<Combatant>>;
-  end: EffectType<BattleContext, boolean>;
-};
+export interface BaseBallReciept {
+  caught: boolean;
+  shakes: number;
+}
 
 export type AttackReciept = TargetEffectsReciept["attack"];
 export type StatusReciept = TargetEffectsReciept["status"];
 export type HPReciept = TargetEffectsReciept["hp"];
 export type StagesReciept = TargetEffectsReciept["stages"];
 export type FaintReciept = TargetEffectsReciept["faint"];
+export type BallReciept = TargetEffectsReciept["ball"];
 
 export type LeechReciept = SourceEffectsReciept["leech"];
 export type RecoilReciept = SourceEffectsReciept["recoil"];
 export type CrashReciept = SourceEffectsReciept["crash"];
 
 export type WeatherReciept = BattleEffectsReciept["weather"];
-export type WeatherEffectParam = BattleEffects["weather"];
+export type WeatherEffectParam = BattleEffectsReciept["weather"];
 export type EjectReciept = BattleEffectsReciept["eject"];
 export type EndReciept = BattleEffectsReciept["end"];
 
-export default class TraditionalBattle extends EventEmitter<BattleEvents> implements Battle {
-  protected combatants: Combatant[];
-  protected round: Round = {
-    number: 0,
-    actions: [],
-  };
-  // protected conditions: BattleConditions ???
+export default class Traditional extends EventEmitter<BattleEvents> implements Battle {
+  readonly type = "traditional";
+  public conditions = { weather: {} as Weather }; // TODO handle this better, default weather?
+  public combatants: Codemon[];
+  protected _round = new Round<T>(0);
 
   constructor(combatants: Combatant[]) {
     super();
     this.combatants = combatants;
   }
 
-  getRound(): Round {
-    return {} as Round;
+  public addCombatant(combatant: Codemon) {
+    this.combatants.push(combatant);
+  }
+  public getCombatants() {
+    return this.combatants;
+  }
+  public removeCombatant(combatant: Codemon) {
+    this.combatants = this.combatants.filter(c => c !== combatant);
   }
 
-  getTargets(action: ActionSource, combatant: Combatant): TargetChoice {
-    return {} as TargetChoice;
+  public getRound() {
+    return this._round;
+  }
+
+  public async runRound(): Promise<RoundReciept> {
+    this._round = new Round<T>(this.getRound().number + 1);
+    return await this._round.execute(this);
+  }
+
+  getTargetChoice(_action: ActionSource, _combatant: Codemon): TargetChoice {
+    return TODO("Implement target choice filtering. Defaulting to any single target.", "warn", {
+      count: 1,
+      targets: this.combatants,
+    });
   }
 
   sortPlans(plans: ActionPlan[]): ActionPlan[] {
-    return plans;
+    return plans.sort((a, b) => {
+      const aSource = a.source;
+      const bSource = b.source;
+
+      // TODO metapriority? (e.g. if aSource is an item, it should go first)
+
+      const aPriority = aSource.priority ?? 0;
+      const bPriority = bSource.priority ?? 0;
+      if (aPriority !== bPriority) return bPriority - aPriority;
+
+      const aSpeed = aSource instanceof MoveEntry ? aSource.user.stats.speed.value(true) : 0;
+      const bSpeed = bSource instanceof MoveEntry ? bSource.user.stats.speed.value(true) : 0;
+      return bSpeed - aSpeed;
+    });
   }
 
   isOver(): boolean {
+    console.log("checking if battle is over");
     return this.combatants.length <= 1;
   }
 
   async runBattle(): Promise<BattleReciept> {
     const rounds = [];
     while (!this.isOver()) {
-      this.round = {
-        number: this.round.number + 1,
-        actions: [],
-      };
       const reciept = await this.runRound();
       rounds.push(reciept);
     }
@@ -163,47 +164,37 @@ export default class TraditionalBattle extends EventEmitter<BattleEvents> implem
     };
   }
 
-  async runRound(): Promise<RoundReciept> {
-    const plans = await this.getPlans();
-    const sortedPlans = this.sortPlans(plans);
-    const reciepts = await this.runPlans(sortedPlans);
-    return {
-      round: this.getRound(),
-      actions: reciepts,
-    };
-  }
-
   getPlans(): Promise<ActionPlan[]> {
     // TODO more rebust system for getting actions
     return Promise.all(this.combatants.map(c => this.getPlan(c)));
   }
 
   getPlan(combatant: Combatant): Promise<ActionPlan> {
-    return combatant.getAction(this);
+    return combatant.getTraditionalPlan(this);
   }
 
   runPlans(plans: ActionPlan[]): Promise<ActionReciept[]> {
     return sequentialAsync(plans, plan => this.runPlan(plan));
   }
 
-  // deno-lint-ignore require-await
   async runPlan(plan: ActionPlan): Promise<ActionReciept> {
-    const action = plan.source.useAction({
-      plan,
-      battle: this,
-    });
-    if (!action) return { success: false };
-    return action.execute(this);
+    const action = plan.source.traditionalAction({ plan, battle: this });
+    if (!action) return { success: false, messages: ["But it failed!"] };
+    await this.wait("action", action);
+    return await action.execute(this);
   }
 
-  receiveWeather(effect: Decider<Weather | undefined, BattleContext>, action: Action): WeatherReciept {
-    const weather = decide(effect, { action });
+  receiveTraditionalWeather(
+    effect: Decider<BattleCondition | undefined, BattleContext>,
+    context: BattleContext
+  ): WeatherReciept {
+    const weather = decide(effect, context);
     if (!weather)
       return {
         success: false,
         messages: [],
       };
-    // TODO handle weather
+    // weather.apply(this)
     return {
       success: true,
       messages: [],
@@ -211,8 +202,11 @@ export default class TraditionalBattle extends EventEmitter<BattleEvents> implem
     };
   }
 
-  receiveEject(effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>, action: Action): EjectReciept {
-    const targets = decide(effect, { action });
+  receiveTraditionalEject(
+    effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>,
+    context: BattleContext
+  ): EjectReciept {
+    const targets = decide(effect, context);
     if (!targets)
       return {
         success: false,
@@ -226,8 +220,8 @@ export default class TraditionalBattle extends EventEmitter<BattleEvents> implem
     };
   }
 
-  receiveEnd(effect: Decider<boolean | undefined, BattleContext>, action: Action): EndReciept {
-    const end = decide(effect, { action });
+  receiveTraditionalEnd(effect: Decider<boolean | undefined, BattleContext>, context: BattleContext): EndReciept {
+    const end = decide(effect, context);
     if (!end)
       return {
         success: false,
@@ -241,31 +235,31 @@ export default class TraditionalBattle extends EventEmitter<BattleEvents> implem
     };
   }
 
-  receiveEffects(effects: BattleEffects, action: Action): BattleEffectsReciept {
+  receiveTraditionalBattleEffects(effects: BattleEffects, context: BattleContext): BattleEffectsReciept {
     const reciept = {} as BattleEffectsReciept;
-    if (effects.weather) reciept.weather = this.receiveWeather(effects.weather, action);
-    if (effects.eject) reciept.eject = this.receiveEject(effects.eject, action);
-    if (effects.end) reciept.end = this.receiveEnd(effects.end, action);
+    if (effects.weather) reciept.weather = this.receiveTraditionalWeather(effects.weather, context);
+    if (effects.eject) reciept.eject = this.receiveTraditionalEject(effects.eject, context);
+    if (effects.end) reciept.end = this.receiveTraditionalEnd(effects.end, context);
     return reciept;
   }
 }
 
 /** A completely normal attack */
 export function power(power: number): Decider<Attack, TargetContext> {
-  return ({ action }) => {
-    if (!(action.params.source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
-    const level = action.params.source.user.stats.level;
-    const type = action.params.source.effects.type;
-    const category = action.params.source.effects.category;
+  return ctx => {
+    if (!(ctx.source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
+    const level = ctx.source.user.stats.level;
+    const type = ctx.source.effects.type;
+    const category = ctx.source.effects.category;
     if (category === "Status") throw new Error("Status moves cannot be used as attacks");
-    const stats = action.params.source.user.stats;
+    const stats = ctx.source.user.stats;
     const stat = stats[category === "Physical" ? "attack" : "specialAttack"].value(true);
-    const critical = action.params.source.TryCriticalHit() ? action.params.source.GetCriticalMultiplier() : 1;
+    const critical = ctx.source.TryCriticalHit() ? ctx.source.GetCriticalMultiplier() : 1;
     const random =
       Math.random() * (config.moves.maxRandomMultiplier - config.moves.minRandomMultiplier) +
       config.moves.minRandomMultiplier;
-    const stab = action.params.source.user.species.types.includes(type) ? config.moves.stabMultiplier : 1;
-    const multitarget = action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1;
+    const stab = ctx.source.user.getSpecies().types.includes(type) ? config.moves.stabMultiplier : 1;
+    const multitarget = ctx.action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1;
 
     return {
       level,
@@ -283,10 +277,37 @@ export function power(power: number): Decider<Attack, TargetContext> {
   };
 }
 
-export function stab(type: Type): Decider<number, TargetContext> {
-  return ({ action }) => {
-    if (!(action.params.source instanceof MoveEntry)) throw new Error("stab() can only be used with moves");
-    const stab = action.params.source.user.species.types.includes(type) ? config.moves.stabMultiplier : 1;
-    return stab;
-  };
-}
+// battle builder stuff
+// this is just so the library can give the user
+// a nice interface for building battle effects
+
+type BB = BattleBuilder<T>;
+type TargetEffects = BB["targetEffects"];
+type SourceEffects = BB["sourceEffects"];
+type BattleEffects = BB["battleEffects"];
+type Effects = BB["effects"];
+type TargetEffectsReciept = BB["targetEffectsReciept"];
+type SourceEffectsReciept = BB["sourceEffectsReciept"];
+type BattleEffectsReciept = BB["battleEffectsReciept"];
+type EffectsReciept = BB["effectsReciept"];
+type TargetContext = BB["targetContext"];
+type SourceContext = BB["sourceContext"];
+type BattleContext = BB["battleContext"];
+type Combatant = BB["combatant"];
+type TargetChoice = BB["targetChoice"];
+type Action = BB["action"];
+type ActionPlan = BB["actionPlan"];
+type ActionUseContext = BB["actionUseContext"];
+type ActionSource = BB["actionSource"];
+type ActionReciept = BB["actionReciept"];
+type RoundReciept = BB["roundReciept"];
+type Battle = BB["battle"];
+type BattleReciept = BB["battleReciept"];
+type BattleEvents = BB["battleEvents"];
+type StatusEffect = BB["statusEffect"];
+type BattleCondition = BB["battleCondition"];
+type TargetEffect<E, Extra = Record<never, never>> = EffectType<TargetContext, E, T, Extra>;
+type SourceEffect<E, Extra = Record<never, never>> = EffectType<SourceContext, E, T, Extra>;
+type BattleEffect<E, Extra = Record<never, never>> = EffectType<BattleContext, E, T, Extra>;
+
+export type Weather = BattleCondition;

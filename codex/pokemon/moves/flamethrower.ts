@@ -8,7 +8,7 @@ export const Flamethrower: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 15,
   attack: power(90),
-  target: "Any Adjacent",
+  target: {},
   makesContact: false,
   status: chance(1 / 10, P.Statuses.Burn),
 }));

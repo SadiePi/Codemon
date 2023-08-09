@@ -1,3 +1,7 @@
+// this script is desparately out of date and it's
+// only going to get worse before it gets better
+// please don't expect it to work
+
 const CATEGORIES = [
   ["abilities", "Ability"],
   ["experience", "ExperienceGroup"],

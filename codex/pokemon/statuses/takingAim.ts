@@ -1,4 +1,4 @@
-import { StatusEffect } from "../mod.ts";
+import { BaseStatusEffect } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const TakingAim: StatusEffect = {} as StatusEffect;
+export const TakingAim: BaseStatusEffect = {} as BaseStatusEffect;

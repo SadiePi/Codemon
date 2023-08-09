@@ -4,7 +4,7 @@ The boilerplate code for a Codex is quite cumbersome and easy to get wrong. It's
 
 To begin creation of a new Codex, create the file `arceus.json` in the root directory of your Codex. See [the Arceus file for the full Pokédex](./codex/pokemon/arceus.json) for an example. The required interface is:
 
-```json
+```jsonc
 {
   name: string, // the name of your Codex, used throughout the boilerplate code
   format: "nested" | "spread" | "flat", // should each entry be its own file, each category be in its own file, or all in one file?
@@ -42,7 +42,7 @@ Then run `/src/arceus.ts` in the same directory. This will generate the boilerpl
 This script will always create (and more importantly bulldoze) the following files:
 
 - `loader.ts` - a special file whose default export collects entries for the Codex. It has a few functions, but the only one you need to know is `.register`, which provides placeholder constants for the Codex to point to, allowing circular references between entries. **It takes two functions as parameters: the first takes in the placeholder Codex and returns the new entry, and the optional second takes in the completed Codex and runs any additional setup code, such as adding your types as weaknesses of types imported from another Codex.** The register function itself returns the placeholder entry that will eventually be populated with the defined entry.
-- `mod.ts` (or what you chose to call it) - the main file of the Codex. It imports the Codex entries and the loader, and then fully populates all the entries in the Codex. It default exports the final Codex.
+- `mod.ts` (or what you chose to call it) - the main entry point of the Codex. It imports the Codex entries and the loader, and then fully populates all the entries in the Codex. It default exports the final Codex.
 
 Depending on the format you chose, it will also create the following files:
 
@@ -50,7 +50,7 @@ Depending on the format you chose, it will also create the following files:
 - `spread` - each category is a single file with all the entries. **Best for most projects that extend an existing Codex.**
 - `flat` - all the entries in a single file. Best for small or example projects.
 
-This structure ensures that everything loads in the correct order to allow circular references between entries and nice Intellisense and type checking.
+This structure ensures that everything loads in the correct order to allow circular references between entries, nice Intellisense, and type checking.
 
 ## Defining Entries
 

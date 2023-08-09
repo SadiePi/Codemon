@@ -1,17 +1,18 @@
 import {
-  Combatant,
-  Battle,
-  Action,
-  TargetContext,
-  BattleMessage,
-  EffectGroupEffects,
-  TargetEffects,
-  TargetEffectsReciept,
-  SourceEffects,
-  SourceEffectsReciept,
-  ActionPlan,
-} from "./battle/core.ts";
-import { Traditional } from "./battle/traditional.ts";
+  StagesReciept,
+  Attack,
+  BallReciept,
+  FaintReciept,
+  StatusReciept,
+  LeechReciept,
+  AttackReciept,
+  HPReciept,
+  RecoilReciept,
+  CrashReciept,
+  TraditionalBBP as T,
+  Weather,
+  TraditionalBBP,
+} from "./battle/traditional.ts";
 import { config } from "./config.ts";
 import { Decider, decide, MultiDecider, choose } from "./decision.ts";
 import { Item } from "./item.ts";
@@ -27,11 +28,24 @@ import {
   StatSet,
   getRandomNature,
   StageMods,
+  Stats,
 } from "./stats.ts";
-import { Weather, Ability, StatusEffect } from "./status.ts";
+import { Status, StatusControl, StatusEffect } from "./status.ts";
 import { Trainer } from "./trainer.ts";
 import { NonEmptyPartial, NonEmptyArray, SingleOrArray, TODO } from "./util.ts";
 import { fmt } from "./external.ts";
+import {
+  ActionPlan,
+  Battle,
+  TargetContext,
+  SourceContext,
+  BattleMessage,
+  BaseCombatant,
+  TargetEffects,
+  SourceEffects,
+  TargetEffectsReciept,
+  SourceEffectsReciept,
+} from "./battle/core/index.ts";
 
 export interface Learnset {
   [level: number]: Move[];
@@ -80,15 +94,12 @@ export function addTypeRelation(targets: TypePushTargets, ...types: Type[]) {
 export interface Gender {
   //symbol: Image;
   name: string;
-  displayName: string;
-  shortCode: string;
-  pronouns: SingleOrArray<{
+  pronouns: {
     subject: string;
     pluralSubject?: boolean;
     object: string;
     possessive: string;
-  }>;
-  color: string;
+  };
 }
 
 type InternalEvoReasons = {
@@ -150,6 +161,7 @@ export interface Species {
 // i'm defining that when the ability is a number, it
 // selects the ability at index (abilitySlot%abilitiesCount)
 type AbilitySelector = number | "hidden" | Ability;
+export type Ability = Status<{ self: Codemon }>;
 
 export type SpawnParams = MultiDecider<
   {
@@ -160,21 +172,33 @@ export type SpawnParams = MultiDecider<
     stats?: IStatSet;
     moves?: Record<number, Move>;
     ability?: AbilitySelector;
-    trainer?: Trainer;
+    trainer?: Trainer<T>;
   },
   SpawnContext
 >;
 
-export function spawn(from: Decider<SpawnParams>): Codemon {
+export function spawn(from: SpawnParams): Codemon {
   return new Codemon(decide(from, undefined));
 }
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
-export class Codemon implements Combatant<Traditional> {
-  public species: Species;
-  public moves: MoveEntry[];
+export class Codemon implements BaseCombatant<TraditionalBBP> {
+  private species: Species;
+  private mutations: Partial<Species> = {};
+  public getSpecies(includeMutations = true): Species {
+    return includeMutations ? { ...this.species, ...this.mutations } : this.species;
+  }
+  public setSpecies(species: Species, retainMutations = true) {
+    this.species = species;
+    if (!retainMutations) this.mutations = {};
+  }
+  public mutate(mutations: Partial<Species>) {
+    this.mutations = { name: `Mutated ${this.species.name}`, ...this.mutations, ...mutations };
+  }
+
+  public moves: MoveEntry[] = [];
   public stats: StatSet;
-  public trainer: Trainer;
+  public trainer: Trainer<T>;
 
   constructor(
     options: SpawnParams,
@@ -184,7 +208,6 @@ export class Codemon implements Combatant<Traditional> {
   ) {
     // TODO enforce sane values
     this.species = decide(options.species, context);
-    this.moves = [];
     // // creating experience object automatically populates moves
     // if (options.moves)
     //   for (const [slot, move] of Object.entries(options.moves))
@@ -194,7 +217,7 @@ export class Codemon implements Combatant<Traditional> {
     this._originalAbility = this._ability =
       decide(options.ability, context) ?? decide(choose(this.species.abilities.normal.length), null);
     this._originalNature = this._nature = decide(options.nature, context) ?? getRandomNature(options);
-    this.trainer = decide(options.trainer, context) ?? { strategy: config.wild };
+    this.trainer = decide(options.trainer, context) ?? { traditionalStrategy: config.wild };
 
     this.stats = new StatSet(this, { ...options.stats });
   }
@@ -266,14 +289,11 @@ export class Codemon implements Combatant<Traditional> {
   // Gender
   protected _gender: Gender = {
     name: "[Gender uninitialized]",
-    displayName: "thing",
-    shortCode: "[]",
     pronouns: {
       subject: "it",
       object: "it",
       possessive: "its",
     },
-    color: "#000000",
   };
   public get gender() {
     return this.species.overrideSex?.(this, this._gender) ?? this._gender;
@@ -292,33 +312,47 @@ export class Codemon implements Combatant<Traditional> {
     return boost;
   }
 
-  public getAction(battle: Battle): ActionPlan {
-    const action = decide(this.trainer.strategy.chooseAction, { combatant: this, battle });
-    const choice = battle.getTargets(action, this);
-    const targets = decide(this.trainer.strategy.chooseTarget, { action, combatant: this, choice, battle });
+  // deno-lint-ignore require-await
+  public async getTraditionalPlan(battle: Battle<T>): Promise<ActionPlan<T>> {
+    const action = decide(this.trainer.traditionalStrategy.chooseAction, { combatant: this, battle });
+    const choice = battle.getTargetChoice(action, this);
+    const targets = decide(this.trainer.traditionalStrategy.chooseTarget, { action, combatant: this, choice, battle });
     return { source: action, targets, combatant: this };
   }
 
-  public receiveEffects(
-    effects: Partial<EffectGroupEffects<TargetEffects & SourceEffects>>,
-    action: Action
-  ): TargetEffectsReciept & SourceEffectsReciept {
-    const reciept: TargetEffectsReciept = {};
+  public receiveTraditionalTargetEffects(effects: TargetEffects<T>, context: TargetContext<T>) {
+    const reciept: Partial<TargetEffectsReciept<T>> = {};
 
-    if (effects.attack) reciept.attack = this.receiveAttack(effects.attack, action);
-    if (effects.hp) reciept.hp = this.receiveHp(effects.hp, action);
-    if (effects.status) reciept.status = this.receiveStatus(effects.status, action);
-    if (effects.stages) reciept.stages = this.receiveStages(effects.stages, action);
-    if (effects.faint) reciept.faint = this.receiveFaint(effects.faint, action);
+    // TODO
+    // let hit = true;
+    // if (typeof effects.accuracy === "boolean") hit = effects.accuracy;
+    // else {
+    //   const effectAccuracy = effects.accuracy ?? 1;
+    //   const sourceAccuracy = combatant instanceof Codemon ? combatant.stats.accuracy.stage.multiplier() : 1;
+    //   const targetEvasion = target instanceof Codemon ? target.stats.evasion.stage.multiplier() : 1;
+    //   const accuracy = (effectAccuracy * sourceAccuracy) / targetEvasion;
+    //   if (Math.random() > accuracy) hit = false;
+    // }
 
+    if (effects.attack) reciept.attack = this.receiveTraditionalAttack(effects.attack, context);
+    if (effects.hp) reciept.hp = this.receiveTraditionalHp(effects.hp, context);
+    if (effects.status) reciept.status = this.receiveTraditionalStatus(effects.status, context);
+    if (effects.stages) reciept.stages = this.receiveTraditionalStages(effects.stages, context);
+    if (effects.faint) reciept.faint = this.receiveTraditionalFaint(effects.faint, context);
+
+    if (reciept.attack?.success && reciept.attack.faint) reciept.remove = true;
+    if (reciept.hp?.success && reciept.hp.faint) reciept.remove = true;
     return reciept;
   }
 
-  public receiveAttack(effect: Decider<Attack | undefined, TargetContext>, action: Action): EffectReciept["attack"] {
-    const attack = decide(effect, { action, user: action.params.user, target: this });
-    if (!attack) return { success: false, messages: [], typeMultiplier: 1, total: 0, faint: false };
+  public receiveTraditionalAttack(
+    effect: Decider<Attack | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): AttackReciept {
+    const attack = decide(effect, context);
+    if (!attack) return { success: false, messages: [] };
 
-    const messages: BattleMessage[] = [];
+    const messages: BattleMessage<T>[] = [];
 
     let base = (2 * attack.level) / 5 + 2;
     base *= attack.power; // TODO apply effective power, not base
@@ -376,32 +410,38 @@ export class Codemon implements Combatant<Traditional> {
     };
   }
 
-  public receiveStatus(
-    effect: Decider<SingleOrArray<StatusEffect> | undefined, TargetContext>,
-    action: Action
-  ): EffectReciept["status"] {
-    const status = decide(effect, { action, user: action.params.user, target: this });
+  public statuses: StatusControl[] = [];
+  public receiveTraditionalStatus(
+    effect: Decider<SingleOrArray<StatusEffect<T>> | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): StatusReciept {
+    const status = decide(effect, context);
     if (!status) return { success: false, messages: [] };
 
-    const messages: BattleMessage[] = [];
+    const messages: BattleMessage<T>[] = [];
     [status].flat().forEach(status => {
-      messages.push(TODO("actually recieve status", "warn"));
-      messages.push(`${this.name} recieved status ${status.name}!`);
+      const control = status.apply(context);
+      if (!control) return;
+      this.statuses.push(control);
+      control.activate();
     });
 
     return { success: true, messages, actual: status };
   }
 
-  public receiveHp(effect: Decider<number | undefined, TargetContext>, action: Action): EffectReciept["hp"] {
-    const hp = decide(effect, { action, user: action.params.user, target: this });
-    if (!hp) return { success: false, messages: [], faint: false };
+  public receiveTraditionalHp(
+    effect: Decider<number | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): HPReciept {
+    const hp = decide(effect, context);
+    if (!hp) return { success: false, messages: [] };
 
-    const messages: BattleMessage[] = [];
+    const messages: BattleMessage<T>[] = [];
     const old = this.stats.hp.current;
     this.stats.hp.current = Math.max(0, Math.min(this.stats.hp.max, this.stats.hp.current + hp));
     const diff = this.stats.hp.current - old;
     if (diff > 0) messages.push(`${this.name} healed ${fmt.green(diff + "")} HP!`);
-    else if (diff < 0) messages.push(`${this.name} took ${fmt.red(diff + "")} damage!`);
+    else if (diff < 0) messages.push(`${this.name} took ${fmt.red(-diff + "")} direct damage!`);
     else messages.push(`${this.name} didn't feel any different!`);
 
     const faint = this.stats.hp.current <= 0;
@@ -410,36 +450,141 @@ export class Codemon implements Combatant<Traditional> {
     return { success: true, messages, actual: hp, faint };
   }
 
-  public receiveStages(
-    effect: Decider<Partial<StageMods> | undefined, TargetContext>,
-    action: Action
-  ): EffectReciept["stages"] {
-    const stages = decide(effect, { action, user: action.params.user, target: this });
+  public receiveTraditionalStages(
+    effect: Decider<StageMods | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): StagesReciept {
+    const stages = decide(effect, context);
     if (!stages) return { success: false, messages: [] };
 
-    const messages: BattleMessage[] = [];
-    messages.push(TODO("actually recieve stages", "warn"));
+    const messages: BattleMessage<T>[] = [];
+    for (const stat of Stats) if (stages[stat]) this.stats[stat].stage.modify(stages[stat]!);
     messages.push(`${this.name} recieved stages ${JSON.stringify(stages)}!`);
 
     return { success: true, messages, actual: stages };
   }
 
-  public receiveFaint(effect: Decider<boolean | undefined, TargetContext>, action: Action): EffectReciept["faint"] {
-    const faint = decide(effect, { action, user: action.params.user, target: this });
+  public receiveTraditionalFaint(
+    effect: Decider<boolean | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): FaintReciept {
+    const faint = decide(effect, context);
     if (!faint) return { success: false, messages: [] };
 
     this.stats.hp.current = 0;
     return { success: true, messages: [fmt.red(`${this.name} fainted!`)], actual: true };
   }
 
-  public mutate(mutations: Partial<Species>) {
-    this.species = { ...this.species, name: `Mutated ${this.species.name}`, ...mutations }; // TODO fix duplicate "mutated" in name
+  public receiveTraditionalBall(
+    effect: Decider<number | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): BallReciept {
+    const maxHP = this.stats.hp.max;
+    const currentHP = this.stats.hp.current;
+    const darkGrass = 1; // TODO
+    const rateModified = this.species.catchRate; // TODO modifiers, needs research
+    const ballBonus = decide(effect, context) ?? 0; // 0 = failure
+    const badgePenalty = 1; // TODO obedience
+    const bonusLevel = this.stats.level < 13 ? Math.max((36 - 2 * this.stats.level) / 10, 1) : 1;
+    // deno-lint-ignore prefer-const
+    let bonusStatus = 1; // TODO will be decided in an event later;
+    const bonusMisc = 1; // TODO
+
+    const a =
+      Math.floor((3 * maxHP - 2 * currentHP) * 4096 * darkGrass * rateModified * ballBonus * badgePenalty) *
+      bonusLevel *
+      bonusStatus *
+      bonusMisc;
+    // TODO critical capture
+
+    if (a > 255)
+      return {
+        success: true,
+        actual: ballBonus,
+        messages: [`Gotcha! ${this.name} was caught immediately!`],
+        caught: true,
+        shakes: 0,
+      };
+
+    const b = 65536 / Math.pow(255 / a, 0.1875);
+    for (let check = 0; check < config.battle.traditional.shakeChecks; check++) {
+      const rand = Math.floor(65536 * Math.random());
+      if (rand >= b) {
+        let message = `Oh no! The ${config.branding.mon} broke free!`;
+        if (config.battle.traditional.shakeChecks - check > 3) message = "Aww! It appeared to be caught!";
+        else if (config.battle.traditional.shakeChecks - check > 2) message = "Aargh! Almost had it!";
+        else if (config.battle.traditional.shakeChecks - check > 1) message = "Gah! It was so close, too!";
+        return { success: true, actual: ballBonus, messages: [message], caught: false, shakes: check };
+      }
+    }
+
+    return {
+      success: true,
+      actual: ballBonus,
+      messages: [`Gotcha! ${this.name} was caught!`],
+      caught: true,
+      shakes: config.battle.traditional.shakeChecks,
+    };
+  }
+
+  public receiveTraditionalLeech(
+    _effect: Decider<number | undefined, SourceContext<T>>,
+    _context: SourceContext<T>
+  ): LeechReciept {
+    return { success: false, messages: ["Leech not implemented yet!"] };
+  }
+
+  public receiveTraditionalSourceEffects(
+    _effects: SourceEffects<T>,
+    _context: SourceContext<T>
+  ): SourceEffectsReciept<T> {
+    return {} as SourceEffectsReciept<T>;
+  }
+
+  public receiveTraditionalRecoil(
+    effect: Decider<TargetEffects<T> | undefined, SourceContext<T>>,
+    context: SourceContext<T>
+  ): RecoilReciept {
+    const effects: TargetEffects<T> | undefined = decide(effect, context);
+    if (!effects) return { success: false, messages: [] };
+
+    const reciept = this.receiveTraditionalTargetEffects(effects, {
+      source: context.source,
+      target: this,
+      action: context.action,
+      battle: context.battle,
+    });
+    return {
+      success: true,
+      messages: [],
+      actual: effects,
+      reciept,
+    };
+  }
+  public receiveTraditionalCrash(
+    effect: Decider<TargetEffects<T> | undefined, SourceContext<T>>,
+    context: SourceContext<T>
+  ): CrashReciept {
+    const effects: TargetEffects<T> | undefined = decide(effect, context);
+    if (!effects) return { success: false, messages: [] };
+
+    const reciept = this.receiveTraditionalTargetEffects(effects, {
+      source: context.source,
+      target: this,
+      action: context.action,
+      battle: context.battle,
+    });
+    return {
+      success: true,
+      messages: [],
+      actual: effects,
+      reciept,
+    };
   }
 
   public evolve(evo: Evolution) {
     // TODO double check evolution requirements
-    // TODO retain mutations
-    if (this.name === this.species.name) this.name = evo.species.name;
+    if (this.name === this.species.name || this.name === this.mutations.name) this.name = evo.species.name;
     this.species = evo.species;
   }
 

@@ -1,6 +1,7 @@
 // these are the default settings for the most recent generation of Pokémon
 // best practice for changing these is with ./loader.ts in your Codex
 
+import { TraditionalBBP } from "./battle/traditional.ts";
 import { SpawnParams } from "./codemon.ts";
 import { Decider } from "./decision.ts";
 import { Move } from "./move.ts";
@@ -33,10 +34,17 @@ export const config = {
   codemon: {
     limitDamageToRemainingHP: true,
   },
-  battle: {},
+  battle: {
+    traditional: {
+      shakeChecks: 4,
+    },
+  },
+  branding: {
+    mon: "Codemon", // e.g. "Pokémon"
+  },
 
   struggle: {} as Move,
-  wild: {} as Strategy,
+  wild: {} as Strategy<TraditionalBBP>,
   randomNature: {} as Decider<Nature, SpawnParams>,
 };
 

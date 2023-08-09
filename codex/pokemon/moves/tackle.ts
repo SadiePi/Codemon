@@ -8,6 +8,6 @@ export const Tackle: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 35, // max 56
   attack: power(40),
-  target: "Any Adjacent",
+  target: {},
   makesContact: true,
 }));

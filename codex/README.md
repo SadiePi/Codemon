@@ -28,7 +28,7 @@ abilities[0].apply.toString(); // TODO: add this
 If the Codex is implemented properly, it will have full intellisense support in your IDE, providing you with each option in each category. For example, if you type `P.Species.` in VSCode, you'll see a list of all the Pokémon in the Pokédex.
 
 ```ts
-// codemon/src/codex.ts
+// /src/codex.ts
 interface Codex {
   Abilities: Record<string, Ability>;
   Experience: Record<string, ExperienceGroup>;

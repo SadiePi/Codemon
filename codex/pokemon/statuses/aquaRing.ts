@@ -1,4 +1,4 @@
-import { StatusEffect } from "../mod.ts";
+import { BaseStatusEffect } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const AquaRing: StatusEffect = {} as StatusEffect;
+export const AquaRing: BaseStatusEffect = {} as BaseStatusEffect;

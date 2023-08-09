@@ -1,6 +1,7 @@
 {
   "name": "Pokedex",
   "format": "nested",
+  "lib": "../../src/mod.ts",
 
   "abilities": [
     "Stench",
@@ -302,20 +303,8 @@
     "EarthEater",
     "MyceliumMight"
   ],
-  "experience": [
-    "Slow",
-    "MedSlow",
-    "MedFast",
-    "Fast",
-    "Erratic",
-    "Fluctuating"
-  ],
-  "genders": [
-    "Male", 
-    "Female", 
-    "NonBinary", 
-    "None"
-  ],
+  "experience": ["Slow", "MedSlow", "MedFast", "Fast", "Erratic", "Fluctuating"],
+  "genders": ["Male", "Female", "None"],
   "items": [
     "AbilityCapsule",
     "AbilityPatch",
@@ -1201,9 +1190,7 @@
     "ZoomLens",
     "ZygardeCube"
   ],
-  "locales": [
-    "English"
-  ],
+  "locales": ["English"],
   "moves": [
     "Pound",
     "ViseGrip",
@@ -3204,13 +3191,8 @@
     "Primed",
     "Obscured"
   ],
-  "strategies": [
-    "Wild",
-    "Console", 
-    "Network"
-  ],
-  "trainers": [
-  ],
+  "strategies": ["Wild", "Console", "Network"],
+  "trainers": [],
   "types": [
     "Normal",
     "Fighting",

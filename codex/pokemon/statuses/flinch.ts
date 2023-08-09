@@ -6,13 +6,13 @@ import {
   MoveEntry,
   EffectGroupEffects,
   Round,
-  StatusEffect,
+  BaseStatusEffect,
   effectAction,
   volatile,
 } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const Flinch: StatusEffect = loader.register(P => ({
+export const Flinch: BaseStatusEffect = loader.register(P => ({
   name: "Flinch",
   slot: "secondary",
   description: "This Pokemon flinches! It loses its turn to attack this round.",

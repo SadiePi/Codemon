@@ -1,10 +1,20 @@
-import { EffectReciept, Action, Battle, TargetContext } from "./battle.ts";
-import { Codemon } from "./codemon.ts";
+import {
+  Action,
+  ActionPlan,
+  ActionSource,
+  ActionUseContext,
+  Battle,
+  BattleBuilderParams,
+  Combatant,
+  EffectParams,
+  TargetContext,
+} from "./battle/core/index.ts";
 import { Immutable } from "./util.ts";
 
 export type StatusExpiry = (expire: () => void) => void;
 
 export interface StatusControl {
+  name: string;
   activate: () => void;
   deactivate: () => void;
   expiry: StatusExpiry;
@@ -28,7 +38,7 @@ export class StatusEntry<ApplyArgs extends Record<string, unknown>> {
     return this._active;
   }
 
-  constructor(public status: Status<ApplyArgs>, args: ApplyArgs) {
+  constructor(public readonly status: Status<ApplyArgs>, args: ApplyArgs) {
     const control = status.apply(args);
     if (!control) {
       this._expired = true;
@@ -59,29 +69,41 @@ export class StatusEntry<ApplyArgs extends Record<string, unknown>> {
   }
 }
 
-export type StatusEffect = Status<{ target: Codemon; effect: EffectReciept; context: TargetContext }>;
-export type Weather = Status<{ source: Action; battle: Battle }>;
-export type Ability = Status<{ self: Codemon; battle: Battle }>;
-
-export const duration: (duration: number, battle: Battle) => StatusExpiry = (duration, battle) => expire => {
-  const start = battle.getRound().number;
-  battle.on("roundEnd", () => {
-    if (battle.getRound().number - start >= duration) expire();
-  });
+export type StatusEffect<P extends BattleBuilderParams<P>> = Status<TargetContext<P>> & {
+  description: string;
+  slot: string;
 };
 
-export const volatile: (battle: Battle) => StatusExpiry = battle => expire => {
-  battle.on("battleReciept", expire);
-};
+export function duration<P extends BattleBuilderParams<P>>(duration: number, battle: Battle<P>): StatusExpiry {
+  return expire => {
+    const start = battle.getRound().number;
+    battle.on("roundEnd", round => {
+      if (round.number - start >= duration) expire();
+    });
+  };
+}
 
-// export function effectAction(target: Combatant, effect: EffectParams): ActionPlan {
-//   const source: ActionSource = {
-//     targetingCategory: "Self",
-//     useAction: ({ targets }): Action => new Action({ effect, source, targets }),
-//   };
-//   return {
-//     source,
-//     targets: [target],
-//     user: target,
-//   };
-// }
+export function volatile<P extends BattleBuilderParams<P>>(battle: Battle<P>): StatusExpiry {
+  return expire => {
+    battle.on("battleReciept", expire);
+  };
+}
+
+export const permanent: StatusExpiry = () => {};
+
+export function effectAction<P extends BattleBuilderParams<P>>(
+  battle: Battle<P>,
+  target: Combatant<P>,
+  effect: EffectParams<P>
+): ActionPlan<P> {
+  const source: ActionSource<P> = {
+    category: "Self",
+    [`${battle.type}Action`]: ({ plan: { targets } }: ActionUseContext<P>): Action<P> =>
+      new Action<P>({ battle, user: target, effect, source, targets }),
+  } as unknown as ActionSource<P>; // TODO? this may be a mistake, we'll see
+  return {
+    source,
+    targets: [target],
+    combatant: target,
+  };
+}

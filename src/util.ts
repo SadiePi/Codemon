@@ -1,3 +1,5 @@
+import { Decider, decide } from "./decision.ts";
+
 export type NonEmptyArray<T> = [T, ...T[]];
 export type NonEmptyPartial<T extends Record<string, unknown>, Keys extends keyof T = keyof T> = Pick<
   T,
@@ -49,16 +51,25 @@ export type DeepPartial<T> = {
     : DeepPartial<T[P]>;
 };
 
-export function TODO<T>(message: string, mode: "warn"): T;
+export type DeepImmutable<T> = {
+  readonly [P in keyof T]: T[P] extends Array<infer U>
+    ? ReadonlyArray<DeepImmutable<U>>
+    : T[P] extends ReadonlyArray<infer U>
+    ? ReadonlyArray<DeepImmutable<U>>
+    : DeepImmutable<T[P]>;
+};
+
+export function TODO<T>(message: string, mode: "warn", placeholder?: Decider<T>): T;
 export function TODO<T>(message: string, mode: "error"): never;
-export function TODO<T>(message: string, mode: "warn" | "error" = "warn"): T | never {
+export function TODO<T>(message: string, mode: "warn" | "error" = "error", placeholder?: Decider<T>): T | never {
   if (mode === "error") throw new Error(`TODO: ${message}`);
   console.warn(`TODO: ${message}`);
+  if (placeholder) return decide(placeholder, undefined);
   return { todo: message } as T;
 }
 
 /**
- * Processes an array of items asynchronously with a given callback function.
+ * Sequentially processes an array of items with a given async callback function.
  *
  * @template T The type of items in the input array.
  * @template U The type of results.

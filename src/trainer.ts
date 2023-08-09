@@ -1,15 +1,15 @@
-import { ActionSource, Combatant, Battle, TargetChoice } from "./battle.ts";
 import { Decider } from "./decision.ts";
+import { ActionSource, Battle, Combatant, TargetChoice, BattleBuilderParams } from "./battle/core/index.ts";
 
-export interface Strategy {
-  chooseAction: Decider<ActionSource, { combatant: Combatant; battle: Battle }>;
+export interface Strategy<P extends BattleBuilderParams<P>> {
+  chooseAction: Decider<ActionSource<P>, { combatant: Combatant<P>; battle: Battle<P> }>;
   chooseTarget: Decider<
-    Combatant[],
-    { action: ActionSource; combatant: Combatant; choice: TargetChoice; battle: Battle }
+    Combatant<P>[],
+    { action: ActionSource<P>; combatant: Combatant<P>; choice: TargetChoice<P>; battle: Battle<P> }
   >;
 }
 
-export interface Trainer {
-  strategy: Strategy;
+export type Trainer<P extends BattleBuilderParams<P>> = {
+  [K in P["name"] as `${K}Strategy`]: Strategy<P>;
   // TODO
-}
+};

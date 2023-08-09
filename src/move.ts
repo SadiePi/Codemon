@@ -1,21 +1,14 @@
-import {
-  Action,
-  ActionSource,
-  ActionUseContext,
-  BattleBuilderParams,
-  EffectGroupParams,
-  EffectSource,
-  Effects,
-  TargetContext,
-  TargetingCategory,
-} from "./battle/core.ts";
+import { ActionSource, ActionUseContext, Action } from "./battle/core/action.ts";
+import { BattleBuilderParams, TargetContext } from "./battle/core/battle.ts";
+import { BaseEffectSource, Effects, TargetingCategory } from "./battle/core/effect.ts";
+import { TraditionalBBP as T } from "./battle/traditional.ts";
 import { Codemon, Type } from "./codemon.ts";
 import { config } from "./config.ts";
 import { Decider, decide, range } from "./decision.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
 
-export type Move<P extends BattleBuilderParams<P>> = EffectSource<P> & {
+export type Move = BaseEffectSource<T> & {
   name: string;
   description: string;
   type: Type;
@@ -24,23 +17,23 @@ export type Move<P extends BattleBuilderParams<P>> = EffectSource<P> & {
   pp: number | { new (): PPScheme };
   makesContact: boolean;
   criticalHitStage?: number;
-  charge?: Decider<Effects<P>>;
-  continue?: Decider<Effects<P>>;
+  charge?: Decider<Effects<T>>;
+  continue?: Decider<Effects<T>>;
 };
 
-export interface IMoveEntry<P extends BattleBuilderParams<P>> {
+export interface IMoveEntry {
   user: Codemon;
-  move: Move<P>;
+  move: Move;
 }
 
-export class MoveEntry<P extends BattleBuilderParams<P>> implements ActionSource<P> {
+export class MoveEntry implements ActionSource<T> {
   public priority?: number;
-  public category: TargetingCategory;
-  public effects: Move<P>;
+  public category: TargetingCategory<T>;
+  public effects: Move;
   public user: Codemon;
   public pp: PPScheme;
 
-  constructor(args: IMoveEntry<P>) {
+  constructor(args: IMoveEntry) {
     this.effects = args.move;
     this.user = args.user;
     this.pp = typeof this.effects.pp === "number" ? new PPScheme(this.effects.pp) : new this.effects.pp();
@@ -48,11 +41,11 @@ export class MoveEntry<P extends BattleBuilderParams<P>> implements ActionSource
     this.category = this.effects.target;
   }
 
-  useAction(context: ActionUseContext<P>): Action<P> | null {
+  traditionalAction(context: ActionUseContext<T>): Action<T> | null {
     if (this.user.stats.hp.current <= 0) return null;
     if (!this.pp.use()) return null;
 
-    const ret = new Action<P>({
+    const ret = new Action({
       battle: context.battle,
       user: this.user,
       effect: this.effects,
@@ -135,9 +128,8 @@ export class PPScheme {
 export function multiHit<P extends BattleBuilderParams<P>>(
   min: number,
   max: number
-): Decider<boolean, TargetContext<P> & { hitsSoFar: number }> {
-  const hits = decide(range(min, max), undefined);
-  return ({ hitsSoFar }) => {
-    return hitsSoFar < hits;
-  };
+): Decider<boolean, TargetContext<T>> {
+  const totalHits = decide(range(min, max), undefined);
+  let hitsSoFar = 0;
+  return () => hitsSoFar++ < totalHits;
 }

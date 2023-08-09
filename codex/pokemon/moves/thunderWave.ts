@@ -8,7 +8,7 @@ export const ThunderWave: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 20, // max 32
   accuracy: 90,
-  target: "Any Adjacent",
+  target: {},
   makesContact: false,
   status: P.Statuses.Paralysis,
 }));

@@ -14,11 +14,11 @@ import { config } from "./config.ts";
 /** All possible stats in the game */
 export const Stats = [...PermanentStats, ...BattleStats] as const;
 /** All possible stats in the game */
-export type Stat = typeof Stats[number];
+export type Stat = (typeof Stats)[number];
 /** The basic stats of a Codemon */
-export type PermanentStat = typeof PermanentStats[number];
+export type PermanentStat = (typeof PermanentStats)[number];
 /** Temporary stats that modify the battle */
-export type BattleStat = typeof BattleStats[number];
+export type BattleStat = (typeof BattleStats)[number];
 
 /** The Base Stats of a Codemon */
 export type BaseStats = Record<PermanentStat, number>;
@@ -61,7 +61,7 @@ class StatStage {
 
   // TODO this is broken and it's the main reason this class exists
   public multiplier(): number {
-    return this.current > 0 ? (this.power + this.current) / this.power : this.power / (this.power + this.current);
+    return this.current > 0 ? (this.power + this.current) / this.power : this.power / (this.power - this.current);
   }
 }
 /** The parameters for a BattleStatEntry */
@@ -115,7 +115,7 @@ class PermanentStatEntry extends BattleStatEntry {
   public value(considerStage = false) {
     // Base value. TODO? make this a decider in config
     let val =
-      2 * this.set.self.species.baseStats[this.stat as PermanentStat] +
+      2 * this.set.self.getSpecies().baseStats[this.stat as PermanentStat] +
       this.individualValue +
       Math.floor(this.effortValue / 4);
     val = Math.floor((val * this.set.level) / 100) + 5;
@@ -232,10 +232,14 @@ export class StatSet
   public level: number;
   public points: number;
 
+  public get group() {
+    return this.self.getSpecies().experienceGroup;
+  }
+
   constructor(public readonly self: Codemon, args: IStatSet) {
     super();
     this.level = args.level ?? 1;
-    this.points = this.self.species.experienceGroup(this.level);
+    this.points = this.group(this.level);
     if (args.points) this.addExp(args.points);
 
     this.hp = new HPStatEntry(this, args.hp ?? {});
@@ -264,10 +268,10 @@ export class StatSet
       oldLevel: old,
       newLevel: this.level,
     };
-    if (this.points < this.self.species.experienceGroup(this.level)) {
-      const forcedPoints = this.self.species.experienceGroup(this.level) - this.points;
+    if (this.points < this.group(this.level)) {
+      const forcedPoints = this.group(this.level) - this.points;
       if (forcedPoints > 0) ret.forcedPoints = forcedPoints;
-      this.points = this.self.species.experienceGroup(this.level);
+      this.points = this.group(this.level);
     }
     await this.wait("levelUp", ret);
     return ret;
@@ -276,7 +280,7 @@ export class StatSet
   public async addExp(exp: number): Promise<AddExpReciept> {
     this.points += exp;
     const levelUps: LevelUpReciept[] = [];
-    while (this.self.species.experienceGroup(this.level) < this.points) {
+    while (this.group(this.level) < this.points) {
       levelUps.push(await this.levelUp());
     }
     this.wait("addExp", { levelUps });
@@ -284,19 +288,15 @@ export class StatSet
   }
 
   public get pointsToNextLevel() {
-    return this.self.species.experienceGroup(this.level + 1) - this.points;
+    return this.group(this.level + 1) - this.points;
   }
 
   public get percentToNextLevel() {
-    return (
-      this.points / (this.self.species.experienceGroup(this.level + 1) - this.self.species.experienceGroup(this.level))
-    );
+    return this.points / (this.group(this.level + 1) - this.group(this.level));
   }
 
   public toString() {
-    const level = `Level: ${this.level} (${
-      this.points - this.self.species.experienceGroup(this.level)
-    }/${this.self.species.experienceGroup(this.level + 1)}))`;
+    const level = `Level: ${this.level} (${this.points - this.group(this.level)}/${this.group(this.level + 1)}))`;
     const permanants = PermanentStats.map(s => this[s].toString()).join("\n");
     const battles = BattleStats.map(s => this[s].toString()).join(", ");
     return [level, permanants, battles].join("\n");

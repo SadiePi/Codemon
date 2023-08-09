@@ -7,7 +7,7 @@ export const TailWhip: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 30,
-  target: "Every Adjacent Foe",
+  target: {},
   makesContact: false,
   stages: { defense: -1 },
 }));

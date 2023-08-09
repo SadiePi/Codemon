@@ -8,8 +8,9 @@ import { Strategy, Trainer } from "./trainer.ts";
 import { config as currentConfig } from "./config.ts";
 import { DeepPartial } from "./util.ts";
 import { merge } from "./external.ts";
-import { Gender, Species, Type } from "./codemon.ts";
-import { Ability, StatusEffect, Weather } from "./status.ts";
+import { Ability, Gender, Species, Type } from "./codemon.ts";
+import { Weather } from "./battle/traditional.ts";
+import { StatusEffect, TraditionalBBP as T } from "./mod.ts";
 
 export class CodexBuilder<C extends Codex> {
   private built = false;
@@ -40,10 +41,11 @@ export abstract class Codex {
   public abstract Moves: Record<string, Move>;
   public abstract Natures: Record<string, Nature>;
   public abstract Species: Record<string, Species>;
-  public abstract Statuses: Record<string, StatusEffect>;
-  public abstract Strategies: Record<string, Strategy>;
-  public abstract Trainers: Record<string, Trainer>;
+  public abstract Statuses: Record<string, StatusEffect<T>>;
+  public abstract Strategies: Record<string, Strategy<T>>;
+  public abstract Trainers: Record<string, Trainer<T>>;
   public abstract Types: Record<string, Type>;
+
   public abstract Weathers: Record<string, Weather>;
 }
 
