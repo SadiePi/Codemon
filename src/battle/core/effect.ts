@@ -9,7 +9,7 @@ import {
   EffectGroups,
   SourceContext,
   TargetContext,
-} from "./index.ts";
+} from "./mod.ts";
 
 export type TargetingCategory<P extends BattleBuilderParams<P>> =
   | Decider<

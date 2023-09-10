@@ -1,5 +1,5 @@
 import { Decider } from "./decision.ts";
-import { ActionSource, Battle, Combatant, TargetChoice, BattleBuilderParams } from "./battle/core/index.ts";
+import { ActionSource, Battle, Combatant, TargetChoice, BattleBuilderParams } from "./battle/core/mod.ts";
 
 export interface Strategy<P extends BattleBuilderParams<P>> {
   chooseAction: Decider<ActionSource<P>, { combatant: Combatant<P>; battle: Battle<P> }>;

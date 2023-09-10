@@ -6,7 +6,7 @@ export const PermanentStats = ["hp", "attack", "defense", "specialAttack", "spec
 /** Temporary stats that modify the battle */
 export const BattleStats = ["accuracy", "evasion"] as const;
 
-import { SpawnParams, Codemon } from "./codemon.ts";
+import { ICodemon, Codemon } from "./codemon.ts";
 import { decide } from "./decision.ts";
 import { EventEmitter } from "./external.ts";
 import { config } from "./config.ts";
@@ -92,6 +92,13 @@ class BattleStatEntry {
   }
 }
 
+// TODO use this
+// Must be EXACT inverse functions when considerStage is false
+interface PermanentStatSolver {
+  eviv2value: (eviv: IPermanentStatEntry, considerStage?: boolean) => number;
+  value2eviv: (value: number, enforce?: { ev: number } | { iv: number }) => IPermanentStatEntry;
+}
+
 /** The parameters for a PermanentStatEntry */
 interface IPermanentStatEntry extends IBattleStatEntry {
   individualValue?: number;
@@ -136,6 +143,11 @@ class PermanentStatEntry extends BattleStatEntry {
     return val;
   }
 
+  // must be an EXACT inverse of value()
+  public solveEVIV(_target: number, _considerStage = false) {
+    return {}; // todo
+  }
+
   public toString() {
     return `${this.stat}: ${this.value(true)} ${this.stage.current ? `(${this.value(false)}) ` : ""}(${
       this.individualValue
@@ -164,6 +176,11 @@ class HPStatEntry extends PermanentStatEntry {
   public value() {
     const original = super.value(false);
     return original + this.set.level + 5;
+  }
+
+  // must be an EXACT inverse of HP.value()
+  public solveEVIV(_target: number, _considerStage?: boolean): IPermanentStatEntry {
+    return {}; // TODO
   }
 
   public get percent() {
@@ -236,8 +253,9 @@ export class StatSet
     return this.self.getSpecies().experienceGroup;
   }
 
-  constructor(public readonly self: Codemon, args: IStatSet) {
+  constructor(public readonly self: Codemon, args: IStatSet, subscriber?: (self: EventEmitter<StatEvents>) => void) {
     super();
+    if (subscriber) subscriber(this);
     this.level = args.level ?? 1;
     this.points = this.group(this.level);
     if (args.points) this.addExp(args.points);
@@ -310,6 +328,6 @@ export interface Nature {
   effect?: (stat: Stat) => number;
 }
 
-export function getRandomNature(iCodemon: SpawnParams): Nature {
+export function getRandomNature(iCodemon: ICodemon): Nature {
   return decide(config.randomNature, iCodemon);
 }

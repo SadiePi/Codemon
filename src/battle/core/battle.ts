@@ -19,7 +19,7 @@ import {
   SourceEffectsReciept,
   TargetEffects,
   TargetEffectsReciept,
-} from "./index.ts";
+} from "./mod.ts";
 
 export type EffectGroups = "target" | "source" | "battle";
 export type BattleBuilderParams<P extends BattleBuilderParams<P>> = {

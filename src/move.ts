@@ -1,10 +1,18 @@
-import { ActionSource, ActionUseContext, Action } from "./battle/core/action.ts";
-import { BattleBuilderParams, TargetContext } from "./battle/core/battle.ts";
-import { BaseEffectSource, Effects, TargetingCategory } from "./battle/core/effect.ts";
+import {
+  ActionSource,
+  ActionUseContext,
+  Action,
+  BaseEffectSource,
+  BattleBuilderParams,
+  Effects,
+  TargetContext,
+  TargetingCategory,
+} from "./battle/core/mod.ts";
 import { TraditionalBBP as T } from "./battle/traditional.ts";
-import { Codemon, Type } from "./codemon.ts";
+import { Codemon } from "./codemon.ts";
 import { config } from "./config.ts";
 import { Decider, decide, range } from "./decision.ts";
+import { Type } from "./species.ts";
 
 export type DamageCategory = "Physical" | "Special" | "Status";
 

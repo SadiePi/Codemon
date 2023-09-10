@@ -8,7 +8,7 @@ import {
   Combatant,
   EffectParams,
   TargetContext,
-} from "./battle/core/index.ts";
+} from "./battle/core/mod.ts";
 import { Immutable } from "./util.ts";
 
 export type StatusExpiry = (expire: () => void) => void;
@@ -28,7 +28,7 @@ export type Status<ApplyArgs extends Record<string, unknown>> = {
 };
 
 export class StatusEntry<ApplyArgs extends Record<string, unknown>> {
-  private control!: Immutable<StatusControl>;
+  private control!: Immutable<StatusControl>; // TODO fix
   private _expired = false;
   public get expired() {
     return this._expired;

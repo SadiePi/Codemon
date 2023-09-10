@@ -2,7 +2,7 @@
 // best practice for changing these is with ./loader.ts in your Codex
 
 import { TraditionalBBP } from "./battle/traditional.ts";
-import { SpawnParams } from "./codemon.ts";
+import { ICodemon } from "./codemon.ts";
 import { Decider } from "./decision.ts";
 import { Move } from "./move.ts";
 import { Nature } from "./stats.ts";
@@ -10,7 +10,7 @@ import { Strategy } from "./trainer.ts";
 
 // be warned, sanity checks are NOT performed on these values (half lazy, half fun)
 export const config = {
-  locale: "en_US",
+  locale: "en_US", // unused for now
   stats: {
     maxIV: 32,
     maxEV: 255,
@@ -19,7 +19,9 @@ export const config = {
     minStage: -6,
     allowHPStage: false,
 
-    natureEffect: 0.1,
+    natureEffect: 0.1, // TODO use below instead of this
+    natureBuff: 0.1,
+    natureNerf: 0.1,
   },
   moves: {
     maxPPBoosts: 3,
@@ -45,7 +47,7 @@ export const config = {
 
   struggle: {} as Move,
   wild: {} as Strategy<TraditionalBBP>,
-  randomNature: {} as Decider<Nature, SpawnParams>,
+  randomNature: {} as Decider<Nature, ICodemon>,
 };
 
 export function isInitialized() {

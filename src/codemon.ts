@@ -10,29 +10,16 @@ import {
   RecoilReciept,
   CrashReciept,
   TraditionalBBP as T,
-  Weather,
   TraditionalBBP,
 } from "./battle/traditional.ts";
 import { config } from "./config.ts";
-import { Decider, decide, MultiDecider, choose } from "./decision.ts";
-import { Item } from "./item.ts";
+import { Decider, decide, choose, MultiDecider } from "./decision.ts";
 import { SpawnContext } from "./map.ts";
 import { Move, MoveEntry } from "./move.ts";
-import {
-  ExperienceGroup,
-  BaseStats,
-  EVYields,
-  Stat,
-  Nature,
-  IStatSet,
-  StatSet,
-  getRandomNature,
-  StageMods,
-  Stats,
-} from "./stats.ts";
-import { Status, StatusControl, StatusEffect } from "./status.ts";
+import { Nature, StatSet, getRandomNature, StageMods, Stats, IStatSet } from "./stats.ts";
+import { StatusControl, StatusEffect } from "./status.ts";
 import { Trainer } from "./trainer.ts";
-import { NonEmptyPartial, NonEmptyArray, SingleOrArray, TODO } from "./util.ts";
+import { SingleOrArray, TODO } from "./util.ts";
 import { fmt } from "./external.ts";
 import {
   ActionPlan,
@@ -45,125 +32,14 @@ import {
   SourceEffects,
   TargetEffectsReciept,
   SourceEffectsReciept,
-} from "./battle/core/index.ts";
+} from "./battle/core/mod.ts";
+import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
 
-export interface Learnset {
-  [level: number]: Move[];
-  machine?: Move[];
-  evolution?: Move[];
-  breeding?: [Species[], Move][];
-  tutoring?: Move[];
+export function spawn(from: ICodemon): Codemon {
+  return new Codemon(decide(from, undefined));
 }
 
-export type BodyType =
-  | "Head"
-  | "Head and legs"
-  | "Head and arms"
-  | "Head and base"
-  | "Tailed Bipedal"
-  | "Tailless Bipedal"
-  | "Quadruped"
-  | "Multipedal"
-  | "Winged"
-  | "Many-winged"
-  | "Multiple bodies"
-  | "Serpentine"
-  | "Insectoid"
-  | "Finned";
-
-export interface Type {
-  name: string;
-  color: string; // TODO move to a palette file
-  weaknesses: Type[];
-  resistances: Type[];
-  immunities: Type[];
-}
-
-export interface TypePushTargets {
-  weakness?: Type[];
-  resistance?: Type[];
-  immunity?: Type[];
-}
-
-export function addTypeRelation(targets: TypePushTargets, ...types: Type[]) {
-  targets.weakness?.forEach(target => target.weaknesses.push(...types));
-  targets.resistance?.forEach(target => target.resistances.push(...types));
-  targets.immunity?.forEach(target => target.immunities.push(...types));
-}
-
-export interface Gender {
-  //symbol: Image;
-  name: string;
-  pronouns: {
-    subject: string;
-    pluralSubject?: boolean;
-    object: string;
-    possessive: string;
-  };
-}
-
-type InternalEvoReasons = {
-  level: number;
-  happiness: number;
-  move: Move | Move[];
-  moveType: Type | Type[];
-  gender: Gender;
-};
-
-type ExternalEvoReasons = {
-  item: Item;
-  time: string;
-  location: string;
-  weather: Weather;
-  trade: boolean;
-  party: Species | Species[];
-  partyType: Type | Type[];
-};
-
-type EvoReasons = InternalEvoReasons & ExternalEvoReasons;
-
-export type Evolution = { species: Species } & NonEmptyPartial<EvoReasons>;
-
-export interface Species {
-  // Normal species definition information
-  name: string;
-  description: string;
-  //graphics: Graphics
-  types: NonEmptyArray<Type>;
-  abilities: {
-    normal: NonEmptyArray<Ability>;
-    hidden?: Ability;
-  };
-  genders: Decider<Gender, Codemon>;
-  catchRate: number;
-  eggCycles: number;
-  height: number;
-  weight: number;
-  baseExperienceYield: number;
-  experienceGroup: ExperienceGroup;
-  bodyType: BodyType;
-  //footprint: Footprint
-  //CodexColor: CodexColor
-  baseFriendship: number;
-  baseStats: BaseStats;
-  evYields: EVYields;
-  learnset: Learnset;
-  evolutions: Evolution[];
-
-  // Calculation overrides
-  overrideName?: (self: Codemon, inputName: string) => string;
-  overrideSex?: (self: Codemon, inputSex: Gender) => Gender;
-  overrideStatValue?: (self: Codemon, stat: Stat, inputStat: number, considerBattleStatus: boolean) => number; // TODO use this
-  overrideNature?: (self: Codemon, inputNature: Nature) => Nature;
-}
-
-// since i'm allowing more than 2 abilities per species,
-// i'm defining that when the ability is a number, it
-// selects the ability at index (abilitySlot%abilitiesCount)
-type AbilitySelector = number | "hidden" | Ability;
-export type Ability = Status<{ self: Codemon }>;
-
-export type SpawnParams = MultiDecider<
+export type ICodemon = MultiDecider<
   {
     species: Species;
     name?: string;
@@ -176,10 +52,6 @@ export type SpawnParams = MultiDecider<
   },
   SpawnContext
 >;
-
-export function spawn(from: SpawnParams): Codemon {
-  return new Codemon(decide(from, undefined));
-}
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
 export class Codemon implements BaseCombatant<TraditionalBBP> {
@@ -201,7 +73,7 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
   public trainer: Trainer<T>;
 
   constructor(
-    options: SpawnParams,
+    options: ICodemon,
     context: SpawnContext = {
       type: "Other",
     }
@@ -219,7 +91,10 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
     this._originalNature = this._nature = decide(options.nature, context) ?? getRandomNature(options);
     this.trainer = decide(options.trainer, context) ?? { traditionalStrategy: config.wild };
 
-    this.stats = new StatSet(this, { ...options.stats });
+    this.stats = new StatSet(this, { ...options.stats }, ss => {
+      ss.on("levelUp", () => this.checkForEvolutions());
+      ss.on("levelUp", () => this.checkForNewMoves());
+    });
   }
 
   // abilities
@@ -237,10 +112,9 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
   public get originalAbility() {
     return this._originalAbility;
   }
-  public setOriginalAbility(ability: AbilitySelector, reset = true) {
+  public set originalAbility(ability: AbilitySelector) {
     if (this._ability === this._originalAbility) this._ability = ability;
     this._originalAbility = ability;
-    if (reset) this.resetAbility();
   }
   public resetAbility() {
     this._ability = this._originalAbility;
@@ -599,6 +473,14 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
       // TODO
       return true;
     });
+  }
+
+  public checkForEvolutions(): Evolution[] {
+    return TODO("check for evolutions", "warn", []);
+  }
+
+  public checkForNewMoves(): Move[] {
+    return TODO("check for new moves", "warn", []);
   }
 
   public toString(short = false) {

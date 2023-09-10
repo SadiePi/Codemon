@@ -12,7 +12,7 @@ import {
   EffectGroupEffects,
   EffectGroupReciept,
   GroupContext,
-} from "./index.ts";
+} from "./mod.ts";
 
 export class ActionSet<P extends BattleBuilderParams<P>> extends EventEmitter<{
   begin: [plans: ActionPlan<P>[]];

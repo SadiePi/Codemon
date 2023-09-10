@@ -1,5 +1,5 @@
 import { TraditionalBBP } from "./battle/traditional.ts";
-import { Action, ActionSource, BattleBuilderParams } from "./battle/core/index.ts";
+import { Action, ActionSource, BattleBuilderParams } from "./battle/core/mod.ts";
 import { Decider } from "./decision.ts";
 
 export interface Item {

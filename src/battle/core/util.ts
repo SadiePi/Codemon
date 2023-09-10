@@ -8,7 +8,7 @@ import {
   EffectGroup,
   EffectTypeReciept,
   RoundReciept,
-} from "./index.ts";
+} from "./mod.ts";
 
 export function flattenEffectMessages<P extends BattleBuilderParams<P>>(
   reciept: EffectTypeReciept<P, unknown>,

@@ -8,7 +8,7 @@ export const TwistOfFate: Move = loader.register<Move>(P => ({
   type: P.Types.Fairy,
   pp: 15,
   category: "Special",
-  target: "Any Adjacent",
+  target: { alignment: "Any" },
   makesContact: false,
   effect: choose([
     P.Statuses.Burn,

@@ -1,8 +1,8 @@
-import C, { SpawnParams } from "../codex/pokemon/mod.ts";
+import C, { ICodemon } from "../codex/pokemon/mod.ts";
 export { assertEquals, assertNotEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
 
 // https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2
-export const iKibble: SpawnParams = {
+export const iKibble: ICodemon = {
   name: "Kibble",
   species: C.Species.Garchomp,
   gender: C.Genders.Female,
@@ -19,13 +19,13 @@ export const iKibble: SpawnParams = {
   ability: "hidden",
 };
 
-export const iBigBoi: SpawnParams = {
+export const iBigBoi: ICodemon = {
   name: "Big Boi",
   species: C.Species.Garchomp,
   stats: { level: 255 },
 };
 
-export const iBulby: SpawnParams = {
+export const iBulby: ICodemon = {
   name: "Bulby",
   species: C.Species.Bulbasaur,
   gender: C.Genders.Male,
@@ -43,7 +43,7 @@ export const iBulby: SpawnParams = {
   ability: 0,
 };
 
-export const iGlassCannon: SpawnParams = {
+export const iGlassCannon: ICodemon = {
   name: "Glass Cannon",
   species: C.Species.Bulbasaur,
   stats: {

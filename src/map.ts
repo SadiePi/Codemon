@@ -1,5 +1,5 @@
 import P from "../codex/pokemon/mod.ts";
-import { Codemon, SpawnParams } from "./codemon.ts";
+import { Codemon, ICodemon } from "./codemon.ts";
 import { chance, decide, Decider, choose, range, weighted } from "./decision.ts";
 
 export type SpawnRegionType = "Grass" | "Cave" | "Building" | "Fishing" | "Surfing" | "Midair";
@@ -17,15 +17,15 @@ export type SpawnType =
 
 export interface SpawnRegion {
   type: SpawnRegionType;
-  params: Decider<SpawnParams, SpawnContext>;
+  params: Decider<ICodemon, SpawnContext>;
 }
 
 export interface SpawnContext {
   type: SpawnType;
 }
 
-export function spawn(params: Decider<SpawnParams, SpawnContext>, context: SpawnContext = { type: "Other" }) {
-  return new Codemon(decide<SpawnParams, SpawnContext>(params, context));
+export function spawn(params: Decider<ICodemon, SpawnContext>, context: SpawnContext = { type: "Other" }) {
+  return new Codemon(decide<ICodemon, SpawnContext>(params, context));
 }
 
 export interface Gen1SpawnTile extends SpawnRegion {

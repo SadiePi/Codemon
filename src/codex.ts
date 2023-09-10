@@ -8,7 +8,7 @@ import { Strategy, Trainer } from "./trainer.ts";
 import { config as currentConfig } from "./config.ts";
 import { DeepPartial } from "./util.ts";
 import { merge } from "./external.ts";
-import { Ability, Gender, Species, Type } from "./codemon.ts";
+import { Ability, Gender, Species, Type } from "./species.ts";
 import { Weather } from "./battle/traditional.ts";
 import { StatusEffect, TraditionalBBP as T } from "./mod.ts";
 

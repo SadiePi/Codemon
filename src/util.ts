@@ -1,3 +1,5 @@
+import { SignalBeam } from "../codex/pokemon/moves/signalBeam.ts";
+import { Codemon } from "./codemon.ts";
 import { Decider, decide } from "./decision.ts";
 
 export type NonEmptyArray<T> = [T, ...T[]];
@@ -114,3 +116,21 @@ export function sequentialAsync<T, U>(
   });
   // thanks copilot 👍
 }
+
+// TODO use this?
+type Signaler<Args extends Array<unknown>, SignalArgs extends Array<unknown> = []> = (
+  signal: (...args: SignalArgs) => void,
+  ...args: Args
+) => void;
+
+const _levelupsignal: (level: number) => Signaler<[self: Codemon]> = level => (signal, self) => {
+  self.stats.on("levelUp", lup => {
+    if (level >= lup.newLevel) signal();
+  });
+};
+
+const bulbasaurToIvysaurLevelupSignal = _levelupsignal(16);
+
+bulbasaurToIvysaurLevelupSignal(() => {
+  // evolve `self`to ivysaur
+}, {} as Codemon);
