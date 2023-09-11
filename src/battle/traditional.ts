@@ -13,6 +13,9 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
   conditions: {
     weather: BattleCondition;
   };
+  reward: {
+    money: number;
+  };
   target: {
     attack: TargetEffect<Attack, BaseAttackReciept>;
     status: TargetEffect<SingleOrArray<StatusEffect>>;
@@ -75,6 +78,8 @@ export interface BaseBallReciept {
   caught: boolean;
   shakes: number;
 }
+
+export type Weather = BattleCondition;
 
 export type AttackReciept = TargetEffectsReciept["attack"];
 export type StatusReciept = TargetEffectsReciept["status"];
@@ -147,7 +152,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
   }
 
   isOver(): boolean {
-    console.log("checking if battle is over");
+    // console.log("checking if battle is over");
     return this.combatants.length <= 1;
   }
 
@@ -161,6 +166,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
       rounds,
       remaining: this.combatants,
       messages: [],
+      reward: {},
     };
   }
 
@@ -194,7 +200,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
         success: false,
         messages: [],
       };
-    // weather.apply(this)
+    weather.apply(context);
     return {
       success: true,
       messages: [],
@@ -212,7 +218,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
         success: false,
         messages: [],
       };
-    // TODO handle eject
+    [targets].flat().forEach(t => this.removeCombatant(t));
     return {
       success: true,
       messages: [],
@@ -309,5 +315,3 @@ type BattleCondition = BB["battleCondition"];
 type TargetEffect<E, Extra = Record<never, never>> = EffectType<TargetContext, E, T, Extra>;
 type SourceEffect<E, Extra = Record<never, never>> = EffectType<SourceContext, E, T, Extra>;
 type BattleEffect<E, Extra = Record<never, never>> = EffectType<BattleContext, E, T, Extra>;
-
-export type Weather = BattleCondition;

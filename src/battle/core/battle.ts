@@ -27,6 +27,7 @@ export type BattleBuilderParams<P extends BattleBuilderParams<P>> = {
   message: unknown;
   combatant: BaseCombatant<P>;
   conditions: Record<string, Status<BattleContext<P>>>;
+  reward: Record<string, unknown>;
 
   target: EffectGroup<TargetContext<P>, P>;
   source: EffectGroup<SourceContext<P>, P>;
@@ -81,6 +82,7 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
 };
 
 export type BattleMessage<P extends BattleBuilderParams<P>> = P["message"];
+export type BattleReward<P extends BattleBuilderParams<P>> = Partial<P["reward"]>;
 
 export type BaseCombatant<P extends BattleBuilderParams<P>> = EffectReceiver<P, "target"> &
   EffectReceiver<P, "source"> & {
@@ -148,6 +150,7 @@ export interface BattleReciept<P extends BattleBuilderParams<P>> {
   readonly rounds: RoundReciept<P>[];
   readonly remaining: Combatant<P>[];
   readonly messages: BattleMessage<P>[];
+  readonly reward: BattleReward<P>;
 }
 
 export type TargetContext<P extends BattleBuilderParams<P>> = {
