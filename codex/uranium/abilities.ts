@@ -1,4 +1,20 @@
 import { Ability } from "./index.ts";
 
+export const Acceleration = {} as Ability;
 export const Atomize = {} as Ability;
+export const BloodLust = {} as Ability;
+export const Chernobyl = {} as Ability;
+export const DeepFreeze = {} as Ability;
+export const Disenchant = {} as Ability;
+export const Elementalist = {} as Ability;
+export const Energizate = {} as Ability;
 export const GeigerSense = {} as Ability;
+export const Infatuate = {} as Ability;
+export const Lazy = {} as Ability;
+export const LeadSkin = {} as Ability;
+export const Petrify = {} as Ability;
+export const QuickCharge = {} as Ability;
+export const Rebuild = {} as Ability;
+export const SharpCoral = {} as Ability;
+export const SoundBoost = {} as Ability;
+export const Stormbringer = {} as Ability;

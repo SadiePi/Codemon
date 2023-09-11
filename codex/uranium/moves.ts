@@ -11,7 +11,7 @@ export const AtomicPunch: Move = loader.register<Move>(U => ({
   accuracy: 95,
   category: "Physical",
   attack: power(80),
-  target: "Any Adjacent Foe",
+  target: { position: "Adjacent", alignment: "Foe" },
   makesContact: true,
   status: chance(3 / 20, U.Statuses.Paralysis),
 }));
@@ -23,7 +23,7 @@ export const CausticBreath: Move = loader.register<Move>(U => ({
   pp: 10,
   category: "Special",
   attack: power(60),
-  target: "Every Foe",
+  target: { alignment: "Foe", quantity: "All" },
   makesContact: false,
   stages: {
     defense: -1,
@@ -39,7 +39,7 @@ export const CoralBreak: Move = loader.register<Move>(U => ({
   accuracy: 95,
   category: "Special",
   attack: power(80), // TODO use normal defense despite being a special move
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));
 
@@ -51,7 +51,7 @@ export const DrainLife: Move = loader.register<Move>(U => ({
   pp: 10,
   category: "Physical",
   attack: power(75),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   leech: 1 / 2,
 }));
@@ -64,7 +64,7 @@ export const Expunge: Move = loader.register<Move>(U => ({
   accuracy: 70,
   category: "Special",
   attack: power(110),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));
 
@@ -75,7 +75,7 @@ export const Fallout: Move = loader.register<Move>(U => ({
   type: U.Types.Nuclear,
   pp: 10,
   category: "Status",
-  target: "All",
+  target: { quantity: "All" },
   makesContact: false,
   // weather: U.Weathers.Fallout,
 }));
@@ -87,7 +87,7 @@ export const FissionBurst: Move = loader.register<Move>(U => ({
   pp: 5,
   category: "Physical",
   attack: power(150),
-  target: "Every Adjacent",
+  target: { quantity: "All", position: "Adjacent" },
   makesContact: false,
   recoil: { faint: true },
 }));
@@ -100,7 +100,7 @@ export const FlameImpact: Move = loader.register<Move>(U => ({
   priority: 2,
   category: "Physical",
   attack: power(65),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));
 
@@ -111,7 +111,7 @@ export const GammaRay: Move = loader.register<Move>(U => ({
   pp: 30,
   category: "Special",
   attack: power(40),
-  target: "Any Foe",
+  target: { alignment: "Foe" },
   makesContact: false,
 }));
 
@@ -123,7 +123,7 @@ export const GemstoneGlimmer: Move = loader.register<Move>(U => ({
   accuracy: 95,
   category: "Special",
   attack: power(75),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   stages: chance(1 / 4, { accuracy: -1 }),
 }));
@@ -136,7 +136,7 @@ export const GetLucky: Move = loader.register<Move>(U => ({
   pp: 5,
   category: "Special",
   attack: power(70),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   criticalHitStage: 1,
 }));
@@ -149,7 +149,7 @@ export const GoldenFist: Move = loader.register<Move>(U => ({
   pp: 20,
   category: "Physical",
   attack: power(70),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   // TODO payday effect
 }));
@@ -161,7 +161,7 @@ export const HalfLife: Move = loader.register<Move>(U => ({
   pp: 20,
   category: "Special",
   hp: c => (c instanceof Codemon ? c.stats.hp.current / 2 : 0),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 
@@ -174,7 +174,7 @@ export const InfernalBlade: Move = loader.register<Move>(U => ({
   accuracy: 95,
   category: "Physical",
   attack: power(90),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   // TODO super effective against Fairy
 }));
@@ -187,7 +187,7 @@ export const InstantCrush: Move = loader.register<Move>(U => ({
   priority: 1,
   category: "Special",
   attack: power(60),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 
@@ -198,7 +198,7 @@ export const LaserPulse: Move = loader.register(U => ({
   pp: 20,
   category: "Special",
   attack: power(90), // TODO choose between Fire, Electric and Ice
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 
@@ -211,7 +211,7 @@ export const MetalCruncher: Move = loader.register<Move>(U => ({
   accuracy: 85,
   category: "Physical",
   attack: power(120),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   stages: chance(17 / 20, { defense: -1 }),
 }));
@@ -224,7 +224,7 @@ export const MetalWhip: Move = loader.register<Move>(U => ({
   accuracy: 90,
   category: "Physical",
   attack: power(50),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));
 
@@ -236,7 +236,7 @@ export const NuclearSlash: Move = loader.register<Move>(U => ({
   accuracy: 90,
   category: "Physical",
   attack: power(55),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   criticalHitStage: 1,
 }));
@@ -248,7 +248,7 @@ export const NuclearWaste: Move = loader.register<Move>(U => ({
   pp: 10,
   accuracy: 85,
   category: "Special",
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   status: U.Statuses.BadlyPoisoned,
 }));
@@ -260,7 +260,7 @@ export const NuclearWind: Move = loader.register<Move>(U => ({
   pp: 10,
   category: "Special",
   attack: power(65),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   // weather: chance(1/20, U.Weathers.Fallout),
 }));
@@ -272,7 +272,7 @@ export const OceansWrath: Move = loader.register<Move>(U => ({
   pp: 20,
   category: "Special",
   attack: power(90),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   // status: U.Statuses.Whirlpool,
 }));
@@ -286,7 +286,7 @@ export const ProtonBeam: Move = loader.register<Move>(U => ({
   accuracy: 90,
   category: "Special",
   attack: power(100),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   recoil: { stages: { specialAttack: -2 } },
 }));
@@ -298,7 +298,7 @@ export const QuantumLeap: Move = loader.register<Move>(U => ({
   pp: 5,
   category: "Physical",
   attack: power(100),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   // TODO multi-turn
 }));
@@ -310,7 +310,7 @@ export const Radioacid: Move = loader.register<Move>(U => ({
   pp: 15,
   category: "Special",
   attack: power(60),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(3 / 10, U.Statuses.Burn),
 }));
@@ -323,7 +323,7 @@ export const SkyFall: Move = loader.register<Move>(U => ({
   accuracy: 85,
   category: "Special",
   attack: power(85),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   status: chance(3 / 10, U.Statuses.Paralysis),
 }));
@@ -334,7 +334,7 @@ export const StickyTerrain: Move = loader.register<Move>(U => ({
   type: U.Types.Poison,
   pp: 10,
   category: "Status",
-  target: "All",
+  target: { quantity: "All" },
   makesContact: false,
   // TODO effect
 }));
@@ -348,7 +348,7 @@ export const Subduction: Move = loader.register<Move>(U => ({
   accuracy: 90,
   category: "Physical",
   attack: power(140),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   stages: { speed: -2 },
   recoil: { status: U.Statuses.Confusion },
@@ -362,7 +362,7 @@ export const SuddenStrike: Move = loader.register<Move>(U => ({
   priority: 1,
   category: "Physical",
   attack: power(40),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));
 
@@ -373,7 +373,7 @@ export const Thunderstorm: Move = loader.register<Move>(U => ({
   type: U.Types.Electric,
   pp: 10,
   category: "Status",
-  target: "All",
+  target: { quantity: "All" },
   makesContact: false,
   // weather: U.Weathers.Thunderstorm,
 }));
