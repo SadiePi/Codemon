@@ -17,7 +17,7 @@ The Codex acts as the Pokédex for the library, but with far more information th
 // note: not yet published
 import { spawn, TraditionalBattle } from "https://deno.land/x/codemon/mod.ts";
 // import the Pokédex, a Codex with official Pokémon data
-import P from "https://deno.land/x/codemon/codex/pokemon/index.ts";
+import P from "https://deno.land/x/codemon/codex/pokemon/mod.ts";
 
 // spawn a level 5 Charmander
 const charmander = spawn({
@@ -245,4 +245,4 @@ Open `src/stats.ts` and add or remove entries to either the `PermanentStats` or 
 
 ## Contributing
 
-I'd prefer for this to remain a mostly solo project. That said, I would appreciate bug reports and PRs to flesh out entries in `codex/pokemon/`.
+I'd prefer for this to remain a mostly solo project. That said, I would appreciate bug reports and PRs to flesh out entries in `/codex/pokemon/`.
