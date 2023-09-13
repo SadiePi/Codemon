@@ -1,5 +1,5 @@
 // these are the default settings for the most recent generation of Pokémon
-// best practice for changing these is with ./loader.ts in your Codex
+// best practice for changing these is with ./mod.ts in your Codex
 
 import { TraditionalBBP } from "./battle/traditional.ts";
 import { ICodemon } from "./codemon.ts";
