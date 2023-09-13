@@ -1,4 +1,4 @@
-import { power, Move } from "../mod.ts";
+import { Move } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Kinesis: Move = loader.register<Move>(P => ({

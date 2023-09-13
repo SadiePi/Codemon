@@ -1,4 +1,4 @@
-import { Move, power } from "../mod.ts";
+import { Move } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Barrier: Move = loader.register<Move>(P => ({

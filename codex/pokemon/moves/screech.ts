@@ -1,4 +1,4 @@
-import { power, Move } from "../mod.ts";
+import { Move } from "../mod.ts";
 import loader from "../loader.ts";
 
 // why isn't this a status move apdabiouaboduiboiuafb

@@ -1,4 +1,4 @@
-import { power, Move } from "../index.ts";
+import { Move } from "../index.ts";
 import loader from "../loader.ts";
 
 export const Metronone: Move = loader.register<Move>(P => ({
