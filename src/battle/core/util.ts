@@ -14,7 +14,7 @@ export function flattenEffectMessages<P extends BattleBuilderParams<P>>(
   reciept: EffectTypeReciept<P, unknown>,
   into: BattleMessage<P>[] = []
 ) {
-  if (!reciept.messages) return TODO("WTF?", "warn", into);
+  if (!reciept.messages) return TODO("WTF?", false, into);
   into.push(...reciept.messages);
   return into;
 }

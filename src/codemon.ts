@@ -476,11 +476,11 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
   }
 
   public checkForEvolutions(): Evolution[] {
-    return TODO("check for evolutions", "warn", []);
+    return TODO("check for evolutions", false, []);
   }
 
   public checkForNewMoves(): Move[] {
-    return TODO("check for new moves", "warn", []);
+    return TODO("check for new moves", false, []);
   }
 
   public toString(short = false) {

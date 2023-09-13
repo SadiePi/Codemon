@@ -61,10 +61,10 @@ export type DeepImmutable<T> = {
     : DeepImmutable<T[P]>;
 };
 
-export function TODO<T>(message: string, mode: "warn", placeholder?: Decider<T>): T;
-export function TODO<T>(message: string, mode: "error"): never;
-export function TODO<T>(message: string, mode: "warn" | "error" = "error", placeholder?: Decider<T>): T | never {
-  if (mode === "error") throw new Error(`TODO: ${message}`);
+export function TODO<T>(message: string, error?: false, placeholder?: Decider<T>): T;
+export function TODO<T>(message: string, error: true): never;
+export function TODO<T>(message: string, error = false, placeholder?: Decider<T>): T | never {
+  if (error) throw new Error(`TODO: ${message}`);
   console.warn(`TODO: ${message}`);
   if (placeholder) return decide(placeholder, undefined);
   return { todo: message } as T;

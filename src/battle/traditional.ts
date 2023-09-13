@@ -128,7 +128,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
   }
 
   getTargetChoice(_action: ActionSource, _combatant: Codemon): TargetChoice {
-    return TODO("Implement target choice filtering. Defaulting to any single target.", "warn", {
+    return TODO("Implement target choice filtering. Defaulting to any single target.", false, {
       count: 1,
       targets: this.combatants,
     });
@@ -243,7 +243,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
 
     return {
       success: true,
-      messages: [TODO("Implement end of battle", "warn")],
+      messages: [TODO("Implement end of battle")],
       actual: false,
     };
   }
