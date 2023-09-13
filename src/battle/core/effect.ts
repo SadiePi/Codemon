@@ -33,7 +33,7 @@ export type TargetingCategory<P extends BattleBuilderParams<P>> =
         }
       | {
           alignment?: "Ally" | "Any"; // default Any
-          includeSelf?: boolean;
+          includeSelf?: boolean; // default false
         }
     ));
 
