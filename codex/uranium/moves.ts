@@ -1,4 +1,4 @@
-import { chance, Move, power, Codemon } from "./index.ts";
+import { chance, Move, power, Codemon, MoveEntry } from "./index.ts";
 import loader from "./loader.ts";
 
 // data translated from https://pokemon-uranium.fandom.com/wiki/New_Moves_and_Abilities
@@ -151,7 +151,12 @@ export const GoldenFist: Move = loader.register<Move>(U => ({
   attack: power(70),
   target: { position: "Adjacent" },
   makesContact: true,
-  // TODO payday effect
+  recoil: {
+    reward: ctx => {
+      if (!(ctx.source instanceof MoveEntry)) return undefined;
+      return { money: ctx.source.user.stats.level * 5 };
+    },
+  },
 }));
 
 export const HalfLife: Move = loader.register<Move>(U => ({

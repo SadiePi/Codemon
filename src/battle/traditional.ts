@@ -1,7 +1,7 @@
 import { decide } from "../decision.ts";
 import { EventEmitter } from "../external.ts";
 import { Codemon, DamageCategory, Decider, MoveEntry, SingleOrArray, StageMods, Type, config } from "../mod.ts";
-import { TODO, sequentialAsync } from "../util.ts";
+import { NonEmptyPartial, TODO, sequentialAsync } from "../util.ts";
 import { Round } from "./core/action.ts";
 import { BattleBuilder, BattleBuilderParams } from "./core/battle.ts";
 import { EffectType } from "./core/effect.ts";
@@ -13,9 +13,6 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
   conditions: {
     weather: BattleCondition;
   };
-  reward: {
-    money: number;
-  };
   target: {
     attack: TargetEffect<Attack, BaseAttackReciept>;
     status: TargetEffect<SingleOrArray<StatusEffect>>;
@@ -23,6 +20,7 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
     stages: TargetEffect<StageMods>;
     faint: TargetEffect<boolean>;
     ball: TargetEffect<number, BaseBallReciept>;
+    reward: TargetEffect<Reward>;
   };
   source: {
     leech: SourceEffect<number, unknown>; // TODO
@@ -81,19 +79,23 @@ export interface BaseBallReciept {
 
 export type Weather = BattleCondition;
 
+export type Reward = NonEmptyPartial<{
+  money: number;
+}>; // TODO: & { trainer: Trainer }
+
 export type AttackReciept = TargetEffectsReciept["attack"];
 export type StatusReciept = TargetEffectsReciept["status"];
 export type HPReciept = TargetEffectsReciept["hp"];
 export type StagesReciept = TargetEffectsReciept["stages"];
 export type FaintReciept = TargetEffectsReciept["faint"];
 export type BallReciept = TargetEffectsReciept["ball"];
+export type RewardReciept = TargetEffectsReciept["reward"];
 
 export type LeechReciept = SourceEffectsReciept["leech"];
 export type RecoilReciept = SourceEffectsReciept["recoil"];
 export type CrashReciept = SourceEffectsReciept["crash"];
 
 export type WeatherReciept = BattleEffectsReciept["weather"];
-export type WeatherEffectParam = BattleEffectsReciept["weather"];
 export type EjectReciept = BattleEffectsReciept["eject"];
 export type EndReciept = BattleEffectsReciept["end"];
 
@@ -166,7 +168,6 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
       rounds,
       remaining: this.combatants,
       messages: [],
-      reward: {},
     };
   }
 

@@ -1,4 +1,4 @@
-import { power, Move } from "../mod.ts";
+import { power, Move, MoveEntry } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const PayDay: Move = loader.register<Move>(P => ({
@@ -10,5 +10,10 @@ export const PayDay: Move = loader.register<Move>(P => ({
   attack: power(40),
   target: { position: "Adjacent" },
   makesContact: false,
+  recoil: {
+    reward: ctx => {
+      if (!(ctx.source instanceof MoveEntry)) return undefined;
+      return { money: ctx.source.user.stats.level * 5 };
+    },
+  },
 }));
-// TODO payday

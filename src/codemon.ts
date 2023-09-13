@@ -34,6 +34,7 @@ import {
   SourceEffectsReciept,
 } from "./battle/core/mod.ts";
 import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
+import { Reward, RewardReciept } from "./mod.ts";
 
 export function spawn(from: ICodemon): Codemon {
   return new Codemon(decide(from, undefined));
@@ -398,6 +399,24 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
       messages: [`Gotcha! ${this.name} was caught!`],
       caught: true,
       shakes: config.battle.traditional.shakeChecks,
+    };
+  }
+
+  public receiveTraditionalReward(
+    effect: Decider<Reward | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): RewardReciept {
+    const reward = decide(effect, context);
+    if (!reward)
+      return {
+        success: false,
+        messages: [],
+      };
+
+    return {
+      success: true,
+      messages: ["Coins were scattered on the ground!", TODO("cache and distribute rewards")],
+      actual: reward,
     };
   }
 
