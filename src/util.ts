@@ -1,4 +1,3 @@
-import { SignalBeam } from "../codex/pokemon/moves/signalBeam.ts";
 import { Codemon } from "./codemon.ts";
 import { Decider, decide } from "./decision.ts";
 
