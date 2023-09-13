@@ -8,7 +8,7 @@ export const Sing: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 15,
   accuracy: 55,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: P.Statuses.Sleep,
 }));

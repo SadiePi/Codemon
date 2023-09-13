@@ -8,7 +8,7 @@ export const Thrash: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 10,
   attack: power(120),
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: true,
   status: P.Statuses.Thrashing,
 }));

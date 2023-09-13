@@ -7,7 +7,7 @@ export const Harden: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 30, // max 48
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   stages: { defense: 1 },
 }));

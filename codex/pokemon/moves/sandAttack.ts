@@ -7,7 +7,7 @@ export const SandAttack: Move = loader.register<Move>(P => ({
   type: P.Types.Ground,
   category: "Status",
   pp: 15,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   stages: { accuracy: -1 },
 }));

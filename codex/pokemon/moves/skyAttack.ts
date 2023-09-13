@@ -5,7 +5,7 @@ export const SkyAttack: Move = loader.register<Move>(P => ({
   name: "Sky Attack",
   description: "A second-turn attack move where critical hits land more easily. This may also make the target flinch.",
   type: P.Types.Flying,
-  target: "Any",
+  target: { alignment: "Any" },
   category: "Physical",
   pp: 5,
   attack: power(140),

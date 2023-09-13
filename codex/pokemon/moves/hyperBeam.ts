@@ -9,7 +9,7 @@ export const HyperBeam: Move = loader.register<Move>(P => ({
   pp: 5,
   attack: power(150),
   accuracy: 90,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 // TODO multiturn moves

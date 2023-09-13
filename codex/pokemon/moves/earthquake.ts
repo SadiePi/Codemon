@@ -8,6 +8,6 @@ export const Earthquake: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 10, // max 16
   attack: power(100),
-  target: "Every Adjacent",
+  target: { quantity: "All", position: "Adjacent" },
   makesContact: false,
 }));

@@ -7,7 +7,7 @@ export const LightScreen: Move = loader.register<Move>(P => ({
   type: P.Types.Psychic,
   category: "Status",
   pp: 30, // max 48
-  target: "Team",
+  target: { alignment: "Ally", includeSelf: true },
   makesContact: false,
 }));
-// TODO te,porary boosts
+// TODO temporary boosts

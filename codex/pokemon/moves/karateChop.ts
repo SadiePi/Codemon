@@ -7,7 +7,7 @@ export const KarateChop: Move = loader.register<Move>(P => ({
   type: P.Types.Fighting,
   category: "Physical",
   pp: 25,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   criticalHitStage: 1,
 

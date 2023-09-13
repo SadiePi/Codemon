@@ -8,6 +8,6 @@ export const Surf: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 15,
   attack: power(90),
-  target: "Every Adjacent",
+  target: { quantity: "All", position: "Adjacent" },
   makesContact: false,
 }));

@@ -8,7 +8,7 @@ export const MegaDrain: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 15,
   attack: power(40),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   leech: 1 / 2,
 }));

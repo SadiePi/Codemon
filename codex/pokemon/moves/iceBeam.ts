@@ -8,7 +8,7 @@ export const IceBeam: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 10,
   attack: power(90),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(1 / 10, P.Statuses.Freeze),
 }));

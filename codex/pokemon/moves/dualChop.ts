@@ -9,7 +9,7 @@ export const DualChop: Move = loader.register<Move>(P => ({
   pp: 15, // max 24
   attack: power(80),
   accuracy: 90,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   hitAgain: multiHit(2, 2),
 }));

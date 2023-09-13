@@ -7,7 +7,7 @@ export const NightShade: Move = loader.register<Move>(P => ({
   type: P.Types.Ghost,
   category: "Special",
   pp: 15, // max 24
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   hp: ({ action }) => (action.source instanceof Codemon ? action.source.stats.level : 0),
 }));

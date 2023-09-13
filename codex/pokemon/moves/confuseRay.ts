@@ -7,7 +7,7 @@ export const ConfuseRay: Move = loader.register<Move>(P => ({
   type: P.Types.Ghost,
   category: "Status",
   pp: 10, // max 16
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: P.Statuses.Confusion,
 }));

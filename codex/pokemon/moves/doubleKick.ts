@@ -8,7 +8,7 @@ export const DoubleKick: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 30,
   attack: power(30),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   // hitAgain: h => h < 2,
 }));

@@ -9,7 +9,7 @@ export const RollingKick: Move = loader.register<Move>(P => ({
   pp: 15,
   attack: power(60),
   accuracy: 85,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   status: chance(3 / 10, P.Statuses.Flinch),
 }));

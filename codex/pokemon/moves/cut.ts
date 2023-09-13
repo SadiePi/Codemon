@@ -9,6 +9,6 @@ export const Cut: Move = loader.register<Move>(P => ({
   pp: 30,
   attack: power(50),
   accuracy: 95,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

@@ -8,7 +8,7 @@ export const Growl: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 40, // max 64
-  target: "Every Adjacent Foe",
+  target: { quantity: "All", position: "Adjacent", alignment: "Foe" },
   makesContact: false,
   stages: { attack: -1 },
 }));

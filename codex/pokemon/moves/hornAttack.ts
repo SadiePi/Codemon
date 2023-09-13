@@ -8,6 +8,6 @@ export const HornAttack: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 25,
   attack: power(65),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

@@ -6,7 +6,7 @@ export const Amnesia: Move = loader.register<Move>(P => ({
   description:
     "The user temporarily empties its mind to forget its concerns. This sharply raises the user's Sp. Def stat.",
   type: P.Types.Psychic,
-  target: "Self",
+  target: { alignment: "Self" },
   category: "Status",
   pp: 20,
   makesContact: false,

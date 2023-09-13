@@ -8,6 +8,6 @@ export const WingAttack: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 35,
   attack: power(60),
-  target: "Any",
+  target: { alignment: "Any" },
   makesContact: true,
 }));

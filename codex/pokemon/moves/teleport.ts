@@ -9,7 +9,7 @@ export const Teleport: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 20, // max 32
   priority: -6,
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   eject: true,
 }));

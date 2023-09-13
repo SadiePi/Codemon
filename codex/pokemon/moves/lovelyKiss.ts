@@ -6,7 +6,7 @@ export const LovelyKiss: Move = loader.register<Move>(P => ({
   description:
     "With a scary face, the user tries to force a kiss on the target. If it succeeds, the target falls asleep.",
   type: P.Types.Normal,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Status",
   pp: 10,
   accuracy: 75,

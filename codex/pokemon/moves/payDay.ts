@@ -8,7 +8,7 @@ export const PayDay: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 20,
   attack: power(40),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 // TODO payday

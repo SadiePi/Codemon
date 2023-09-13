@@ -8,7 +8,7 @@ export const Stomp: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 20,
   attack: power(65),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   status: chance(3 / 10, P.Statuses.Flinch),
 }));

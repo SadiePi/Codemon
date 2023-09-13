@@ -5,7 +5,7 @@ export const Smog: Move = loader.register<Move>(P => ({
   name: "Smog",
   description: "The target is attacked with a discharge of filthy gases. This may also poison the target.",
   type: P.Types.Poison,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Special",
   pp: 20,
   attack: power(30),

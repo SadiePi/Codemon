@@ -9,6 +9,6 @@ export const Slam: Move = loader.register<Move>(P => ({
   pp: 20,
   attack: power(80),
   accuracy: 75,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

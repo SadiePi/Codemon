@@ -9,7 +9,7 @@ export const PinMissle: Move = loader.register<Move>(P => ({
   pp: 20,
   attack: power(25),
   accuracy: 95,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   hitAgain: multiHit(2, 5),
 }));

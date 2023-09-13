@@ -8,7 +8,7 @@ export const Dig: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 10, // max 16
   attack: power(80),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   status: P.Statuses.SemiInvulnerableTurn,
 }));

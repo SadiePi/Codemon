@@ -7,7 +7,7 @@ export const DragonRage: Move = loader.register<Move>(P => ({
   type: P.Types.Dragon,
   category: "Physical",
   pp: 10, // max 16
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   hp: -40,
 }));

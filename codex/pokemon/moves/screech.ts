@@ -9,7 +9,7 @@ export const Screech: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 40, // max 64
   accuracy: 85,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   stages: { defense: -2 },
 }));

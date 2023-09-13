@@ -6,7 +6,7 @@ export const Crabhammer: Move = loader.register<Move>(P => ({
   description:
     "The target is hammered with a large pincer. This move has a heightened chance of landing a critical hit.",
   type: P.Types.Water,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Physical",
   pp: 10,
   attack: power(100),

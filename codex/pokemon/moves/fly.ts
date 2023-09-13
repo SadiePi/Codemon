@@ -10,7 +10,7 @@ export const Fly: Move = loader.register<Move>(P => ({
   pp: 15,
   attack: power(90),
   accuracy: 95,
-  target: "Any",
+  target: { alignment: "Any" },
   makesContact: true,
   charge: {
     recoil: {

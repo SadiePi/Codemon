@@ -9,7 +9,7 @@ export const Bulldoze: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 20,
   attack: power(60),
-  target: "Every Adjacent",
+  target: { quantity: "All", position: "Adjacent" },
   makesContact: false,
   stages: { speed: -1 },
 }));

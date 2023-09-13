@@ -8,7 +8,7 @@ export const Mimic: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 10, // max 16
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 // TODO mimic

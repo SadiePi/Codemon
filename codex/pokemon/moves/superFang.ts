@@ -5,7 +5,7 @@ export const SuperFang: Move = loader.register<Move>(P => ({
   name: "Super Fang",
   description: "The user chomps hard on the target with its sharp front fangs. This cuts the target's HP in half.",
   type: P.Types.Normal,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Physical",
   pp: 10,
   accuracy: 90,

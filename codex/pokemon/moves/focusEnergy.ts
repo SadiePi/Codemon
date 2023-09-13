@@ -7,7 +7,7 @@ export const FocusEnergy: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 30, // max 48
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
 }));
 // TODO multiturn effects

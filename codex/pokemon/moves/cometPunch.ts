@@ -7,7 +7,7 @@ export const CometPunch: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Physical",
   pp: 15,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 
   attack: power(18),

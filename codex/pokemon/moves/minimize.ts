@@ -7,7 +7,7 @@ export const Minimize: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 10, // max 16
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   stages: { evasion: 2 },
   status: P.Statuses.Minimize,

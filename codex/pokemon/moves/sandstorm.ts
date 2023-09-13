@@ -9,7 +9,7 @@ export const Sandstorm: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 10,
   accuracy: 0,
-  target: "All",
+  target: { quantity: "All", alignment: "Any", includeSelf: true },
   makesContact: false,
   // weather: Weather.Sandstorm,
 }));

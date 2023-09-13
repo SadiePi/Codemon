@@ -8,7 +8,7 @@ export const BubbleBeam: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 20,
   attack: power(65),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   stages: chance(1 / 10, { speed: -1 }),
 }));

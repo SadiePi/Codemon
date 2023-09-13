@@ -10,7 +10,7 @@ export const Bind: Move = loader.register<Move>(P => ({
   pp: 20,
   attack: power(15),
   accuracy: 85,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));
 // TODO bind effect

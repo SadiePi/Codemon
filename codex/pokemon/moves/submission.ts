@@ -9,7 +9,7 @@ export const Submission: Move = loader.register<Move>(P => ({
   pp: 20,
   attack: power(80),
   accuracy: 80,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   // recoil: 1 / 4,
 }));

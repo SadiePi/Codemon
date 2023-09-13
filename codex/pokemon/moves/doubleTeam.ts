@@ -7,7 +7,7 @@ export const DoubleTeam: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 15, // max 24
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   stages: { evasion: 1 },
 }));

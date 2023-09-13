@@ -18,6 +18,6 @@ export const LowKick: Move = loader.register<Move>(P => ({
     if (w < 200) return power(100);
     return power(120);
   },
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

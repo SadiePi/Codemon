@@ -9,7 +9,7 @@ export const Fissure: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 5, // max 8
   accuracy: 30,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   faint: true,
 }));

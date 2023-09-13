@@ -9,7 +9,7 @@ export const Rage: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 20, // max 32
   attack: power(20),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   // TODO functionality
 }));

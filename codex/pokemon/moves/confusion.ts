@@ -8,7 +8,7 @@ export const Confusion: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 25, // max 40
   attack: power(50),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(1 / 10, P.Statuses.Confusion),
 }));

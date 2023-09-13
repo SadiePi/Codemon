@@ -6,7 +6,7 @@ export const LeechLife: Move = loader.register<Move>(P => ({
   description:
     "The user drains the target's blood. The user's HP is restored by up to half the damage taken by the target.",
   type: P.Types.Bug,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Physical",
   pp: 10,
   attack: power(80),

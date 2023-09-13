@@ -9,7 +9,7 @@ export const DoubleEdge: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 15, // max 24
   attack: power(120),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   // recoil: 1 / 4,
 }));

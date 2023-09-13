@@ -8,7 +8,7 @@ export const Substitute: Move = loader.register<Move>(P => ({
   description:
     "The user creates a substitute for itself using some of its HP. The substitute serves as the user's decoy.",
   type: P.Types.Normal,
-  target: "Self",
+  target: { alignment: "Self" },
   category: "Status",
   pp: 10,
   makesContact: false,

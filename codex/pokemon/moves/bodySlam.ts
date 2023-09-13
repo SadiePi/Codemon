@@ -9,7 +9,7 @@ export const BodySlam: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 15,
   attack: power(85),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   status: chance(3 / 10, P.Statuses.Paralysis),
 }));

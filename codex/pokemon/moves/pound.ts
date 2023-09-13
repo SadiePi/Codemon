@@ -7,7 +7,7 @@ export const Pound: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Physical",
   pp: 35,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 
   attack: power(40),

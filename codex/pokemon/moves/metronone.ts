@@ -1,5 +1,5 @@
 import { power, Move } from "../index.ts";
-import loader from "../loader.ts"
+import loader from "../loader.ts";
 
 export const Metronone: Move = loader.register<Move>(P => ({
   name: "Metronome",
@@ -7,7 +7,7 @@ export const Metronone: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 10, // max 16
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
 }));
 // TODO move replacement

@@ -8,7 +8,7 @@ export const PoisonPowder: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 35, // max 56
   accuracy: 75,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: P.Statuses.Poison,
 }));

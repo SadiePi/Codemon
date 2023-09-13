@@ -8,7 +8,7 @@ export const Mist: Move = loader.register<Move>(P => ({
   type: P.Types.Ice,
   category: "Status",
   pp: 30,
-  target: "Team",
+  target: { alignment: "Ally", includeSelf: true },
   makesContact: false,
   // status: P.Statuses.Mist,
 }));

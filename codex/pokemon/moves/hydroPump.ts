@@ -9,6 +9,6 @@ export const HydroPump: Move = loader.register<Move>(P => ({
   pp: 5,
   attack: power(110),
   accuracy: 80,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));

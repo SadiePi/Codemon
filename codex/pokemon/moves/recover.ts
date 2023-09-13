@@ -7,7 +7,7 @@ export const Recover: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 10, // max 16
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   hp: ({ action }) => (action.source instanceof Codemon ? action.source.stats.hp.max / 2 : 0),
 }));

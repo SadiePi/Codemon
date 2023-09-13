@@ -8,7 +8,7 @@ export const Whirlwind: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 20,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   eject: true,
 }));

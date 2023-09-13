@@ -9,6 +9,6 @@ export const MegaKick: Move = loader.register<Move>(P => ({
   pp: 5,
   attack: power(120),
   accuracy: 75,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

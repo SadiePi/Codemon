@@ -8,7 +8,7 @@ export const Gust: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 35,
   attack: power(40),
-  target: "Any",
+  target: { alignment: "Any" },
   makesContact: false,
 }));
 // TODO during Fly, double power

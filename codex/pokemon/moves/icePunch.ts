@@ -8,7 +8,7 @@ export const IcePunch: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 15,
   attack: power(75),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   status: chance(1 / 10, P.Statuses.Freeze),
 }));

@@ -8,7 +8,7 @@ export const Psychic: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 10, // max 16
   attack: power(90),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   stages: chance(1 / 10, { specialDefense: -1 }),
 }));

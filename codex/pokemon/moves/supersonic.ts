@@ -8,7 +8,7 @@ export const Supersonic: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 20,
   accuracy: 55,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: P.Statuses.Confusion,
 }));

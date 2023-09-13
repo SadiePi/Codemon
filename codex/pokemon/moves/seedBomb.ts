@@ -8,6 +8,6 @@ export const SeedBomb: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 15, // max 24
   attack: power(80),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));

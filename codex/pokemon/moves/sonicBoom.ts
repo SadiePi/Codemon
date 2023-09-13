@@ -9,7 +9,7 @@ export const SonicBoom: Move = loader.register<Move>(P => ({
   pp: 20,
   attack: power(20),
   accuracy: 90,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   hp: -20,
 }));

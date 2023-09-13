@@ -9,7 +9,7 @@ export const WorrySeed: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 10, // max 16
   priority: 0,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 // TODO ability change

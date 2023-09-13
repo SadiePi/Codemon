@@ -5,7 +5,7 @@ export const Barrage: Move = loader.register<Move>(P => ({
   name: "Barrage",
   description: "Round objects are hurled at the target to strike two to five times in a row.",
   type: P.Types.Normal,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Physical",
   pp: 20,
   attack: power(15),

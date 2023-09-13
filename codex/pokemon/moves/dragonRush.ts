@@ -10,7 +10,7 @@ export const DragonRush: Move = loader.register<Move>(P => ({
   pp: 10, // max 16
   attack: power(100),
   accuracy: 75,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));
 //  status consideration (boost against minimize)

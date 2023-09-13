@@ -5,7 +5,7 @@ export const PoisonGas: Move = loader.register<Move>(P => ({
   name: "Poison Gas",
   description: "A cloud of poison gas is sprayed in the face of opposing Pokémon, poisoning those it hits.",
   type: P.Types.Poison,
-  target: "Every Adjacent Foe",
+  target: { quantity: "All", position: "Adjacent", alignment: "Foe" },
   category: "Status",
   pp: 40,
   accuracy: 90,

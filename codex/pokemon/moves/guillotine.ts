@@ -17,7 +17,7 @@ export const Guillotine: Move = loader.register<Move>(P => ({
     const targetLevel = target instanceof Codemon ? target.stats.level : 0;
     return 30 + userLevel - targetLevel;
   },
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   faint: true,
 }));

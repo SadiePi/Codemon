@@ -6,7 +6,7 @@ export const Explosion: Move = loader.register<Move>(P => ({
   description:
     "The user attacks everything around it by causing a tremendous explosion. The user faints upon using this move.",
   type: P.Types.Normal,
-  target: "Every Adjacent",
+  target: { quantity: "All", position: "Adjacent" },
   category: "Physical",
   pp: 5,
   attack: power(250),

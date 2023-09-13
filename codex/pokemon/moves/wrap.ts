@@ -9,7 +9,7 @@ export const Wrap: Move = loader.register<Move>(P => ({
   pp: 20,
   attack: power(15),
   accuracy: 90,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));
 // TODO multiturn moves

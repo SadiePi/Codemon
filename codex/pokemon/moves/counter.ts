@@ -8,7 +8,7 @@ export const Counter: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 20,
   priority: -5,
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: true,
 }));
 // TODO counter

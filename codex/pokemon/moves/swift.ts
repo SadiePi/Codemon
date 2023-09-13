@@ -5,7 +5,7 @@ export const Swift: Move = loader.register<Move>(P => ({
   name: "Swift",
   description: "Star-shaped rays are shot at the opposing Pokémon. This attack never misses.",
   type: P.Types.Normal,
-  target: "Every Adjacent Foe",
+  target: { quantity: "All", position: "Adjacent", alignment: "Foe" },
   category: "Special",
   accuracy: true,
   pp: 20,

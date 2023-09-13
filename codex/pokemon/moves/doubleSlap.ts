@@ -7,7 +7,7 @@ export const DoubleSlap: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Physical",
   pp: 10,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 
   accuracy: 85,

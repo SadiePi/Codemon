@@ -8,6 +8,6 @@ export const Scratch: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 35,
   attack: power(40),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

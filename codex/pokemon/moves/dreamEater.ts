@@ -6,7 +6,7 @@ export const DreamEater: Move = loader.register<Move>(P => ({
   description:
     "The user eats the dreams of a sleeping target. The user's HP is restored by up to half the damage taken by the target.",
   type: P.Types.Psychic,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Special",
   pp: 15,
   attack: power(100),

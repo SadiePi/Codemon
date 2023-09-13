@@ -9,7 +9,7 @@ export const JumpKick: Move = loader.register<Move>(P => ({
   pp: 10,
   attack: power(100),
   accuracy: 95,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   crash: {
     hp: reciept =>

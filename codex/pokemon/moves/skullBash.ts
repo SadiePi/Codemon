@@ -6,7 +6,7 @@ export const SkullBash: Move = loader.register<Move>(P => ({
   description:
     "The user tucks in its head to raise its Defense in the first turn, then rams the target on the next turn.",
   type: P.Types.Normal,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Physical",
   pp: 10,
   attack: power(130),

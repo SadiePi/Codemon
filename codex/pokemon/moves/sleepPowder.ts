@@ -8,7 +8,7 @@ export const SleepPowder: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 15, // max 24
   accuracy: 75,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: P.Statuses.Sleep,
 }));

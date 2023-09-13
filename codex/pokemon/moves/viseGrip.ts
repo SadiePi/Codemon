@@ -8,6 +8,6 @@ export const ViseGrip: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 30,
   attack: power(55),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

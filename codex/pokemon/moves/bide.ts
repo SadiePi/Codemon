@@ -8,7 +8,7 @@ export const Bide: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 10, // max 16
   priority: 1,
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: true,
 }));
 // TODO bide effect

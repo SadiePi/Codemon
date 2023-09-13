@@ -1,4 +1,4 @@
-import { power, Move } from "../mod.ts";
+import { Move } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Haze: Move = loader.register<Move>(P => ({
@@ -7,7 +7,7 @@ export const Haze: Move = loader.register<Move>(P => ({
   type: P.Types.Ice,
   category: "Status",
   pp: 30, // max 48
-  target: "All",
+  target: { quantity: "All", alignment: "Any", includeSelf: true },
   makesContact: false,
 }));
-// TODO functionality
+// TODO functionality (more complicated than it seems)

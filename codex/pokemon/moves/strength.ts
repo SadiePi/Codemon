@@ -8,6 +8,6 @@ export const Strength: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 15,
   attack: power(80),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

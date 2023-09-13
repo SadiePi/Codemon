@@ -8,6 +8,6 @@ export const DrillPeck: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 20,
   attack: power(80),
-  target: "Any",
+  target: { alignment: "Any" },
   makesContact: true,
 }));

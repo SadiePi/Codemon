@@ -8,7 +8,7 @@ export const Bite: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 25, // max 40
   attack: power(60),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   status: chance(3 / 10, P.Statuses.Flinch),
 }));

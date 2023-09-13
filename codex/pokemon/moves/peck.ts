@@ -8,6 +8,6 @@ export const Peck: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 35,
   attack: power(35),
-  target: "Any",
+  target: { alignment: "Any" },
   makesContact: true,
 }));

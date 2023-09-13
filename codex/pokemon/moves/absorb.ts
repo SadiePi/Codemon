@@ -7,7 +7,7 @@ export const Absorb: Move = loader.register(P => ({
   type: P.Types.Grass,
   category: "Special",
   pp: 20,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   leech: 1 / 2,
 }));

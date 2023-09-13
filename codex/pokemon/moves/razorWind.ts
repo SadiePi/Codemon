@@ -9,7 +9,7 @@ export const RazorWind: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 10,
   attack: power(80),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   criticalHitStage: 1,
 }));

@@ -7,7 +7,7 @@ export const AcidArmor: Move = loader.register<Move>(P => ({
   type: P.Types.Poison,
   category: "Status",
   pp: 20,
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   stages: { defense: 2 },
 }));

@@ -6,7 +6,7 @@ export const RockThrow: Move = loader.register<Move>(P => ({
   description: "The user picks up and throws a small rock at the target to attack.",
   type: P.Types.Rock,
   category: "Physical",
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   pp: 15, // max 24
   attack: power(50),

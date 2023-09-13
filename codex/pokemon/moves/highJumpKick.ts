@@ -6,7 +6,7 @@ export const HighJumpKick: Move = loader.register<Move>(P => ({
   description:
     "The target is attacked with a knee kick from a jump. If this move misses, the user takes damage instead.",
   type: P.Types.Fighting,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Physical",
   pp: 10,
   attack: power(130),

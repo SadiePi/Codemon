@@ -7,7 +7,7 @@ export const Barrier: Move = loader.register<Move>(P => ({
   type: P.Types.Psychic,
   category: "Status",
   pp: 20, // max 32
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   stages: { defense: 2 },
 }));

@@ -9,7 +9,7 @@ export const TakeDown: Move = loader.register<Move>(P => ({
   pp: 20, // max 32
   attack: power(90),
   accuracy: 85,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   // recoil: 1 / 4,
 }));

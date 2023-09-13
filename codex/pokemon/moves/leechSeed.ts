@@ -8,7 +8,7 @@ export const LeechSeed: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 10, // max 16
   accuracy: 90,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: P.Statuses.LeechSeed,
 }));

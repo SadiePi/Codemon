@@ -8,7 +8,7 @@ export const Ember: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 25,
   attack: power(40),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(1 / 10, P.Statuses.Burn),
 }));

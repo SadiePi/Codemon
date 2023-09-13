@@ -8,6 +8,6 @@ export const VineWhip: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 25, // max 40
   attack: power(45),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

@@ -7,7 +7,7 @@ export const SeismicToss: Move = loader.register<Move>(P => ({
   type: P.Types.Fighting,
   category: "Physical",
   pp: 20,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   hp: ({ target }) => (target instanceof Codemon ? target.stats.level : 0),
 }));

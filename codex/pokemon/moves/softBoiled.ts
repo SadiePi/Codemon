@@ -5,7 +5,7 @@ export const SoftBoiled: Move = loader.register<Move>(P => ({
   name: "Soft-Boiled",
   description: "The user restores its own HP by up to half of its max HP.",
   type: P.Types.Normal,
-  target: "Self",
+  target: { alignment: "Self" },
   category: "Status",
   pp: 5,
   makesContact: false,

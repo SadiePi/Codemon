@@ -9,6 +9,6 @@ export const MegaPunch: Move = loader.register<Move>(P => ({
   pp: 20,
   attack: power(80),
   accuracy: 85,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

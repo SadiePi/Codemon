@@ -8,7 +8,7 @@ export const SolarBeam: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 10, // max 16
   attack: power(120),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 // TODO multiturn moves

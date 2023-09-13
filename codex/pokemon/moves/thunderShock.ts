@@ -9,7 +9,7 @@ export const ThunderShock: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 30, // max 48
   attack: power(40),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(1 / 10, P.Statuses.Paralysis),
 }));

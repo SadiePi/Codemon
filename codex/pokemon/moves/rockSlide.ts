@@ -6,7 +6,7 @@ export const RockSlide: Move = loader.register<Move>(P => ({
   description:
     "Large boulders are hurled at opposing Pokémon to inflict damage. This may also make the opposing Pokémon flinch.",
   type: P.Types.Rock,
-  target: "Every Adjacent Foe",
+  target: { quantity: "All", position: "Adjacent", alignment: "Foe" },
   category: "Physical",
   pp: 10,
   attack: power(75),

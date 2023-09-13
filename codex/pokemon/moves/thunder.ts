@@ -10,7 +10,7 @@ export const Thunder: Move = loader.register<Move>(P => ({
   pp: 10, // max 16
   attack: power(110),
   accuracy: 70,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(1 / 10, P.Statuses.Paralysis),
 }));

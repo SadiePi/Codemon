@@ -9,7 +9,7 @@ export const Twineedle: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 20,
   attack: power(25),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(2 / 10, P.Statuses.Poison),
   hitAgain: multiHit(2, 2),

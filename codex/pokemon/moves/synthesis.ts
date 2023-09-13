@@ -7,7 +7,7 @@ export const Synthesis: Move = loader.register<Move>(P => ({
   type: P.Types.Grass,
   category: "Status",
   pp: 5, // max 8
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   hp: ({ target }) => {
     if (target instanceof Codemon) return target.stats.hp.max / 8;

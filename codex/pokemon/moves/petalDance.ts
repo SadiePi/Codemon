@@ -8,7 +8,10 @@ export const PetalDance: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 10, // max 16
   attack: power(120),
-  target: "Random Adjacent Foe",
+  target: {
+    alignment: "Foe",
+    selection: "Random",
+  },
   makesContact: true,
 }));
 // TODO multiturn moves

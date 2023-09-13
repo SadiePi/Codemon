@@ -7,7 +7,7 @@ export const Reflect: Move = loader.register<Move>(P => ({
   type: P.Types.Psychic,
   category: "Status",
   pp: 20, // max 32
-  target: "Team",
+  target: { alignment: "Ally", includeSelf: true },
   makesContact: false,
 }));
 // TODO functionality

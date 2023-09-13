@@ -10,7 +10,7 @@ export const Blizzard: Move = loader.register<Move>(P => ({
   pp: 5,
   attack: power(110),
   accuracy: 70,
-  target: "Every Adjacent Foe",
+  target: { quantity: "All", position: "Adjacent", alignment: "Foe" },
   makesContact: false,
   status: chance(1 / 10, P.Statuses.Freeze),
 }));

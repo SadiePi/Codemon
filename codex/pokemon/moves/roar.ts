@@ -9,7 +9,7 @@ export const Roar: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 20,
   priority: -6,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   eject: true,
 }));

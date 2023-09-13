@@ -8,7 +8,7 @@ export const HornDrill: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Physical",
   pp: 5,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   faint: true,
 }));

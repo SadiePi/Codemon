@@ -7,6 +7,6 @@ export const Splash: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 40, // max 64
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
 }));

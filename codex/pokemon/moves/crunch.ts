@@ -8,7 +8,7 @@ export const Crunch: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 15, // max 24
   attack: power(80),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
   stages: chance(1 / 5, { defense: -1 }),
 }));

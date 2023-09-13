@@ -9,7 +9,7 @@ export const RazorLeaf: Move = loader.register<Move>(P => ({
   pp: 25, // max 40
   attack: power(55),
   accuracy: 95,
-  target: "Every Adjacent Foe",
+  target: { quantity: "All", position: "Adjacent", alignment: "Foe" },
   makesContact: false,
   criticalHitStage: 1,
 }));

@@ -5,7 +5,7 @@ export const EggBomb: Move = loader.register<Move>(P => ({
   name: "Egg Bomb",
   description: "A large egg is hurled at the target with maximum force to inflict damage.",
   type: P.Types.Normal,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   category: "Physical",
   pp: 10, // max 16
   attack: power(100),

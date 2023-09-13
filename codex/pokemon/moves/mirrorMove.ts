@@ -7,7 +7,7 @@ export const MirrorMove: Move = loader.register<Move>(P => ({
   type: P.Types.Flying,
   category: "Status",
   pp: 20, // max 32
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 // TODO move replacement

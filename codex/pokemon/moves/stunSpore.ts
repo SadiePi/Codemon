@@ -8,7 +8,7 @@ export const StunSpore: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 30, // max 48
   accuracy: 75,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: P.Statuses.Paralysis,
 }));

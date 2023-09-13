@@ -9,6 +9,6 @@ export const QuickAttack: Move = loader.register<Move>(P => ({
   pp: 30, // max 48
   attack: power(40),
   priority: 1,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: true,
 }));

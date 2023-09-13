@@ -7,7 +7,7 @@ export const Growth: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 20, // max 32
-  target: "Self",
+  target: { alignment: "Self" },
   makesContact: false,
   stages: { attack: 1, specialAttack: 1 },
 }));

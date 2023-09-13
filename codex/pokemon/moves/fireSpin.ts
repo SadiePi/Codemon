@@ -9,7 +9,7 @@ export const FireSpin: Move = loader.register<Move>(P => ({
   pp: 15, // max 24
   attack: power(35),
   accuracy: 85,
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
 }));
 // TODO multiturn moves

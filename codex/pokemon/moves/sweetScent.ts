@@ -7,7 +7,7 @@ export const SweetScent: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Status",
   pp: 20, // max 32
-  target: "Any Adjacent Foe",
+  target: { position: "Adjacent", alignment: "Foe" },
   makesContact: false,
   stages: { evasion: -2 },
 }));

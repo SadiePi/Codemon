@@ -34,7 +34,7 @@ export const Struggle: Move = loader.register<Move>(P => ({
   description: "This attack is used in desperation only if the user has no PP. It also damages the user a little.",
   type: P.Types.Normal,
   category: "Physical",
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   pp: 1,
   attack: power(50),
   makesContact: true,

@@ -8,7 +8,7 @@ export const DragonBreath: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 20,
   attack: power(60),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(3 / 10, P.Statuses.Paralysis),
 }));

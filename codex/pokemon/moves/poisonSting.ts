@@ -8,7 +8,7 @@ export const PoisonSting: Move = loader.register<Move>(P => ({
   category: "Physical",
   pp: 35,
   attack: power(15),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(3 / 10, P.Statuses.Poison),
 }));

@@ -8,7 +8,7 @@ export const StringShot: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 40, // max 64
   accuracy: 95,
-  target: "Every Adjacent Foe",
+  target: { quantity: "All", position: "Adjacent", alignment: "Foe" },
   makesContact: false,
   stages: { speed: -2 },
 }));

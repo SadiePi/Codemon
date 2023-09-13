@@ -8,7 +8,7 @@ export const Thunderbolt: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 15, // max 24
   attack: power(90),
-  target: "Any Adjacent",
+  target: { position: "Adjacent" },
   makesContact: false,
   status: chance(1 / 10, P.Statuses.Paralysis),
 }));
