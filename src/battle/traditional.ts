@@ -240,11 +240,11 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
         success: false,
         messages: [],
       };
-    // TODO handle end
+
     return {
       success: true,
-      messages: [],
-      actual: end,
+      messages: [TODO("Implement end of battle", "warn")],
+      actual: false,
     };
   }
 
