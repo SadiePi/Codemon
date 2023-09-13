@@ -218,10 +218,17 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
         success: false,
         messages: [],
       };
-    [targets].flat().forEach(t => this.removeCombatant(t));
+
+    const messages: string[] = [];
+    [targets].flat().forEach(t => {
+      if (this.combatants.includes(t)) {
+        this.removeCombatant(t);
+        messages.push(`${t.name} was ejected!`);
+      }
+    });
     return {
       success: true,
-      messages: [],
+      messages,
       actual: targets,
     };
   }
