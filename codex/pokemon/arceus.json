@@ -1,7 +1,8 @@
 {
   "name": "Pokedex",
+  "letter": "P",
   "format": "nested",
-  "lib": "../../src/mod.ts",
+  "lib": "../../src",
 
   "abilities": [
     "Stench",

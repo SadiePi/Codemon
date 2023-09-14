@@ -1,8 +1,9 @@
 {
-  "name": "Uranium Pokedex",
+  "name": "Uranium",
+  "letter": "U",
   "format": "spread",
   "import": "../pokemon",
-  "lib": "../../src/mod.ts",
+  "lib": "../../src",
 
   "abilities": [
     "Acceleration",

@@ -1,5 +1,5 @@
 export * from "../../src/mod.ts";
-import { Codex, Nature, choose, NonEmptyArray } from "../../src/mod.ts";
+import { Codex, choose } from "../../src/mod.ts";
 import loader from "./loader.ts";
 
 import * as Abilities from "./abilities/index.ts";
@@ -15,7 +15,7 @@ import * as Trainers from "./trainers/index.ts";
 import * as Types from "./types/index.ts";
 import * as Weathers from "./weather/index.ts";
 
-const P = {
+const Pokedex = {
   Abilities,
   Experience,
   Genders,
@@ -29,12 +29,12 @@ const P = {
   Types,
   Weathers,
 } as const satisfies Codex;
-export type Pokedex = typeof P;
+export type Pokedex = typeof Pokedex;
 
-loader.build(P, {
+loader.build(Pokedex, {
   struggle: Moves.Struggle,
   wild: Strategies.Wild,
-  randomNature: choose(...(Object.values(Natures) as NonEmptyArray<Nature>)),
+  randomNature: choose(...Object.values(Natures)),
 });
 
-export default P;
+export default Pokedex;

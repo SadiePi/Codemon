@@ -1,3 +1,6 @@
+// TODO convert to a nested format
+// this is bigger than I thought
+
 export * from "../../src/mod.ts";
 import { Codex } from "../../src/mod.ts";
 import loader from "./loader.ts";
