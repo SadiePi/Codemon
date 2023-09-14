@@ -77,7 +77,7 @@ function readArceusFile(path: string): ArceusFile {
   throw new Error("Invalid arceus file");
 }
 
-function verifyArceusFile(file: unknown): file is ArceusFile {
+function verifyArceusFile(_file: unknown): _file is ArceusFile {
   return true;
 } // big fat TODO
 
