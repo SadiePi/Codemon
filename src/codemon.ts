@@ -214,6 +214,7 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
     if (effects.status) reciept.status = this.receiveTraditionalStatus(effects.status, context);
     if (effects.stages) reciept.stages = this.receiveTraditionalStages(effects.stages, context);
     if (effects.faint) reciept.faint = this.receiveTraditionalFaint(effects.faint, context);
+    if (effects.ball) reciept.ball = this.receiveTraditionalBall(effects.ball, context);
     if (effects.eject) reciept.eject = this.receiveTraditionalEject(effects.eject, context);
 
     if (reciept.attack?.success && reciept.attack.faint) reciept.remove = true;
