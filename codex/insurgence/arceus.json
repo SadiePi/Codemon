@@ -1,8 +1,8 @@
 {
-  "name": "Insurgence Pokedex",
+  "name": "Insurgence",
   "format": "nested",
   "import": "../pokemon",
-  "lib": "../../src/mod.ts",
+  "lib": "../../src",
 
   "abilities": [
     "Absolution",

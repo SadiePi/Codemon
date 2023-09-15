@@ -1,28 +1,38 @@
+// hmm, this is still more broken than I thought
+
 import { Codex } from "./codex.ts";
 
 type Formats = "flat" | "spread" | "nested";
 
 interface Format {
   generateCategory: (category: Category, arceus: ArceusFile, path: string) => void;
-  generateImports: () => string;
+  generateImports: (arceus: ArceusFile) => string;
 }
 
 const formats: Record<Formats, Format> = {
   flat: {
     generateCategory: generateFlatCategory,
-    generateImports: () => `import { ${Object.keys(categoryMap).join(", ")} } from "./mod.ts";`,
+    generateImports: (arceus: ArceusFile) =>
+      `import { ${Object.keys(categoryMap)
+        .filter(c => arceus[c as Category])
+        .join(", ")} } from "./mod.ts";`,
   },
   spread: {
     generateCategory: generateSpreadCategory,
-    generateImports: () =>
+    generateImports: (arceus: ArceusFile) =>
       Object.keys(categoryMap)
+        .filter(c => arceus[c as Category])
         .map(category => `import * as ${category[0].toUpperCase()}${category.slice(1)} from "./${category}.ts";`)
         .join("\n"),
   },
   nested: {
     generateCategory: generateNestedCategory,
-    generateImports: () =>
+    generateImports: (arceus: ArceusFile) =>
       Object.keys(categoryMap)
+        .filter(c => {
+          console.log(arceus);
+          return arceus[c as Category];
+        })
         .map(category => `import * as ${category[0].toUpperCase()}${category.slice(1)} from "./${category}/mod.ts";`)
         .join("\n"),
   },
@@ -97,9 +107,10 @@ function generateModFile(arceus: ArceusFile, path: string): void {
   const loaderImport = `import loader from "./loader.ts";`;
   const lib = [libExport, libImport, loaderImport].join("\n");
 
-  const categoryImports = formats[arceus.format].generateImports();
+  const categoryImports = formats[arceus.format].generateImports(arceus);
 
   const dexConst = `const ${arceus.name} = { ${Object.keys(categoryMap)
+    .filter(c => arceus[c as Category])
     .map(c => `${c[0].toUpperCase()}${c.slice(1)}`)
     .join(", ")} } as const satisfies Codex;`;
   const dexExport = `export type ${arceus.name} = typeof ${arceus.name};`;
