@@ -21,6 +21,7 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
     faint: TargetEffect<boolean>;
     ball: TargetEffect<number, BaseBallReciept>;
     reward: TargetEffect<Reward>;
+    eject: BattleEffect<boolean>;
   };
   source: {
     leech: SourceEffect<number, unknown>; // TODO
@@ -29,7 +30,6 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
   };
   battle: {
     weather: BattleEffect<BattleCondition>;
-    eject: BattleEffect<SingleOrArray<Combatant>>;
     end: BattleEffect<boolean>;
   };
 }
@@ -90,13 +90,13 @@ export type StagesReciept = TargetEffectsReciept["stages"];
 export type FaintReciept = TargetEffectsReciept["faint"];
 export type BallReciept = TargetEffectsReciept["ball"];
 export type RewardReciept = TargetEffectsReciept["reward"];
+export type EjectReciept = TargetEffectsReciept["eject"];
 
 export type LeechReciept = SourceEffectsReciept["leech"];
 export type RecoilReciept = SourceEffectsReciept["recoil"];
 export type CrashReciept = SourceEffectsReciept["crash"];
 
 export type WeatherReciept = BattleEffectsReciept["weather"];
-export type EjectReciept = BattleEffectsReciept["eject"];
 export type EndReciept = BattleEffectsReciept["end"];
 
 export default class Traditional extends EventEmitter<BattleEvents> implements Battle {
@@ -209,31 +209,6 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     };
   }
 
-  receiveTraditionalEject(
-    effect: Decider<SingleOrArray<Combatant> | undefined, BattleContext>,
-    context: BattleContext
-  ): EjectReciept {
-    const targets = decide(effect, context);
-    if (!targets)
-      return {
-        success: false,
-        messages: [],
-      };
-
-    const messages: string[] = [];
-    [targets].flat().forEach(t => {
-      if (this.combatants.includes(t)) {
-        this.removeCombatant(t);
-        messages.push(`${t.name} was ejected!`);
-      }
-    });
-    return {
-      success: true,
-      messages,
-      actual: targets,
-    };
-  }
-
   receiveTraditionalEnd(effect: Decider<boolean | undefined, BattleContext>, context: BattleContext): EndReciept {
     const end = decide(effect, context);
     if (!end)
@@ -252,7 +227,6 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
   receiveTraditionalBattleEffects(effects: BattleEffects, context: BattleContext): BattleEffectsReciept {
     const reciept = {} as BattleEffectsReciept;
     if (effects.weather) reciept.weather = this.receiveTraditionalWeather(effects.weather, context);
-    if (effects.eject) reciept.eject = this.receiveTraditionalEject(effects.eject, context);
     if (effects.end) reciept.end = this.receiveTraditionalEnd(effects.end, context);
     return reciept;
   }

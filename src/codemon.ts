@@ -34,7 +34,7 @@ import {
   SourceEffectsReciept,
 } from "./battle/core/mod.ts";
 import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
-import { Reward, RewardReciept } from "./mod.ts";
+import { EjectReciept, Reward, RewardReciept } from "./mod.ts";
 
 export function spawn(from: ICodemon): Codemon {
   return new Codemon(decide(from, undefined));
@@ -214,6 +214,7 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
     if (effects.status) reciept.status = this.receiveTraditionalStatus(effects.status, context);
     if (effects.stages) reciept.stages = this.receiveTraditionalStages(effects.stages, context);
     if (effects.faint) reciept.faint = this.receiveTraditionalFaint(effects.faint, context);
+    if (effects.eject) reciept.eject = this.receiveTraditionalEject(effects.eject, context);
 
     if (reciept.attack?.success && reciept.attack.faint) reciept.remove = true;
     if (reciept.hp?.success && reciept.hp.faint) reciept.remove = true;
@@ -417,6 +418,27 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
       success: true,
       messages: ["Coins were scattered on the ground!", TODO("cache and distribute rewards")],
       actual: reward,
+    };
+  }
+
+  receiveTraditionalEject(
+    effect: Decider<boolean | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): EjectReciept {
+    const eject = decide(effect, context);
+    if (!eject)
+      return {
+        success: false,
+        messages: [],
+      };
+
+    context.battle.removeCombatant(this);
+    // TODO disable status effects etc
+
+    return {
+      success: true,
+      messages: [`${this.name} was ejected from the battle!`],
+      actual: false,
     };
   }
 
