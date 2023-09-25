@@ -47,7 +47,7 @@ export type ICodemon = MultiDecider<
     gender?: Gender;
     nature?: Nature;
     stats?: IStatSet;
-    moves?: Record<number, Move>;
+    moves?: Move[];
     ability?: AbilitySelector;
     trainer?: Trainer<T>;
   },
@@ -69,7 +69,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     this.mutations = { name: `Mutated ${this.species.name}`, ...this.mutations, ...mutations };
   }
 
-  public moves: MoveEntry[] = [];
+  public moves: MoveEntry[];
   public stats: StatSet;
   public trainer: Trainer<T>;
 
@@ -83,10 +83,6 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
     // TODO enforce sane values
     this.species = decide(options.species, context);
-    // // creating experience object automatically populates moves
-    // if (options.moves)
-    //   for (const [slot, move] of Object.entries(options.moves))
-    //     this.moves[parseInt(slot)] = new MoveEntry({ user: this, move: move });
     this.name = decide(options.name, context) ?? this.species.name;
     this.gender = decide(options.gender, context) ?? decide(this.species.genders, this);
     this._originalAbility = this._ability =
@@ -95,9 +91,18 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     this.trainer = decide(options.trainer, context) ?? { traditionalStrategy: config.wild };
 
     this.stats = new StatSet(this, { ...options.stats }, ss => {
+      // Update knowable moves and possible evolutions
       ss.on("levelUp", () => this.checkForEvolutions());
       ss.on("levelUp", () => this.checkForNewMoves());
     });
+
+    if (options.moves) {
+      const moves = decide(options.moves, context);
+      this.moves = moves?.map(move => new MoveEntry({ user: this, move: move })) ?? [];
+    } else {
+      // TODO autopopulate moves
+      this.moves = [];
+    }
   }
 
   // abilities
