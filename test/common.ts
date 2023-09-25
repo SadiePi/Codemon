@@ -1,5 +1,5 @@
 import C, { ICodemon } from "../codex/pokemon/mod.ts";
-export { assertEquals, assertNotEquals } from "https://deno.land/std@0.126.0/testing/asserts.ts";
+export * from "https://deno.land/std@0.202.0/assert/mod.ts";
 
 // https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2
 export const iKibble: ICodemon = {
