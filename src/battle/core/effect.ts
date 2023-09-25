@@ -11,31 +11,24 @@ import {
   TargetContext,
 } from "./mod.ts";
 
+type CommonTargetingOptions<P extends BattleBuilderParams<P>> = {
+  quantity?: number | "All";
+  position?: "Adjacent" | "Non-Adjacent" | "Any";
+  selection?: "Player" | "Random" | Decider<Combatant<P>[], Combatant<P>[]>;
+};
+type FoeTargeting<P extends BattleBuilderParams<P>> = CommonTargetingOptions<P> & { alignment: "Foe" };
+type AllyOrAnyTargeting<P extends BattleBuilderParams<P>> = CommonTargetingOptions<P> & {
+  alignment?: "Ally" | "Any";
+  includeSelf?: boolean;
+};
+type SelfTargeting = { alignment: "Self" };
+type DeciderParams<P extends BattleBuilderParams<P>> = { battle: Battle<P>; combatant: Combatant<P> };
+type DeciderTargeting<P extends BattleBuilderParams<P>> = Decider<boolean, DeciderParams<P>>;
 export type TargetingCategory<P extends BattleBuilderParams<P>> =
-  | Decider<
-      boolean,
-      {
-        battle: Battle<P>;
-        combatant: Combatant<P>;
-        // team: Team<P>,
-      }
-    >
-  | {
-      alignment: "Self";
-    }
-  | ({
-      quantity?: number | "All"; // default 1
-      position?: "Adjacent" | "Non-Adjacent" | "Any"; // default Adjacent
-      selection?: "Player" | "Random" | Decider<Combatant<P>[], Combatant<P>[]>; // default Player
-    } & (
-      | {
-          alignment: "Foe";
-        }
-      | {
-          alignment?: "Ally" | "Any"; // default Any
-          includeSelf?: boolean; // default false
-        }
-    ));
+  | DeciderTargeting<P>
+  | SelfTargeting
+  | FoeTargeting<P>
+  | AllyOrAnyTargeting<P>;
 
 export type TargetEffectParams<P extends BattleBuilderParams<P>> = EffectGroupEffects<TargetContext<P>, P, P["target"]>;
 export type SourceEffectParams<P extends BattleBuilderParams<P>> = EffectGroupEffects<SourceContext<P>, P, P["source"]>;
