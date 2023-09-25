@@ -56,17 +56,20 @@ export type ICodemon = MultiDecider<
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
 export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCombatant<T> {
-  private species: Species;
+  private _species: Species;
   private mutations: Partial<Species> = {};
   public getSpecies(includeMutations = true): Species {
-    return includeMutations ? { ...this.species, ...this.mutations } : this.species;
+    return includeMutations && this.mutations ? { ...this._species, ...this.mutations } : this._species;
   }
   public setSpecies(species: Species, retainMutations = true) {
-    this.species = species;
+    this._species = species;
     if (!retainMutations) this.mutations = {};
   }
   public mutate(mutations: Partial<Species>) {
-    this.mutations = { name: `Mutated ${this.species.name}`, ...this.mutations, ...mutations };
+    this.mutations = { name: `Mutated ${this._species.name}`, ...this.mutations, ...mutations };
+  }
+  public resetSpecies() {
+    this.setSpecies(this._species, false);
   }
 
   public moves: MoveEntry[];
@@ -82,11 +85,11 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     super();
 
     // TODO enforce sane values
-    this.species = decide(options.species, context);
-    this.name = decide(options.name, context) ?? this.species.name;
-    this.gender = decide(options.gender, context) ?? decide(this.species.genders, this);
+    this._species = decide(options.species, context);
+    this.name = decide(options.name, context) ?? this.getSpecies().name;
+    this.gender = decide(options.gender, context) ?? decide(this.getSpecies().genders, this);
     this._originalAbility = this._ability =
-      decide(options.ability, context) ?? decide(choose(this.species.abilities.normal.length), null);
+      decide(options.ability, context) ?? decide(choose(this.getSpecies().abilities.normal.length), null);
     this._originalNature = this._nature = decide(options.nature, context) ?? getRandomNature(options);
     this.trainer = decide(options.trainer, context) ?? { traditionalStrategy: config.wild };
 
@@ -109,9 +112,9 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   private _originalAbility: AbilitySelector;
   private _ability: AbilitySelector;
   public get ability(): Ability {
-    if (this._ability === "hidden") return this.species.abilities.hidden ?? this.species.abilities.normal[0];
+    if (this._ability === "hidden") return this.getSpecies().abilities.hidden ?? this.getSpecies().abilities.normal[0];
     if (typeof this._ability === "number")
-      return this.species.abilities.normal[this._ability % this.species.abilities.normal.length];
+      return this.getSpecies().abilities.normal[this._ability % this.getSpecies().abilities.normal.length];
     return this._ability;
   }
   public set ability(ability: AbilitySelector) {
@@ -161,11 +164,11 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   // Name
   protected _name = "[Name uninitialized]";
   public get name() {
-    return this.species.overrideName?.(this, this._name) ?? this._name;
+    return this.getSpecies().overrideName?.(this, this._name) ?? this._name;
   }
   public set name(name: string) {
-    name = name ?? this.species.name;
-    this._name = this.species.overrideName?.(this, name) ?? name;
+    name = name ?? this.getSpecies().name;
+    this._name = this.getSpecies().overrideName?.(this, name) ?? name;
   }
 
   // Gender
@@ -178,15 +181,15 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     },
   };
   public get gender() {
-    return this.species.overrideSex?.(this, this._gender) ?? this._gender;
+    return this.getSpecies().overrideSex?.(this, this._gender) ?? this._gender;
   }
   public set gender(gender: Gender) {
-    this._gender = this.species.overrideSex?.(this, gender) ?? gender;
+    this._gender = this.getSpecies().overrideSex?.(this, gender) ?? gender;
   }
 
   public calculateTypeMultiplier(attackType: Type) {
     let boost = 1;
-    this.species.types.forEach(type => {
+    this.getSpecies().types.forEach(type => {
       if (type.immunities.includes(attackType)) boost *= 0;
       else if (type.resistances.includes(attackType)) boost /= 2;
       else if (type.weaknesses.includes(attackType)) boost *= 2;
@@ -366,7 +369,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     const maxHP = this.stats.hp.max;
     const currentHP = this.stats.hp.current;
     const darkGrass = 1; // TODO
-    const rateModified = this.species.catchRate; // TODO modifiers, needs research
+    const rateModified = this.getSpecies().catchRate; // TODO modifiers, needs research
     const ballBonus = decide(effect, context) ?? 0; // 0 = failure
     const badgePenalty = 1; // TODO obedience
     const bonusLevel = this.stats.level < 13 ? Math.max((36 - 2 * this.stats.level) / 10, 1) : 1;
@@ -507,12 +510,12 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
   public evolve(evo: Evolution) {
     // TODO double check evolution requirements
-    if (this.name === this.species.name || this.name === this.mutations.name) this.name = evo.species.name;
-    this.species = evo.species;
+    if (this.name === this.getSpecies().name || this.name === this.mutations.name) this.name = evo.species.name;
+    this.setSpecies(evo.species);
   }
 
   public getDesiredEvolutions(reasons?: Partial<ExternalEvoReasons>): Evolution[] {
-    return this.species.evolutions.filter(option => {
+    return this.getSpecies().evolutions.filter(option => {
       if (option.level && this.stats.level < option.level) return false;
       if (option.item && reasons?.item !== option.item) return false;
       if (option.trade && !reasons?.trade) return false;
@@ -535,9 +538,9 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public toString(short = false) {
     if (short) return this.name + ` (${this.stats.hp.current}/${this.stats.hp.value()})`;
 
-    const identity = `${this.name !== this.species.name ? `${this.name}: ` : ""}${this.nature.name}, ${
+    const identity = `${this.name !== this.getSpecies().name ? `${this.name}: ` : ""}${this.nature.name}, ${
       this.gender.name
-    } ${this.species.name}${this.name === this.species.name ? "" : " named " + this.name}`;
+    } ${this.getSpecies().name}${this.name === this.getSpecies().name ? "" : " named " + this.name}`;
 
     const stats = this.stats.toString().replace("\n", "\n\t");
 
