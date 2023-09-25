@@ -117,19 +117,19 @@ export function sequentialAsync<T, U>(
 }
 
 // TODO use this?
-type Signaler<Args extends Array<unknown>, SignalArgs extends Array<unknown> = []> = (
-  signal: (...args: SignalArgs) => void,
-  ...args: Args
-) => void;
+// type Signaler<Args extends Array<unknown>, SignalArgs extends Array<unknown> = []> = (
+//   signal: (...args: SignalArgs) => void,
+//   ...args: Args
+// ) => void;
 
-const _levelupsignal: (level: number) => Signaler<[self: Codemon]> = level => (signal, self) => {
-  self.stats.on("levelUp", lup => {
-    if (level >= lup.newLevel) signal();
-  });
-};
+// const _levelupsignal: (level: number) => Signaler<[self: Codemon]> = level => (signal, self) => {
+//   self.stats.on("levelUp", lup => {
+//     if (level >= lup.newLevel) signal();
+//   });
+// };
 
-const bulbasaurToIvysaurLevelupSignal = _levelupsignal(16);
+// const bulbasaurToIvysaurLevelupSignal = _levelupsignal(16);
 
-bulbasaurToIvysaurLevelupSignal(() => {
-  // evolve `self`to ivysaur
-}, {} as Codemon);
+// bulbasaurToIvysaurLevelupSignal(() => {
+//   // evolve `self`to ivysaur
+// }, {} as Codemon);
