@@ -63,7 +63,32 @@ Deno.test("Species", () => {
 });
 Deno.test("Moves", () => {});
 Deno.test("Stats", () => {});
-Deno.test("Abilities", () => {});
+Deno.test("Abilities", () => {
+  const bulby = spawn(iBulby);
+  assert(bulby.ability === C.Abilities.Overgrow);
+  assert(bulby.originalAbility === C.Abilities.Overgrow);
+
+  // TODO use a species with multiple abilities
+
+  bulby.ability = "hidden";
+  assert(bulby.ability === C.Abilities.Chlorophyll);
+  assert(bulby.originalAbility === C.Abilities.Overgrow);
+
+  bulby.ability = C.Abilities.Adaptability;
+  assert(bulby.ability === C.Abilities.Adaptability);
+  assert(bulby.originalAbility === C.Abilities.Overgrow);
+
+  bulby.originalAbility = C.Abilities.Aerilate;
+  assert(bulby.ability === C.Abilities.Adaptability);
+  assert(bulby.originalAbility === C.Abilities.Aerilate);
+
+  bulby.resetAbility();
+  assert(bulby.ability === C.Abilities.Aerilate);
+
+  bulby.ability = 0;
+  assert(bulby.ability === C.Abilities.Overgrow);
+  assert(bulby.originalAbility === C.Abilities.Aerilate);
+});
 Deno.test("Natures", () => {});
 Deno.test("Names", () => {});
 Deno.test("Gender", () => {});

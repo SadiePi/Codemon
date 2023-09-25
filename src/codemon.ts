@@ -111,17 +111,20 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   // abilities
   private _originalAbility: AbilitySelector;
   private _ability: AbilitySelector;
+  private resolveAbility(selector: AbilitySelector): Ability {
+    if (selector === "hidden") return this.getSpecies().abilities.hidden ?? this.getSpecies().abilities.normal[0];
+    if (typeof selector === "number")
+      return this.getSpecies().abilities.normal[selector % this.getSpecies().abilities.normal.length];
+    return selector;
+  }
   public get ability(): Ability {
-    if (this._ability === "hidden") return this.getSpecies().abilities.hidden ?? this.getSpecies().abilities.normal[0];
-    if (typeof this._ability === "number")
-      return this.getSpecies().abilities.normal[this._ability % this.getSpecies().abilities.normal.length];
-    return this._ability;
+    return this.resolveAbility(this._ability);
   }
   public set ability(ability: AbilitySelector) {
     this._ability = ability;
   }
   public get originalAbility() {
-    return this._originalAbility;
+    return this.resolveAbility(this._originalAbility);
   }
   public set originalAbility(ability: AbilitySelector) {
     if (this._ability === this._originalAbility) this._ability = ability;
