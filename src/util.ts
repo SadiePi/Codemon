@@ -1,4 +1,3 @@
-import { Codemon } from "./codemon.ts";
 import { Decider, decide } from "./decision.ts";
 
 export type NonEmptyArray<T> = [T, ...T[]];
