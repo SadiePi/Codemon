@@ -1,8 +1,8 @@
 import { EventEmitter } from "../../external.ts";
 import { Status } from "../../status.ts";
+import { BattleEvents, CombatantEvents } from "./events.ts";
 import {
   Action,
-  ActionParams,
   ActionPlan,
   ActionReciept,
   ActionSource,
@@ -13,8 +13,6 @@ import {
   BattleEffectsReciept,
   EffectGroup,
   EffectReceiver,
-  Effects,
-  EffectsReciept,
   SourceEffects,
   SourceEffectsReciept,
   TargetEffects,
@@ -85,38 +83,9 @@ export type BattleMessage<P extends BattleBuilderParams<P>> = P["message"];
 export type BaseCombatant<P extends BattleBuilderParams<P>> = EffectReceiver<P, "target"> &
   EffectReceiver<P, "source"> & {
     [K in P["name"] as `get${Capitalize<K>}Plan`]: (battle: Battle<P>) => Promise<ActionPlan<P>>;
-  };
+  } & EventEmitter<CombatantEvents<P>>;
 
 export type Combatant<P extends BattleBuilderParams<P>> = P["combatant"];
-
-export type BattleEvents<P extends BattleBuilderParams<P>> = {
-  /** The start of the battle, before anything has happened */
-  start: [combatants: Combatant<P>[]];
-  /** The start of a round, before actions have been chosen */
-  round: [round: Round<P>];
-  /** An actor has decided on an action */
-  ready: [action: ActionParams<P>];
-  /** All actors have decided on an action */
-  allReady: [actions: ActionParams<P>[]];
-  /** An action is about to be executed */
-  beforeAction: [action: ActionParams<P>];
-  /** An action has been executed, but its effects haven't been sent to the targets yet */
-  action: [action: Action<P>];
-  /** An effect is about to be sent to a target */
-  effect: [effect: Effects<P>, target: Combatant<P>, action: Action<P>];
-  /** An effect has been sent to a target */
-  effectReciept: [reciept: EffectsReciept<P>];
-  /** The end of an action, before reactions are run */
-  actionEnd: [action: Action<P>];
-  /** An action has been executed, and its effects have been sent to the targets */
-  actionReciept: [reciept: ActionReciept<P>];
-  /** The end of a round, after all actions are done, before reactions are run */
-  roundEnd: [reciept: Round<P>];
-  /** The end of a round, after all actions and reactions are done */
-  roundReciept: [report: RoundReciept<P>];
-  /** The end of the battle, after all rounds are done */
-  battleReciept: [report: BattleReciept<P>];
-};
 
 export interface TargetChoice<P extends BattleBuilderParams<P>> {
   targets: Combatant<P>[];

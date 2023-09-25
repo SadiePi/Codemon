@@ -10,7 +10,6 @@ import {
   RecoilReciept,
   CrashReciept,
   TraditionalBBP as T,
-  TraditionalBBP,
 } from "./battle/traditional.ts";
 import { config } from "./config.ts";
 import { Decider, decide, choose, MultiDecider } from "./decision.ts";
@@ -20,7 +19,7 @@ import { Nature, StatSet, getRandomNature, StageMods, Stats, IStatSet } from "./
 import { StatusControl, StatusEffect } from "./status.ts";
 import { Trainer } from "./trainer.ts";
 import { SingleOrArray, TODO } from "./util.ts";
-import { fmt } from "./external.ts";
+import { EventEmitter, fmt } from "./external.ts";
 import {
   ActionPlan,
   Battle,
@@ -35,6 +34,7 @@ import {
 } from "./battle/core/mod.ts";
 import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
 import { EjectReciept, Reward, RewardReciept } from "./mod.ts";
+import { CombatantEvents } from "./battle/core/events.ts";
 
 export function spawn(from: ICodemon): Codemon {
   return new Codemon(decide(from, undefined));
@@ -55,7 +55,7 @@ export type ICodemon = MultiDecider<
 >;
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
-export class Codemon implements BaseCombatant<TraditionalBBP> {
+export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCombatant<T> {
   private species: Species;
   private mutations: Partial<Species> = {};
   public getSpecies(includeMutations = true): Species {
@@ -79,6 +79,8 @@ export class Codemon implements BaseCombatant<TraditionalBBP> {
       type: "Other",
     }
   ) {
+    super();
+
     // TODO enforce sane values
     this.species = decide(options.species, context);
     // // creating experience object automatically populates moves
