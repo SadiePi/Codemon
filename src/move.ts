@@ -17,8 +17,6 @@ import { Type } from "./species.ts";
 export type DamageCategory = "Physical" | "Special" | "Status";
 
 export type Move = BaseEffectSource<T> & {
-  name: string;
-  description: string;
   type: Type;
   category: DamageCategory;
   priority?: number;
@@ -36,7 +34,7 @@ export interface IMoveEntry {
 
 export class MoveEntry implements ActionSource<T> {
   public priority?: number;
-  public category: TargetingCategory<T>;
+  public target: TargetingCategory<T>;
   public effects: Move;
   public user: Codemon;
   public pp: PPScheme;
@@ -46,7 +44,7 @@ export class MoveEntry implements ActionSource<T> {
     this.user = args.user;
     this.pp = typeof this.effects.pp === "number" ? new PPScheme(this.effects.pp) : new this.effects.pp();
     this.priority = this.effects.priority;
-    this.category = this.effects.target;
+    this.target = this.effects.target;
   }
 
   traditionalAction(context: ActionUseContext<T>): Action<T> | null {
