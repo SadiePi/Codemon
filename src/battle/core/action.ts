@@ -239,7 +239,7 @@ export type ActionSource<P extends BattleBuilderParams<P>> = {
   [K in P["name"] as `${K}Action`]: (context: ActionUseContext<P>) => Action<P> | null;
 } & {
   priority?: number;
-  category: TargetingCategory<P>;
+  target: TargetingCategory<P>;
 };
 
 export interface ActionParams<P extends BattleBuilderParams<P>> {
