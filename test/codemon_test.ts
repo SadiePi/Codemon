@@ -21,41 +21,41 @@ Deno.test("Basics", () => {
 
 // Vaguely in the same order as the class's code
 Deno.test("Species", () => {
-  const notBulby = spawn({ species: C.Species.Bulbasaur });
-  let species = notBulby.getSpecies();
+  const bulby = spawn(iBulby);
+  let species = bulby.getSpecies();
   assert(species.name === "Bulbasaur");
 
-  notBulby.mutate({ description: "Mutation test" });
-  species = notBulby.getSpecies();
+  bulby.mutate({ description: "Mutation test" });
+  species = bulby.getSpecies();
   assert(species.description === "Mutation test");
   assert(species.name === "Mutated Bulbasaur");
 
-  notBulby.mutate({ types: [C.Types.Ghost, C.Types.Fire] });
-  species = notBulby.getSpecies();
+  bulby.mutate({ types: [C.Types.Ghost, C.Types.Fire] });
+  species = bulby.getSpecies();
   assert(species.types[0] === C.Types.Ghost);
   assert(species.types[1] === C.Types.Fire);
   assert(species.name === "Mutated Bulbasaur");
 
-  notBulby.mutate({ name: "Mutation Test Bulbasaur" });
-  species = notBulby.getSpecies();
+  bulby.mutate({ name: "Mutation Test Bulbasaur" });
+  species = bulby.getSpecies();
   assert(species.name === "Mutation Test Bulbasaur");
   assert(species.description === "Mutation test");
 
-  const originalSpecies = notBulby.getSpecies(false);
+  const originalSpecies = bulby.getSpecies(false);
   assert(originalSpecies.name === "Bulbasaur");
   assert(originalSpecies.description !== "Mutation test");
   assert(originalSpecies.types[0] === C.Types.Grass);
   assert(originalSpecies.types[1] === C.Types.Poison);
 
-  notBulby.setSpecies(C.Species.Ivysaur); // should retain mutations
-  species = notBulby.getSpecies();
+  bulby.setSpecies(C.Species.Ivysaur); // should retain mutations
+  species = bulby.getSpecies();
   assert(species.name === "Mutation Test Bulbasaur");
   assert(species.description === "Mutation test");
   assert(species.types[0] === C.Types.Ghost);
   assert(species.types[1] === C.Types.Fire);
 
-  notBulby.setSpecies(C.Species.Bulbasaur, false); // should reset mutations
-  species = notBulby.getSpecies();
+  bulby.setSpecies(C.Species.Bulbasaur, false); // should reset mutations
+  species = bulby.getSpecies();
   assert(species.name === "Bulbasaur");
   assert(species.description !== "Mutation test");
   assert(species.types[0] === C.Types.Grass);
