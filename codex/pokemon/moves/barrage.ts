@@ -1,4 +1,4 @@
-import { Decider, EffectDeciderContext, Move, decide, multiHit, power, range } from "../mod.ts";
+import { Move, multiHit, power } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Barrage: Move = loader.register<Move>(P => ({

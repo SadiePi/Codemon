@@ -12,5 +12,5 @@ export const HighJumpKick: Move = loader.register<Move>(P => ({
   attack: power(130),
   accuracy: 90,
   makesContact: true,
-  crash: { hp: reciept => (reciept.action.source instanceof Codemon ? reciept.action.source.stats.hp.max / 2 : 0) },
+  crash: { hp: reciept => reciept.action.params.user.stats.hp.max / 2 },
 }));

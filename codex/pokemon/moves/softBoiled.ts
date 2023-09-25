@@ -9,5 +9,5 @@ export const SoftBoiled: Move = loader.register<Move>(P => ({
   category: "Status",
   pp: 5,
   makesContact: false,
-  hp: ({ action }) => (action.source instanceof Codemon ? action.source.stats.hp.max / 2 : 0),
+  hp: ({ action }) => action.params.user.stats.hp.max / 2,
 }));

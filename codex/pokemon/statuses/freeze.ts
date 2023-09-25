@@ -1,4 +1,4 @@
-import { BaseStatusEffect } from "../mod.ts";
+import { StatusEffect, TraditionalBBP } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const Freeze: BaseStatusEffect = {} as BaseStatusEffect;
+export const Freeze: StatusEffect<TraditionalBBP> = {} as StatusEffect<TraditionalBBP>;

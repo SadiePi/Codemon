@@ -9,5 +9,5 @@ export const NightShade: Move = loader.register<Move>(P => ({
   pp: 15, // max 24
   target: { position: "Adjacent" },
   makesContact: false,
-  hp: ({ action }) => (action.source instanceof Codemon ? action.source.stats.level : 0),
+  hp: ({ action }) => action.params.user.stats.level,
 }));

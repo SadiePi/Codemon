@@ -1,7 +1,7 @@
-import { Codemon, EffectTarget, Move } from "../mod.ts";
+import { Codemon, Move } from "../mod.ts";
 import loader from "../loader.ts";
 
-declare function substitute(target: Codemon): EffectTarget;
+// declare function substitute(target: Codemon): EffectTarget;
 
 export const Substitute: Move = loader.register<Move>(P => ({
   name: "Substitute",

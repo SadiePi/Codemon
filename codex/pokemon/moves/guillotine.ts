@@ -7,16 +7,11 @@ export const Guillotine: Move = loader.register<Move>(P => ({
   type: P.Types.Normal,
   category: "Physical",
   pp: 5,
-  accuracy: ({
-    action: {
-      params: { user },
-    },
-    target,
-  }) => {
-    const userLevel = user instanceof Codemon ? user.stats.level : 0;
-    const targetLevel = target instanceof Codemon ? target.stats.level : 0;
-    return 30 + userLevel - targetLevel;
-  },
+  // accuracy: () => {
+  //   const userLevel = user instanceof Codemon ? user.stats.level : 0;
+  //   const targetLevel = target instanceof Codemon ? target.stats.level : 0;
+  //   return 30 + userLevel - targetLevel;
+  // },
   target: { position: "Adjacent" },
   makesContact: true,
   faint: true,

@@ -1,4 +1,4 @@
-import { BaseStatusEffect } from "../mod.ts";
+import { StatusEffect, TraditionalBBP } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const Transformed: BaseStatusEffect = {} as BaseStatusEffect;
+export const Transformed: StatusEffect<TraditionalBBP> = {} as StatusEffect<TraditionalBBP>;

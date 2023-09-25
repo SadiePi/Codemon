@@ -10,7 +10,7 @@ export const LowKick: Move = loader.register<Move>(P => ({
   pp: 20,
   attack: ({ target }) => {
     if (!(target instanceof Codemon)) return;
-    const w = target.species.weight;
+    const w = target.getSpecies().weight;
     if (w < 10) return power(20);
     if (w < 25) return power(40);
     if (w < 50) return power(60);

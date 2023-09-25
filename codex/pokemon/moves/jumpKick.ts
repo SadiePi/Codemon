@@ -12,7 +12,6 @@ export const JumpKick: Move = loader.register<Move>(P => ({
   target: { position: "Adjacent" },
   makesContact: true,
   crash: {
-    hp: reciept =>
-      reciept.action.source instanceof Codemon ? Math.floor(reciept.action.source.stats.hp.value() / 2) : 0,
+    hp: reciept => reciept.action.params.user.stats.hp.value() / 2,
   },
 }));

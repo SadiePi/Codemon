@@ -9,6 +9,5 @@ export const Psywave: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 15,
   makesContact: false,
-  hp: ({ action }) =>
-    action.source instanceof Codemon ? Math.floor((action.source.stats.level * (Math.random() * +50)) / 100) : 0,
+  hp: ({ action }) => Math.floor((action.params.user.stats.level * (Math.random() * 50)) / 100),
 }));

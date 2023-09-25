@@ -9,5 +9,5 @@ export const Recover: Move = loader.register<Move>(P => ({
   pp: 10, // max 16
   target: { alignment: "Self" },
   makesContact: false,
-  hp: ({ action }) => (action.source instanceof Codemon ? action.source.stats.hp.max / 2 : 0),
+  hp: ({ action }) => action.params.user.stats.hp.max / 2,
 }));
