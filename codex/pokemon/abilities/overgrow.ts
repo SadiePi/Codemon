@@ -1,4 +1,45 @@
-import { Ability } from "../mod.ts";
+import { Ability, Battle, Effects, MoveEntry, TraditionalBBP as T, TargetContext, decide, permanent } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const Overgrow = {} as Ability;
+export const Overgrow: Ability = loader.register(C => ({
+  name: "Overgrow",
+  description: "Powers up Grass-type moves when the Pokémon's HP is low.",
+  slot: "ability",
+
+  apply: ({ self }) => {
+    const boostGrassMovesWhenLowHP = (effect: Effects<T>, context: TargetContext<T>) => {
+      const { action } = context;
+      if (!(action.params.source instanceof MoveEntry)) return;
+      if (action.params.source.user !== self) return;
+      if (action.params.source.effects.type !== C.Types.Grass) if (action.params.source.user !== self) return;
+      if (!effect.attack) return;
+      if (self.stats.hp.percent > 1 / 3) return;
+
+      const old = effect.attack;
+      effect.attack = () => {
+        const attack = decide(old, context);
+        if (!attack) return undefined;
+        attack.stat = attack.stat * 1.5;
+        return attack;
+      };
+    };
+
+    const startListeningForEffects = (battle: Battle<T>) => battle.on("effect", boostGrassMovesWhenLowHP);
+    const stopListeningForEffects = (battle: Battle<T>) => battle.off("effect", boostGrassMovesWhenLowHP);
+
+    return {
+      name: Overgrow.name,
+      activate: () => {
+        self.on("enterBattle", startListeningForEffects);
+        self.on("exitBattle", stopListeningForEffects);
+      },
+      deactivate: () => {
+        self.off("enterBattle", startListeningForEffects);
+        self.off("exitBattle", stopListeningForEffects);
+
+        // TODO battle.off somehow
+      },
+      expiry: permanent,
+    };
+  },
+}));
