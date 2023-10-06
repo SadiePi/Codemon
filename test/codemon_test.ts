@@ -1,4 +1,4 @@
-import { assert, iBulby } from "./common.ts";
+import { assert, iBulby, iKibble } from "./common.ts";
 import { spawn } from "../src/mod.ts";
 import C from "../codex/pokemon/mod.ts";
 
@@ -62,7 +62,17 @@ Deno.test("Species", () => {
   assert(species.types[1] === C.Types.Poison);
 });
 Deno.test("Moves", () => {});
-Deno.test("Stats", () => {});
+Deno.test("Stats", () => {
+  const kibble = spawn(iKibble);
+  assert(kibble.stats.hp.max === 289);
+  assert(kibble.stats.attack.value() === 278);
+  assert(kibble.stats.defense.value() === 193);
+  assert(kibble.stats.specialAttack.value() === 135);
+  assert(kibble.stats.specialDefense.value() === 171);
+  assert(kibble.stats.speed.value() === 171);
+
+  // TODO test stat stages
+});
 Deno.test("Abilities", () => {
   const bulby = spawn(iBulby);
   assert(bulby.ability === C.Abilities.Overgrow);
