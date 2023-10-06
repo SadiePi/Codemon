@@ -167,6 +167,9 @@ class HPStatEntry extends PermanentStatEntry {
   public get max() {
     return this.value();
   }
+  public get fainted() {
+    return this.current <= 0;
+  }
   constructor(set: StatSet, args: IHPStatEntry) {
     super("hp", set, Number.MAX_SAFE_INTEGER, args);
     this.current = args.current ?? this.value();
