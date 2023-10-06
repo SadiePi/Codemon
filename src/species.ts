@@ -10,6 +10,7 @@ import {
   NonEmptyPartial,
   Stat,
   Status,
+  StatusEntry,
   Weather,
 } from "./mod.ts";
 import { Move } from "./move.ts";
@@ -130,3 +131,4 @@ export interface Species {
 // selects the ability at index (abilitySlot%abilitiesCount)
 export type AbilitySelector = number | "hidden" | Ability;
 export type Ability = Status<{ self: Codemon }>;
+export type AbilityEntry = StatusEntry<{ self: Codemon }>;

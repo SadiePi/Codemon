@@ -16,7 +16,7 @@ import { Decider, decide, choose, MultiDecider } from "./decision.ts";
 import { SpawnContext } from "./map.ts";
 import { Move, MoveEntry } from "./move.ts";
 import { Nature, StatSet, getRandomNature, StageMods, Stats, IStatSet } from "./stats.ts";
-import { StatusControl, StatusEffect } from "./status.ts";
+import { StatusEffect, StatusEntry } from "./status.ts";
 import { Trainer } from "./trainer.ts";
 import { SingleOrArray, TODO } from "./util.ts";
 import { EventEmitter, fmt } from "./external.ts";
@@ -33,7 +33,7 @@ import {
   SourceEffectsReciept,
 } from "./battle/core/mod.ts";
 import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
-import { EjectReciept, Reward, RewardReciept } from "./mod.ts";
+import { AbilityEntry, EjectReciept, Reward, RewardReciept } from "./mod.ts";
 import { CombatantEvents } from "./battle/core/events.ts";
 
 export function spawn(from: ICodemon): Codemon {
@@ -88,7 +88,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     this._species = decide(options.species, context);
     this.name = decide(options.name, context) ?? this.getSpecies().name;
     this.gender = decide(options.gender, context) ?? decide(this.getSpecies().genders, this);
-    this._originalAbility = this._ability =
+    this.originalAbility = this.ability =
       decide(options.ability, context) ?? decide(choose(this.getSpecies().abilities.normal.length), null);
     this._originalNature = this._nature = decide(options.nature, context) ?? getRandomNature(options);
     this.trainer = decide(options.trainer, context) ?? { traditionalStrategy: config.wild };
@@ -109,8 +109,11 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   }
 
   // abilities
-  private _originalAbility: AbilitySelector;
-  private _ability: AbilitySelector;
+  // these are all set in the setters below, which are called in the constructor
+  private _originalAbility!: AbilitySelector;
+  private _ability!: AbilitySelector;
+  private _abilityEntry!: AbilityEntry;
+
   private resolveAbility(selector: AbilitySelector): Ability {
     if (selector === "hidden") return this.getSpecies().abilities.hidden ?? this.getSpecies().abilities.normal[0];
     if (typeof selector === "number")
@@ -121,7 +124,9 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     return this.resolveAbility(this._ability);
   }
   public set ability(ability: AbilitySelector) {
+    this._abilityEntry.expire();
     this._ability = ability;
+    this._abilityEntry = new StatusEntry<{ self: Codemon }>(this.ability, { self: this });
   }
   public get originalAbility() {
     return this.resolveAbility(this._originalAbility);
