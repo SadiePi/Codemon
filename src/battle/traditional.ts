@@ -186,7 +186,11 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
 
   async runPlan(plan: ActionPlan): Promise<ActionReciept> {
     const action = plan.source.traditionalAction({ plan, battle: this });
-    if (!action) return { success: false, messages: ["But it failed!"] };
+    if (!action)
+      return {
+        success: false,
+        messages: [...decide(config.locale.battle.traditional.plan.failed, { battle: this, plan })],
+      };
     await this.wait("action", action);
     return await action.execute(this);
   }
@@ -204,7 +208,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     weather.apply(context);
     return {
       success: true,
-      messages: [],
+      messages: [...decide(config.locale.battle.traditional.weather, { context, weather })],
       actual: weather,
     };
   }
@@ -217,9 +221,11 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
         messages: [],
       };
 
+    TODO("Implement end of battle");
+
     return {
       success: true,
-      messages: [TODO("Implement end of battle")],
+      messages: [...decide(config.locale.battle.traditional.end, { context })],
       actual: false,
     };
   }

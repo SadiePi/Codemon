@@ -59,7 +59,7 @@ export class MoveEntry implements ActionSource<T> {
       targets: context.plan.targets,
     });
 
-    ret.message(`${this.user.name} used ${this.effects.name}!`);
+    ret.message(...decide(config.locale.move.use, { context, move: this }));
     return ret;
   }
 

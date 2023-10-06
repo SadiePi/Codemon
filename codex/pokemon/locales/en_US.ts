@@ -6,6 +6,16 @@ export const en_US: Locale = {
 
   battle: {
     traditional: {
+      plan: {
+        failed: "But it failed!",
+      },
+      weather: ({ weather }) => `Weather: ${weather.name}`,
+      end: "(Battle should end here, but WIP)",
+    },
+  },
+
+  codemon: {
+    traditional: {
       attack: {
         effectiveness: ({ typeMultiplier }) => {
           if (typeMultiplier === 0) return `It's ${fmt.red("ineffective!")}`;
@@ -65,5 +75,9 @@ export const en_US: Locale = {
       reward: ({ context: { target } }) => `Coins were scattered on the ground near ${target.name}!`,
       eject: ({ context: { target } }) => `${target.name} was ejected from the battle!`,
     },
+  },
+
+  move: {
+    use: ({ move }) => `${move.user} used ${move.effects.name}!`,
   },
 };

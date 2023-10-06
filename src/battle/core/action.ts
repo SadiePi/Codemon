@@ -108,7 +108,7 @@ export abstract class BattleNode<P extends BattleBuilderParams<P>, Reciept> exte
   }
 
   protected _messages: BattleMessage<P>[] = [];
-  public message(message: BattleMessage<P>) {
+  public message(...message: BattleMessage<P>[]) {
     this._messages.push(message);
   }
 

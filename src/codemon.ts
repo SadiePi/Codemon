@@ -258,7 +258,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     base = base / 50 + 2;
 
     const typeMultiplier = this.calculateTypeMultiplier(attack.type);
-    messages.push(...decide(config.locale.battle.traditional.attack.effectiveness, { context, typeMultiplier }));
+    messages.push(...decide(config.locale.codemon.traditional.attack.effectiveness, { context, typeMultiplier }));
 
     const product =
       base *
@@ -276,7 +276,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     );
 
     this.stats.hp.current -= total;
-    messages.push(...decide(config.locale.battle.traditional.attack.damage, { context, total }));
+    messages.push(...decide(config.locale.codemon.traditional.attack.damage, { context, total }));
 
     return {
       actual: attack,
@@ -301,7 +301,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       const entry = new StatusEntry(status, context);
       if (entry.expired) return;
       this.statuses.push(entry);
-      messages.push(...decide(config.locale.battle.traditional.status.apply, { context, entry }));
+      messages.push(...decide(config.locale.codemon.traditional.status.apply, { context, entry }));
     });
 
     return { success: true, messages, actual: status };
@@ -318,7 +318,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     this.stats.hp.current = Math.max(0, Math.min(this.stats.hp.max, this.stats.hp.current + hp));
     const difference = this.stats.hp.current - old;
 
-    const messages = [...decide(config.locale.battle.traditional.hp, { context, difference })];
+    const messages = [...decide(config.locale.codemon.traditional.hp, { context, difference })];
 
     return { success: true, messages, actual: hp, faint: this.stats.hp.fainted };
   }
@@ -332,7 +332,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
     for (const stat of Stats) if (stages[stat]) this.stats[stat].stage.modify(stages[stat]!);
 
-    const messages = [...decide(config.locale.battle.traditional.stages, { context, stages })];
+    const messages = [...decide(config.locale.codemon.traditional.stages, { context, stages })];
 
     return { success: true, messages, actual: stages };
   }
@@ -374,7 +374,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       return {
         success: true,
         actual: ballBonus,
-        messages: [...decide(config.locale.battle.traditional.ball.immediate, { context, a })],
+        messages: [...decide(config.locale.codemon.traditional.ball.immediate, { context, a })],
         caught: true,
         shakes: 0,
       };
@@ -386,7 +386,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
         return {
           success: true,
           actual: ballBonus,
-          messages: [...decide(config.locale.battle.traditional.ball.escape, { context, a, b, check })],
+          messages: [...decide(config.locale.codemon.traditional.ball.escape, { context, a, b, check })],
           caught: false,
           shakes: check,
         };
@@ -396,7 +396,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     return {
       success: true,
       actual: ballBonus,
-      messages: [...decide(config.locale.battle.traditional.ball.caught, { context, a, b })],
+      messages: [...decide(config.locale.codemon.traditional.ball.caught, { context, a, b })],
       caught: true,
       shakes: config.battle.traditional.shakeChecks,
     };
@@ -417,7 +417,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
     return {
       success: true,
-      messages: [...decide(config.locale.battle.traditional.reward, { context, reward })],
+      messages: [...decide(config.locale.codemon.traditional.reward, { context, reward })],
       actual: reward,
     };
   }
@@ -438,7 +438,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
     return {
       success: true,
-      messages: [...decide(config.locale.battle.traditional.eject, { context })],
+      messages: [...decide(config.locale.codemon.traditional.eject, { context })],
       actual: true,
     };
   }
