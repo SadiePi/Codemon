@@ -69,18 +69,32 @@ export class StatusEntry<ApplyArgs extends Record<string, unknown>> {
   }
 }
 
+export function countdown(duration: number, callback: (count: () => void) => () => void): StatusExpiry {
+  return expire => {
+    let remainingTicks = duration;
+    const count = () => {
+      if (remainingTicks <= 0) {
+        expire();
+        cleanup();
+      }
+      remainingTicks--;
+    };
+
+    const cleanup = callback(count);
+  };
+}
+
 export type StatusEffect<P extends BattleBuilderParams<P>> = Status<TargetContext<P>> & {
   description: string;
   slot: string;
 };
 
 export function duration<P extends BattleBuilderParams<P>>(duration: number, battle: Battle<P>): StatusExpiry {
-  return expire => {
-    const start = battle.getRound().number;
-    battle.on("roundEnd", round => {
-      if (round.number - start >= duration) expire();
-    });
+  const callback = (count: () => void) => {
+    battle.on("roundEnd", count);
+    return () => battle.off("roundEnd", count);
   };
+  return countdown(duration, callback);
 }
 
 export function volatile<P extends BattleBuilderParams<P>>(battle: Battle<P>): StatusExpiry {
