@@ -27,7 +27,7 @@ export type BattleEvents<P extends BattleBuilderParams<P>> = {
   allReady: [actions: ActionPlan<P>[]];
   beforeAction: [action: ActionParams<P>];
   action: [action: Action<P>];
-  effect: [effect: Effects<P>, target: Combatant<P>, action: Action<P>];
+  effect: [effect: Effects<P>, context: TargetContext<P>];
   effectReciept: [reciept: EffectsReciept<P>];
   actionEnd: [action: Action<P>];
   actionReciept: [reciept: ActionReciept<P>];
