@@ -4,13 +4,13 @@
 import { TraditionalBBP } from "./battle/traditional.ts";
 import { ICodemon } from "./codemon.ts";
 import { Decider } from "./decision.ts";
+import { Locale } from "./locale.ts";
 import { Move } from "./move.ts";
 import { Nature } from "./stats.ts";
 import { Strategy } from "./trainer.ts";
 
 // be warned, sanity checks are NOT performed on these values (half lazy, half fun)
 export const config = {
-  locale: "en_US", // unused for now
   stats: {
     maxIV: 32,
     maxEV: 255,
@@ -48,8 +48,9 @@ export const config = {
   struggle: {} as Move,
   wild: {} as Strategy<TraditionalBBP>,
   randomNature: {} as Decider<Nature, ICodemon>,
+  locale: {} as Locale,
 };
 
 export function isInitialized() {
-  return !!config.wild && !!config.randomNature && !!config.struggle;
+  return !!config.wild && !!config.randomNature && !!config.struggle && !!config.locale;
 }

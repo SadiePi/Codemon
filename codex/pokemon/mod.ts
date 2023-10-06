@@ -6,6 +6,7 @@ import * as Abilities from "./abilities/index.ts";
 import * as Experience from "./experience/index.ts";
 import * as Genders from "./genders/index.ts";
 import * as Items from "./items/index.ts";
+import * as Locales from "./locales/index.ts";
 import * as Moves from "./moves/index.ts";
 import * as Natures from "./natures/index.ts";
 import * as Species from "./species/index.ts";
@@ -20,6 +21,7 @@ const Pokedex = {
   Experience,
   Genders,
   Items,
+  Locales,
   Moves,
   Natures,
   Species,
@@ -35,6 +37,7 @@ loader.build(Pokedex, {
   struggle: Moves.Struggle,
   wild: Strategies.Wild,
   randomNature: choose(...Object.values(Natures)),
+  locale: Locales.en_US,
 });
 
 export default Pokedex;

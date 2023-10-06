@@ -1191,7 +1191,7 @@
     "ZoomLens",
     "ZygardeCube"
   ],
-  "locales": ["English"],
+  "locales": ["en_US"],
   "moves": [
     "Pound",
     "ViseGrip",

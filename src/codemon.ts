@@ -258,9 +258,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     base = base / 50 + 2;
 
     const typeMultiplier = this.calculateTypeMultiplier(attack.type);
-    if (typeMultiplier === 0) messages.push(`It's ${fmt.red("ineffective!")}`);
-    else if (typeMultiplier < 1) messages.push(`It's ${fmt.yellow("not very effective...")}`);
-    else if (typeMultiplier > 1) messages.push(`It's ${fmt.green("super effective!")}`);
+    messages.push(...decide(config.locale.battle.traditional.attack.effectiveness, { context, typeMultiplier }));
 
     const product =
       base *
@@ -278,22 +276,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     );
 
     this.stats.hp.current -= total;
-    messages.push(`${this.name} took ${fmt.red(total + "")} damage!`);
-    const faint = this.stats.hp.current <= 0;
-
-    if (faint) {
-      messages.push(fmt.red(`${this.name} fainted!`));
-    } else {
-      let remaining = this.stats.hp.current + "";
-      if (this.stats.hp.current < this.stats.hp.max * 0.2) remaining = fmt.red(remaining);
-      else if (this.stats.hp.current < this.stats.hp.max * 0.5) remaining = fmt.yellow(remaining);
-      else if (this.stats.hp.current < this.stats.hp.max * 0.9) remaining = fmt.green(remaining);
-      else remaining = fmt.blue(remaining);
-
-      messages.push(
-        `${this.name} has ${remaining}/${this.stats.hp.max} HP left!${this.stats.hp.percent < 0.25 ? "!!" : ""}`
-      );
-    }
+    messages.push(...decide(config.locale.battle.traditional.attack.damage, { context, total }));
 
     return {
       actual: attack,
@@ -301,11 +284,11 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       messages,
       typeMultiplier,
       total,
-      faint,
+      faint: this.stats.hp.fainted,
     };
   }
 
-  public statuses: StatusControl[] = [];
+  public statuses: StatusEntry<TargetContext<T>>[] = [];
   public receiveTraditionalStatus(
     effect: Decider<SingleOrArray<StatusEffect<T>> | undefined, TargetContext<T>>,
     context: TargetContext<T>
@@ -315,10 +298,10 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
     const messages: BattleMessage<T>[] = [];
     [status].flat().forEach(status => {
-      const control = status.apply(context);
-      if (!control) return;
-      this.statuses.push(control);
-      control.activate();
+      const entry = new StatusEntry(status, context);
+      if (entry.expired) return;
+      this.statuses.push(entry);
+      messages.push(...decide(config.locale.battle.traditional.status.apply, { context, entry }));
     });
 
     return { success: true, messages, actual: status };
@@ -331,18 +314,13 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     const hp = decide(effect, context);
     if (!hp) return { success: false, messages: [] };
 
-    const messages: BattleMessage<T>[] = [];
     const old = this.stats.hp.current;
     this.stats.hp.current = Math.max(0, Math.min(this.stats.hp.max, this.stats.hp.current + hp));
-    const diff = this.stats.hp.current - old;
-    if (diff > 0) messages.push(`${this.name} healed ${fmt.green(diff + "")} HP!`);
-    else if (diff < 0) messages.push(`${this.name} took ${fmt.red(-diff + "")} direct damage!`);
-    else messages.push(`${this.name} didn't feel any different!`);
+    const difference = this.stats.hp.current - old;
 
-    const faint = this.stats.hp.current <= 0;
-    if (faint) messages.push(fmt.red(`${this.name} fainted!`));
+    const messages = [...decide(config.locale.battle.traditional.hp, { context, difference })];
 
-    return { success: true, messages, actual: hp, faint };
+    return { success: true, messages, actual: hp, faint: this.stats.hp.fainted };
   }
 
   public receiveTraditionalStages(
@@ -352,9 +330,9 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     const stages = decide(effect, context);
     if (!stages) return { success: false, messages: [] };
 
-    const messages: BattleMessage<T>[] = [];
     for (const stat of Stats) if (stages[stat]) this.stats[stat].stage.modify(stages[stat]!);
-    messages.push(`${this.name} recieved stages ${JSON.stringify(stages)}!`);
+
+    const messages = [...decide(config.locale.battle.traditional.stages, { context, stages })];
 
     return { success: true, messages, actual: stages };
   }
@@ -396,7 +374,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       return {
         success: true,
         actual: ballBonus,
-        messages: [`Gotcha! ${this.name} was caught immediately!`],
+        messages: [...decide(config.locale.battle.traditional.ball.immediate, { context, a })],
         caught: true,
         shakes: 0,
       };
@@ -405,18 +383,20 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     for (let check = 0; check < config.battle.traditional.shakeChecks; check++) {
       const rand = Math.floor(65536 * Math.random());
       if (rand >= b) {
-        let message = `Oh no! The ${config.branding.mon} broke free!`;
-        if (config.battle.traditional.shakeChecks - check > 3) message = "Aww! It appeared to be caught!";
-        else if (config.battle.traditional.shakeChecks - check > 2) message = "Aargh! Almost had it!";
-        else if (config.battle.traditional.shakeChecks - check > 1) message = "Gah! It was so close, too!";
-        return { success: true, actual: ballBonus, messages: [message], caught: false, shakes: check };
+        return {
+          success: true,
+          actual: ballBonus,
+          messages: [...decide(config.locale.battle.traditional.ball.escape, { context, a, b, check })],
+          caught: false,
+          shakes: check,
+        };
       }
     }
 
     return {
       success: true,
       actual: ballBonus,
-      messages: [`Gotcha! ${this.name} was caught!`],
+      messages: [...decide(config.locale.battle.traditional.ball.caught, { context, a, b })],
       caught: true,
       shakes: config.battle.traditional.shakeChecks,
     };
@@ -433,9 +413,11 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
         messages: [],
       };
 
+    TODO("cache and distribute rewards");
+
     return {
       success: true,
-      messages: ["Coins were scattered on the ground!", TODO("cache and distribute rewards")],
+      messages: [...decide(config.locale.battle.traditional.reward, { context, reward })],
       actual: reward,
     };
   }
@@ -456,8 +438,8 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
     return {
       success: true,
-      messages: [`${this.name} was ejected from the battle!`],
-      actual: false,
+      messages: [...decide(config.locale.battle.traditional.eject, { context })],
+      actual: true,
     };
   }
 

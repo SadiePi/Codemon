@@ -11,6 +11,7 @@ import { merge } from "./external.ts";
 import { Ability, Gender, Species, Type } from "./species.ts";
 import { Weather } from "./battle/traditional.ts";
 import { StatusEffect, TraditionalBBP as T } from "./mod.ts";
+import { Locale } from "./locale.ts";
 
 export class CodexBuilder<C extends Codex> {
   private built = false;
@@ -38,6 +39,7 @@ export abstract class Codex {
   public abstract Experience: Record<string, ExperienceGroup>;
   public abstract Genders: Record<string, Gender>;
   public abstract Items: Record<string, Item>;
+  public abstract Locales: Record<string, Locale>;
   public abstract Moves: Record<string, Move>;
   public abstract Natures: Record<string, Nature>;
   public abstract Species: Record<string, Species>;

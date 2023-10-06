@@ -4,6 +4,7 @@ export * from "./codemon.ts";
 export * from "./codex.ts";
 export * from "./config.ts";
 export * from "./item.ts";
+export * from "./locale.ts";
 export * from "./move.ts";
 export * from "./species.ts";
 export * from "./stats.ts";
