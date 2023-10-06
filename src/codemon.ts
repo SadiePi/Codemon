@@ -124,7 +124,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     return this.resolveAbility(this._ability);
   }
   public set ability(ability: AbilitySelector) {
-    this._abilityEntry.expire();
+    this._abilityEntry?.expire();
     this._ability = ability;
     this._abilityEntry = new StatusEntry<{ self: Codemon }>(this.ability, { self: this });
   }
