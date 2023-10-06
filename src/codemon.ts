@@ -513,7 +513,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
   public evolve(evo: Evolution) {
     // TODO double check evolution requirements
-    if (this.name === this.getSpecies().name || this.name === this.mutations.name) this.name = evo.species.name;
+    if (this.name === this.getSpecies().name) this.name = evo.species.name;
     this.setSpecies(evo.species);
   }
 
