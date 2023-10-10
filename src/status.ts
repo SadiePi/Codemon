@@ -1,12 +1,11 @@
 import {
   Action,
+  ActionParams,
   ActionPlan,
   ActionSource,
   ActionUseContext,
   Battle,
   BattleBuilderParams,
-  Combatant,
-  EffectParams,
   TargetContext,
 } from "./battle/core/mod.ts";
 import { Immutable } from "./util.ts";
@@ -112,19 +111,20 @@ export function volatile<P extends BattleBuilderParams<P>>(battle: Battle<P>): S
 
 export const permanent: StatusExpiry = () => {};
 
-export function effectAction<P extends BattleBuilderParams<P>>(
-  battle: Battle<P>,
-  target: Combatant<P>,
-  effect: EffectParams<P>
-): ActionPlan<P> {
-  const source: ActionSource<P> = {
-    category: "Self",
+export function effectAction<P extends BattleBuilderParams<P>>({
+  battle,
+  effect,
+  targets,
+  user,
+  parent,
+}: Omit<ActionParams<P>, "source">): ActionPlan<P> {
+  const actionSource: ActionSource<P> = {
     [`${battle.type}Action`]: ({ plan: { targets } }: ActionUseContext<P>): Action<P> =>
-      new Action<P>({ battle, user: target, effect, source, targets }),
+      new Action<P>({ battle, user, effect, source: actionSource, targets, parent }),
   } as unknown as ActionSource<P>; // TODO? this may be a mistake, we'll see
   return {
-    source,
-    targets: [target],
-    combatant: target,
+    source: actionSource,
+    targets,
+    combatant: user,
   };
 }
