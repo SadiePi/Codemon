@@ -42,7 +42,7 @@ export type BattleEvents<P extends BattleBuilderParams<P>> = {
 
 export type TargetEvents<P extends BattleBuilderParams<P>> = {
   receiveTargetEffects: [effects: TargetEffects<P>, context: TargetContext<P>];
-  targetEffectReciept: [reciept: TargetEffectsReciept<P>];
+  targetEffectReciept: [reciept: TargetEffectsReciept<P>, context: TargetContext<P>];
 };
 
 export type SourceEvents<P extends BattleBuilderParams<P>> = {
@@ -50,6 +50,7 @@ export type SourceEvents<P extends BattleBuilderParams<P>> = {
   submitAction: [action: ActionPlan<P>];
   beforeAction: [action: ActionParams<P>];
   action: [action: Action<P>];
+  inflictEffects: [effects: TargetEffects<P> & SourceEffects<P>, context: TargetContext<P>];
   actionEnd: [action: Action<P>];
   actionReciept: [reciept: ActionReciept<P>];
   receiveSourceEffects: [effects: SourceEffects<P>, context: SourceContext<P>];
@@ -59,7 +60,7 @@ export type SourceEvents<P extends BattleBuilderParams<P>> = {
 export type CombatantEvents<P extends BattleBuilderParams<P>> = {
   enterBattle: [battle: Battle<P>];
   receiveEffects: [effect: TargetEffects<P> & SourceEffects<P>, context: TargetContext<P>];
-  effectReciept: [reciept: TargetEffectsReciept<P> & SourceEffectsReciept<P>];
+  effectReciept: [reciept: TargetEffectsReciept<P> & SourceEffectsReciept<P>, context: TargetContext<P>];
   exitBattle: [battle: Battle<P>, exitReason: unknown]; // TODO: exit reason
 } & TargetEvents<P> &
   SourceEvents<P>;
