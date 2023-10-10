@@ -1,4 +1,4 @@
-import { duration } from "../../../src/mod.ts";
+import { roundDuration } from "../../../src/mod.ts";
 import {
   Action,
   Combatant,

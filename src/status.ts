@@ -89,12 +89,19 @@ export type StatusEffect<P extends BattleBuilderParams<P>> = Status<TargetContex
   slot: string;
 };
 
-export function duration<P extends BattleBuilderParams<P>>(duration: number, battle: Battle<P>): StatusExpiry {
-  const callback = (count: () => void) => {
-    battle.on("roundEnd", count);
+export function roundDuration<P extends BattleBuilderParams<P>>(
+  duration: number,
+  battle: Battle<P>,
+  includeThisRound = false
+): StatusExpiry {
+  let skip = includeThisRound;
+  return countdown(duration, (count: () => void) => {
+    battle.on("roundEnd", () => {
+      if (skip) skip = false;
+      else count();
+    });
     return () => battle.off("roundEnd", count);
-  };
-  return countdown(duration, callback);
+  });
 }
 
 export function volatile<P extends BattleBuilderParams<P>>(battle: Battle<P>): StatusExpiry {
