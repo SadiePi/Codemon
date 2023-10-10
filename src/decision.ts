@@ -131,3 +131,11 @@ export function timeout<T, Context>(
     return Promise.race([decide(decider, context), timer]);
   };
 }
+
+export function proxy<T, Context>(decider: Decider<T, Context>, proxy: (result: T) => void): Decider<T, Context> {
+  return context => {
+    const result = decide(decider, context);
+    proxy(result);
+    return result;
+  };
+}
