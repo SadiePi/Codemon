@@ -1,5 +1,5 @@
-import { Reward, TraditionalBBP, Weather } from "./battle/traditional.ts";
-import { ActionPlan, ActionUseContext, Battle, BattleContext, TargetContext } from "./battle/core/mod.ts";
+import { Reward, TraditionalBBP as T, Weather } from "./battle/traditional.ts";
+import { ActionPlan, ActionUseContext, Battle, BattleContext, Combatant, TargetContext } from "./battle/core/mod.ts";
 import { Decider } from "./decision.ts";
 import { SingleOrArray } from "./util.ts";
 import { StatusEntry } from "./status.ts";
@@ -8,7 +8,7 @@ import { MoveEntry } from "./move.ts";
 
 type LocaleString<Args = undefined> = Decider<SingleOrArray<string>, Args>;
 
-type TTC = TargetContext<TraditionalBBP>; // for brevity
+type TTC = TargetContext<T>; // for brevity
 
 // TODO convert more strings throughout to LocaleStrings
 export interface Locale {
@@ -17,10 +17,12 @@ export interface Locale {
   battle: {
     traditional: {
       plan: {
-        failed: LocaleString<{ battle: Battle<TraditionalBBP>; plan: ActionPlan<TraditionalBBP> }>;
+        failed: LocaleString<{ battle: Battle<T>; plan: ActionPlan<T> }>;
       };
-      weather: LocaleString<{ context: BattleContext<TraditionalBBP>; weather: Weather }>;
-      end: LocaleString<{ context: BattleContext<TraditionalBBP> }>;
+
+      join: LocaleString<{ context: BattleContext<T>; combatant: Combatant<T> }>;
+      weather: LocaleString<{ context: BattleContext<T>; weather: Weather }>;
+      end: LocaleString<{ context: BattleContext<T> }>;
     };
   };
 
@@ -47,6 +49,6 @@ export interface Locale {
   };
 
   move: {
-    use: LocaleString<{ context: ActionUseContext<TraditionalBBP>; move: MoveEntry }>;
+    use: LocaleString<{ context: ActionUseContext<T>; move: MoveEntry }>;
   };
 }

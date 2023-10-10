@@ -9,6 +9,7 @@ export const en_US: Locale = {
       plan: {
         failed: "But it failed!",
       },
+      join: "TODO join message",
       weather: ({ weather }) => `Weather: ${weather.name}`,
       end: "(Battle should end here, but WIP)",
     },
