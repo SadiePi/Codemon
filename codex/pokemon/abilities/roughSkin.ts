@@ -1,4 +1,6 @@
-import { Ability, MoveEntry, TargetContext, effectAction, permanent, TraditionalBBP as T, Effects } from "../mod.ts";
+import { Ability, MoveEntry, TargetContext, permanent, TraditionalBBP as T, Effects } from "../mod.ts";
+
+const DAMAGE_FACTOR = 1 / 8;
 
 export const RoughSkin: Ability = {
   name: "Rough Skin",
@@ -6,27 +8,19 @@ export const RoughSkin: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function damageAttackerOnContact(_effect: Effects<T>, context: TargetContext<T>) {
-      if (context.target !== self) return;
+    function damageAttackerOnContact(effect: Effects<T>, context: TargetContext<T>) {
       const { action } = context;
+
       if (!(action.params.source instanceof MoveEntry)) return;
       if (!action.params.source.effects.makesContact) return;
 
-      action.reactions.add(
-        effectAction(context.battle, action.params.source.user, {
-          hp: -Math.floor(action.params.source.user.stats.hp.max / 8),
-        })
-      );
+      effect.recoil = { hp: -Math.floor(action.params.source.user.stats.hp.max * DAMAGE_FACTOR) };
     }
 
     return {
       name: RoughSkin.name,
-      activate: () => {
-        self.on("receiveEffects", damageAttackerOnContact);
-      },
-      deactivate: () => {
-        self.off("receiveEffects", damageAttackerOnContact);
-      },
+      activate: () => self.on("receiveEffects", damageAttackerOnContact),
+      deactivate: () => self.off("receiveEffects", damageAttackerOnContact),
       expiry: permanent,
     };
   },
