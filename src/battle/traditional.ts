@@ -29,6 +29,7 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
     crash: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>;
   };
   battle: {
+    join: BattleEffect<Combatant>;
     weather: BattleEffect<BattleCondition>;
     end: BattleEffect<boolean>;
   };
@@ -96,6 +97,7 @@ export type LeechReciept = SourceEffectsReciept["leech"];
 export type RecoilReciept = SourceEffectsReciept["recoil"];
 export type CrashReciept = SourceEffectsReciept["crash"];
 
+export type JoinReciept = BattleEffectsReciept["join"];
 export type WeatherReciept = BattleEffectsReciept["weather"];
 export type EndReciept = BattleEffectsReciept["end"];
 
@@ -193,6 +195,21 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
       };
     await this.wait("action", action);
     return await action.execute(this);
+  }
+
+  receiveTraditionalJoin(effect: Decider<Combatant | undefined, BattleContext>, context: BattleContext): JoinReciept {
+    const combatant = decide(effect, context);
+    if (!combatant)
+      return {
+        success: false,
+        messages: [],
+      };
+    this.addCombatant(combatant);
+    return {
+      success: true,
+      messages: [...decide(config.locale.battle.traditional.join, { context, combatant })],
+      actual: combatant,
+    };
   }
 
   receiveTraditionalWeather(
