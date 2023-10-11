@@ -40,6 +40,7 @@ export function spawn(from: ICodemon): Codemon {
   return new Codemon(decide(from, undefined));
 }
 
+// TODO allow string species with <C extends Codex = Codex>?
 export type ICodemon = MultiDecider<
   {
     species: Species;
@@ -56,20 +57,20 @@ export type ICodemon = MultiDecider<
 
 // TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
 export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCombatant<T> {
-  private _species: Species;
+  private species: Species;
   private mutations: Partial<Species> = {};
   public getSpecies(includeMutations = true): Species {
-    return includeMutations && this.mutations ? { ...this._species, ...this.mutations } : this._species;
+    return includeMutations && this.mutations ? { ...this.species, ...this.mutations } : this.species;
   }
   public setSpecies(species: Species, retainMutations = true) {
-    this._species = species;
+    this.species = species;
     if (!retainMutations) this.mutations = {};
   }
   public mutate(mutations: Partial<Species>) {
-    this.mutations = { name: `Mutated ${this._species.name}`, ...this.mutations, ...mutations };
+    this.mutations = { name: `Mutated ${this.species.name}`, ...this.mutations, ...mutations };
   }
   public resetSpecies() {
-    this.setSpecies(this._species, false);
+    this.setSpecies(this.species, false);
   }
 
   public moves: MoveEntry[];
@@ -85,7 +86,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     super();
 
     // TODO enforce sane values
-    this._species = decide(options.species, context);
+    this.species = decide(options.species, context);
     this.name = decide(options.name, context) ?? this.getSpecies().name;
     this.gender = decide(options.gender, context) ?? decide(this.getSpecies().genders, this);
     this.originalAbility = this.ability =
