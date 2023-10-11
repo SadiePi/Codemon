@@ -9,9 +9,8 @@ import {
   SourceEffectsReciept,
   TargetEffectsReciept,
   TargetingCategory,
-  EffectGroupEffects,
-  EffectGroupReciept,
   GroupContext,
+  TargetEffects,
 } from "./mod.ts";
 
 export class ActionSet<P extends BattleBuilderParams<P>> extends EventEmitter<{
@@ -189,9 +188,9 @@ export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, Base
       const battleType = this.params.battle.type;
       const capitalizedBattleType = (battleType[0].toUpperCase() + battleType.slice(1)) as Capitalize<P["name"]>;
       const receiver = target[`receive${capitalizedBattleType}TargetEffects`] as (
-        group: Partial<EffectGroupEffects<GroupContext<P, "target">, P, P["target"]>>,
+        group: TargetEffects<P>,
         context: GroupContext<P, "target">
-      ) => Partial<EffectGroupReciept<GroupContext<P, "target">, P, P["target"]>> | null;
+      ) => Partial<TargetEffectsReciept<P>> | null;
       const reciept = receiver.apply(target, [
         this.params.effect,
         {
