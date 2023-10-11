@@ -10,7 +10,7 @@ import {
 } from "./battle/core/mod.ts";
 import { Immutable } from "./util.ts";
 
-export type StatusExpiry = (expire: () => void) => void;
+export type StatusExpiry = (expire: () => void) => () => void;
 
 export interface StatusControl {
   name: string;
@@ -28,6 +28,7 @@ export type Status<ApplyArgs extends Record<string, unknown>> = {
 
 export class StatusEntry<ApplyArgs extends Record<string, unknown>> {
   private control!: Immutable<StatusControl>; // TODO fix
+  private _expirer = () => {};
   private _expired = false;
   public get expired() {
     return this._expired;
@@ -44,7 +45,7 @@ export class StatusEntry<ApplyArgs extends Record<string, unknown>> {
       return;
     }
     this.control = control;
-    this.control.expiry(this.expire);
+    this._expirer = this.control.expiry(this.expire);
     this.control.activate();
   }
 
@@ -64,22 +65,20 @@ export class StatusEntry<ApplyArgs extends Record<string, unknown>> {
 
   public expire() {
     this.control.deactivate();
+    this._expirer();
     this._expired = true;
   }
 }
 
-export function countdown(duration: number, callback: (count: () => void) => () => void): StatusExpiry {
+export function countdown(duration: number, callback: StatusExpiry): StatusExpiry {
   return expire => {
     let remainingTicks = duration;
     const count = () => {
-      if (remainingTicks <= 0) {
-        expire();
-        cleanup();
-      }
+      if (remainingTicks <= 0) expire();
       remainingTicks--;
     };
 
-    const cleanup = callback(count);
+    return callback(count);
   };
 }
 
@@ -106,10 +105,11 @@ export function roundDuration<P extends BattleBuilderParams<P>>(
 export function volatile<P extends BattleBuilderParams<P>>(battle: Battle<P>): StatusExpiry {
   return expire => {
     battle.on("battleReciept", expire);
+    return () => battle.off("battleReciept", expire);
   };
 }
 
-export const permanent: StatusExpiry = () => {};
+export const permanent: StatusExpiry = () => () => {};
 
 export function effectAction<P extends BattleBuilderParams<P>>({
   battle,
