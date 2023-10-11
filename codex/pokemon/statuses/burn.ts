@@ -26,6 +26,8 @@ export const Burn: StatusEffect<T> = loader.register(P => ({
     action.message(`${target.name} was burned!`);
     let hurtByBurnThisRound = false;
 
+    const resetTurn = () => (hurtByBurnThisRound = false);
+
     const burnIfDidntAttack = (round: Round<T>) => {
       if (!hurtByBurnThisRound) {
         round.reactions.add(
@@ -72,12 +74,14 @@ export const Burn: StatusEffect<T> = loader.register(P => ({
     return {
       name: "Burn",
       activate: () => {
-        battle.on("round", () => (hurtByBurnThisRound = false));
+        resetTurn();
+        battle.on("round", resetTurn);
         target.on("actionEnd", inflictBurnRecoil);
         target.on("inflictEffects", halveAttackDamage);
         battle.on("roundEnd", burnIfDidntAttack);
       },
       deactivate: () => {
+        battle.off("round", resetTurn);
         target.off("actionEnd", inflictBurnRecoil);
         target.off("inflictEffects", halveAttackDamage);
         battle.off("roundEnd", burnIfDidntAttack);
