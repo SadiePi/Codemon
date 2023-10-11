@@ -47,7 +47,6 @@ export abstract class Codex {
   public abstract Strategies: Record<string, Strategy<T>>;
   public abstract Trainers: Record<string, Trainer<T>>;
   public abstract Types: Record<string, Type>;
-
   public abstract Weathers: Record<string, Weather>;
 }
 
