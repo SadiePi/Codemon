@@ -27,8 +27,8 @@ export const Paralysis: StatusEffect<T> = loader.register(P => ({
 
     return {
       name: "Paralysis",
-      activate: () => battle.on("action", maybeDontMove),
-      deactivate: () => battle.off("action", maybeDontMove),
+      activate: () => target.on("action", maybeDontMove),
+      deactivate: () => target.off("action", maybeDontMove),
       expiry: volatile(battle),
     };
   },
