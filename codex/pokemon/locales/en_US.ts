@@ -75,6 +75,7 @@ export const en_US: Locale = {
       },
       reward: ({ context: { target } }) => `Coins were scattered on the ground near ${target.name}!`,
       eject: ({ context: { target } }) => `${target.name} was ejected from the battle!`,
+      disable: ({ context: { target }, move }) => `${target.name} can no longer use ${move.effects.name}!`,
     },
   },
 

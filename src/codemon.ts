@@ -33,7 +33,7 @@ import {
   SourceEffectsReciept,
 } from "./battle/core/mod.ts";
 import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
-import { AbilityEntry, EjectReciept, Reward, RewardReciept } from "./mod.ts";
+import { AbilityEntry, DisableReciept, EjectReciept, Reward, RewardReciept } from "./mod.ts";
 import { CombatantEvents } from "./battle/core/events.ts";
 
 export function spawn(from: ICodemon): Codemon {
@@ -423,7 +423,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     };
   }
 
-  receiveTraditionalEject(
+  public receiveTraditionalEject(
     effect: Decider<boolean | undefined, TargetContext<T>>,
     context: TargetContext<T>
   ): EjectReciept {
@@ -441,6 +441,26 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       success: true,
       messages: [...decide(config.locale.codemon.traditional.eject, { context })],
       actual: true,
+    };
+  }
+
+  public receiveTraditionalDisable(
+    effect: Decider<MoveEntry | undefined, TargetContext<T>>,
+    context: TargetContext<T>
+  ): DisableReciept {
+    const disable = decide(effect, context);
+    if (!disable)
+      return {
+        success: false,
+        messages: [],
+      };
+
+    // TODO disable moves
+
+    return {
+      success: true,
+      messages: [...decide(config.locale.codemon.traditional.disable, { context, move: disable })],
+      actual: disable,
     };
   }
 

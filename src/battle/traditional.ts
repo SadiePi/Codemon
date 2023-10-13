@@ -21,7 +21,8 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
     faint: TargetEffect<boolean>;
     ball: TargetEffect<number, BaseBallReciept>;
     reward: TargetEffect<Reward>;
-    eject: BattleEffect<boolean>;
+    eject: TargetEffect<boolean>;
+    disable: TargetEffect<MoveEntry>;
   };
   source: {
     leech: SourceEffect<number, unknown>; // TODO
@@ -92,6 +93,7 @@ export type FaintReciept = TargetEffectsReciept["faint"];
 export type BallReciept = TargetEffectsReciept["ball"];
 export type RewardReciept = TargetEffectsReciept["reward"];
 export type EjectReciept = TargetEffectsReciept["eject"];
+export type DisableReciept = TargetEffectsReciept["disable"];
 
 export type LeechReciept = SourceEffectsReciept["leech"];
 export type RecoilReciept = SourceEffectsReciept["recoil"];

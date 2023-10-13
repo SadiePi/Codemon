@@ -45,6 +45,7 @@ export interface Locale {
       };
       reward: LocaleString<{ context: TTC; reward: Reward }>;
       eject: LocaleString<{ context: TTC }>;
+      disable: LocaleString<{ context: TTC; move: MoveEntry }>;
     };
   };
 
