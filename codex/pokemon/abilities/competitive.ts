@@ -6,7 +6,7 @@ export const Competitive: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function boostOnStageLowered(effect: Effects<T>, { source }: TargetContext<T>) {
+    function boostSpecialAttackOnStageLowered(effect: Effects<T>, { source }: TargetContext<T>) {
       if (source instanceof MoveEntry && source.user === self) return;
       if (!effect.stages) return;
 
@@ -24,8 +24,8 @@ export const Competitive: Ability = {
 
     return {
       name: Competitive.name,
-      activate: () => self.on("receiveEffects", boostOnStageLowered),
-      deactivate: () => self.off("receiveEffects", boostOnStageLowered),
+      activate: () => self.on("receiveEffects", boostSpecialAttackOnStageLowered),
+      deactivate: () => self.off("receiveEffects", boostSpecialAttackOnStageLowered),
       expiry: permanent,
     };
   },
