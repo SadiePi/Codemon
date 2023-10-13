@@ -1,7 +1,7 @@
-import { Ability, Effects, permanent, TraditionalBBP as T, proxy } from "../mod.ts";
+import P, { Ability, Effects, permanent, TraditionalBBP as T, proxy } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const Blaze: Ability = loader.register(P => ({
+export const Blaze: Ability = {
   name: "Blaze",
   description: "Powers up Fire-type moves when the Pokémon's HP is low.",
   slot: "ability",
@@ -24,4 +24,4 @@ export const Blaze: Ability = loader.register(P => ({
       expiry: permanent,
     };
   },
-}));
+};

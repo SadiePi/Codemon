@@ -1,7 +1,16 @@
-import { Ability, Battle, Effects, MoveEntry, TraditionalBBP as T, TargetContext, decide, permanent } from "../mod.ts";
+import P, {
+  Ability,
+  Battle,
+  Effects,
+  MoveEntry,
+  TraditionalBBP as T,
+  TargetContext,
+  decide,
+  permanent,
+} from "../mod.ts";
 import loader from "../loader.ts";
 
-export const Overgrow: Ability = loader.register(C => ({
+export const Overgrow: Ability = {
   name: "Overgrow",
   description: "Powers up Grass-type moves when the Pokémon's HP is low.",
   slot: "ability",
@@ -11,7 +20,7 @@ export const Overgrow: Ability = loader.register(C => ({
       const { action } = context;
       if (!(action.params.source instanceof MoveEntry)) return;
       if (action.params.source.user !== self) return;
-      if (action.params.source.effects.type !== C.Types.Grass) if (action.params.source.user !== self) return;
+      if (action.params.source.effects.type !== P.Types.Grass) if (action.params.source.user !== self) return;
       if (!effect.attack) return;
       if (self.stats.hp.percent > 1 / 3) return;
 
@@ -42,4 +51,4 @@ export const Overgrow: Ability = loader.register(C => ({
       expiry: permanent,
     };
   },
-}));
+};

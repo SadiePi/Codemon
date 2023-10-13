@@ -1,7 +1,7 @@
-import { Ability, Effects, MoveEntry, TargetContext, TraditionalBBP as T, permanent, proxy } from "../mod.ts";
+import P, { Ability, Effects, MoveEntry, TargetContext, TraditionalBBP as T, permanent, proxy } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const Aerilate: Ability = loader.register(P => ({
+export const Aerilate: Ability = {
   name: "Aerilate",
   description: "Normal-type moves become Flying-type moves.",
   slot: "ability",
@@ -24,4 +24,4 @@ export const Aerilate: Ability = loader.register(P => ({
       expiry: permanent,
     };
   },
-}));
+};

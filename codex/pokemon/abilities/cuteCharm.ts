@@ -1,17 +1,15 @@
-import { Ability, Effects, MoveEntry, TargetContext, permanent, TraditionalBBP as T, chance } from "../mod.ts";
+import P, { Ability, Effects, MoveEntry, TargetContext, permanent, TraditionalBBP as T, chance } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const CuteCharm: Ability = loader.register(P => ({
+export const CuteCharm: Ability = {
   name: "Cute Charm",
   description: "The Pokémon may infatuate attackers that make direct contact with it.",
   slot: "ability",
 
   apply: ({ self }) => {
-    function infatuateAttackerOnContact(effect: Effects<T>, context: TargetContext<T>) {
-      const { action } = context;
-
-      if (!(action.params.source instanceof MoveEntry)) return;
-      if (!action.params.source.effects.makesContact) return;
+    function infatuateAttackerOnContact(effect: Effects<T>, { source }: TargetContext<T>) {
+      if (!(source instanceof MoveEntry)) return;
+      if (!source.effects.makesContact) return;
 
       // TODO? make it exclusively straight :(
 
@@ -25,4 +23,4 @@ export const CuteCharm: Ability = loader.register(P => ({
       expiry: permanent,
     };
   },
-}));
+};
