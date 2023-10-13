@@ -1,5 +1,4 @@
 import P, { Ability, Effects, MoveEntry, TargetContext, permanent, TraditionalBBP as T, chance } from "../mod.ts";
-import loader from "../loader.ts";
 
 export const CuteCharm: Ability = {
   name: "Cute Charm",

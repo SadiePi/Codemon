@@ -8,7 +8,6 @@ import P, {
   decide,
   permanent,
 } from "../mod.ts";
-import loader from "../loader.ts";
 
 export const Overgrow: Ability = {
   name: "Overgrow",
@@ -16,11 +15,10 @@ export const Overgrow: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    const boostGrassMovesWhenLowHP = (effect: Effects<T>, context: TargetContext<T>) => {
-      const { action } = context;
-      if (!(action.params.source instanceof MoveEntry)) return;
-      if (action.params.source.user !== self) return;
-      if (action.params.source.effects.type !== P.Types.Grass) if (action.params.source.user !== self) return;
+    const boostGrassMovesWhenLowHP = (effect: Effects<T>, { source }: TargetContext<T>) => {
+      if (!(source instanceof MoveEntry)) return;
+      if (source.user !== self) return;
+      if (source.effects.type !== P.Types.Grass) if (action.params.source.user !== self) return;
       if (!effect.attack) return;
       if (self.stats.hp.percent > 1 / 3) return;
 

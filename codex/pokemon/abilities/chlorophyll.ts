@@ -1,5 +1,4 @@
 import P, { Ability, permanent } from "../mod.ts";
-import loader from "../loader.ts";
 
 export const Chlorophyll: Ability = {
   name: "Chlorophyll",

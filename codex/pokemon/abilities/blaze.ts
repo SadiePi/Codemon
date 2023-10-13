@@ -1,5 +1,4 @@
 import P, { Ability, Effects, permanent, TraditionalBBP as T, proxy } from "../mod.ts";
-import loader from "../loader.ts";
 
 export const Blaze: Ability = {
   name: "Blaze",

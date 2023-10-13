@@ -1,5 +1,4 @@
 import P, { Ability, Effects, MoveEntry, TargetContext, TraditionalBBP as T, permanent, proxy } from "../mod.ts";
-import loader from "../loader.ts";
 
 export const Aerilate: Ability = {
   name: "Aerilate",
