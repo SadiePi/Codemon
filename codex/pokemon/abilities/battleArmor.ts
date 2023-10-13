@@ -1,4 +1,4 @@
-import { Ability, Effects, permanent, proxy, TraditionalBBP as T, TargetContext } from "../mod.ts";
+import { Ability, Effects, permanent, proxy, TraditionalBBP as T } from "../mod.ts";
 
 export const BattleArmor: Ability = {
   name: "Battle Armor",
@@ -6,8 +6,7 @@ export const BattleArmor: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function cancelCriticalHits(effect: Effects<T>, context: TargetContext<T>) {
-      if (context.target !== self) return;
+    function cancelCriticalHits(effect: Effects<T>) {
       if (!effect.attack) return;
 
       effect.attack = proxy(effect.attack, result => {

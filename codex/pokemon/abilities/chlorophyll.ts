@@ -1,7 +1,7 @@
-import { Ability } from "../mod.ts";
+import { Ability, permanent } from "../mod.ts";
 import loader from "../loader.ts";
 
-export const Chlorophyll: Ability = loader.register(P => ({
+export const Chlorophyll: Ability = loader.register(_P => ({
   name: "Chlorophyll",
   description: "Boosts the Pokémon's Speed stat in harsh sunlight.",
   slot: "ability",
@@ -11,7 +11,7 @@ export const Chlorophyll: Ability = loader.register(P => ({
       name: Chlorophyll.name,
       activate: () => {},
       deactivate: () => {},
-      expiry: () => {},
+      expiry: permanent,
     };
   },
 }));

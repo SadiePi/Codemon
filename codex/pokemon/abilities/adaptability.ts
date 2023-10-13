@@ -8,11 +8,10 @@ export const Adaptability: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function boostSTAB(effect: Effects<T>, context: TargetContext<T>) {
-      const { action } = context;
+    function boostSTAB(effect: Effects<T>, { source }: TargetContext<T>) {
       if (!effect.attack) return;
-      if (!(action.params.source instanceof MoveEntry)) return;
-      if (action.params.source.user !== self) return;
+      if (!(source instanceof MoveEntry)) return;
+      if (source.user !== self) return;
 
       effect.attack = proxy(effect.attack, result => {
         if (result && result.stab) result.stab *= STAB_BOOST;
@@ -21,12 +20,8 @@ export const Adaptability: Ability = {
 
     return {
       name: Adaptability.name,
-      activate: () => {
-        self.on("inflictEffects", boostSTAB);
-      },
-      deactivate: () => {
-        self.off("inflictEffects", boostSTAB);
-      },
+      activate: () => self.on("inflictEffects", boostSTAB),
+      deactivate: () => self.off("inflictEffects", boostSTAB),
       expiry: permanent,
     };
   },

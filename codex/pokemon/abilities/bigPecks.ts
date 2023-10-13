@@ -6,9 +6,7 @@ export const BigPecks: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function cancelDefenseDrop(effect: Effects<T>, context: TargetContext<T>) {
-      const { action } = context;
-      const { source } = action.params;
+    function cancelDefenseDrop(effect: Effects<T>, { source }: TargetContext<T>) {
       if (source instanceof MoveEntry && source.user === self) return;
       if (!effect.stages) return;
 

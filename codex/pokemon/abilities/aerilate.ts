@@ -7,12 +7,10 @@ export const Aerilate: Ability = loader.register(P => ({
   slot: "ability",
 
   apply: ({ self }) => {
-    function normalMoveToFlying(effect: Effects<T>, context: TargetContext<T>) {
-      const { action } = context;
-
+    function normalMoveToFlying(effect: Effects<T>, { source }: TargetContext<T>) {
       if (!effect.attack) return;
-      if (!(action.params.source instanceof MoveEntry)) return;
-      if (action.params.source.user !== self) return;
+      if (!(source instanceof MoveEntry)) return;
+      if (source.user !== self) return;
 
       effect.attack = proxy(effect.attack, result => {
         if (result && result.type === P.Types.Normal) result.type = P.Types.Flying;

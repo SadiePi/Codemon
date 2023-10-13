@@ -14,10 +14,11 @@ export const AngerPoint: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function maximizeAttackStageOnCritical(reciept: TargetEffectsReciept<T>, context: TargetContext<T>) {
-      const { action, battle } = context;
-
-      if (!(action.params.source instanceof MoveEntry)) return;
+    function maximizeAttackStageOnCritical(
+      reciept: TargetEffectsReciept<T>,
+      { action, battle, source }: TargetContext<T>
+    ) {
+      if (!(source instanceof MoveEntry)) return;
       if (!reciept.attack) return;
 
       action.reactions.add(

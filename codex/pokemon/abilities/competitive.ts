@@ -6,9 +6,7 @@ export const Competitive: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function boostOnStageLowered(effect: Effects<T>, context: TargetContext<T>) {
-      const { action } = context;
-      const { source } = action.params;
+    function boostOnStageLowered(effect: Effects<T>, { source }: TargetContext<T>) {
       if (source instanceof MoveEntry && source.user === self) return;
       if (!effect.stages) return;
 

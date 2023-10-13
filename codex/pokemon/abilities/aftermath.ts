@@ -16,11 +16,9 @@ export const Aftermath: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function damageAttackerOnFaint(reciept: TargetEffectsReciept<T>, context: TargetContext<T>) {
-      const { action, battle } = context;
-      if (context.target !== self) return;
-      if (!(action.params.source instanceof MoveEntry)) return;
-      if (!action.params.source.effects.makesContact) return;
+    function damageAttackerOnFaint(reciept: TargetEffectsReciept<T>, { action, battle, source }: TargetContext<T>) {
+      if (!(source instanceof MoveEntry)) return;
+      if (!source.effects.makesContact) return;
 
       // TODO this needs to be better
       const faintFromAttack = reciept.attack.success && reciept.attack.faint;
@@ -32,11 +30,11 @@ export const Aftermath: Ability = {
       action.reactions.add(
         effectAction({
           battle,
-          targets: [action.params.source.user],
+          targets: [source.user],
           user: self,
           parent: action,
           effect: {
-            recoil: { hp: -Math.floor(action.params.source.user.stats.hp.max / DAMAGE_FACTOR) },
+            recoil: { hp: -Math.floor(source.user.stats.hp.max / DAMAGE_FACTOR) },
           },
         })
       );
