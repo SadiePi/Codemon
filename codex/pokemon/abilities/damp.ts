@@ -24,6 +24,8 @@ export const Damp: Ability = {
       self.once("exitBattle", () => battle.off("action", dampSelfDestruct));
     }
 
+    // TODO prevent Aftermath
+
     return {
       name: Damp.name,
       activate: () => self.on("enterBattle", applyDampToBattle),
