@@ -1,5 +1,16 @@
 import loader from "../loader.ts";
-import { Terrain, roundDuration } from "../mod.ts";
+import {
+  Round,
+  Terrain,
+  roundDuration,
+  TraditionalBBP as T,
+  effectAction,
+  TargetContext,
+  Codemon,
+  Effects,
+  MoveEntry,
+  proxy,
+} from "../mod.ts";
 
 export const Grassy: Terrain = loader.register(P => ({
   name: "Grassy",
@@ -8,14 +19,57 @@ export const Grassy: Terrain = loader.register(P => ({
   slot: "terrain",
 
   apply: ({ battle }) => {
-    // TODO restore HP
-    // TODO boost Grass-type moves
-    // TODO halve damage from Bulldoze, Earthquake, and Magnitude
+    function restoreHpAfterRound(round: Round<T>) {
+      round.reactions.add(
+        effectAction({
+          battle,
+          targets: battle.getCombatants(), // TODO .filter(target => target is grounded)
+          effect: {
+            hp: ({ target }: TargetContext<T>) => {
+              return target.stats.hp.max / 16;
+            },
+          },
+          user: {} as Codemon, // TODO ugh
+        })
+      );
+    }
+
+    function boostGrassTypeMoves(effect: Effects<T>, { source }: TargetContext<T>) {
+      // TODO if(target is not grounded) return;
+      if (!(source instanceof MoveEntry)) return;
+      if (source.effects.type !== P.Types.Grass) return;
+      if (!effect.attack) return;
+
+      effect.attack = proxy(effect.attack, result => {
+        if (!result) return;
+        result.power *= 1.3;
+      });
+    }
+
+    function halveDamageFromGroundMoves(effect: Effects<T>, { source }: TargetContext<T>) {
+      // TODO if(target is not grounded) return;
+      if (!(source instanceof MoveEntry)) return;
+      if (![P.Moves.Bulldoze, P.Moves.Earthquake, P.Moves.Magnitude].includes(source.effects)) return;
+      if (!effect.attack) return;
+
+      effect.attack = proxy(effect.attack, result => {
+        if (!result) return;
+        result.power /= 2;
+      });
+    }
 
     return {
       name: Grassy.name,
-      activate: () => {},
-      deactivate: () => {},
+      activate: () => {
+        battle.on("round", restoreHpAfterRound);
+        battle.on("effect", boostGrassTypeMoves);
+        battle.on("effect", halveDamageFromGroundMoves);
+      },
+      deactivate: () => {
+        battle.off("round", restoreHpAfterRound);
+        battle.off("effect", boostGrassTypeMoves);
+        battle.off("effect", halveDamageFromGroundMoves);
+      },
       expiry: roundDuration(5, battle), // TODO extend to 8 if user is holding Terrain Extender
     };
   },
