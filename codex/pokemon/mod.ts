@@ -12,6 +12,7 @@ import * as Natures from "./natures/index.ts";
 import * as Species from "./species/index.ts";
 import * as Statuses from "./statuses/index.ts";
 import * as Strategies from "./strategies/index.ts";
+import * as Terrains from "./terrains/index.ts";
 import * as Trainers from "./trainers/index.ts";
 import * as Types from "./types/index.ts";
 import * as Weathers from "./weather/index.ts";
@@ -27,6 +28,7 @@ const Pokedex = {
   Species,
   Statuses,
   Strategies,
+  Terrains,
   Trainers,
   Types,
   Weathers,

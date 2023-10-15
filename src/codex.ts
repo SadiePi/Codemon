@@ -10,7 +10,7 @@ import { DeepPartial } from "./util.ts";
 import { merge } from "./external.ts";
 import { Ability, Gender, Species, Type } from "./species.ts";
 import { Weather } from "./battle/traditional.ts";
-import { StatusEffect, TraditionalBBP as T } from "./mod.ts";
+import { StatusEffect, TraditionalBBP as T, Terrain } from "./mod.ts";
 import { Locale } from "./locale.ts";
 
 export class CodexBuilder<C extends Codex> {
@@ -45,6 +45,7 @@ export abstract class Codex {
   public abstract Species: Record<string, Species>;
   public abstract Statuses: Record<string, StatusEffect<T>>;
   public abstract Strategies: Record<string, Strategy<T>>;
+  public abstract Terrains: Record<string, Terrain>;
   public abstract Trainers: Record<string, Trainer<T>>;
   public abstract Types: Record<string, Type>;
   public abstract Weathers: Record<string, Weather>;

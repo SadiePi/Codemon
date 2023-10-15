@@ -1,17 +1,21 @@
 import { decide } from "../decision.ts";
 import { EventEmitter } from "../external.ts";
+import { BattleConditionFactors } from "../mod.ts";
 import { Codemon, DamageCategory, Decider, MoveEntry, SingleOrArray, StageMods, Type, config } from "../mod.ts";
 import { NonEmptyPartial, TODO, sequentialAsync } from "../util.ts";
 import { Round } from "./core/action.ts";
-import { BattleBuilder, BattleBuilderParams } from "./core/battle.ts";
+import { BattleBuilder, BattleBuilderParams, BattleConditionEntries } from "./core/battle.ts";
 import { EffectType } from "./core/effect.ts";
+
+export type TraditionalConditionEntries = BattleConditionEntries<T>;
 
 export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
   readonly name: "traditional";
-  message: string; // TODO animations
+  message: string; // TODO animations etc
   combatant: Codemon;
   conditions: {
-    weather: BattleCondition;
+    weather: Weather;
+    terrain: Terrain;
   };
   target: {
     attack: TargetEffect<Attack, BaseAttackReciept>;
@@ -31,13 +35,14 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
   };
   battle: {
     join: BattleEffect<Combatant>;
-    weather: BattleEffect<BattleCondition>;
+    weather: BattleEffect<Weather>;
+    terrain: BattleEffect<Terrain>;
     end: BattleEffect<boolean>;
   };
 }
 type T = TraditionalBBP; // for brevity
 
-export interface Attack {
+export type Attack = {
   /** The level of the user */
   level: number;
   /** The power of the move */
@@ -54,15 +59,15 @@ export interface Attack {
   item?: number;
   /** Factor from Same Type Attack Boost */
   stab?: number;
-  /** Factor from influence of weather */
-  weather?: number;
+  /** Factors from battle conditions */
+  conditions?: BattleConditionFactors<T>;
   /** Factor from multiple targets */
   multitarget?: number;
   /** Factor from Math.random() */
   random?: number;
   /** Factor from ✨Special✨ */
   other?: number;
-}
+};
 
 export interface BaseAttackReciept {
   typeMultiplier: number;
@@ -80,6 +85,7 @@ export interface BaseBallReciept {
 }
 
 export type Weather = BattleCondition;
+export type Terrain = BattleCondition;
 
 export type Reward = NonEmptyPartial<{
   money: number;
@@ -101,11 +107,12 @@ export type CrashReciept = SourceEffectsReciept["crash"];
 
 export type JoinReciept = BattleEffectsReciept["join"];
 export type WeatherReciept = BattleEffectsReciept["weather"];
+export type TerrainReciept = BattleEffectsReciept["terrain"];
 export type EndReciept = BattleEffectsReciept["end"];
 
 export default class Traditional extends EventEmitter<BattleEvents> implements Battle {
   readonly type = "traditional";
-  public conditions = { weather: {} as Weather }; // TODO handle this better, default weather?
+  public conditions = { weather: {} as Weather, terrain: {} as Weather }; // TODO handle this better, default conditions?
   public combatants: Codemon[];
   protected _round = new Round<T>(0);
 
@@ -149,10 +156,12 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
 
       const aPriority = aSource.priority ?? 0;
       const bPriority = bSource.priority ?? 0;
+      // TODO emit prio eval event, allow for changes to priority
       if (aPriority !== bPriority) return bPriority - aPriority;
 
       const aSpeed = aSource instanceof MoveEntry ? aSource.user.stats.speed.value(true) : 0;
       const bSpeed = bSource instanceof MoveEntry ? bSource.user.stats.speed.value(true) : 0;
+      // TODO emit speed eval event, allow for changes to speed
       return bSpeed - aSpeed;
     });
   }
@@ -232,6 +241,24 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     };
   }
 
+  receiveTraditionalTerrain(
+    effect: Decider<BattleCondition | undefined, BattleContext>,
+    context: BattleContext
+  ): WeatherReciept {
+    const terrain = decide(effect, context);
+    if (!terrain)
+      return {
+        success: false,
+        messages: [],
+      };
+    terrain.apply(context);
+    return {
+      success: true,
+      messages: [...decide(config.locale.battle.traditional.terrain, { context, terrain })],
+      actual: terrain,
+    };
+  }
+
   receiveTraditionalEnd(effect: Decider<boolean | undefined, BattleContext>, context: BattleContext): EndReciept {
     const end = decide(effect, context);
     if (!end)
@@ -251,7 +278,9 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
 
   receiveTraditionalBattleEffects(effects: BattleEffects, context: BattleContext): BattleEffectsReciept {
     const reciept = {} as BattleEffectsReciept;
+    if (effects.join) reciept.join = this.receiveTraditionalJoin(effects.join, context);
     if (effects.weather) reciept.weather = this.receiveTraditionalWeather(effects.weather, context);
+    if (effects.terrain) reciept.terrain = this.receiveTraditionalTerrain(effects.terrain, context);
     if (effects.end) reciept.end = this.receiveTraditionalEnd(effects.end, context);
     return reciept;
   }
@@ -283,9 +312,7 @@ export function power(power: number): Decider<Attack, TargetContext> {
       critical,
       stab,
       multitarget,
-      weather: 1, // TODO
       random,
-      other: 1,
     };
   };
 }

@@ -251,7 +251,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     const messages: BattleMessage<T>[] = [];
 
     let base = (2 * attack.level) / 5 + 2;
-    base *= attack.power; // TODO apply effective power, not base
+    base *= attack.power;
     // TODO fix this
     base *= attack.stat;
     const defense = attack.category === "Physical" ? this.stats.defense : this.stats.specialDefense;
@@ -270,7 +270,8 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       (attack.item ?? 1) *
       (attack.multitarget ?? 1) *
       (attack.other ?? 1) *
-      (attack.weather ?? 1);
+      (attack.conditions?.weather ?? 1) *
+      (attack.conditions?.terrain ?? 1);
 
     const total = Math.floor(
       config.codemon.limitDamageToRemainingHP ? Math.min(product, this.stats.hp.current) : product

@@ -3193,6 +3193,7 @@
     "Obscured"
   ],
   "strategies": ["Wild", "Console", "Network"],
+  "terrains": ["Electric", "Grassy", "Misty", "Psychic"],
   "trainers": [],
   "types": [
     "Normal",

@@ -1,5 +1,5 @@
 import { EventEmitter } from "../../external.ts";
-import { Status } from "../../status.ts";
+import { Status, StatusEntry } from "../../status.ts";
 import { BattleEvents, CombatantEvents } from "./events.ts";
 import {
   Action,
@@ -20,6 +20,7 @@ import {
 } from "./mod.ts";
 
 export type EffectGroups = "target" | "source" | "battle";
+
 export type BattleBuilderParams<P extends BattleBuilderParams<P>> = {
   name: string;
   message: unknown;
@@ -58,6 +59,7 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
   battleContext: BattleContext<P>;
 
   combatant: Combatant<P>;
+  statusEffect: Status<TargetContext<P>>;
   targetChoice: TargetChoice<P>;
 
   action: Action<P>;
@@ -74,7 +76,6 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
   battleEvents: BattleEvents<P>;
   battleMessage: BattleMessage<P>;
 
-  statusEffect: Status<TargetContext<P>>;
   battleCondition: Status<BattleContext<P>>;
 };
 
@@ -137,3 +138,10 @@ export type BattleContext<P extends BattleBuilderParams<P>> = {
   action: Action<P>;
   battle: Battle<P>;
 };
+
+export type BattleCondition<P extends BattleBuilderParams<P>> = Status<BattleContext<P>>;
+export type BattleConditionEntry<P extends BattleBuilderParams<P>> = StatusEntry<BattleContext<P>>;
+
+export type BattleConditions<P extends BattleBuilderParams<P>> = Record<string, BattleCondition<P>>;
+export type BattleConditionEntries<P extends BattleBuilderParams<P>> = Record<string, BattleConditionEntry<P>>;
+export type BattleConditionFactors<P extends BattleBuilderParams<P>> = Partial<Record<keyof P["conditions"], number>>;

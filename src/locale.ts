@@ -5,6 +5,7 @@ import { SingleOrArray } from "./util.ts";
 import { StatusEntry } from "./status.ts";
 import { StageMods } from "./stats.ts";
 import { MoveEntry } from "./move.ts";
+import { Terrain } from "./mod.ts";
 
 type LocaleString<Args = undefined> = Decider<SingleOrArray<string>, Args>;
 
@@ -22,6 +23,7 @@ export interface Locale {
 
       join: LocaleString<{ context: BattleContext<T>; combatant: Combatant<T> }>;
       weather: LocaleString<{ context: BattleContext<T>; weather: Weather }>;
+      terrain: LocaleString<{ context: BattleContext<T>; terrain: Terrain }>;
       end: LocaleString<{ context: BattleContext<T> }>;
     };
   };
