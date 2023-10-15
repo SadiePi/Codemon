@@ -174,6 +174,7 @@ interface BaseActionReciept<P extends BattleBuilderParams<P>> {
   battleEffects: Partial<BattleEffectsReciept<P>>;
 }
 export type ActionReciept<P extends BattleBuilderParams<P>> = BattleNodeReciept<P, BaseActionReciept<P>>;
+
 export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, BaseActionReciept<P>> {
   constructor(public params: ActionParams<P>) {
     super();
