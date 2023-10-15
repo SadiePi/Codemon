@@ -15,7 +15,7 @@ export const Electric: Terrain = loader.register(P => ({
 
       effect.attack = proxy(effect.attack, result => {
         if (!result) return;
-        result.power *= 1.5;
+        result.power *= 1.3;
       });
     }
 
