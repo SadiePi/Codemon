@@ -42,7 +42,8 @@ export const Grassy: Terrain = loader.register(P => ({
 
       effect.attack = proxy(effect.attack, result => {
         if (!result) return;
-        result.power *= 1.3;
+        if (!result.conditions) result.conditions = {};
+        result.conditions.terrain = 1.3;
       });
     }
 
@@ -54,7 +55,8 @@ export const Grassy: Terrain = loader.register(P => ({
 
       effect.attack = proxy(effect.attack, result => {
         if (!result) return;
-        result.power /= 2;
+        if (!result.conditions) result.conditions = {};
+        result.conditions.terrain = 1 / 2;
       });
     }
 
