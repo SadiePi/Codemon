@@ -132,8 +132,8 @@ class PermanentStatEntry extends BattleStatEntry {
     const natureBuff = nature.buff === this.stat;
     const natureNerf = nature.nerf === this.stat;
     let natureEffect = 1;
-    if (natureBuff && !natureNerf) natureEffect *= 1 + config.stats.natureEffect;
-    if (natureNerf && !natureBuff) natureEffect *= 1 - config.stats.natureEffect;
+    if (natureBuff && !natureNerf) natureEffect *= 1 + config.stats.natureBuff;
+    if (natureNerf && !natureBuff) natureEffect *= 1 - config.stats.natureNerf;
     if (nature.effect) natureEffect = nature.effect(this.stat);
     val = Math.floor(val * natureEffect);
 

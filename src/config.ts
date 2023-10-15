@@ -19,7 +19,6 @@ export const config = {
     minStage: -6,
     allowHPStage: false,
 
-    natureEffect: 0.1, // TODO use below instead of this
     natureBuff: 0.1,
     natureNerf: 0.1,
   },
