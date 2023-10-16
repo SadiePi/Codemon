@@ -11,6 +11,7 @@ export const en_US: Locale = {
       },
       join: "TODO join message",
       weather: ({ weather }) => `Weather: ${weather.name}`,
+      terrain: ({ terrain }) => `Terrain: ${terrain.name}`,
       end: "(Battle should end here, but WIP)",
     },
   },
