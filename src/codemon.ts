@@ -190,10 +190,10 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     },
   };
   public get gender() {
-    return this.getSpecies().overrideSex?.(this, this._gender) ?? this._gender;
+    return this.getSpecies().overrideGender?.(this, this._gender) ?? this._gender;
   }
   public set gender(gender: Gender) {
-    this._gender = this.getSpecies().overrideSex?.(this, gender) ?? gender;
+    this._gender = this.getSpecies().overrideGender?.(this, gender) ?? gender;
   }
 
   public calculateTypeMultiplier(attackType: Type) {
