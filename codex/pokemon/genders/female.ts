@@ -1,5 +1,4 @@
 import { Gender } from "../mod.ts";
-import loader from "../loader.ts";
 
 export const Female: Gender = {
   name: "Female",

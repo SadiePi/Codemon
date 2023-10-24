@@ -1,5 +1,4 @@
 import { ExperienceGroup } from "../mod.ts";
-import loader from "../loader.ts";
 
 export const Fluctuating: ExperienceGroup = (l: number) => {
   if (l <= 15) return (Math.pow(l, 3) * ((l + 1) / 3 + 24)) / 50;
