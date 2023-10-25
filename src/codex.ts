@@ -54,7 +54,3 @@ export abstract class Codex {
 // TODO use?
 type DeepMap<T, U> = T extends Record<string, unknown> ? { [K in keyof T]: DeepMap<T[K], U> } : U;
 export type DiscoveryMap<Codex> = DeepMap<Codex, boolean>;
-
-export default function codex<C extends Codex>(): CodexBuilder<C> {
-  return new CodexBuilder<C>();
-}

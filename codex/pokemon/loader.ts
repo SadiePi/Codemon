@@ -1,4 +1,2 @@
-import { Pokedex } from "./mod.ts";
-import codex from "../../src/codex.ts";
-const loader = codex<Pokedex>();
-export default loader;
+import { Pokedex, CodexBuilder } from "./mod.ts";
+export default new CodexBuilder<Pokedex>();
