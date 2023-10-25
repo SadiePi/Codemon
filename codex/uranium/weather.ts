@@ -1,4 +1,3 @@
-import { Weather } from "./index.ts";
-import loader from "./loader.ts";
+import { Weather } from "./mod.ts";
 
 export const NuclearFallout = {} as Weather;

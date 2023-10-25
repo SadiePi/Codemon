@@ -1,2 +1,2 @@
-import { UraniumCodex, CodexBuilder } from "./index.ts";
+import { UraniumCodex, CodexBuilder } from "./mod.ts";
 export default new CodexBuilder<UraniumCodex>();

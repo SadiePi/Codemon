@@ -1,4 +1,4 @@
-import { Species, weighted } from "./index.ts";
+import { Species, weighted } from "./mod.ts";
 import loader from "./loader.ts";
 
 export const Orchynx: Species = loader.register(U => ({
@@ -206,7 +206,8 @@ export const Duplicat: Species = {} as Species;
 export const Nucleon: Species = loader.register(
   U => ({
     name: "Nucleon",
-    description: "A radioactive eeveelution.",
+    description:
+      " One of the only non-feral Nuclear Pokémon. It's theorized that its bond with its trainer when it was an Eevee allows it to stay in control.",
     types: [U.Types.Nuclear],
     abilities: {
       normal: [U.Abilities.Atomize],

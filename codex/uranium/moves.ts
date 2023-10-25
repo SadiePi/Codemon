@@ -1,4 +1,4 @@
-import { chance, Move, power, Codemon, MoveEntry } from "./index.ts";
+import { chance, Move, power, Codemon, MoveEntry, proxy } from "./mod.ts";
 import loader from "./loader.ts";
 
 // data translated from https://pokemon-uranium.fandom.com/wiki/New_Moves_and_Abilities
@@ -38,7 +38,7 @@ export const CoralBreak: Move = loader.register<Move>(U => ({
   pp: 15,
   accuracy: 95,
   category: "Special",
-  attack: power(80), // TODO use normal defense despite being a special move
+  attack: proxy(power(80), result => (result.category = "Physical")),
   target: { position: "Adjacent" },
   makesContact: true,
 }));
@@ -53,7 +53,7 @@ export const DrainLife: Move = loader.register<Move>(U => ({
   attack: power(75),
   target: { position: "Adjacent" },
   makesContact: true,
-  leech: 1 / 2,
+  // leech: 1 / 2, TODO
 }));
 
 export const Expunge: Move = loader.register<Move>(U => ({
@@ -77,7 +77,7 @@ export const Fallout: Move = loader.register<Move>(U => ({
   category: "Status",
   target: { quantity: "All" },
   makesContact: false,
-  // weather: U.Weathers.Fallout,
+  weather: U.Weathers.NuclearFallout,
 }));
 
 export const FissionBurst: Move = loader.register<Move>(U => ({
@@ -181,6 +181,7 @@ export const InfernalBlade: Move = loader.register<Move>(U => ({
   attack: power(90),
   target: { position: "Adjacent" },
   makesContact: true,
+  status: chance(3 / 10, U.Statuses.Burn),
   // TODO super effective against Fairy
 }));
 
@@ -267,7 +268,7 @@ export const NuclearWind: Move = loader.register<Move>(U => ({
   attack: power(65),
   target: { position: "Adjacent" },
   makesContact: false,
-  // weather: chance(1/20, U.Weathers.Fallout),
+  weather: chance(1 / 20, U.Weathers.NuclearFallout),
 }));
 
 export const OceansWrath: Move = loader.register<Move>(U => ({
@@ -341,7 +342,7 @@ export const StickyTerrain: Move = loader.register<Move>(U => ({
   category: "Status",
   target: { quantity: "All" },
   makesContact: false,
-  // TODO effect
+  // terrain: U.Terrains.Sticky,
 }));
 
 export const Subduction: Move = loader.register<Move>(U => ({
