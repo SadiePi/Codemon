@@ -15,12 +15,12 @@ import { Locale } from "./locale.ts";
 
 export class CodexBuilder<C extends Codex> {
   private built = false;
-  private builders: [{}, (codex: C) => {}, ((codex: C) => void)?][] = [];
+  private builders: { placeholder: {}; builder: (codex: C) => {}; after?: (codex: C) => void }[] = [];
 
   register<R extends {}>(builder: (codex: C) => R, after?: (codex: C) => void): R {
     if (this.built) throw new Error("Codex already built, register in new codex and merge");
     const placeholder = {} as R;
-    this.builders.push([placeholder, builder, after]);
+    this.builders.push({ placeholder, builder, after });
     return placeholder;
   }
 
@@ -29,8 +29,8 @@ export class CodexBuilder<C extends Codex> {
 
     merge(currentConfig, config); // deeply merges config into defaultConfig
 
-    this.builders.forEach(b => Object.assign(b[0], b[1](codex)));
-    this.builders.forEach(b => b[2]?.(codex));
+    this.builders.forEach(b => Object.assign(b.placeholder, b.builder(codex)));
+    this.builders.forEach(b => b.after?.(codex));
   }
 }
 
