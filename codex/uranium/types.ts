@@ -1,4 +1,4 @@
-import { addTypeRelation, Type } from "./index.ts";
+import { addTypeRelation, Type } from "./mod.ts";
 import loader from "./loader.ts";
 
 export const Nuclear: Type = loader.register<Type>(

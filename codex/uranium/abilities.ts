@@ -1,4 +1,4 @@
-import { Ability } from "./index.ts";
+import { Ability } from "./mod.ts";
 
 export const Acceleration = {} as Ability;
 export const Atomize = {} as Ability;

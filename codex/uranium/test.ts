@@ -1,4 +1,4 @@
-import U, { Codemon } from "./index.ts";
+import U, { Codemon } from "./mod.ts";
 
 // Define an individual Nucleon named Nuke
 const nuke = new Codemon({
