@@ -62,7 +62,6 @@ class StatStage {
     }
   }
 
-  // TODO this is broken and it's the main reason this class exists
   public get multiplier(): number {
     return this.current > 0 ? (this.power + this.current) / this.power : this.power / (this.power - this.current);
   }
