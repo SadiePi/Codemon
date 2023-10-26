@@ -1,5 +1,5 @@
 import { config, spawn } from "../codex/pokemon/mod.ts";
-import { assertEquals } from "./common.ts";
+import { assertEquals, iKibble } from "./common.ts";
 
 import { iBulby } from "./common.ts";
 
@@ -60,4 +60,14 @@ Deno.test("Stat Stages", () => {
   assertEquals(resets, 2, "Wrong number of resets");
 });
 Deno.test("Experience", () => {});
-Deno.test("Stat Values", () => {});
+Deno.test("Stat Values", () => {
+  const kibble = spawn(iKibble);
+  assertEquals(kibble.stats.hp.max, 289);
+  assertEquals(kibble.stats.attack.value(), 278);
+  assertEquals(kibble.stats.defense.value(), 193);
+  assertEquals(kibble.stats.specialAttack.value(), 135);
+  assertEquals(kibble.stats.specialDefense.value(), 171);
+  assertEquals(kibble.stats.speed.value(), 171);
+
+  // TODO test stat stages
+});
