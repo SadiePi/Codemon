@@ -15,10 +15,11 @@ export const Overgrow: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    const boostGrassMovesWhenLowHP = (effect: Effects<T>, { source }: TargetContext<T>) => {
+    const boostGrassMovesWhenLowHP = (effect: Effects<T>, context: TargetContext<T>) => {
+      const { source } = context;
       if (!(source instanceof MoveEntry)) return;
       if (source.user !== self) return;
-      if (source.effects.type !== P.Types.Grass) if (action.params.source.user !== self) return;
+      if (source.effects.type !== P.Types.Grass) if (source.user !== self) return;
       if (!effect.attack) return;
       if (self.stats.hp.percent > 1 / 3) return;
 
