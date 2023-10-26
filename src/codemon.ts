@@ -33,7 +33,7 @@ import {
   SourceEffectsReciept,
 } from "./battle/core/mod.ts";
 import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
-import { AbilityEntry, DisableReciept, EjectReciept, Reward, RewardReciept } from "./mod.ts";
+import { AbilityEntry, DisableReciept, EjectReciept, Reward, RewardReciept, SelfInflictReciept } from "./mod.ts";
 import { CombatantEvents } from "./battle/core/events.ts";
 
 export function spawn(from: ICodemon): Codemon {
@@ -503,6 +503,27 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     effect: Decider<TargetEffects<T> | undefined, SourceContext<T>>,
     context: SourceContext<T>
   ): CrashReciept {
+    const effects: TargetEffects<T> | undefined = decide(effect, context);
+    if (!effects) return { success: false, messages: [] };
+
+    const reciept = this.receiveTraditionalTargetEffects(effects, {
+      source: context.source,
+      target: this,
+      action: context.action,
+      battle: context.battle,
+    });
+    return {
+      success: true,
+      messages: [],
+      actual: effects,
+      reciept,
+    };
+  }
+
+  public receiveTraditionalSelfInflict(
+    effect: Decider<TargetEffects<T> | undefined, SourceContext<T>>,
+    context: SourceContext<T>
+  ): SelfInflictReciept {
     const effects: TargetEffects<T> | undefined = decide(effect, context);
     if (!effects) return { success: false, messages: [] };
 

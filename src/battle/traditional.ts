@@ -30,8 +30,9 @@ export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
   };
   source: {
     leech: SourceEffect<number, unknown>; // TODO
-    recoil: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>;
-    crash: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>;
+    recoil: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on hit
+    crash: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on miss
+    selfInflict: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on use
   };
   battle: {
     join: BattleEffect<Combatant>;
@@ -104,6 +105,7 @@ export type DisableReciept = TargetEffectsReciept["disable"];
 export type LeechReciept = SourceEffectsReciept["leech"];
 export type RecoilReciept = SourceEffectsReciept["recoil"];
 export type CrashReciept = SourceEffectsReciept["crash"];
+export type SelfInflictReciept = SourceEffectsReciept["selfInflict"];
 
 export type JoinReciept = BattleEffectsReciept["join"];
 export type WeatherReciept = BattleEffectsReciept["weather"];
