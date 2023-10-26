@@ -290,31 +290,26 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
 
 /** A completely normal attack */
 export function power(power: number): Decider<Attack, TargetContext> {
-  return ctx => {
-    if (!(ctx.source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
-    const level = ctx.source.user.stats.level;
-    const type = ctx.source.effects.type;
-    const category = ctx.source.effects.category;
+  return ({ source, action }) => {
+    if (!(source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
+
+    const { user, effects } = source;
+    const category = effects.category;
     if (category === "Status") throw new Error("Status moves cannot be used as attacks");
-    const stats = ctx.source.user.stats;
-    const stat = stats[category === "Physical" ? "attack" : "specialAttack"].value(true);
-    const critical = ctx.source.TryCriticalHit() ? ctx.source.GetCriticalMultiplier() : 1;
-    const random =
-      Math.random() * (config.moves.maxRandomMultiplier - config.moves.minRandomMultiplier) +
-      config.moves.minRandomMultiplier;
-    const stab = ctx.source.user.getSpecies().types.includes(type) ? config.moves.stabMultiplier : 1;
-    const multitarget = ctx.action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1;
+
+    const relevantStat = ({ Physical: "attack", Special: "specialAttack" } as const)[category];
+    const type = effects.type;
 
     return {
-      level,
+      level: user.stats.level,
       power,
-      stat,
+      stat: user.stats[relevantStat].value(true),
       type,
       category,
-      critical,
-      stab,
-      multitarget,
-      random,
+      critical: source.GetCriticalMultiplier(),
+      stab: user.getSpecies().types.includes(type) ? config.moves.stabMultiplier : 1,
+      multitarget: action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1,
+      random: decide(config.moves.randomMultiplier, undefined),
     };
   };
 }
