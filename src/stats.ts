@@ -63,7 +63,7 @@ class StatStage {
   }
 
   // TODO this is broken and it's the main reason this class exists
-  public multiplier(): number {
+  public get multiplier(): number {
     return this.current > 0 ? (this.power + this.current) / this.power : this.power / (this.power - this.current);
   }
 }
@@ -141,7 +141,7 @@ class PermanentStatEntry extends BattleStatEntry {
     val = Math.floor(val * natureEffect);
 
     // Apply stage if requested
-    if (considerStage) val = Math.floor(val * this.stage.multiplier());
+    if (considerStage) val = Math.floor(val * this.stage.multiplier);
 
     return val;
   }
