@@ -65,9 +65,7 @@ const categoryMap: CategoryMap = {
   weathers: { type: "Weather", useLoader: true },
 };
 
-type ArceusFile = {
-  [K in keyof CategoryMap]?: string[];
-} & {
+type ArceusFile = Partial<Record<Category, string[]>> & {
   name: string;
   letter: string;
   format: Formats;
