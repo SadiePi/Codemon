@@ -1,6 +1,6 @@
 import { assertEquals, assertNotEquals } from "./common.ts";
 
-import C, { Codemon, MoveEntry } from "../src/mod.ts";
+import C, { Codemon, MoveEntry } from "../codex/pokemon/mod.ts";
 
 Deno.test("Tackle", () => {
   const tackle = new MoveEntry({
