@@ -69,5 +69,6 @@ Deno.test("Stat Values", () => {
   assertEquals(kibble.stats.specialDefense.value(), 171);
   assertEquals(kibble.stats.speed.value(), 171);
 
-  // TODO test stat stages
+  kibble.stats.attack.stage.modify(1);
+  assertEquals(kibble.stats.attack.value(true), 417);
 });
