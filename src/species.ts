@@ -23,6 +23,7 @@ export interface Learnset {
   tutoring?: Move[];
 }
 
+// TODO codex entries?
 export type BodyType =
   | "Head"
   | "Head and legs"
