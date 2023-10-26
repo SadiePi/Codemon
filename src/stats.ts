@@ -56,7 +56,10 @@ class StatStage {
   public reset() {
     const old = this.current;
     this._stage = 0;
-    if (this._stage !== old) this.entry.set.emit("stageReset", this.entry.stat, old);
+    if (this._stage !== old) {
+      this.entry.set.emit("stageChange", this.entry.stat, old, 0);
+      this.entry.set.emit("stageReset", this.entry.stat, old);
+    }
   }
 
   // TODO this is broken and it's the main reason this class exists
