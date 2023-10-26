@@ -3,7 +3,7 @@
 
 import { TraditionalBBP } from "./battle/traditional.ts";
 import { ICodemon } from "./codemon.ts";
-import { Decider } from "./decision.ts";
+import { Decider, range } from "./decision.ts";
 import { Locale } from "./locale.ts";
 import { Move } from "./move.ts";
 import { Nature } from "./stats.ts";
@@ -12,6 +12,8 @@ import { Strategy } from "./trainer.ts";
 // be warned, sanity checks are NOT performed on these values (half lazy, half fun)
 export const config = {
   stats: {
+    maxLevel: 100,
+
     maxIV: 32,
     maxEV: 255,
 
@@ -26,11 +28,10 @@ export const config = {
     maxPPBoosts: 3,
     ppBoostMultiplier: 0.2,
 
+    randomMultiplier: range(0.85, 1),
     criticalMultiplier: 1.5,
     multitargetMultiplier: 0.75,
     stabMultiplier: 1.5,
-    minRandomMultiplier: 0.85,
-    maxRandomMultiplier: 1,
   },
   codemon: {
     limitDamageToRemainingHP: true,
