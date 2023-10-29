@@ -253,6 +253,11 @@ export class StatSet
 
   public level: number;
   public points: number;
+  public get levelPercent() {
+    const pointsToPrevLevel = this.group(this.level);
+    const pointsToNextLevel = this.group(this.level + 1);
+    return (this.points - pointsToPrevLevel) / (pointsToNextLevel - pointsToPrevLevel);
+  }
 
   public get group() {
     return this.self.getSpecies().experienceGroup;
@@ -279,7 +284,13 @@ export class StatSet
   public async levelUp(): Promise<LevelUpReciept>;
   public async levelUp(levels: number): Promise<LevelUpReciept[]>;
   public async levelUp(levels?: number): Promise<LevelUpReciept | LevelUpReciept[]> {
+    // console.log(
+    //   `Codemon.levelUp: ${this.self.name}${levels ? ` x${levels}` : ""} (${this.group(this.level)}/${
+    //     this.points
+    //   }/${this.group(this.level + 1)})`
+    // );
     if (levels) {
+      // console.log(`Codemon.levelUp: Running ${levels} levelUp(s)`);
       const ret: LevelUpReciept[] = [];
       for (let i = 0; i < levels; i++) ret.push(await this.levelUp());
       return ret;
@@ -293,19 +304,36 @@ export class StatSet
     };
     if (this.points < this.group(this.level)) {
       const forcedPoints = this.group(this.level) - this.points;
-      if (forcedPoints > 0) ret.forcedPoints = forcedPoints;
+      ret.forcedPoints = forcedPoints;
       this.points = this.group(this.level);
     }
+    // console.log(
+    //   `Codemon.LevelUp: Done, (${this.group(this.level)}/${this.points}/${this.group(this.level + 1)}) ${JSON.stringify(
+    //     ret
+    //   )}`
+    // );
     await this.wait("levelUp", ret);
     return ret;
   }
 
   public async addExp(exp: number): Promise<AddExpReciept> {
+    // console.log(
+    //   `Codemon.addExp: Adding ${exp} exp to ${this.self.name} (${this.group(this.level)}/${this.points}/${this.group(
+    //     this.level + 1
+    //   )})`
+    // );
     this.points += exp;
+    // console.log(`Now ${this.group(this.level)}/${this.points}/${this.group(this.level + 1)}`);
     const levelUps: LevelUpReciept[] = [];
-    while (this.group(this.level) < this.points) {
+    while (this.group(this.level + 1) <= this.points) {
+      // console.log(
+      //   `Codemon.addExp: Leveling up ${this.self.name} (${this.group(this.level)}/${this.points}/${this.group(
+      //     this.level + 1
+      //   )})`
+      // );
       levelUps.push(await this.levelUp());
     }
+    // console.log(`Codemon.addExp: Done; ${JSON.stringify(levelUps)}`);
     this.wait("addExp", { levelUps });
     return { levelUps };
   }
@@ -315,7 +343,7 @@ export class StatSet
   }
 
   public get percentToNextLevel() {
-    return this.points / (this.group(this.level + 1) - this.group(this.level));
+    return (this.points - this.group(this.level)) / (this.group(this.level + 1) - this.group(this.level));
   }
 
   public toString() {

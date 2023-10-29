@@ -1,5 +1,5 @@
 import { config, spawn } from "../codex/pokemon/mod.ts";
-import { assertEquals, iKibble } from "./common.ts";
+import { assertEquals, assertFalse, iKibble } from "./common.ts";
 
 import { iBulby } from "./common.ts";
 
@@ -59,7 +59,69 @@ Deno.test("Stat Stages", () => {
   assertEquals(changes, 10, "Wrong number of stage changes");
   assertEquals(resets, 2, "Wrong number of resets");
 });
-Deno.test("Experience", () => {});
+Deno.test("Experience", async () => {
+  const kibble = spawn({
+    ...iKibble,
+    stats: { points: 0 },
+  });
+
+  // Initial checks
+  assertEquals(kibble.stats.points, 0, "Initial experience isn't 0");
+  assertEquals(kibble.stats.level, 1, "Initial level isn't 1");
+
+  // Event variables
+  let levelUps = 0;
+  let expChanges = 0;
+
+  // Event listeners
+  kibble.stats.on("levelUp", () => levelUps++);
+  kibble.stats.on("addExp", () => expChanges++);
+
+  // Level up
+  const lup = await kibble.stats.levelUp();
+  assertEquals(kibble.stats.level, 2, "Level didn't increase");
+  assertEquals(levelUps, 1, "Level up event not triggered");
+  assertEquals(lup.forcedPoints, 8.75, "Forced points not correct");
+  console.log();
+
+  // Modify experience
+  const neededExp = kibble.stats.pointsToNextLevel;
+  const aexp = await kibble.stats.addExp(neededExp);
+  assertEquals(kibble.stats.level, 3, "Level didn't increase");
+  assertEquals(expChanges, 1, "Experience change event not triggered");
+  assertEquals(aexp.levelUps.length, 1, "LevelUp not called");
+  assertEquals(levelUps, 2, "Level up event not triggered");
+  assertFalse(aexp.levelUps[0].forcedPoints, "Forced points not correct");
+  console.log();
+
+  const halfExp = kibble.stats.pointsToNextLevel / 2;
+  const hexp = await kibble.stats.addExp(halfExp);
+  assertEquals(kibble.stats.level, 3, "Level increased");
+  assertEquals(expChanges, 2, "Experience change event not triggered");
+  assertEquals(levelUps, 2, "Level up event triggered");
+  assertEquals(hexp.levelUps.length, 0);
+  assertEquals(kibble.stats.percentToNextLevel, 1 / 2, "Percent to next level not correct");
+  console.log();
+
+  const moreExp = kibble.stats.group(10) - kibble.stats.points;
+  const mexp = await kibble.stats.addExp(moreExp);
+  assertEquals(kibble.stats.level, 10, "Level isn't 10");
+  assertEquals(expChanges, 3, "Experience change event not triggered");
+  assertEquals(levelUps, 9, "Level up events not triggered");
+  assertEquals(mexp.levelUps.length, 7, "LevelUps not called");
+  console.log();
+
+  const expectedExp = kibble.stats.group(20) - kibble.stats.points;
+  const lups = await kibble.stats.levelUp(10);
+  assertEquals(kibble.stats.level, 20, "Level isn't 20");
+  assertEquals(levelUps, 19, "Level up events not triggered");
+  assertEquals(
+    lups.reduce((a, b) => a + (b.forcedPoints ?? 0), 0),
+    expectedExp,
+    "Forced points not correct"
+  );
+});
+
 Deno.test("Stat Values", () => {
   const kibble = spawn(iKibble);
   assertEquals(kibble.stats.hp.max, 289);
