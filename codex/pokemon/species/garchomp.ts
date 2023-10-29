@@ -1,4 +1,4 @@
-import { Species, choose, weighted } from "../mod.ts";
+import { Species, choose } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Garchomp: Species = loader.register<Species>(P => ({
