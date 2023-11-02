@@ -22,8 +22,8 @@ type AllyOrAnyTargeting<P extends BattleBuilderParams<P>> = CommonTargetingOptio
   includeSelf?: boolean;
 };
 type SelfTargeting = { alignment: "Self" };
-type DeciderParams<P extends BattleBuilderParams<P>> = { battle: Battle<P>; combatant: Combatant<P> };
-type DeciderTargeting<P extends BattleBuilderParams<P>> = Decider<boolean, DeciderParams<P>>;
+type TargetingParams<P extends BattleBuilderParams<P>> = { battle: Battle<P>; combatant: Combatant<P> };
+type DeciderTargeting<P extends BattleBuilderParams<P>> = Decider<boolean, TargetingParams<P>>;
 export type TargetingCategory<P extends BattleBuilderParams<P>> =
   | DeciderTargeting<P>
   | SelfTargeting
