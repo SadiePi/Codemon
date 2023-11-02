@@ -2,6 +2,7 @@ import { decide } from "../decision.ts";
 import { EventEmitter } from "../external.ts";
 import { BattleConditionFactors } from "../mod.ts";
 import { Codemon, DamageCategory, Decider, MoveEntry, SingleOrArray, StageMods, Type, config } from "../mod.ts";
+import { EVYields } from "../stats.ts";
 import { NonEmptyPartial, TODO, sequentialAsync } from "../util.ts";
 import { Round } from "./core/action.ts";
 import { BattleBuilder, BattleBuilderParams, BattleConditionEntries } from "./core/battle.ts";
@@ -90,6 +91,7 @@ export type Terrain = BattleCondition;
 
 export type Reward = NonEmptyPartial<{
   money: number;
+  EVs: EVYields;
 }>; // TODO: & { trainer: Trainer }
 
 export type AttackReciept = TargetEffectsReciept["attack"];
