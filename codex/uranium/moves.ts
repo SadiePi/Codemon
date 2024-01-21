@@ -306,7 +306,8 @@ export const QuantumLeap: Move = loader.register<Move>(U => ({
   attack: power(100),
   target: { position: "Adjacent" },
   makesContact: true,
-  // TODO multi-turn
+
+  charge: { status: U.Statuses.SemiInvulnerableTurn },
 }));
 
 export const Radioacid: Move = loader.register<Move>(U => ({
