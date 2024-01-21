@@ -286,10 +286,13 @@ export function timeout<T, Context>(
  * @param {Function} proxy The function to proxy the result through.
  * @returns {Decider} A new Decider that proxies its result.
  */
-export function proxy<T, Context>(decider: Decider<T, Context>, proxy: (result: T) => void): Decider<T, Context> {
+export function proxy<T, Context>(
+  decider: Decider<T, Context>,
+  proxy: (result: T, context: Context) => void
+): Decider<T, Context> {
   return context => {
     const result = decide(decider, context);
-    proxy(result);
+    proxy(result, context);
     return result;
   };
 }
