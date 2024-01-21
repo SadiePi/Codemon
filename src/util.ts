@@ -1,13 +1,9 @@
 import { Decider, decide } from "./decision.ts";
 
 export type NonEmptyArray<T> = [T, ...T[]];
-export type NonEmptyPartial<T extends Record<string, unknown>, Keys extends keyof T = keyof T> = Pick<
-  T,
-  Exclude<keyof T, Keys>
-> &
-  {
-    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
-  }[Keys];
+export type NonEmptyPartial<T> = {
+  [K in keyof T]: Required<Pick<T, K>> & Partial<Omit<T, K>>;
+}[keyof T];
 
 export interface WeightedRandomEntry<T> {
   entry: T;
