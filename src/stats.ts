@@ -65,6 +65,14 @@ class StatStage {
   public get multiplier(): number {
     return this.current > 0 ? (this.power + this.current) / this.power : this.power / (this.power - this.current);
   }
+
+  public get isMax() {
+    return this.current === config.stats.maxStage;
+  }
+
+  public get isMin() {
+    return this.current === config.stats.minStage;
+  }
 }
 /** The parameters for a BattleStatEntry */
 interface IBattleStatEntry {
