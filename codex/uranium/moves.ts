@@ -1,4 +1,4 @@
-import { chance, Move, power, Codemon, MoveEntry, proxy } from "./mod.ts";
+import { chance, Move, power, Codemon, MoveEntry } from "./mod.ts";
 import loader from "./loader.ts";
 
 // data translated from https://pokemon-uranium.fandom.com/wiki/New_Moves_and_Abilities
@@ -38,7 +38,7 @@ export const CoralBreak: Move = loader.register<Move>(U => ({
   pp: 15,
   accuracy: 95,
   category: "Special",
-  attack: proxy(power(80), result => (result.category = "Physical")),
+  attack: power(80, attack => (attack.category = "Physical")),
   target: { position: "Adjacent" },
   makesContact: true,
 }));
