@@ -12,6 +12,7 @@ import { Strategy } from "./trainer.ts";
 // be warned, sanity checks are NOT performed on these values (half lazy, half fun)
 export const config = {
   stats: {
+    defaultLevel: 5,
     maxLevel: 100,
 
     maxIV: 32,

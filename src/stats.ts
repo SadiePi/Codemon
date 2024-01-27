@@ -274,7 +274,7 @@ export class StatSet
   constructor(public readonly self: Codemon, args: IStatSet, subscriber?: (self: EventEmitter<StatEvents>) => void) {
     super();
     if (subscriber) subscriber(this);
-    this.level = args.level ?? 1;
+    this.level = args.level ?? config.stats.defaultLevel;
     this.points = this.group(this.level);
     if (args.points) this.addExp(args.points);
 
