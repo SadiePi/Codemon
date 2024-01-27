@@ -1,13 +1,5 @@
 import { Round, ActionParams, Action, ActionReciept, RoundReciept, ActionPlan } from "./action.ts";
-import {
-  Battle,
-  BattleBuilderParams,
-  BattleContext,
-  BattleReciept,
-  Combatant,
-  SourceContext,
-  TargetContext,
-} from "./battle.ts";
+import { Battle, BattleBuilderParams, ActionContext, BattleReciept, Combatant, TargetContext } from "./battle.ts";
 import {
   BattleEffects,
   BattleEffectsReciept,
@@ -36,7 +28,7 @@ export type BattleEvents<P extends BattleBuilderParams<P>> = {
   combatantExit: [combatant: Combatant<P>, exitReason: unknown]; // TODO: exit reason
   battleReciept: [report: BattleReciept<P>];
 
-  receiveBattleEffects: [effects: BattleEffects<P>, context: BattleContext<P>];
+  receiveBattleEffects: [effects: BattleEffects<P>, context: ActionContext<P>];
   battleEffectReciept: [reciept: BattleEffectsReciept<P>];
 };
 
@@ -53,7 +45,7 @@ export type SourceEvents<P extends BattleBuilderParams<P>> = {
   inflictEffects: [effects: TargetEffects<P> & SourceEffects<P>, context: TargetContext<P>];
   actionEnd: [action: Action<P>];
   actionReciept: [reciept: ActionReciept<P>];
-  receiveSourceEffects: [effects: SourceEffects<P>, context: SourceContext<P>];
+  receiveSourceEffects: [effects: SourceEffects<P>, context: ActionContext<P>];
   sourceEffectReciept: [reciept: SourceEffectsReciept<P>];
 };
 

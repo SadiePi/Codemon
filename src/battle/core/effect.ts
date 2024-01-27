@@ -3,11 +3,10 @@ import { DeepImmutable } from "../../util.ts";
 import {
   Battle,
   BattleBuilderParams,
-  BattleContext,
+  ActionContext,
   BattleMessage,
   Combatant,
   EffectGroups,
-  SourceContext,
   TargetContext,
 } from "./mod.ts";
 
@@ -31,8 +30,8 @@ export type TargetingCategory<P extends BattleBuilderParams<P>> =
   | AllyOrAnyTargeting<P>;
 
 export type TargetEffectParams<P extends BattleBuilderParams<P>> = EffectGroupEffects<TargetContext<P>, P, P["target"]>;
-export type SourceEffectParams<P extends BattleBuilderParams<P>> = EffectGroupEffects<SourceContext<P>, P, P["source"]>;
-export type BattleEffectParams<P extends BattleBuilderParams<P>> = EffectGroupEffects<BattleContext<P>, P, P["battle"]>;
+export type SourceEffectParams<P extends BattleBuilderParams<P>> = EffectGroupEffects<ActionContext<P>, P, P["source"]>;
+export type BattleEffectParams<P extends BattleBuilderParams<P>> = EffectGroupEffects<ActionContext<P>, P, P["battle"]>;
 export type EffectParams<P extends BattleBuilderParams<P>> = TargetEffectParams<P> &
   SourceEffectParams<P> &
   BattleEffectParams<P>;
@@ -67,9 +66,9 @@ export type EffectGroupReciept<Context, P extends BattleBuilderParams<P>, G exte
 export type GroupContext<P extends BattleBuilderParams<P>, Group extends EffectGroups> = Group extends "target"
   ? TargetContext<P>
   : Group extends "source"
-  ? SourceContext<P>
+  ? ActionContext<P>
   : Group extends "battle"
-  ? BattleContext<P>
+  ? ActionContext<P>
   : never; // in case we ever add more groups
 
 export type EffectReceiver<P extends BattleBuilderParams<P>, Group extends EffectGroups> = {
@@ -91,16 +90,16 @@ export type EffectGroupEffects<C, P extends BattleBuilderParams<P>, G extends Ef
 };
 
 export type BaseEffectSource<P extends BattleBuilderParams<P>> = EffectGroupEffects<TargetContext<P>, P, P["target"]> &
-  EffectGroupEffects<SourceContext<P>, P, P["source"]> &
-  EffectGroupEffects<BattleContext<P>, P, P["battle"]> & {
+  EffectGroupEffects<ActionContext<P>, P, P["source"]> &
+  EffectGroupEffects<ActionContext<P>, P, P["battle"]> & {
     name: string;
     description: string;
     target: TargetingCategory<P>;
   };
 
 export type TargetEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<TargetContext<P>, P, P["target"]>;
-export type SourceEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<SourceContext<P>, P, P["source"]>;
-export type BattleEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<BattleContext<P>, P, P["battle"]>;
+export type SourceEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<ActionContext<P>, P, P["source"]>;
+export type BattleEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<ActionContext<P>, P, P["battle"]>;
 export type Effects<P extends BattleBuilderParams<P>> = TargetEffects<P> & SourceEffects<P> & BattleEffects<P>;
 
 export type TargetEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<
@@ -109,12 +108,12 @@ export type TargetEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroup
   P["target"]
 >;
 export type SourceEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<
-  SourceContext<P>,
+  ActionContext<P>,
   P,
   P["source"]
 >;
 export type BattleEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<
-  BattleContext<P>,
+  ActionContext<P>,
   P,
   P["battle"]
 >;

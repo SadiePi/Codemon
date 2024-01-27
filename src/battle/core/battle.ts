@@ -25,11 +25,11 @@ export type BattleBuilderParams<P extends BattleBuilderParams<P>> = {
   name: string;
   message: unknown;
   combatant: BaseCombatant<P>;
-  conditions: Record<string, Status<BattleContext<P>>>;
+  conditions: Record<string, Status<ActionContext<P>>>;
 
   target: EffectGroup<TargetContext<P>, P>;
-  source: EffectGroup<SourceContext<P>, P>;
-  battle: EffectGroup<BattleContext<P>, P>;
+  source: EffectGroup<ActionContext<P>, P>;
+  battle: EffectGroup<ActionContext<P>, P>;
 };
 
 export interface BaseBBP extends BattleBuilderParams<BaseBBP> {
@@ -55,8 +55,8 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
   effectsReciept: TargetEffectsReciept<P> & SourceEffectsReciept<P> & BattleEffectsReciept<P>;
 
   targetContext: TargetContext<P>;
-  sourceContext: SourceContext<P>;
-  battleContext: BattleContext<P>;
+  sourceContext: ActionContext<P>;
+  battleContext: ActionContext<P>;
 
   combatant: Combatant<P>;
   statusEffect: Status<TargetContext<P>>;
@@ -76,7 +76,7 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
   battleEvents: BattleEvents<P>;
   battleMessage: BattleMessage<P>;
 
-  battleCondition: Status<BattleContext<P>>;
+  battleCondition: Status<ActionContext<P>>;
 };
 
 export type BattleMessage<P extends BattleBuilderParams<P>> = P["message"];
@@ -127,20 +127,14 @@ export type TargetContext<P extends BattleBuilderParams<P>> = {
   battle: Battle<P>;
 };
 
-export type SourceContext<P extends BattleBuilderParams<P>> = {
+export type ActionContext<P extends BattleBuilderParams<P>> = {
   source: ActionSource<P>;
   action: Action<P>;
   battle: Battle<P>;
 };
 
-export type BattleContext<P extends BattleBuilderParams<P>> = {
-  source: ActionSource<P>;
-  action: Action<P>;
-  battle: Battle<P>;
-};
-
-export type BattleCondition<P extends BattleBuilderParams<P>> = Status<BattleContext<P>>;
-export type BattleConditionEntry<P extends BattleBuilderParams<P>> = StatusEntry<BattleContext<P>>;
+export type BattleCondition<P extends BattleBuilderParams<P>> = Status<ActionContext<P>>;
+export type BattleConditionEntry<P extends BattleBuilderParams<P>> = StatusEntry<ActionContext<P>>;
 
 export type BattleConditions<P extends BattleBuilderParams<P>> = Record<string, BattleCondition<P>>;
 export type BattleConditionEntries<P extends BattleBuilderParams<P>> = Record<string, BattleConditionEntry<P>>;

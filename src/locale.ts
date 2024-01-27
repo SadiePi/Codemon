@@ -1,5 +1,5 @@
 import { Reward, TraditionalBBP as T, Weather } from "./battle/traditional.ts";
-import { ActionPlan, ActionUseContext, Battle, BattleContext, Combatant, TargetContext } from "./battle/core/mod.ts";
+import { ActionPlan, ActionUseContext, Battle, ActionContext, Combatant, TargetContext } from "./battle/core/mod.ts";
 import { Decider } from "./decision.ts";
 import { SingleOrArray } from "./util.ts";
 import { StatusEntry } from "./status.ts";
@@ -21,10 +21,10 @@ export interface Locale {
         failed: LocaleString<{ battle: Battle<T>; plan: ActionPlan<T> }>;
       };
 
-      join: LocaleString<{ context: BattleContext<T>; combatant: Combatant<T> }>;
-      weather: LocaleString<{ context: BattleContext<T>; weather: Weather }>;
-      terrain: LocaleString<{ context: BattleContext<T>; terrain: Terrain }>;
-      end: LocaleString<{ context: BattleContext<T> }>;
+      join: LocaleString<{ context: ActionContext<T>; combatant: Combatant<T> }>;
+      weather: LocaleString<{ context: ActionContext<T>; weather: Weather }>;
+      terrain: LocaleString<{ context: ActionContext<T>; terrain: Terrain }>;
+      end: LocaleString<{ context: ActionContext<T> }>;
     };
   };
 

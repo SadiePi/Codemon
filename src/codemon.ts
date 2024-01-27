@@ -24,7 +24,7 @@ import {
   ActionPlan,
   Battle,
   TargetContext,
-  SourceContext,
+  ActionContext,
   BattleMessage,
   BaseCombatant,
   TargetEffects,
@@ -466,22 +466,22 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   }
 
   public receiveTraditionalLeech(
-    _effect: Decider<number | undefined, SourceContext<T>>,
-    _context: SourceContext<T>
+    _effect: Decider<number | undefined, ActionContext<T>>,
+    _context: ActionContext<T>
   ): LeechReciept {
     return { success: false, messages: ["Leech not implemented yet!"] };
   }
 
   public receiveTraditionalSourceEffects(
     _effects: SourceEffects<T>,
-    _context: SourceContext<T>
+    _context: ActionContext<T>
   ): SourceEffectsReciept<T> {
     return {} as SourceEffectsReciept<T>;
   }
 
   public receiveTraditionalRecoil(
-    effect: Decider<TargetEffects<T> | undefined, SourceContext<T>>,
-    context: SourceContext<T>
+    effect: Decider<TargetEffects<T> | undefined, ActionContext<T>>,
+    context: ActionContext<T>
   ): RecoilReciept {
     const effects: TargetEffects<T> | undefined = decide(effect, context);
     if (!effects) return { success: false, messages: [] };
@@ -500,8 +500,8 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     };
   }
   public receiveTraditionalCrash(
-    effect: Decider<TargetEffects<T> | undefined, SourceContext<T>>,
-    context: SourceContext<T>
+    effect: Decider<TargetEffects<T> | undefined, ActionContext<T>>,
+    context: ActionContext<T>
   ): CrashReciept {
     const effects: TargetEffects<T> | undefined = decide(effect, context);
     if (!effects) return { success: false, messages: [] };
@@ -521,8 +521,8 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   }
 
   public receiveTraditionalSelfInflict(
-    effect: Decider<TargetEffects<T> | undefined, SourceContext<T>>,
-    context: SourceContext<T>
+    effect: Decider<TargetEffects<T> | undefined, ActionContext<T>>,
+    context: ActionContext<T>
   ): SelfInflictReciept {
     const effects: TargetEffects<T> | undefined = decide(effect, context);
     if (!effects) return { success: false, messages: [] };
