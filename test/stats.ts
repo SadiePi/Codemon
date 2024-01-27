@@ -1,7 +1,7 @@
 import { config, spawn } from "../codex/pokemon/mod.ts";
-import { assertEquals, assertFalse, iKibble } from "./common.ts";
+import { assertEquals, assertFalse, iKibble } from "./_common.ts";
 
-import { iBulby } from "./common.ts";
+import { iBulby } from "./_common.ts";
 
 Deno.test("Stat Stages", () => {
   const bulby = spawn(iBulby);

@@ -1,7 +1,7 @@
-import C, { spawn } from "../codex/pokemon/mod.ts";
-import Traditional from "../src/battle/traditional.ts";
-import { flattenActionMessages } from "../src/mod.ts";
-import { iBulby } from "./common.ts";
+import C, { spawn } from "../../../codex/pokemon/mod.ts";
+import Traditional from "../../../src/battle/traditional.ts";
+import { flattenActionMessages } from "../../../src/mod.ts";
+import { iBulby } from "../../_common.ts";
 
 Deno.test("Attack - Tackle", async () => {
   const bulby1 = spawn({

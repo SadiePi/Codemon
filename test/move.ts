@@ -1,4 +1,4 @@
-import { assertEquals, assertNotEquals } from "./common.ts";
+import { assertEquals, assertNotEquals } from "./_common.ts";
 
 import C, { Codemon, MoveEntry } from "../codex/pokemon/mod.ts";
 

@@ -1,4 +1,4 @@
-import { assert, iBulby } from "./common.ts";
+import { assert, iBulby } from "./_common.ts";
 import { spawn } from "../src/mod.ts";
 import P from "../codex/pokemon/mod.ts";
 

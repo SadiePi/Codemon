@@ -4,10 +4,10 @@ import C, {
   flattenActionMessages,
   spawn,
   flattenRoundMessages,
-} from "../codex/pokemon/mod.ts";
-import Traditional from "../src/battle/traditional.ts";
+} from "../../../codex/pokemon/mod.ts";
+import Traditional from "../../../src/battle/traditional.ts";
 
-import { iBulby } from "./common.ts";
+import { iBulby } from "../../_common.ts";
 
 Deno.test({
   name: "1v1 One Round",
