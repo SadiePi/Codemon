@@ -7,7 +7,6 @@ import { NonEmptyPartial, TODO, sequentialAsync } from "../util.ts";
 import { Round } from "./core/action.ts";
 import { BattleBuilder, BattleBuilderParams, BattleConditionEntries } from "./core/battle.ts";
 import { EffectType } from "./core/effect.ts";
-const tlocale = config.locale.battle.traditional;
 
 export type TraditionalConditionEntries = BattleConditionEntries<T>;
 
@@ -207,7 +206,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     if (!action)
       return {
         success: false,
-        messages: [...decide(tlocale.plan.failed, { battle: this, plan })],
+        messages: [...decide(config.locale.battle.traditional.plan.failed, { battle: this, plan })],
       };
     await this.wait("action", action);
     return await action.execute(this);
@@ -223,7 +222,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     this.addCombatant(combatant);
     return {
       success: true,
-      messages: [...decide(tlocale.join, { context, combatant })],
+      messages: [...decide(config.locale.battle.traditional.join, { context, combatant })],
       actual: combatant,
     };
   }
@@ -241,7 +240,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     weather.apply(context);
     return {
       success: true,
-      messages: [...decide(tlocale.weather, { context, weather })],
+      messages: [...decide(config.locale.battle.traditional.weather, { context, weather })],
       actual: weather,
     };
   }
@@ -259,7 +258,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     terrain.apply(context);
     return {
       success: true,
-      messages: [...decide(tlocale.terrain, { context, terrain })],
+      messages: [...decide(config.locale.battle.traditional.terrain, { context, terrain })],
       actual: terrain,
     };
   }
@@ -276,7 +275,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
 
     return {
       success: true,
-      messages: [...decide(tlocale.end, { context })],
+      messages: [...decide(config.locale.battle.traditional.end, { context })],
       actual: false,
     };
   }
