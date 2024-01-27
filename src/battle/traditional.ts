@@ -11,7 +11,7 @@ const tlocale = config.locale.battle.traditional;
 
 export type TraditionalConditionEntries = BattleConditionEntries<T>;
 
-export interface TraditionalBBP extends BattleBuilderParams<TraditionalBBP> {
+export interface TraditionalBBP extends BattleBuilderParams<T> {
   readonly name: "traditional";
   message: string; // TODO animations etc
   combatant: Codemon;
