@@ -10,7 +10,7 @@ export const BattleArmor: Ability = {
       if (!effect.attack) return;
 
       effect.attack = proxy(effect.attack, result => {
-        if (result) result.critical = undefined;
+        if (result) result.criticalHit = undefined;
       });
     }
 

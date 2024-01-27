@@ -55,10 +55,13 @@ export type Attack = {
   category: Exclude<DamageCategory, "Status">;
   /** The type of the move */
   type: Type;
+
+  /** Factor from type effectiveness */
+  typeEffectiveness?: number;
   /** Factor from critical hit */
-  critical?: number;
+  criticalHit?: number;
   /** Factor from held item */
-  item?: number;
+  heldItem?: number;
   /** Factor from Same Type Attack Boost */
   stab?: number;
   /** Factors from battle conditions */

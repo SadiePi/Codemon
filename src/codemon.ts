@@ -264,10 +264,10 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     const product =
       base *
       typeMultiplier *
-      (attack.critical ?? 1) *
+      (attack.criticalHit ?? 1) *
       (attack.random ?? 1) *
       (attack.stab ?? 1) *
-      (attack.item ?? 1) *
+      (attack.heldItem ?? 1) *
       (attack.multitarget ?? 1) *
       (attack.other ?? 1) *
       (attack.conditions?.weather ?? 1) *
