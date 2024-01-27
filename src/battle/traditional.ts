@@ -1,7 +1,7 @@
-import { decide } from "../decision.ts";
+import { decide, proxy } from "../decision.ts";
 import { EventEmitter } from "../external.ts";
-import { BattleConditionFactors } from "../mod.ts";
-import { Codemon, DamageCategory, Decider, MoveEntry, SingleOrArray, StageMods, Type, config } from "../mod.ts";
+import { BattleConditionFactors, Type } from "../mod.ts";
+import { Codemon, DamageCategory, Decider, MoveEntry, SingleOrArray, StageMods, config } from "../mod.ts";
 import { EVYields } from "../stats.ts";
 import { NonEmptyPartial, TODO, sequentialAsync } from "../util.ts";
 import { Round } from "./core/action.ts";
@@ -73,6 +73,38 @@ export type Attack = {
   /** Factor from ✨Special✨ */
   other?: number;
 };
+
+/** Creates an attack effect Decider based on a power level */
+export function power(
+  power: number,
+  modifier?: (attack: Attack, context: TargetContext) => void
+): Decider<Attack, TargetContext> {
+  return context => {
+    const { source, action } = context;
+    if (!(source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
+
+    const { user, effects } = source;
+    const { category, type } = effects;
+
+    if (category === "Status") throw new Error("Status moves cannot have an attack effect");
+    const relevantStat = ({ Physical: "attack", Special: "specialAttack" } as const)[category];
+
+    const attack = {
+      level: user.stats.level,
+      power,
+      stat: user.stats[relevantStat].value(true),
+      type,
+
+      category,
+      critical: source.GetCriticalMultiplier(),
+      stab: user.getSpecies().types.includes(type) ? config.moves.stabMultiplier : 1,
+      multitarget: action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1,
+      random: decide(config.moves.randomMultiplier, undefined),
+    };
+
+    return modifier ? proxy(attack, modifier) : attack;
+  };
+}
 
 export interface BaseAttackReciept {
   typeMultiplier: number;
@@ -291,32 +323,6 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     if (effects.end) reciept.end = this.receiveTraditionalEnd(effects.end, context);
     return reciept;
   }
-}
-
-/** A completely normal attack */
-export function power(power: number): Decider<Attack, TargetContext> {
-  return ({ source, action }) => {
-    if (!(source instanceof MoveEntry)) throw new Error("power() can only be used with moves");
-
-    const { user, effects } = source;
-    const category = effects.category;
-    if (category === "Status") throw new Error("Status moves cannot be used as attacks");
-
-    const relevantStat = ({ Physical: "attack", Special: "specialAttack" } as const)[category];
-    const type = effects.type;
-
-    return {
-      level: user.stats.level,
-      power,
-      stat: user.stats[relevantStat].value(true),
-      type,
-      category,
-      critical: source.GetCriticalMultiplier(),
-      stab: user.getSpecies().types.includes(type) ? config.moves.stabMultiplier : 1,
-      multitarget: action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1,
-      random: decide(config.moves.randomMultiplier, undefined),
-    };
-  };
 }
 
 // battle builder stuff
