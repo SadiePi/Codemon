@@ -9,49 +9,53 @@ import { Terrain } from "./mod.ts";
 
 type LocaleString<Args = undefined> = Decider<SingleOrArray<string>, Args>;
 
-type TTC = TargetContext<T>; // for brevity
+// for brevity
+type LS<A> = LocaleString<A>;
+type TTC = TargetContext<T>;
 
-// TODO convert more strings throughout to LocaleStrings
+// TODO NEXT convert more strings throughout to LocaleStrings
 export interface Locale {
   name: string;
 
   battle: {
     traditional: {
       plan: {
-        failed: LocaleString<{ battle: Battle<T>; plan: ActionPlan<T> }>;
+        failed: LS<{ battle: Battle<T>; plan: ActionPlan<T> }>;
       };
 
-      join: LocaleString<{ context: ActionContext<T>; combatant: Combatant<T> }>;
-      weather: LocaleString<{ context: ActionContext<T>; weather: Weather }>;
-      terrain: LocaleString<{ context: ActionContext<T>; terrain: Terrain }>;
-      end: LocaleString<{ context: ActionContext<T> }>;
+      join: LS<{ context: ActionContext<T>; combatant: Combatant<T> }>;
+      weather: LS<{ context: ActionContext<T>; weather: Weather }>;
+      terrain: LS<{ context: ActionContext<T>; terrain: Terrain }>;
+      end: LS<{ context: ActionContext<T> }>;
     };
   };
 
   codemon: {
     traditional: {
       attack: {
-        effectiveness: LocaleString<{ context: TTC; typeMultiplier: number }>;
-        damage: LocaleString<{ context: TTC; total: number }>;
+        effectiveness: LS<{ context: TTC; typeEffectiveness: number }>;
+        damage: LS<{ context: TTC; total: number }>;
       };
       status: {
         apply: LocaleString<{ context: TTC; entry: StatusEntry<TTC> }>;
       };
-      hp: LocaleString<{ context: TTC; difference: number }>;
-      stages: LocaleString<{ context: TTC; stages: StageMods }>;
-      faint: LocaleString<{ context: TTC }>;
+      hp: LS<{ context: TTC; difference: number }>;
+      stages: LS<{ context: TTC; stages: StageMods }>;
+      faint: LS<{ context: TTC }>;
       ball: {
-        immediate: LocaleString<{ context: TTC; a: number }>;
-        caught: LocaleString<{ context: TTC; a: number; b: number }>;
-        escape: LocaleString<{ context: TTC; a: number; b: number; check: number }>;
+        miss: LS<{ context: TTC }>; // TODO (req miss reasons)
+        blocked: LS<{ context: TTC }>; // TODO (req block reasons)
+        immediate: LS<{ context: TTC; a: number }>;
+        caught: LS<{ context: TTC; a: number; b: number }>;
+        escape: LS<{ context: TTC; a: number; b: number; check: number }>;
       };
-      reward: LocaleString<{ context: TTC; reward: Reward }>;
-      eject: LocaleString<{ context: TTC }>;
-      disable: LocaleString<{ context: TTC; move: MoveEntry }>;
+      reward: LS<{ context: TTC; reward: Reward }>;
+      eject: LS<{ context: TTC }>;
+      disable: LS<{ context: TTC; move: MoveEntry }>;
     };
   };
 
   move: {
-    use: LocaleString<{ context: ActionUseContext<T>; move: MoveEntry }>;
+    use: LS<{ context: ActionUseContext<T>; move: MoveEntry }>;
   };
 }

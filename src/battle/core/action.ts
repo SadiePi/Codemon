@@ -69,7 +69,7 @@ export abstract class BattleNode<P extends BattleBuilderParams<P>, Reciept> exte
   message: [message: BattleMessage<P>];
   end: [reciept: BattleNodeReciept<P, Reciept>];
 }> {
-  public cancel = false; // TODO events
+  public cancel = false;
 
   public preactions = new ActionSet<P>();
   public reactions = new ActionSet<P>();

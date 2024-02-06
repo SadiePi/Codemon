@@ -63,20 +63,19 @@ export class MoveEntry implements ActionSource<T> {
     return ret;
   }
 
-  // TODO: Complete this; it's only the rudimentary random check
-  public TryCriticalHit(): boolean {
+  public tryCriticalHit(): boolean {
     if (this.effects.category === "Status") return false;
     const crit = Math.random();
     const stage = this.effects.criticalHitStage ?? 0;
-    const aff = 1; // TODO: this.self.affection == max ? 1/2 : 1
+    // TODO friendship, affection
     if (stage >= 3) return true;
-    if (stage == 2) return crit < (1 / 2) * aff;
-    if (stage == 1) return crit < (1 / 8) * aff;
+    if (stage == 2) return crit < 1 / 2;
+    if (stage == 1) return crit < 1 / 8;
     return crit < 1 / 24;
   }
 
-  public GetCriticalMultiplier(): number {
-    return this.TryCriticalHit() ? config.moves.criticalMultiplier : 1;
+  public getCriticalMultiplier(): number {
+    return this.tryCriticalHit() ? config.moves.criticalMultiplier : 1;
   }
   public toString() {
     return `${this.effects.name} - ${this.effects.type.name}/${this.effects.category} - ${this.pp.current}/${this.pp.max} (${this.pp.boosts})`;

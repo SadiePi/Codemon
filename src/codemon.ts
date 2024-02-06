@@ -40,7 +40,6 @@ export function spawn(from: ICodemon): Codemon {
   return new Codemon(decide(from, undefined));
 }
 
-// TODO allow string species with <C extends Codex = Codex>?
 export type ICodemon = MultiDecider<
   {
     species: Species;
@@ -55,7 +54,6 @@ export type ICodemon = MultiDecider<
   SpawnContext
 >;
 
-// TODO: https://bulbapedia.bulbagarden.net/wiki/Affection
 export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCombatant<T> {
   private species: Species;
   private mutations: Partial<Species> = {};
@@ -85,7 +83,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   ) {
     super();
 
-    // TODO enforce sane values
+    // TODO NEXT enforce sane values
     this.species = decide(options.species, context);
     this.name = decide(options.name, context) ?? this.getSpecies().name;
     this.gender = decide(options.gender, context) ?? decide(this.getSpecies().genders, this);
@@ -104,7 +102,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       const moves = decide(options.moves, context);
       this.moves = moves?.map(move => new MoveEntry({ user: this, move: move })) ?? [];
     } else {
-      // TODO autopopulate moves
+      // TODO NEXT autopopulate moves
       this.moves = [];
     }
   }
@@ -247,23 +245,30 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   ): AttackReciept {
     const attack = decide(effect, context);
     if (!attack) return { success: false, messages: [] };
-
     const messages: BattleMessage<T>[] = [];
 
+    // https://bulbapedia.bulbagarden.net/wiki/Damage#Generation_V_onward
+
     let base = (2 * attack.level) / 5 + 2;
-    base *= attack.power;
-    // TODO fix this
-    base *= attack.stat;
-    const defense = attack.category === "Physical" ? this.stats.defense : this.stats.specialDefense;
+    base *= attack.power * attack.stat;
+    const defense = {
+      Physical: this.stats.defense,
+      Special: this.stats.specialDefense,
+    }[attack.category];
     base /= defense.value(true);
     base = base / 50 + 2;
 
-    const typeMultiplier = this.calculateTypeMultiplier(attack.type);
-    messages.push(...decide(config.locale.codemon.traditional.attack.effectiveness, { context, typeMultiplier }));
+    attack.typeEffectiveness = this.calculateTypeMultiplier(attack.type);
+    messages.push(
+      ...decide(config.locale.codemon.traditional.attack.effectiveness, {
+        context,
+        typeEffectiveness: attack.typeEffectiveness,
+      })
+    );
 
     const product =
       base *
-      typeMultiplier *
+      attack.typeEffectiveness *
       (attack.criticalHit ?? 1) *
       (attack.random ?? 1) *
       (attack.stab ?? 1) *
@@ -284,7 +289,6 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       actual: attack,
       success: true,
       messages,
-      typeMultiplier,
       total,
       faint: this.stats.hp.fainted,
     };
@@ -354,23 +358,23 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     effect: Decider<number | undefined, TargetContext<T>>,
     context: TargetContext<T>
   ): BallReciept {
+    const ballBonus = decide(effect, context) ?? 0; // 0 = failure
     const maxHP = this.stats.hp.max;
     const currentHP = this.stats.hp.current;
-    const darkGrass = 1; // TODO
-    const rateModified = this.getSpecies().catchRate; // TODO modifiers, needs research
-    const ballBonus = decide(effect, context) ?? 0; // 0 = failure
-    const badgePenalty = 1; // TODO obedience
+    const darkGrass = 1; // TODO (req overworld)
+    const rateModified = this.getSpecies().catchRate; // TODO (req bulbapedia research) modifiers
+    const badgePenalty = 1; // TODO (req badges) obedience
     const bonusLevel = this.stats.level < 13 ? Math.max((36 - 2 * this.stats.level) / 10, 1) : 1;
     // deno-lint-ignore prefer-const
-    let bonusStatus = 1; // TODO will be decided in an event later;
-    const bonusMisc = 1; // TODO
+    let bonusStatus = 1; // TODO NEXT emit an event to let statuses change this
+    const bonusMisc = 1; // TODO (req capture power, back strike)
 
     const a =
       Math.floor((3 * maxHP - 2 * currentHP) * 4096 * darkGrass * rateModified * ballBonus * badgePenalty) *
       bonusLevel *
       bonusStatus *
       bonusMisc;
-    // TODO critical capture
+    // TODO (req codex discovery map) critical capture
 
     if (a > 255)
       return {
@@ -436,7 +440,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       };
 
     context.battle.removeCombatant(this);
-    // TODO disable status effects etc
+    // TODO NEXT disable status effects etc
 
     return {
       success: true,
@@ -472,6 +476,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     return { success: false, messages: ["Leech not implemented yet!"] };
   }
 
+  // TODO NEXT fix this
   public receiveTraditionalSourceEffects(
     _effects: SourceEffects<T>,
     _context: ActionContext<T>
@@ -486,12 +491,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     const effects: TargetEffects<T> | undefined = decide(effect, context);
     if (!effects) return { success: false, messages: [] };
 
-    const reciept = this.receiveTraditionalTargetEffects(effects, {
-      source: context.source,
-      target: this,
-      action: context.action,
-      battle: context.battle,
-    });
+    const reciept = this.receiveTraditionalTargetEffects(effects, { target: this, ...context });
     return {
       success: true,
       messages: [],

@@ -23,7 +23,7 @@ export interface Learnset {
   tutoring?: Move[];
 }
 
-// TODO codex entries?
+// TODO? codex entries
 export type BodyType =
   | "Head"
   | "Head and legs"
@@ -42,7 +42,7 @@ export type BodyType =
 
 export interface Type {
   name: string;
-  color: string; // TODO move to a palette file
+  color: string; // TODO? move to a palette file
   weaknesses: Type[];
   resistances: Type[];
   immunities: Type[];

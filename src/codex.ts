@@ -51,6 +51,6 @@ export abstract class Codex {
   public abstract Weathers: Record<string, Weather>;
 }
 
-// TODO use?
+// TODO? use
 type DeepMap<T, U> = T extends Record<string, unknown> ? { [K in keyof T]: DeepMap<T[K], U> } : U;
 export type DiscoveryMap<Codex> = DeepMap<Codex, boolean>;

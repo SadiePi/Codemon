@@ -30,7 +30,7 @@ export interface TraditionalBBP extends BattleBuilderParams<T> {
     disable: TargetEffect<MoveEntry>;
   };
   source: {
-    leech: SourceEffect<number, unknown>; // TODO
+    leech: SourceEffect<number, unknown>; // TODO NEXT
     recoil: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on hit
     crash: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on miss
     selfInflict: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on use
@@ -87,16 +87,19 @@ export function power(
     const { category, type } = effects;
 
     if (category === "Status") throw new Error("Status moves cannot have an attack effect");
-    const relevantStat = ({ Physical: "attack", Special: "specialAttack" } as const)[category];
+    const relevantStat = {
+      Physical: user.stats.attack,
+      Special: user.stats.specialAttack,
+    }[category];
 
     const attack = {
       level: user.stats.level,
       power,
-      stat: user.stats[relevantStat].value(true),
+      stat: relevantStat.value(true),
       type,
 
       category,
-      critical: source.GetCriticalMultiplier(),
+      critical: source.getCriticalMultiplier(),
       stab: user.getSpecies().types.includes(type) ? config.moves.stabMultiplier : 1,
       multitarget: action.params.targets.length > 1 ? config.moves.multitargetMultiplier : 1,
       random: decide(config.moves.randomMultiplier, undefined),
@@ -107,7 +110,6 @@ export function power(
 }
 
 export interface BaseAttackReciept {
-  typeMultiplier: number;
   total: number;
   faint: boolean;
 }
@@ -127,7 +129,7 @@ export type Terrain = BattleCondition;
 export type Reward = NonEmptyPartial<{
   money: number;
   EVs: EVYields;
-}>; // TODO: & { trainer: Trainer }
+}>; // TODO (req trainers) & { trainer: Trainer }
 
 export type AttackReciept = TargetEffectsReciept["attack"];
 export type StatusReciept = TargetEffectsReciept["status"];

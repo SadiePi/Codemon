@@ -111,7 +111,7 @@ export function sequentialAsync<T, U>(
   // thanks copilot 👍
 }
 
-// TODO use this?
+// TODO? use this
 // type Signaler<Args extends Array<unknown>, SignalArgs extends Array<unknown> = []> = (
 //   signal: (...args: SignalArgs) => void,
 //   ...args: Args

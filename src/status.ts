@@ -121,7 +121,7 @@ export function effectAction<P extends BattleBuilderParams<P>>({
   const actionSource: ActionSource<P> = {
     [`${battle.type}Action`]: ({ plan: { targets } }: ActionUseContext<P>): Action<P> =>
       new Action<P>({ battle, user, effect, source: actionSource, targets, parent }),
-  } as unknown as ActionSource<P>; // TODO? this may be a mistake, we'll see
+  } as ActionSource<P>;
   return {
     source: actionSource,
     targets,

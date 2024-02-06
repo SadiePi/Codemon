@@ -102,7 +102,7 @@ class BattleStatEntry {
   }
 }
 
-// TODO use this
+// TODO NEXT use this
 // Must be EXACT inverse functions when considerStage is false
 interface PermanentStatSolver {
   eviv2value: (eviv: IPermanentStatEntry, considerStage?: boolean) => number;
@@ -130,7 +130,6 @@ class PermanentStatEntry extends BattleStatEntry {
 
   /** The value of this stat. Ignores stage by default, pass true to enable */
   public value(considerStage = false) {
-    // Base value. TODO? make this a decider in config
     let val =
       2 * this.set.self.getSpecies().baseStats[this.stat as PermanentStat] +
       this.individualValue +
@@ -151,11 +150,6 @@ class PermanentStatEntry extends BattleStatEntry {
     if (considerStage) val = Math.floor(val * this.stage.multiplier);
 
     return val;
-  }
-
-  // must be an EXACT inverse of value()
-  public solveEVIV(_target: number, _considerStage = false) {
-    return {}; // todo
   }
 
   public toString() {
@@ -189,11 +183,6 @@ class HPStatEntry extends PermanentStatEntry {
   public value() {
     const original = super.value(false);
     return original + this.set.level + 5;
-  }
-
-  // must be an EXACT inverse of HP.value()
-  public solveEVIV(_target: number, _considerStage?: boolean): IPermanentStatEntry {
-    return {}; // TODO
   }
 
   public get percent() {
@@ -244,11 +233,7 @@ export type StatEvents = {
   addExp: [reciept: AddExpReciept];
 };
 
-export class StatSet
-  // todo: this should be on Codemon, not StatSet. or maybe both?
-  extends EventEmitter<StatEvents>
-  implements StatEntries
-{
+export class StatSet extends EventEmitter<StatEvents> implements StatEntries {
   public hp: HPStatEntry;
   public attack: PermanentStatEntry;
   public defense: PermanentStatEntry;
