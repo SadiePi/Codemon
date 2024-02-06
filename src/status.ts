@@ -104,8 +104,8 @@ export function roundDuration<P extends BattleBuilderParams<P>>(
 
 export function volatile<P extends BattleBuilderParams<P>>(battle: Battle<P>): StatusExpiry {
   return expire => {
-    battle.on("battleReciept", expire);
-    return () => battle.off("battleReciept", expire);
+    battle.on("battleReceipt", expire);
+    return () => battle.off("battleReceipt", expire);
   };
 }
 

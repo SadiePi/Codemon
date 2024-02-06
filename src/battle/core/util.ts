@@ -1,39 +1,39 @@
 import { TODO } from "../../util.ts";
-import { EffectGroupReciept } from "./effect.ts";
+import { EffectGroupReceipt } from "./effect.ts";
 import {
-  ActionReciept,
+  ActionReceipt,
   BattleBuilderParams,
   BattleMessage,
-  BattleReciept,
+  BattleReceipt,
   EffectGroup,
-  EffectTypeReciept,
-  RoundReciept,
+  EffectTypeReceipt,
+  RoundReceipt,
 } from "./mod.ts";
 
 export function flattenEffectMessages<P extends BattleBuilderParams<P>>(
-  reciept: EffectTypeReciept<P, unknown>,
+  receipt: EffectTypeReceipt<P, unknown>,
   into: BattleMessage<P>[] = []
 ) {
-  if (!reciept.messages) return TODO("WTF?", false, into);
-  into.push(...reciept.messages);
+  if (!receipt.messages) return TODO("WTF?", false, into);
+  into.push(...receipt.messages);
   return into;
 }
 
 export function flattenEffectGroupMessages<P extends BattleBuilderParams<P>, G extends EffectGroup<unknown, P>>(
-  reciept: Partial<EffectGroupReciept<unknown, P, G>>,
+  receipt: Partial<EffectGroupReceipt<unknown, P, G>>,
   into: BattleMessage<P>[] = []
 ) {
-  for (const effect in reciept) {
-    const _reciept = reciept[effect];
-    if (!_reciept) continue;
-    flattenEffectMessages(_reciept, into);
+  for (const effect in receipt) {
+    const _receipt = receipt[effect];
+    if (!_receipt) continue;
+    flattenEffectMessages(_receipt, into);
   }
 
   return into;
 }
 
 export function flattenActionMessages<P extends BattleBuilderParams<P>>(
-  node: ActionReciept<P>,
+  node: ActionReceipt<P>,
   into: BattleMessage<P>[] = []
 ) {
   if (!node.success) {
@@ -42,7 +42,7 @@ export function flattenActionMessages<P extends BattleBuilderParams<P>>(
   }
   for (const action of node.preactions) flattenActionMessages(action, into);
   into.push(...node.messages);
-  for (const reciept of node.targetEffects) flattenEffectGroupMessages(reciept, into);
+  for (const receipt of node.targetEffects) flattenEffectGroupMessages(receipt, into);
   flattenEffectGroupMessages(node.sourceEffects, into);
   flattenEffectGroupMessages(node.battleEffects, into);
   for (const action of node.reactions) flattenActionMessages(action, into);
@@ -50,7 +50,7 @@ export function flattenActionMessages<P extends BattleBuilderParams<P>>(
 }
 
 export function flattenRoundMessages<P extends BattleBuilderParams<P>>(
-  round: RoundReciept<P>,
+  round: RoundReceipt<P>,
   into: BattleMessage<P>[] = []
 ) {
   if (!round.success) {
@@ -65,7 +65,7 @@ export function flattenRoundMessages<P extends BattleBuilderParams<P>>(
 }
 
 export function flattenBattleMessages<P extends BattleBuilderParams<P>>(
-  battle: BattleReciept<P>,
+  battle: BattleReceipt<P>,
   into: BattleMessage<P>[] = []
 ) {
   for (const round of battle.rounds) flattenRoundMessages(round, into);

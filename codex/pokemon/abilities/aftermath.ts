@@ -5,7 +5,7 @@ import {
   TraditionalBBP as T,
   effectAction,
   permanent,
-  TargetEffectsReciept,
+  TargetEffectsReceipt,
 } from "../mod.ts";
 
 const DAMAGE_FACTOR = 4; // 1/4 of max HP
@@ -16,14 +16,14 @@ export const Aftermath: Ability = {
   slot: "ability",
 
   apply: ({ self }) => {
-    function damageAttackerOnFaint(reciept: TargetEffectsReciept<T>, { action, battle, source }: TargetContext<T>) {
+    function damageAttackerOnFaint(receipt: TargetEffectsReceipt<T>, { action, battle, source }: TargetContext<T>) {
       if (!(source instanceof MoveEntry)) return;
       if (!source.effects.makesContact) return;
 
       // TODO this needs to be better
-      const faintFromAttack = reciept.attack.success && reciept.attack.faint;
-      const faintFromFaint = reciept.faint.success && reciept.faint.actual;
-      const faintFromHP = reciept.hp.success && reciept.hp.faint;
+      const faintFromAttack = receipt.attack.success && receipt.attack.faint;
+      const faintFromFaint = receipt.faint.success && receipt.faint.actual;
+      const faintFromHP = receipt.hp.success && receipt.hp.faint;
       if (!(faintFromAttack || faintFromFaint || faintFromHP)) return;
       // if (context.battle.somePokemonHasAbility("Damp")) return; TODO
 
@@ -42,8 +42,8 @@ export const Aftermath: Ability = {
 
     return {
       name: Aftermath.name,
-      activate: () => self.on("effectReciept", damageAttackerOnFaint),
-      deactivate: () => self.off("effectReciept", damageAttackerOnFaint),
+      activate: () => self.on("effectReceipt", damageAttackerOnFaint),
+      deactivate: () => self.off("effectReceipt", damageAttackerOnFaint),
       expiry: permanent,
     };
   },

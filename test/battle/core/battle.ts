@@ -18,9 +18,9 @@ Deno.test({
     bulby2.learnMove(C.Moves.VineWhip);
 
     const battle = new Traditional([bulby1, bulby2]);
-    const reciept = await battle.runRound();
+    const receipt = await battle.runRound();
 
-    flattenRoundMessages(reciept).forEach(m => console.log(m));
+    flattenRoundMessages(receipt).forEach(m => console.log(m));
   },
 });
 
@@ -33,9 +33,9 @@ Deno.test({
     bulby2.learnMove(C.Moves.VineWhip);
 
     const battle = new Traditional([bulby1, bulby2]);
-    const reciept = await battle.runBattle();
+    const receipt = await battle.runBattle();
 
-    flattenBattleMessages(reciept).forEach(m => console.log(m));
+    flattenBattleMessages(receipt).forEach(m => console.log(m));
   },
 });
 
@@ -65,18 +65,18 @@ Deno.test({
       console.log(battle.combatants.map(c => (c instanceof Codemon ? c.toString(true) : "Non-Codemon")).join("\n"));
     });
 
-    battle.on("actionReciept", reciept => {
-      console.log(flattenActionMessages(reciept));
+    battle.on("actionReceipt", receipt => {
+      console.log(flattenActionMessages(receipt));
     });
 
-    battle.on("battleReciept", reciept => {
-      reciept.messages.push(`Battle over!`);
-      reciept.messages.push(
-        `Winner: ${reciept.remaining.map(c => (c instanceof Codemon ? c.name : "Non-Codemon")).join(", ")}`
+    battle.on("battleReceipt", receipt => {
+      receipt.messages.push(`Battle over!`);
+      receipt.messages.push(
+        `Winner: ${receipt.remaining.map(c => (c instanceof Codemon ? c.name : "Non-Codemon")).join(", ")}`
       );
     });
 
-    const reciept = await battle.runBattle();
-    console.log(flattenBattleMessages(reciept));
+    const receipt = await battle.runBattle();
+    console.log(flattenBattleMessages(receipt));
   },
 });

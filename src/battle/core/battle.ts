@@ -4,19 +4,19 @@ import { BattleEvents, CombatantEvents } from "./events.ts";
 import {
   Action,
   ActionPlan,
-  ActionReciept,
+  ActionReceipt,
   ActionSource,
   ActionUseContext,
   Round,
-  RoundReciept,
+  RoundReceipt,
   BattleEffects,
-  BattleEffectsReciept,
+  BattleEffectsReceipt,
   EffectGroup,
   EffectReceiver,
   SourceEffects,
-  SourceEffectsReciept,
+  SourceEffectsReceipt,
   TargetEffects,
-  TargetEffectsReciept,
+  TargetEffectsReceipt,
 } from "./mod.ts";
 
 export type EffectGroups = "target" | "source" | "battle";
@@ -49,10 +49,10 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
   battleEffects: BattleEffects<P>;
   effects: TargetEffects<P> & SourceEffects<P> & BattleEffects<P>;
 
-  targetEffectsReciept: TargetEffectsReciept<P>;
-  sourceEffectsReciept: SourceEffectsReciept<P>;
-  battleEffectsReciept: BattleEffectsReciept<P>;
-  effectsReciept: TargetEffectsReciept<P> & SourceEffectsReciept<P> & BattleEffectsReciept<P>;
+  targetEffectsReceipt: TargetEffectsReceipt<P>;
+  sourceEffectsReceipt: SourceEffectsReceipt<P>;
+  battleEffectsReceipt: BattleEffectsReceipt<P>;
+  effectsReceipt: TargetEffectsReceipt<P> & SourceEffectsReceipt<P> & BattleEffectsReceipt<P>;
 
   targetContext: TargetContext<P>;
   sourceContext: ActionContext<P>;
@@ -66,13 +66,13 @@ export type BattleBuilder<P extends BattleBuilderParams<P>> = {
   actionPlan: ActionPlan<P>;
   actionUseContext: ActionUseContext<P>;
   actionSource: ActionSource<P>;
-  actionReciept: ActionReciept<P>;
+  actionReceipt: ActionReceipt<P>;
 
   round: Round<P>;
-  roundReciept: RoundReciept<P>;
+  roundReceipt: RoundReceipt<P>;
 
   battle: Battle<P>;
-  battleReciept: BattleReciept<P>;
+  battleReceipt: BattleReceipt<P>;
   battleEvents: BattleEvents<P>;
   battleMessage: BattleMessage<P>;
 
@@ -100,22 +100,22 @@ export type Battle<P extends BattleBuilderParams<P>> = EffectReceiver<P, "battle
     conditions: P["conditions"];
 
     addCombatant: (this: ThisType<Battle<P>>, combatant: Combatant<P>) => void;
-    runBattle: (this: ThisType<Battle<P>>) => Promise<BattleReciept<P>>;
+    runBattle: (this: ThisType<Battle<P>>) => Promise<BattleReceipt<P>>;
     isOver: (this: ThisType<Battle<P>>) => boolean;
     getRound: (this: ThisType<Battle<P>>) => Round<P>;
-    runRound: (this: ThisType<Battle<P>>) => Promise<RoundReciept<P>>;
+    runRound: (this: ThisType<Battle<P>>) => Promise<RoundReceipt<P>>;
     getPlans: (this: ThisType<Battle<P>>) => Promise<ActionPlan<P>[]>;
     getCombatants: (this: ThisType<Battle<P>>) => Combatant<P>[];
     getPlan: (this: ThisType<Battle<P>>, combatant: Combatant<P>) => Promise<ActionPlan<P>>;
     getTargetChoice: (this: ThisType<Battle<P>>, action: ActionSource<P>, combatant: Combatant<P>) => TargetChoice<P>;
     sortPlans: (this: ThisType<Battle<P>>, actions: ActionPlan<P>[]) => ActionPlan<P>[];
-    runPlans(this: ThisType<Battle<P>>, actions: ActionPlan<P>[]): Promise<ActionReciept<P>[]>;
-    runPlan(this: ThisType<Battle<P>>, action: ActionPlan<P>): Promise<ActionReciept<P>>;
+    runPlans(this: ThisType<Battle<P>>, actions: ActionPlan<P>[]): Promise<ActionReceipt<P>[]>;
+    runPlan(this: ThisType<Battle<P>>, action: ActionPlan<P>): Promise<ActionReceipt<P>>;
     removeCombatant(this: ThisType<Battle<P>>, combatant: Combatant<P>): void;
   };
 
-export interface BattleReciept<P extends BattleBuilderParams<P>> {
-  readonly rounds: RoundReciept<P>[];
+export interface BattleReceipt<P extends BattleBuilderParams<P>> {
+  readonly rounds: RoundReceipt<P>[];
   readonly remaining: Combatant<P>[];
   readonly messages: BattleMessage<P>[];
 }

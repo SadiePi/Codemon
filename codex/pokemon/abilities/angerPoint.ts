@@ -5,7 +5,7 @@ import {
   effectAction,
   permanent,
   TraditionalBBP as T,
-  TargetEffectsReciept,
+  TargetEffectsReceipt,
 } from "../mod.ts";
 
 export const AngerPoint: Ability = {
@@ -15,11 +15,11 @@ export const AngerPoint: Ability = {
 
   apply: ({ self }) => {
     function maximizeAttackStageOnCritical(
-      reciept: TargetEffectsReciept<T>,
+      receipt: TargetEffectsReceipt<T>,
       { action, battle, source }: TargetContext<T>
     ) {
       if (!(source instanceof MoveEntry)) return;
-      if (!reciept.attack) return;
+      if (!receipt.attack) return;
 
       action.reactions.add(
         effectAction({
@@ -36,10 +36,10 @@ export const AngerPoint: Ability = {
     return {
       name: AngerPoint.name,
       activate: () => {
-        self.on("effectReciept", maximizeAttackStageOnCritical);
+        self.on("effectReceipt", maximizeAttackStageOnCritical);
       },
       deactivate: () => {
-        self.off("effectReciept", maximizeAttackStageOnCritical);
+        self.off("effectReceipt", maximizeAttackStageOnCritical);
       },
       expiry: permanent,
     };

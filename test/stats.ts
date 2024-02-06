@@ -84,29 +84,29 @@ Deno.test("Experience", async () => {
 
   // Modify experience
   const neededExp = kibble.stats.pointsToNextLevel;
-  let expReciept = await kibble.stats.addExp(neededExp);
+  let expReceipt = await kibble.stats.addExp(neededExp);
   assertEquals(kibble.stats.level, 3, "Level didn't increase");
   assertEquals(addExpEvents, 1, "Experience change event not triggered");
-  assertEquals(expReciept.levelUps.length, 1, "LevelUp not called");
+  assertEquals(expReceipt.levelUps.length, 1, "LevelUp not called");
   assertEquals(levelUpEvents, 2, "Level up event not triggered");
-  assertFalse(expReciept.levelUps[0].forcedPoints, "Forced points not correct");
+  assertFalse(expReceipt.levelUps[0].forcedPoints, "Forced points not correct");
   console.log();
 
   const halfExp = kibble.stats.pointsToNextLevel / 2;
-  expReciept = await kibble.stats.addExp(halfExp);
+  expReceipt = await kibble.stats.addExp(halfExp);
   assertEquals(kibble.stats.level, 3, "Level increased");
   assertEquals(addExpEvents, 2, "Experience change event not triggered");
   assertEquals(levelUpEvents, 2, "Level up event triggered");
-  assertEquals(expReciept.levelUps.length, 0);
+  assertEquals(expReceipt.levelUps.length, 0);
   assertEquals(kibble.stats.percentToNextLevel, 1 / 2, "Percent to next level not correct");
   console.log();
 
   const moreExp = kibble.stats.group(10) - kibble.stats.points;
-  expReciept = await kibble.stats.addExp(moreExp);
+  expReceipt = await kibble.stats.addExp(moreExp);
   assertEquals(kibble.stats.level, 10, "Level isn't 10");
   assertEquals(addExpEvents, 3, "Experience change event not triggered");
   assertEquals(levelUpEvents, 9, "Level up events not triggered");
-  assertEquals(expReciept.levelUps.length, 7, "LevelUps not called");
+  assertEquals(expReceipt.levelUps.length, 7, "LevelUps not called");
   console.log();
 
   const expectedExp = kibble.stats.group(20) - kibble.stats.points;

@@ -211,16 +211,16 @@ type StatEntry = PermanentStatEntry | BattleStatEntry | HPStatEntry;
 
 export type ExperienceGroup = (level: number) => number;
 
-export interface LevelUpReciept {
+export interface LevelUpReceipt {
   oldLevel: number;
   newLevel: number;
   forcedPoints?: number;
   statChange?: Record<PermanentStat, number>;
 }
 
-export interface AddExpReciept {
+export interface AddExpReceipt {
   exp: number;
-  levelUps: Array<LevelUpReciept>;
+  levelUps: Array<LevelUpReceipt>;
 }
 
 type StatEntries = Record<PermanentStat, PermanentStatEntry> & Record<BattleStat, BattleStatEntry>;
@@ -231,8 +231,8 @@ export type IStatSet = IStatEntries & { level?: number; points?: number };
 export type StatEvents = {
   stageChange: [stat: Stat, old: number, current: number];
   stageReset: [stat: Stat, old: number];
-  levelUp: [reciept: LevelUpReciept];
-  addExp: [reciept: AddExpReciept];
+  levelUp: [receipt: LevelUpReceipt];
+  addExp: [receipt: AddExpReceipt];
 };
 
 export class StatSet extends EventEmitter<StatEvents> implements StatEntries {
@@ -276,14 +276,14 @@ export class StatSet extends EventEmitter<StatEvents> implements StatEntries {
     this.evasion = new BattleStatEntry("evasion", this, 3, args.evasion ?? {});
   }
 
-  public async levelUp(): Promise<LevelUpReciept>;
-  public async levelUp(levels: number): Promise<LevelUpReciept[]>;
-  public async levelUp(levels?: number): Promise<LevelUpReciept | LevelUpReciept[]> {
-    if (levels) return sequentialAsync<void, LevelUpReciept>(new Array(levels), async () => await this.levelUp());
+  public async levelUp(): Promise<LevelUpReceipt>;
+  public async levelUp(levels: number): Promise<LevelUpReceipt[]>;
+  public async levelUp(levels?: number): Promise<LevelUpReceipt | LevelUpReceipt[]> {
+    if (levels) return sequentialAsync<void, LevelUpReceipt>(new Array(levels), async () => await this.levelUp());
 
     const old = this.level;
     this.level += 1;
-    const ret: LevelUpReciept = {
+    const ret: LevelUpReceipt = {
       oldLevel: old,
       newLevel: this.level,
     };
@@ -296,9 +296,9 @@ export class StatSet extends EventEmitter<StatEvents> implements StatEntries {
     return ret;
   }
 
-  public async addExp(exp: number): Promise<AddExpReciept> {
+  public async addExp(exp: number): Promise<AddExpReceipt> {
     this.points += exp;
-    const levelUps: LevelUpReciept[] = [];
+    const levelUps: LevelUpReceipt[] = [];
     while (this.group(this.level + 1) <= this.points) levelUps.push(await this.levelUp());
     this.wait("addExp", { exp, levelUps });
     return { exp, levelUps };

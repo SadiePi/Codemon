@@ -4,10 +4,10 @@ import {
   BattleBuilderParams,
   BattleMessage,
   Combatant,
-  BattleEffectsReciept,
+  BattleEffectsReceipt,
   EffectParams,
-  SourceEffectsReciept,
-  TargetEffectsReciept,
+  SourceEffectsReceipt,
+  TargetEffectsReceipt,
   TargetingCategory,
   GroupContext,
   TargetEffects,
@@ -17,15 +17,15 @@ export class ActionSet<P extends BattleBuilderParams<P>> extends EventEmitter<{
   begin: [plans: ActionPlan<P>[]];
   plan: [plan: ActionPlan<P>];
   action: [action: Action<P>, plan: ActionPlan<P>];
-  reciept: [reciept: ActionReciept<P>, action: Action<P>, plan: ActionPlan<P>];
-  end: [reciepts: ActionReciept<P>[], plans: ActionPlan<P>[]];
+  receipt: [receipt: ActionReceipt<P>, action: Action<P>, plan: ActionPlan<P>];
+  end: [receipts: ActionReceipt<P>[], plans: ActionPlan<P>[]];
 }> {
   private _allow = true;
   public get allow() {
     return this._allow;
   }
   public plans: ActionPlan<P>[] = [];
-  public reciepts: ActionReciept<P>[] = [];
+  public receipts: ActionReceipt<P>[] = [];
 
   constructor() {
     super();
@@ -36,7 +36,7 @@ export class ActionSet<P extends BattleBuilderParams<P>> extends EventEmitter<{
     this.plans.push(plan);
   }
 
-  public async execute(battle: Battle<P>): Promise<ActionReciept<P>[]> {
+  public async execute(battle: Battle<P>): Promise<ActionReceipt<P>[]> {
     if (!this.allow) throw new Error("ActionSet already executed or currently executing");
     this._allow = false;
     this.plans = battle.sortPlans(this.plans);
@@ -47,27 +47,27 @@ export class ActionSet<P extends BattleBuilderParams<P>> extends EventEmitter<{
       const action = decider.apply(plan.source, [{ plan, battle }]);
       if (!action) continue;
       this.wait("action", action, plan);
-      const reciept = await action.execute(battle);
-      this.reciepts.push(reciept);
-      this.wait("reciept", reciept, action, plan);
+      const receipt = await action.execute(battle);
+      this.receipts.push(receipt);
+      this.wait("receipt", receipt, action, plan);
     }
-    this.wait("end", this.reciepts, this.plans);
-    return this.reciepts;
+    this.wait("end", this.receipts, this.plans);
+    return this.receipts;
   }
 }
 
-export abstract class BattleNode<P extends BattleBuilderParams<P>, Reciept> extends EventEmitter<{
+export abstract class BattleNode<P extends BattleBuilderParams<P>, Receipt> extends EventEmitter<{
   begin: [];
   preaction: [preaction: Action<P>];
-  preactionReciept: [reciept: ActionReciept<P>];
-  afterPreactions: [reciepts: ActionReciept<P>[]];
-  beforeReactions: [reciepts: ActionReciept<P>[]];
+  preactionReceipt: [receipt: ActionReceipt<P>];
+  afterPreactions: [receipts: ActionReceipt<P>[]];
+  beforeReactions: [receipts: ActionReceipt<P>[]];
   reaction: [reaction: Action<P>];
-  reactionReciept: [reciept: ActionReciept<P>];
+  reactionReceipt: [receipt: ActionReceipt<P>];
   subaction: [subaction: Action<P>];
-  subactionReciept: [reciept: ActionReciept<P>];
+  subactionReceipt: [receipt: ActionReceipt<P>];
   message: [message: BattleMessage<P>];
-  end: [reciept: BattleNodeReciept<P, Reciept>];
+  end: [receipt: BattleNodeReceipt<P, Receipt>];
 }> {
   public cancel = false;
 
@@ -86,13 +86,13 @@ export abstract class BattleNode<P extends BattleBuilderParams<P>, Reciept> exte
       this.wait("subaction", reaction);
     });
 
-    this.preactions.on("reciept", reciept => {
-      this.wait("preactionReciept", reciept);
-      this.wait("subactionReciept", reciept);
+    this.preactions.on("receipt", receipt => {
+      this.wait("preactionReceipt", receipt);
+      this.wait("subactionReceipt", receipt);
     });
-    this.reactions.on("reciept", reciept => {
-      this.wait("reactionReciept", reciept);
-      this.wait("subactionReciept", reciept);
+    this.reactions.on("receipt", receipt => {
+      this.wait("reactionReceipt", receipt);
+      this.wait("subactionReceipt", receipt);
     });
   }
 
@@ -101,9 +101,9 @@ export abstract class BattleNode<P extends BattleBuilderParams<P>, Reciept> exte
     return this._currentSubaction;
   }
 
-  protected _reciept: BattleNodeReciept<P, Reciept> | null = null;
-  public get reciept() {
-    return this._reciept;
+  protected _receipt: BattleNodeReceipt<P, Receipt> | null = null;
+  public get receipt() {
+    return this._receipt;
   }
 
   protected _messages: BattleMessage<P>[] = [];
@@ -111,45 +111,45 @@ export abstract class BattleNode<P extends BattleBuilderParams<P>, Reciept> exte
     this._messages.push(message);
   }
 
-  public async execute(battle: Battle<P>): Promise<BattleNodeReciept<P, Reciept>> {
-    if (this.reciept) throw new Error("BattleNode has already been executed or is currently executing");
+  public async execute(battle: Battle<P>): Promise<BattleNodeReceipt<P, Receipt>> {
+    if (this.receipt) throw new Error("BattleNode has already been executed or is currently executing");
     await this.preactions.execute(battle);
-    const _reciept = this.cancel ? {} : await this.doExecute(battle);
+    const _receipt = this.cancel ? {} : await this.doExecute(battle);
     await this.reactions.execute(battle);
-    const reciept = Object.assign(
+    const receipt = Object.assign(
       {
         success: !this.cancel,
-        preactions: this.preactions.reciepts,
-        reactions: this.reactions.reciepts,
+        preactions: this.preactions.receipts,
+        reactions: this.reactions.receipts,
         messages: this._messages,
       },
-      _reciept
-    ) as BattleNodeReciept<P, Reciept>;
-    this._reciept = reciept;
-    return reciept;
+      _receipt
+    ) as BattleNodeReceipt<P, Receipt>;
+    this._receipt = receipt;
+    return receipt;
   }
 
-  protected abstract doExecute(battle: Battle<P>): Promise<Reciept>;
+  protected abstract doExecute(battle: Battle<P>): Promise<Receipt>;
 }
 
-export type BattleNodeReciept<P extends BattleBuilderParams<P>, Extra> =
+export type BattleNodeReceipt<P extends BattleBuilderParams<P>, Extra> =
   | ({
       success: true;
-      preactions: ActionReciept<P>[];
+      preactions: ActionReceipt<P>[];
       messages: BattleMessage<P>[];
-      reactions: ActionReciept<P>[];
+      reactions: ActionReceipt<P>[];
     } & Extra)
   | {
       success: false;
       messages: BattleMessage<P>[];
     };
 
-interface BaseRoundReciept<P extends BattleBuilderParams<P>> {
+interface BaseRoundReceipt<P extends BattleBuilderParams<P>> {
   number: number;
-  actions: ActionReciept<P>[];
+  actions: ActionReceipt<P>[];
 }
-export type RoundReciept<P extends BattleBuilderParams<P>> = BattleNodeReciept<P, BaseRoundReciept<P>>;
-export class Round<P extends BattleBuilderParams<P>> extends BattleNode<P, BaseRoundReciept<P>> {
+export type RoundReceipt<P extends BattleBuilderParams<P>> = BattleNodeReceipt<P, BaseRoundReceipt<P>>;
+export class Round<P extends BattleBuilderParams<P>> extends BattleNode<P, BaseRoundReceipt<P>> {
   public actions = new ActionSet<P>();
 
   constructor(public readonly number: number) {
@@ -163,19 +163,19 @@ export class Round<P extends BattleBuilderParams<P>> extends BattleNode<P, BaseR
 
     return {
       number: this.number,
-      actions: this.actions.reciepts,
+      actions: this.actions.receipts,
     };
   }
 }
 
-interface BaseActionReciept<P extends BattleBuilderParams<P>> {
-  targetEffects: Partial<TargetEffectsReciept<P>>[];
-  sourceEffects: Partial<SourceEffectsReciept<P>>;
-  battleEffects: Partial<BattleEffectsReciept<P>>;
+interface BaseActionReceipt<P extends BattleBuilderParams<P>> {
+  targetEffects: Partial<TargetEffectsReceipt<P>>[];
+  sourceEffects: Partial<SourceEffectsReceipt<P>>;
+  battleEffects: Partial<BattleEffectsReceipt<P>>;
 }
-export type ActionReciept<P extends BattleBuilderParams<P>> = BattleNodeReciept<P, BaseActionReciept<P>>;
+export type ActionReceipt<P extends BattleBuilderParams<P>> = BattleNodeReceipt<P, BaseActionReceipt<P>>;
 
-export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, BaseActionReciept<P>> {
+export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, BaseActionReceipt<P>> {
   constructor(public params: ActionParams<P>) {
     super();
   }
@@ -183,7 +183,7 @@ export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, Base
   public doExecute() {
     const { targets } = this.params;
     // let [applyRecoil, applyCrash] = [false, false];
-    const reciepts: Partial<TargetEffectsReciept<P>>[] = [];
+    const receipts: Partial<TargetEffectsReceipt<P>>[] = [];
     for (const target of targets) {
       // this is ... not great
       const battleType = this.params.battle.type;
@@ -191,8 +191,8 @@ export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, Base
       const receiver = target[`receive${capitalizedBattleType}TargetEffects`] as (
         group: TargetEffects<P>,
         context: GroupContext<P, "target">
-      ) => Partial<TargetEffectsReciept<P>> | null;
-      const reciept = receiver.apply(target, [
+      ) => Partial<TargetEffectsReceipt<P>> | null;
+      const receipt = receiver.apply(target, [
         this.params.effect,
         {
           action: this,
@@ -200,14 +200,14 @@ export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, Base
           source: this.params.source,
           battle: this.params.battle,
         },
-      ]) as TargetEffectsReciept<P>;
-      if (reciept) {
-        reciepts.push(reciept);
-        if (reciept.remove) this.params.battle.removeCombatant(target);
+      ]) as TargetEffectsReceipt<P>;
+      if (receipt) {
+        receipts.push(receipt);
+        if (receipt.remove) this.params.battle.removeCombatant(target);
       }
 
-      // if (reciept) applyRecoil = true;
-      // if (!reciept) applyCrash = true;
+      // if (receipt) applyRecoil = true;
+      // if (!receipt) applyCrash = true;
 
       // TODO this is weirder than I thought
       // const recoilEffect = decide(this.params.effect.recoil ?? undefined, { action: this, combatant: user });
@@ -217,9 +217,9 @@ export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, Base
       // if (applyCrash && crashEffect) this.addReaction(recoil(user, crashEffect));
     }
     return Promise.resolve({
-      targetEffects: reciepts,
-      sourceEffects: [] as SourceEffectsReciept<P>,
-      battleEffects: [] as BattleEffectsReciept<P>,
+      targetEffects: receipts,
+      sourceEffects: [] as SourceEffectsReceipt<P>,
+      battleEffects: [] as BattleEffectsReceipt<P>,
     });
   }
 }

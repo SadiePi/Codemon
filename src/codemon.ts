@@ -1,14 +1,14 @@
 import {
-  StagesReciept,
+  StagesReceipt,
   Attack,
-  BallReciept,
-  FaintReciept,
-  StatusReciept,
-  LeechReciept,
-  AttackReciept,
-  HPReciept,
-  RecoilReciept,
-  CrashReciept,
+  BallReceipt,
+  FaintReceipt,
+  StatusReceipt,
+  LeechReceipt,
+  AttackReceipt,
+  HPReceipt,
+  RecoilReceipt,
+  CrashReceipt,
   TraditionalBBP as T,
 } from "./battle/traditional.ts";
 import { config } from "./config.ts";
@@ -29,11 +29,11 @@ import {
   BaseCombatant,
   TargetEffects,
   SourceEffects,
-  TargetEffectsReciept,
-  SourceEffectsReciept,
+  TargetEffectsReceipt,
+  SourceEffectsReceipt,
 } from "./battle/core/mod.ts";
 import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
-import { AbilityEntry, DisableReciept, EjectReciept, Reward, RewardReciept, SelfInflictReciept } from "./mod.ts";
+import { AbilityEntry, DisableReceipt, EjectReceipt, Reward, RewardReceipt, SelfInflictReceipt } from "./mod.ts";
 import { CombatantEvents } from "./battle/core/events.ts";
 
 export function spawn(from: ICodemon): Codemon {
@@ -212,7 +212,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   }
 
   public receiveTraditionalTargetEffects(effects: TargetEffects<T>, context: TargetContext<T>) {
-    const reciept: Partial<TargetEffectsReciept<T>> = {};
+    const receipt: Partial<TargetEffectsReceipt<T>> = {};
 
     // TODO
     // let hit = true;
@@ -225,23 +225,23 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     //   if (Math.random() > accuracy) hit = false;
     // }
 
-    if (effects.attack) reciept.attack = this.receiveTraditionalAttack(effects.attack, context);
-    if (effects.hp) reciept.hp = this.receiveTraditionalHp(effects.hp, context);
-    if (effects.status) reciept.status = this.receiveTraditionalStatus(effects.status, context);
-    if (effects.stages) reciept.stages = this.receiveTraditionalStages(effects.stages, context);
-    if (effects.faint) reciept.faint = this.receiveTraditionalFaint(effects.faint, context);
-    if (effects.ball) reciept.ball = this.receiveTraditionalBall(effects.ball, context);
-    if (effects.eject) reciept.eject = this.receiveTraditionalEject(effects.eject, context);
+    if (effects.attack) receipt.attack = this.receiveTraditionalAttack(effects.attack, context);
+    if (effects.hp) receipt.hp = this.receiveTraditionalHp(effects.hp, context);
+    if (effects.status) receipt.status = this.receiveTraditionalStatus(effects.status, context);
+    if (effects.stages) receipt.stages = this.receiveTraditionalStages(effects.stages, context);
+    if (effects.faint) receipt.faint = this.receiveTraditionalFaint(effects.faint, context);
+    if (effects.ball) receipt.ball = this.receiveTraditionalBall(effects.ball, context);
+    if (effects.eject) receipt.eject = this.receiveTraditionalEject(effects.eject, context);
 
-    if (reciept.attack?.success && reciept.attack.faint) reciept.remove = true;
-    if (reciept.hp?.success && reciept.hp.faint) reciept.remove = true;
-    return reciept;
+    if (receipt.attack?.success && receipt.attack.faint) receipt.remove = true;
+    if (receipt.hp?.success && receipt.hp.faint) receipt.remove = true;
+    return receipt;
   }
 
   public receiveTraditionalAttack(
     effect: Decider<Attack | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): AttackReciept {
+  ): AttackReceipt {
     const attack = decide(effect, context);
     if (!attack) return { success: false, messages: [] };
     const messages: BattleMessage<T>[] = [];
@@ -297,7 +297,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalStatus(
     effect: Decider<SingleOrArray<StatusEffect<T>> | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): StatusReciept {
+  ): StatusReceipt {
     const status = decide(effect, context);
     if (!status) return { success: false, messages: [] };
 
@@ -315,7 +315,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalHp(
     effect: Decider<number | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): HPReciept {
+  ): HPReceipt {
     const hp = decide(effect, context);
     if (!hp) return { success: false, messages: [] };
 
@@ -331,7 +331,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalStages(
     effect: Decider<StageMods | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): StagesReciept {
+  ): StagesReceipt {
     const stages = decide(effect, context);
     if (!stages) return { success: false, messages: [] };
 
@@ -345,7 +345,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalFaint(
     effect: Decider<boolean | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): FaintReciept {
+  ): FaintReceipt {
     const faint = decide(effect, context);
     if (!faint) return { success: false, messages: [] };
 
@@ -356,7 +356,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalBall(
     effect: Decider<number | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): BallReciept {
+  ): BallReceipt {
     const ballBonus = decide(effect, context) ?? 0; // 0 = failure
     const maxHP = this.stats.hp.max;
     const currentHP = this.stats.hp.current;
@@ -410,7 +410,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalReward(
     effect: Decider<Reward | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): RewardReciept {
+  ): RewardReceipt {
     const reward = decide(effect, context);
     if (!reward)
       return {
@@ -430,7 +430,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalEject(
     effect: Decider<boolean | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): EjectReciept {
+  ): EjectReceipt {
     const eject = decide(effect, context);
     if (!eject)
       return {
@@ -451,7 +451,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalDisable(
     effect: Decider<MoveEntry | undefined, TargetContext<T>>,
     context: TargetContext<T>
-  ): DisableReciept {
+  ): DisableReceipt {
     const disable = decide(effect, context);
     if (!disable)
       return {
@@ -471,7 +471,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalLeech(
     _effect: Decider<number | undefined, ActionContext<T>>,
     _context: ActionContext<T>
-  ): LeechReciept {
+  ): LeechReceipt {
     return { success: false, messages: ["Leech not implemented yet!"] };
   }
 
@@ -479,33 +479,33 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
   public receiveTraditionalSourceEffects(
     _effects: SourceEffects<T>,
     _context: ActionContext<T>
-  ): SourceEffectsReciept<T> {
-    return {} as SourceEffectsReciept<T>;
+  ): SourceEffectsReceipt<T> {
+    return {} as SourceEffectsReceipt<T>;
   }
 
   public receiveTraditionalRecoil(
     effect: Decider<TargetEffects<T> | undefined, ActionContext<T>>,
     context: ActionContext<T>
-  ): RecoilReciept {
+  ): RecoilReceipt {
     const effects: TargetEffects<T> | undefined = decide(effect, context);
     if (!effects) return { success: false, messages: [] };
 
-    const reciept = this.receiveTraditionalTargetEffects(effects, { target: this, ...context });
+    const receipt = this.receiveTraditionalTargetEffects(effects, { target: this, ...context });
     return {
       success: true,
       messages: [],
       actual: effects,
-      reciept,
+      receipt,
     };
   }
   public receiveTraditionalCrash(
     effect: Decider<TargetEffects<T> | undefined, ActionContext<T>>,
     context: ActionContext<T>
-  ): CrashReciept {
+  ): CrashReceipt {
     const effects: TargetEffects<T> | undefined = decide(effect, context);
     if (!effects) return { success: false, messages: [] };
 
-    const reciept = this.receiveTraditionalTargetEffects(effects, {
+    const receipt = this.receiveTraditionalTargetEffects(effects, {
       source: context.source,
       target: this,
       action: context.action,
@@ -515,18 +515,18 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       success: true,
       messages: [],
       actual: effects,
-      reciept,
+      receipt,
     };
   }
 
   public receiveTraditionalSelfInflict(
     effect: Decider<TargetEffects<T> | undefined, ActionContext<T>>,
     context: ActionContext<T>
-  ): SelfInflictReciept {
+  ): SelfInflictReceipt {
     const effects: TargetEffects<T> | undefined = decide(effect, context);
     if (!effects) return { success: false, messages: [] };
 
-    const reciept = this.receiveTraditionalTargetEffects(effects, {
+    const receipt = this.receiveTraditionalTargetEffects(effects, {
       source: context.source,
       target: this,
       action: context.action,
@@ -536,7 +536,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       success: true,
       messages: [],
       actual: effects,
-      reciept,
+      receipt,
     };
   }
 

@@ -12,6 +12,6 @@ export const JumpKick: Move = loader.register<Move>(P => ({
   target: { position: "Adjacent" },
   makesContact: true,
   crash: {
-    hp: reciept => reciept.action.params.user.stats.hp.value() / 2,
+    hp: receipt => receipt.action.params.user.stats.hp.value() / 2,
   },
 }));

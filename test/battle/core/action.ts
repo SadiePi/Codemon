@@ -17,10 +17,10 @@ Deno.test("Attack - Tackle", async () => {
 
   const battle = new Traditional([bulby1, bulby2]);
   const plan = await battle.getPlan(bulby1);
-  const reciept = await battle.runPlan(plan);
+  const receipt = await battle.runPlan(plan);
 
-  if (!reciept.success) throw new Error("Action failed!");
-  flattenActionMessages(reciept).forEach(m => console.log(m));
+  if (!receipt.success) throw new Error("Action failed!");
+  flattenActionMessages(receipt).forEach(m => console.log(m));
   console.log(bulby2.stats.hp.current, bulby2.stats.hp.max);
 });
 
@@ -37,10 +37,10 @@ Deno.test("Stat Stages - Defense via TailWhip", async () => {
 
   const battle = new Traditional([bulby1, bulby2]);
   const plan = await battle.getPlan(bulby1);
-  const reciept = await battle.runPlan(plan);
+  const receipt = await battle.runPlan(plan);
 
-  if (!reciept.success) throw new Error("Action failed!");
-  flattenActionMessages(reciept).forEach(m => console.log(m));
+  if (!receipt.success) throw new Error("Action failed!");
+  flattenActionMessages(receipt).forEach(m => console.log(m));
   console.log(bulby2.stats.defense.value(true), bulby2.stats.defense.value(false));
 });
 
@@ -52,16 +52,16 @@ Deno.test("Status Effect - Paralysis via Thunderbolt", async () => {
 
   const battle = new Traditional([bulby1, bulby2]);
   const plan = await battle.getPlan(bulby1);
-  const reciept = await battle.runPlan(plan);
+  const receipt = await battle.runPlan(plan);
 
-  if (!reciept.success) throw new Error("Action failed!");
-  flattenActionMessages(reciept).forEach(m => console.log(m));
+  if (!receipt.success) throw new Error("Action failed!");
+  flattenActionMessages(receipt).forEach(m => console.log(m));
 
   const plan2 = await battle.getPlan(bulby2);
-  const reciept2 = await battle.runPlan(plan2);
+  const receipt2 = await battle.runPlan(plan2);
 
-  if (reciept2.success) throw new Error("Action succeeded!");
-  flattenActionMessages(reciept2).forEach(m => console.log(m));
+  if (receipt2.success) throw new Error("Action succeeded!");
+  flattenActionMessages(receipt2).forEach(m => console.log(m));
 });
 
 Deno.test("Status Effect - Burn via Flamethrower", async () => {
@@ -72,13 +72,13 @@ Deno.test("Status Effect - Burn via Flamethrower", async () => {
 
   const battle = new Traditional([bulby1, bulby2]);
   const plan = await battle.getPlan(bulby1);
-  const reciept = await battle.runPlan(plan);
+  const receipt = await battle.runPlan(plan);
 
-  if (!reciept.success) throw new Error("Action failed!");
-  flattenActionMessages(reciept).forEach(m => console.log(m));
+  if (!receipt.success) throw new Error("Action failed!");
+  flattenActionMessages(receipt).forEach(m => console.log(m));
 
   const plan2 = await battle.getPlan(bulby2);
-  const reciept2 = await battle.runPlan(plan2);
+  const receipt2 = await battle.runPlan(plan2);
 
-  flattenActionMessages(reciept2).forEach(m => console.log(m));
+  flattenActionMessages(receipt2).forEach(m => console.log(m));
 });

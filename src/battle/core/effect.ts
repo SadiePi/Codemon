@@ -38,10 +38,10 @@ export type EffectParams<P extends BattleBuilderParams<P>> = TargetEffectParams<
 
 export type EffectType<Context, Effect, P extends BattleBuilderParams<P>, Extra = Record<never, never>> = {
   effect: Decider<Effect | undefined, Context>;
-  reciept: EffectTypeReciept<P, Effect, Extra>;
+  receipt: EffectTypeReceipt<P, Effect, Extra>;
 };
 
-export type EffectTypeReciept<P extends BattleBuilderParams<P>, E, Extra = Record<never, never>> = DeepImmutable<
+export type EffectTypeReceipt<P extends BattleBuilderParams<P>, E, Extra = Record<never, never>> = DeepImmutable<
   | ({
       success: true;
       messages: BattleMessage<P>[];
@@ -57,8 +57,8 @@ export type EffectGroup<Context, P extends BattleBuilderParams<P>> = Record<
   string,
   EffectType<Context, unknown, P, unknown>
 >;
-export type EffectGroupReciept<Context, P extends BattleBuilderParams<P>, G extends EffectGroup<Context, P>> = {
-  [K in keyof G]: G[K]["reciept"];
+export type EffectGroupReceipt<Context, P extends BattleBuilderParams<P>, G extends EffectGroup<Context, P>> = {
+  [K in keyof G]: G[K]["receipt"];
 } & {
   remove?: boolean;
 };
@@ -75,13 +75,13 @@ export type EffectReceiver<P extends BattleBuilderParams<P>, Group extends Effec
   [G in Group as `receive${Capitalize<P["name"]>}${Capitalize<G>}Effects`]: (
     group: Partial<EffectGroupEffects<GroupContext<P, G>, P, P[G]>>,
     context: GroupContext<P, G>
-  ) => Partial<EffectGroupReciept<GroupContext<P, G>, P, P[G]>> | null;
+  ) => Partial<EffectGroupReceipt<GroupContext<P, G>, P, P[G]>> | null;
 } & {
   [G in Group]: {
     [Effect in keyof P[G] & string as `receive${Capitalize<P["name"]>}${Capitalize<Effect>}`]: (
       effect: P[G][Effect]["effect"],
       context: GroupContext<P, G>
-    ) => P[G][Effect]["reciept"];
+    ) => P[G][Effect]["receipt"];
   };
 }[Group];
 
@@ -102,21 +102,21 @@ export type SourceEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects
 export type BattleEffects<P extends BattleBuilderParams<P>> = EffectGroupEffects<ActionContext<P>, P, P["battle"]>;
 export type Effects<P extends BattleBuilderParams<P>> = TargetEffects<P> & SourceEffects<P> & BattleEffects<P>;
 
-export type TargetEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<
+export type TargetEffectsReceipt<P extends BattleBuilderParams<P>> = EffectGroupReceipt<
   TargetContext<P>,
   P,
   P["target"]
 >;
-export type SourceEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<
+export type SourceEffectsReceipt<P extends BattleBuilderParams<P>> = EffectGroupReceipt<
   ActionContext<P>,
   P,
   P["source"]
 >;
-export type BattleEffectsReciept<P extends BattleBuilderParams<P>> = EffectGroupReciept<
+export type BattleEffectsReceipt<P extends BattleBuilderParams<P>> = EffectGroupReceipt<
   ActionContext<P>,
   P,
   P["battle"]
 >;
-export type EffectsReciept<P extends BattleBuilderParams<P>> = TargetEffectsReciept<P> &
-  SourceEffectsReciept<P> &
-  BattleEffectsReciept<P>;
+export type EffectsReceipt<P extends BattleBuilderParams<P>> = TargetEffectsReceipt<P> &
+  SourceEffectsReceipt<P> &
+  BattleEffectsReceipt<P>;

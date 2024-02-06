@@ -19,21 +19,21 @@ export interface TraditionalBBP extends BattleBuilderParams<T> {
     terrain: Terrain;
   };
   target: {
-    attack: TargetEffect<Attack, BaseAttackReciept>;
+    attack: TargetEffect<Attack, BaseAttackReceipt>;
     status: TargetEffect<SingleOrArray<StatusEffect>>;
-    hp: TargetEffect<number, BaseHPReciept>;
+    hp: TargetEffect<number, BaseHPReceipt>;
     stages: TargetEffect<StageMods>;
     faint: TargetEffect<boolean>;
-    ball: TargetEffect<number, BaseBallReciept>;
+    ball: TargetEffect<number, BaseBallReceipt>;
     reward: TargetEffect<Reward>;
     eject: TargetEffect<boolean>;
     disable: TargetEffect<MoveEntry>;
   };
   source: {
     leech: SourceEffect<number, unknown>; // TODO NEXT
-    recoil: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on hit
-    crash: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on miss
-    selfInflict: SourceEffect<TargetEffects, { reciept: Partial<TargetEffectsReciept> }>; // on use
+    recoil: SourceEffect<TargetEffects, { receipt: Partial<TargetEffectsReceipt> }>; // on hit
+    crash: SourceEffect<TargetEffects, { receipt: Partial<TargetEffectsReceipt> }>; // on miss
+    selfInflict: SourceEffect<TargetEffects, { receipt: Partial<TargetEffectsReceipt> }>; // on use
   };
   battle: {
     join: BattleEffect<Combatant>;
@@ -109,16 +109,16 @@ export function power(
   };
 }
 
-export interface BaseAttackReciept {
+export interface BaseAttackReceipt {
   total: number;
   faint: boolean;
 }
 
-export interface BaseHPReciept {
+export interface BaseHPReceipt {
   faint: boolean;
 }
 
-export interface BaseBallReciept {
+export interface BaseBallReceipt {
   caught: boolean;
   shakes: number;
 }
@@ -131,25 +131,25 @@ export type Reward = NonEmptyPartial<{
   EVs: EVYields;
 }>; // TODO (req trainers) & { trainer: Trainer }
 
-export type AttackReciept = TargetEffectsReciept["attack"];
-export type StatusReciept = TargetEffectsReciept["status"];
-export type HPReciept = TargetEffectsReciept["hp"];
-export type StagesReciept = TargetEffectsReciept["stages"];
-export type FaintReciept = TargetEffectsReciept["faint"];
-export type BallReciept = TargetEffectsReciept["ball"];
-export type RewardReciept = TargetEffectsReciept["reward"];
-export type EjectReciept = TargetEffectsReciept["eject"];
-export type DisableReciept = TargetEffectsReciept["disable"];
+export type AttackReceipt = TargetEffectsReceipt["attack"];
+export type StatusReceipt = TargetEffectsReceipt["status"];
+export type HPReceipt = TargetEffectsReceipt["hp"];
+export type StagesReceipt = TargetEffectsReceipt["stages"];
+export type FaintReceipt = TargetEffectsReceipt["faint"];
+export type BallReceipt = TargetEffectsReceipt["ball"];
+export type RewardReceipt = TargetEffectsReceipt["reward"];
+export type EjectReceipt = TargetEffectsReceipt["eject"];
+export type DisableReceipt = TargetEffectsReceipt["disable"];
 
-export type LeechReciept = SourceEffectsReciept["leech"];
-export type RecoilReciept = SourceEffectsReciept["recoil"];
-export type CrashReciept = SourceEffectsReciept["crash"];
-export type SelfInflictReciept = SourceEffectsReciept["selfInflict"];
+export type LeechReceipt = SourceEffectsReceipt["leech"];
+export type RecoilReceipt = SourceEffectsReceipt["recoil"];
+export type CrashReceipt = SourceEffectsReceipt["crash"];
+export type SelfInflictReceipt = SourceEffectsReceipt["selfInflict"];
 
-export type JoinReciept = BattleEffectsReciept["join"];
-export type WeatherReciept = BattleEffectsReciept["weather"];
-export type TerrainReciept = BattleEffectsReciept["terrain"];
-export type EndReciept = BattleEffectsReciept["end"];
+export type JoinReceipt = BattleEffectsReceipt["join"];
+export type WeatherReceipt = BattleEffectsReceipt["weather"];
+export type TerrainReceipt = BattleEffectsReceipt["terrain"];
+export type EndReceipt = BattleEffectsReceipt["end"];
 
 export default class Traditional extends EventEmitter<BattleEvents> implements Battle {
   readonly type = "traditional";
@@ -176,7 +176,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     return this._round;
   }
 
-  public async runRound(): Promise<RoundReciept> {
+  public async runRound(): Promise<RoundReceipt> {
     this._round = new Round<T>(this.getRound().number + 1);
     return await this._round.execute(this);
   }
@@ -212,11 +212,11 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     return this.combatants.length <= 1;
   }
 
-  async runBattle(): Promise<BattleReciept> {
+  async runBattle(): Promise<BattleReceipt> {
     const rounds = [];
     while (!this.isOver()) {
-      const reciept = await this.runRound();
-      rounds.push(reciept);
+      const receipt = await this.runRound();
+      rounds.push(receipt);
     }
     return {
       rounds,
@@ -234,11 +234,11 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     return combatant.getTraditionalPlan(this);
   }
 
-  runPlans(plans: ActionPlan[]): Promise<ActionReciept[]> {
+  runPlans(plans: ActionPlan[]): Promise<ActionReceipt[]> {
     return sequentialAsync(plans, plan => this.runPlan(plan));
   }
 
-  async runPlan(plan: ActionPlan): Promise<ActionReciept> {
+  async runPlan(plan: ActionPlan): Promise<ActionReceipt> {
     const action = plan.source.traditionalAction({ plan, battle: this });
     if (!action)
       return {
@@ -249,7 +249,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     return await action.execute(this);
   }
 
-  receiveTraditionalJoin(effect: Decider<Combatant | undefined, BattleContext>, context: BattleContext): JoinReciept {
+  receiveTraditionalJoin(effect: Decider<Combatant | undefined, BattleContext>, context: BattleContext): JoinReceipt {
     const combatant = decide(effect, context);
     if (!combatant)
       return {
@@ -267,7 +267,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
   receiveTraditionalWeather(
     effect: Decider<BattleCondition | undefined, BattleContext>,
     context: BattleContext
-  ): WeatherReciept {
+  ): WeatherReceipt {
     const weather = decide(effect, context);
     if (!weather)
       return {
@@ -285,7 +285,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
   receiveTraditionalTerrain(
     effect: Decider<BattleCondition | undefined, BattleContext>,
     context: BattleContext
-  ): WeatherReciept {
+  ): WeatherReceipt {
     const terrain = decide(effect, context);
     if (!terrain)
       return {
@@ -300,7 +300,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     };
   }
 
-  receiveTraditionalEnd(effect: Decider<boolean | undefined, BattleContext>, context: BattleContext): EndReciept {
+  receiveTraditionalEnd(effect: Decider<boolean | undefined, BattleContext>, context: BattleContext): EndReceipt {
     const end = decide(effect, context);
     if (!end)
       return {
@@ -317,13 +317,13 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     };
   }
 
-  receiveTraditionalBattleEffects(effects: BattleEffects, context: BattleContext): BattleEffectsReciept {
-    const reciept = {} as BattleEffectsReciept;
-    if (effects.join) reciept.join = this.receiveTraditionalJoin(effects.join, context);
-    if (effects.weather) reciept.weather = this.receiveTraditionalWeather(effects.weather, context);
-    if (effects.terrain) reciept.terrain = this.receiveTraditionalTerrain(effects.terrain, context);
-    if (effects.end) reciept.end = this.receiveTraditionalEnd(effects.end, context);
-    return reciept;
+  receiveTraditionalBattleEffects(effects: BattleEffects, context: BattleContext): BattleEffectsReceipt {
+    const receipt = {} as BattleEffectsReceipt;
+    if (effects.join) receipt.join = this.receiveTraditionalJoin(effects.join, context);
+    if (effects.weather) receipt.weather = this.receiveTraditionalWeather(effects.weather, context);
+    if (effects.terrain) receipt.terrain = this.receiveTraditionalTerrain(effects.terrain, context);
+    if (effects.end) receipt.end = this.receiveTraditionalEnd(effects.end, context);
+    return receipt;
   }
 }
 
@@ -336,10 +336,10 @@ type TargetEffects = BB["targetEffects"];
 type SourceEffects = BB["sourceEffects"];
 type BattleEffects = BB["battleEffects"];
 type Effects = BB["effects"];
-type TargetEffectsReciept = BB["targetEffectsReciept"];
-type SourceEffectsReciept = BB["sourceEffectsReciept"];
-type BattleEffectsReciept = BB["battleEffectsReciept"];
-type EffectsReciept = BB["effectsReciept"];
+type TargetEffectsReceipt = BB["targetEffectsReceipt"];
+type SourceEffectsReceipt = BB["sourceEffectsReceipt"];
+type BattleEffectsReceipt = BB["battleEffectsReceipt"];
+type EffectsReceipt = BB["effectsReceipt"];
 type TargetContext = BB["targetContext"];
 type SourceContext = BB["sourceContext"];
 type BattleContext = BB["battleContext"];
@@ -349,10 +349,10 @@ type Action = BB["action"];
 type ActionPlan = BB["actionPlan"];
 type ActionUseContext = BB["actionUseContext"];
 type ActionSource = BB["actionSource"];
-type ActionReciept = BB["actionReciept"];
-type RoundReciept = BB["roundReciept"];
+type ActionReceipt = BB["actionReceipt"];
+type RoundReceipt = BB["roundReceipt"];
 type Battle = BB["battle"];
-type BattleReciept = BB["battleReciept"];
+type BattleReceipt = BB["battleReceipt"];
 type BattleEvents = BB["battleEvents"];
 type StatusEffect = BB["statusEffect"];
 type BattleCondition = BB["battleCondition"];
