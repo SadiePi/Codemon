@@ -10,6 +10,7 @@ import { ICodemon, Codemon } from "./codemon.ts";
 import { decide } from "./decision.ts";
 import { EventEmitter } from "./external.ts";
 import { config } from "./config.ts";
+import { sequentialAsync } from "./util.ts";
 
 /** All possible stats in the game */
 export const Stats = [...PermanentStats, ...BattleStats] as const;
@@ -218,6 +219,7 @@ export interface LevelUpReciept {
 }
 
 export interface AddExpReciept {
+  exp: number;
   levelUps: Array<LevelUpReciept>;
 }
 
@@ -277,17 +279,7 @@ export class StatSet extends EventEmitter<StatEvents> implements StatEntries {
   public async levelUp(): Promise<LevelUpReciept>;
   public async levelUp(levels: number): Promise<LevelUpReciept[]>;
   public async levelUp(levels?: number): Promise<LevelUpReciept | LevelUpReciept[]> {
-    // console.log(
-    //   `Codemon.levelUp: ${this.self.name}${levels ? ` x${levels}` : ""} (${this.group(this.level)}/${
-    //     this.points
-    //   }/${this.group(this.level + 1)})`
-    // );
-    if (levels) {
-      // console.log(`Codemon.levelUp: Running ${levels} levelUp(s)`);
-      const ret: LevelUpReciept[] = [];
-      for (let i = 0; i < levels; i++) ret.push(await this.levelUp());
-      return ret;
-    }
+    if (levels) return sequentialAsync<void, LevelUpReciept>(new Array(levels), async () => await this.levelUp());
 
     const old = this.level;
     this.level += 1;
@@ -296,39 +288,20 @@ export class StatSet extends EventEmitter<StatEvents> implements StatEntries {
       newLevel: this.level,
     };
     if (this.points < this.group(this.level)) {
-      const forcedPoints = this.group(this.level) - this.points;
-      ret.forcedPoints = forcedPoints;
+      ret.forcedPoints = this.group(this.level) - this.points;
       this.points = this.group(this.level);
     }
-    // console.log(
-    //   `Codemon.LevelUp: Done, (${this.group(this.level)}/${this.points}/${this.group(this.level + 1)}) ${JSON.stringify(
-    //     ret
-    //   )}`
-    // );
+
     await this.wait("levelUp", ret);
     return ret;
   }
 
   public async addExp(exp: number): Promise<AddExpReciept> {
-    // console.log(
-    //   `Codemon.addExp: Adding ${exp} exp to ${this.self.name} (${this.group(this.level)}/${this.points}/${this.group(
-    //     this.level + 1
-    //   )})`
-    // );
     this.points += exp;
-    // console.log(`Now ${this.group(this.level)}/${this.points}/${this.group(this.level + 1)}`);
     const levelUps: LevelUpReciept[] = [];
-    while (this.group(this.level + 1) <= this.points) {
-      // console.log(
-      //   `Codemon.addExp: Leveling up ${this.self.name} (${this.group(this.level)}/${this.points}/${this.group(
-      //     this.level + 1
-      //   )})`
-      // );
-      levelUps.push(await this.levelUp());
-    }
-    // console.log(`Codemon.addExp: Done; ${JSON.stringify(levelUps)}`);
-    this.wait("addExp", { levelUps });
-    return { levelUps };
+    while (this.group(this.level + 1) <= this.points) levelUps.push(await this.levelUp());
+    this.wait("addExp", { exp, levelUps });
+    return { exp, levelUps };
   }
 
   public get pointsToNextLevel() {
