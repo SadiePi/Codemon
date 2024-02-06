@@ -204,12 +204,11 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     return boost;
   }
 
-  // deno-lint-ignore require-await
-  public async getTraditionalPlan(battle: Battle<T>): Promise<ActionPlan<T>> {
+  public getTraditionalPlan(battle: Battle<T>): Promise<ActionPlan<T>> {
     const action = decide(this.trainer.traditionalStrategy.chooseAction, { combatant: this, battle });
     const choice = battle.getTargetChoice(action, this);
     const targets = decide(this.trainer.traditionalStrategy.chooseTarget, { action, combatant: this, choice, battle });
-    return { source: action, targets, combatant: this };
+    return Promise.resolve({ source: action, targets, combatant: this });
   }
 
   public receiveTraditionalTargetEffects(effects: TargetEffects<T>, context: TargetContext<T>) {
