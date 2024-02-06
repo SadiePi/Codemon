@@ -1,5 +1,4 @@
-import { Action, MoveEntry, StatusEffect, TraditionalBBP as T, effectAction, volatile } from "../mod.ts";
-import loader from "../loader.ts";
+import { Action, MoveEntry, Round, StatusEffect, TraditionalBBP as T, effectAction, volatile } from "../mod.ts";
 
 const HEAL_FACTOR = 1 / 16;
 
@@ -14,10 +13,10 @@ export const AquaRing: StatusEffect<T> = {
 
     const resetTurn = () => (healedByAquaRingThisRound = false);
 
-    const healIfDidntUseMove = () => {
+    const healIfDidntUseMove = (round: Round<T>) => {
       if (!healedByAquaRingThisRound) {
-        action.message(`${target.name} was healed by ${target.gender.pronouns.possessive} Aqua Ring!`);
-        action.reactions.add(
+        round.message(`${target.name} was healed by ${target.gender.pronouns.possessive} Aqua Ring!`);
+        round.reactions.add(
           effectAction({
             battle,
             targets: [target],
@@ -60,7 +59,7 @@ export const AquaRing: StatusEffect<T> = {
       },
       deactivate: () => {
         battle.off("round", resetTurn);
-        target.off("action", healIfDidntUseMove);
+        target.off("action", healFromAquaRing);
         battle.off("roundEnd", healIfDidntUseMove);
       },
       expiry: volatile(battle),
