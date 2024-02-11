@@ -9,19 +9,19 @@ export const en_US: Locale = {
       plan: {
         failed: "But it failed!",
       },
-      join: "TODO join message",
-      weather: ({ weather }) => `Weather: ${weather.name}`,
-      terrain: ({ terrain }) => `Terrain: ${terrain.name}`,
-      end: "(Battle should end here, but WIP)",
+      join: ({ combatant }) => `${combatant.name} joined the battle!`,
+      weather: ({ weather }) => `Applied weather: ${weather.name}`,
+      terrain: ({ terrain }) => `Applied terrain: ${terrain.name}`,
+      end: "The battle should end here, but WIP",
     },
   },
 
   codemon: {
     traditional: {
       attack: {
-        effectiveness: ({ typeMultiplier }) => {
-          if (typeMultiplier === 0) return `It's ${fmt.red("ineffective!")}`;
-          if (typeMultiplier < 1) return `It's ${fmt.yellow("not very effective...")}`;
+        effectiveness: ({ typeEffectiveness }) => {
+          if (typeEffectiveness === 0) return `It's ${fmt.red("ineffective!")}`;
+          if (typeEffectiveness < 1) return `It's ${fmt.yellow("not very effective...")}`;
           return `It's ${fmt.green("super effective!")}`;
         },
         damage: ({ context: { target }, total }) => {
@@ -63,6 +63,8 @@ export const en_US: Locale = {
       faint: ({ context: { target } }) => fmt.red(`${target.name} fainted!`),
 
       ball: {
+        miss: "(miss)",
+        blocked: "(blocked)",
         immediate: ({ context: { target } }) => `Gotcha! ${target.name} was caught immediately!`,
         caught: ({ context: { target } }) => `Gotcha! ${target.name} was caught!`,
         escape: ({ check }) => {
@@ -71,7 +73,7 @@ export const en_US: Locale = {
           if (leftover === 3) return "Aww! It appeared to be caught!";
           if (leftover === 2) return "Aargh! Almost had it!";
           if (leftover === 1) return "Gah! It was so close, too!";
-          return "Wait, what? How did that happen!? (This is a bug!)";
+          return `Wait, what? How did that happen!? ${bug_notif}`;
         },
       },
       reward: ({ context: { target } }) => `Coins were scattered on the ground near ${target.name}!`,
@@ -84,3 +86,5 @@ export const en_US: Locale = {
     use: ({ move }) => `${move.user} used ${move.effects.name}!`,
   },
 };
+
+const bug_notif = "(This is a bug! Tell me about it at https://github.com/SadiePi/Codemon)";
