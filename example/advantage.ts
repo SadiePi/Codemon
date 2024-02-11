@@ -1,5 +1,5 @@
 import P, { Type } from "../codex/pokemon/mod.ts";
-import { rgb24 } from "https://deno.land/std@0.182.0/fmt/colors.ts";
+import { fmt } from "../src/external.ts";
 
 Deno.test("Find Best Type Advantages", () => {
   const cartesianProduct = <T, U>(array1: T[], array2: U[]): [T, U][] =>
@@ -35,6 +35,6 @@ Deno.test("Find Best Type Advantages", () => {
   effectivenesses.sort((a, b) => b.effectiveness - a.effectiveness);
 
   effectivenesses.forEach(({ pair: [type1, type2], effectiveness }) =>
-    console.log(`${rgb24(type1.name, type1.color)}/${rgb24(type2.name, type2.color)}: ${effectiveness}`)
+    console.log(`${fmt.rgb24(type1.name, type1.color)}/${fmt.rgb24(type2.name, type2.color)}: ${effectiveness}`)
   );
 });
