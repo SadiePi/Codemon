@@ -3,7 +3,7 @@ import loader from "../loader.ts";
 
 export const Steel: Type = loader.register<Type>(P => ({
   name: "Steel",
-  color: "#B8B8D0",
+  color: 0xb8b8d0,
   weaknesses: [P.Types.Fighting, P.Types.Ground, P.Types.Fire],
   resistances: [
     P.Types.Normal,

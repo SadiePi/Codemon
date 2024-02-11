@@ -3,7 +3,7 @@ import loader from "../loader.ts";
 
 export const Normal: Type = loader.register<Type>(P => ({
   name: "Normal",
-  color: "#A8A878",
+  color: 0xa8a878,
   weaknesses: [P.Types.Fighting],
   resistances: [],
   immunities: [P.Types.Ghost],

@@ -42,7 +42,7 @@ export type BodyType =
 
 export interface Type {
   name: string;
-  color: string; // TODO? move to a palette file
+  color: number; // 0xRRGGBB TODO? move to a palette file
   weaknesses: Type[];
   resistances: Type[];
   immunities: Type[];

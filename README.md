@@ -98,7 +98,7 @@ import loader from "./loader.ts";
 // prettier-ignore
 export const Nuclear: Type = loader.register<Type>(U => ({
   name: "Nuclear",
-  color: "#00FF00",
+  color: 0x00FF00,
   weaknesses: [
     U.Types.Normal,
     ...

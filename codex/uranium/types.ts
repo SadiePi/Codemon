@@ -4,7 +4,7 @@ import loader from "./loader.ts";
 export const Nuclear: Type = loader.register<Type>(
   U => ({
     name: "Nuclear",
-    color: "#00FF00",
+    color: 0x00ff00,
     weaknesses: [
       U.Types.Normal,
       U.Types.Fire,
