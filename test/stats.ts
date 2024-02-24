@@ -82,7 +82,7 @@ Deno.test("Stat Stages", () => {
 Deno.test("Experience", async () => {
   const kibble = spawn({
     ...iKibble,
-    stats: { points: 0 },
+    stats: { level: 0 },
   });
 
   assertEquals(kibble.stats.points, 0, "Initial experience isn't 0");

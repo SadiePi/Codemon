@@ -63,6 +63,11 @@ export const Burn: StatusEffect<T> = loader.register(P => ({
       );
     };
 
+    const warnOfHalvedAttack = (action: Action<T>) => {
+      if (action.params.user !== target) return;
+      action.message(`${target.name}'s attack damage is halved due to burn!`);
+    };
+
     const halveAttackDamage = (effect: TargetEffects<T>) => {
       if (!effect.attack) return;
       effect.attack = proxy(effect.attack, result => {
@@ -77,12 +82,14 @@ export const Burn: StatusEffect<T> = loader.register(P => ({
         resetTurn();
         battle.on("round", resetTurn);
         target.on("actionEnd", inflictBurnRecoil);
+        target.on("action", warnOfHalvedAttack);
         target.on("inflictEffects", halveAttackDamage);
         battle.on("roundEnd", burnIfDidntAttack);
       },
       deactivate: () => {
         battle.off("round", resetTurn);
         target.off("actionEnd", inflictBurnRecoil);
+        target.off("action", warnOfHalvedAttack);
         target.off("inflictEffects", halveAttackDamage);
         battle.off("roundEnd", burnIfDidntAttack);
       },

@@ -1,4 +1,4 @@
-import { assert, iBulby } from "./_common.ts";
+import { AssertionError, assert, iBulby } from "./_common.ts";
 import P, { spawn } from "../codex/pokemon/mod.ts";
 
 Deno.test("Basics", () => {
@@ -60,7 +60,11 @@ Deno.test("Species", () => {
   assert(species.types[0] === P.Types.Grass);
   assert(species.types[1] === P.Types.Poison);
 });
-Deno.test("Moves", () => {});
+
+Deno.test("Moves", () => {
+  throw new AssertionError("Test not implemented");
+});
+
 Deno.test("Abilities", () => {
   const bulby = spawn(iBulby);
   assert(bulby.ability === P.Abilities.Overgrow);
@@ -87,7 +91,19 @@ Deno.test("Abilities", () => {
   assert(bulby.ability === P.Abilities.Overgrow);
   assert(bulby.originalAbility === P.Abilities.Aerilate);
 });
-Deno.test("Natures", () => {});
-Deno.test("Names", () => {});
-Deno.test("Gender", () => {});
-Deno.test("Evolutions", () => {});
+
+Deno.test("Natures", () => {
+  throw new AssertionError("Test not implemented");
+});
+
+Deno.test("Names", () => {
+  throw new AssertionError("Test not implemented");
+});
+
+Deno.test("Gender", () => {
+  throw new AssertionError("Test not implemented");
+});
+
+Deno.test("Evolutions", () => {
+  throw new AssertionError("Test not implemented");
+});

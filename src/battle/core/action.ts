@@ -181,7 +181,8 @@ export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, Base
   }
 
   public doExecute() {
-    const { targets } = this.params;
+    const { targets, user } = this.params;
+    user.emit("action", this);
     // let [applyRecoil, applyCrash] = [false, false];
     const receipts: Partial<TargetEffectsReceipt<P>>[] = [];
     for (const target of targets) {
@@ -192,8 +193,17 @@ export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, Base
         group: TargetEffects<P>,
         context: GroupContext<P, "target">
       ) => Partial<TargetEffectsReceipt<P>> | null;
+
+      const effect = { ...this.params.effect };
+      user.emit("inflictEffects", effect, {
+        action: this,
+        target,
+        source: this.params.source,
+        battle: this.params.battle,
+      });
+
       const receipt = receiver.apply(target, [
-        this.params.effect,
+        effect,
         {
           action: this,
           target,
@@ -201,6 +211,7 @@ export class Action<P extends BattleBuilderParams<P>> extends BattleNode<P, Base
           battle: this.params.battle,
         },
       ]) as TargetEffectsReceipt<P>;
+
       if (receipt) {
         receipts.push(receipt);
         if (receipt.remove) this.params.battle.removeCombatant(target);
