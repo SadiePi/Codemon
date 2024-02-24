@@ -7,7 +7,7 @@ import C, {
 } from "../../../codex/pokemon/mod.ts";
 import Traditional from "../../../src/battle/traditional.ts";
 
-import { iBulby } from "../../_common.ts";
+import { iBulby } from "../../../example/common.ts";
 
 Deno.test({
   name: "1v1 One Round",
