@@ -1,6 +1,5 @@
+import P, { Team, TraditionalBBP as T, spawn } from "../../../codex/pokemon/mod.ts";
 import { assertEquals, iKibble, iBulby } from "../../_common.ts";
-import P from "../../../codex/pokemon/mod.ts";
-import { Team, TraditionalBBP as T, spawn } from "../../../src/mod.ts";
 
 Deno.test("Team - Basic Methods", () => {
   const b = spawn({ species: P.Species.Bulbasaur });

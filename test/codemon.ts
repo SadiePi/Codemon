@@ -1,6 +1,5 @@
 import { assert, iBulby } from "./_common.ts";
-import { spawn } from "../src/mod.ts";
-import P from "../codex/pokemon/mod.ts";
+import P, { spawn } from "../codex/pokemon/mod.ts";
 
 Deno.test("Basics", () => {
   const bulby = spawn(iBulby);
