@@ -10,9 +10,6 @@ Deno.test("Attack - Tackle", async () => {
   });
   const bulby2 = spawn({ ...iBulby, name: "Bulby 2" });
 
-  //temp
-  bulby1.learnMove(C.Moves.Flamethrower);
-
   const battle = new TraditionalBattle([bulby1, bulby2]);
   const plan = await battle.getPlan(bulby1);
   const receipt = await battle.runPlan(plan);
