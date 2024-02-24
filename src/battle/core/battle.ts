@@ -19,7 +19,7 @@ import {
   TargetEffectsReceipt,
 } from "./mod.ts";
 
-export type EffectGroups = "target" | "source" | "battle";
+export type EffectGroups = "target" | "source" | "battle"; // TODO use this
 
 export type BattleBuilderParams<P extends BattleBuilderParams<P>> = {
   name: string;
