@@ -1,9 +1,18 @@
-// Add new stats by editing these two arrays
-// Type errors will show you where else you need to edit
-// Everything else will adapt automatically
-/** The basic stats of a Codemon */
+/**
+ * The basic stats of a Codemon.
+ *
+ * Add new stats by changing this array and `BattleStats`.
+ * Type errors will show you where else you need to edit.
+ * Adding a permanent stat will require defining a base value for each species in your Codex.
+ * Everything else will adapt automatically.
+ */
 export const PermanentStats = ["hp", "attack", "defense", "specialAttack", "specialDefense", "speed"] as const;
-/** Temporary stats that modify the battle */
+/** Temporary stats that modify the battle
+ *
+ * Add new stats by changing this array and `PermanentStats`.
+ * Type errors will show you where else you need to edit.
+ * Everything else will adapt automatically.
+ */
 export const BattleStats = ["accuracy", "evasion"] as const;
 
 import { ICodemon, Codemon } from "./codemon.ts";
