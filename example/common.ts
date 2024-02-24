@@ -1,5 +1,24 @@
 import P, { ICodemon } from "../codex/pokemon/mod.ts";
 
+/** Unofficial official mascot of Codemon */
+export const iBulby: ICodemon = {
+  name: "Bulby",
+  species: P.Species.Bulbasaur,
+  gender: P.Genders.Male,
+  nature: P.Natures.Quiet,
+  stats: {
+    level: 15,
+    hp: { individualValue: 0, effortValue: 0 },
+    attack: { individualValue: 0, effortValue: 0 },
+    defense: { individualValue: 0, effortValue: 0 },
+    specialAttack: { individualValue: 0, effortValue: 0 },
+    specialDefense: { individualValue: 0, effortValue: 0 },
+    speed: { individualValue: 0, effortValue: 0 },
+  },
+  moves: [P.Moves.Tackle, P.Moves.RazorLeaf, P.Moves.StunSpore, P.Moves.SolarBeam],
+  ability: 0,
+};
+
 // https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2
 export const iKibble: ICodemon = {
   name: "Kibble",
@@ -22,24 +41,6 @@ export const iBigBoi: ICodemon = {
   name: "Big Boi",
   species: P.Species.Garchomp,
   stats: { level: 255 },
-};
-
-export const iBulby: ICodemon = {
-  name: "Bulby",
-  species: P.Species.Bulbasaur,
-  gender: P.Genders.Male,
-  nature: P.Natures.Quiet,
-  stats: {
-    level: 15,
-    hp: { individualValue: 0, effortValue: 0 },
-    attack: { individualValue: 0, effortValue: 0 },
-    defense: { individualValue: 0, effortValue: 0 },
-    specialAttack: { individualValue: 0, effortValue: 0 },
-    specialDefense: { individualValue: 0, effortValue: 0 },
-    speed: { individualValue: 0, effortValue: 0 },
-  },
-  moves: [P.Moves.Tackle, P.Moves.RazorLeaf, P.Moves.StunSpore, P.Moves.SolarBeam],
-  ability: 0,
 };
 
 export const iGlassCannon: ICodemon = {

@@ -151,7 +151,7 @@ export type WeatherReceipt = BattleEffectsReceipt["weather"];
 export type TerrainReceipt = BattleEffectsReceipt["terrain"];
 export type EndReceipt = BattleEffectsReceipt["end"];
 
-export default class Traditional extends EventEmitter<BattleEvents> implements Battle {
+export class TraditionalBattle extends EventEmitter<BattleEvents> implements Battle {
   readonly type = "traditional";
   public conditions = { weather: {} as Weather, terrain: {} as Weather }; // TODO handle this better, default conditions?
   public combatants: Codemon[];
@@ -326,6 +326,7 @@ export default class Traditional extends EventEmitter<BattleEvents> implements B
     return receipt;
   }
 }
+export default TraditionalBattle;
 
 // battle builder stuff
 // this is just so the library can give the user
