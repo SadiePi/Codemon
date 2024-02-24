@@ -71,9 +71,7 @@ Deno.test({
 
     battle.on("battleReceipt", receipt => {
       receipt.messages.push(`Battle over!`);
-      receipt.messages.push(
-        `Winner: ${receipt.remaining.map(c => (c instanceof Codemon ? c.name : "Non-Codemon")).join(", ")}`
-      );
+      receipt.messages.push(`Winner: ${receipt.remaining.map(c => c.name).join(", ")}`);
     });
 
     const receipt = await battle.runBattle();
