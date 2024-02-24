@@ -1,7 +1,26 @@
 import { config, spawn } from "../codex/pokemon/mod.ts";
-import { assertEquals, assertFalse, iKibble } from "./_common.ts";
+import { assertEquals, assertFalse, iBulby, iKibble } from "./_common.ts";
 
-import { iBulby } from "./_common.ts";
+Deno.test("Stat Values", () => {
+  const kibble = spawn(iKibble);
+  assertEquals(kibble.stats.hp.max, 289);
+  assertEquals(kibble.stats.attack.value(), 278);
+  assertEquals(kibble.stats.defense.value(), 193);
+  assertEquals(kibble.stats.specialAttack.value(), 135);
+  assertEquals(kibble.stats.specialDefense.value(), 171);
+  assertEquals(kibble.stats.speed.value(), 171);
+
+  const { attack } = kibble.stats;
+
+  attack.stage.modify(1);
+  assertEquals(attack.value(true), 417);
+
+  attack.stage.modify(5);
+  assertEquals(attack.value(true), 1112);
+
+  attack.stage.modify(-12);
+  assertEquals(attack.value(true), 69);
+});
 
 Deno.test("Stat Stages", () => {
   const bulby = spawn(iBulby);
@@ -59,6 +78,7 @@ Deno.test("Stat Stages", () => {
   assertEquals(changes, 10, "Wrong number of stage changes");
   assertEquals(resets, 2, "Wrong number of resets");
 });
+
 Deno.test("Experience", async () => {
   const kibble = spawn({
     ...iKibble,
@@ -118,25 +138,4 @@ Deno.test("Experience", async () => {
     expectedExp,
     "Forced points not correct"
   );
-});
-
-Deno.test("Stat Values", () => {
-  const kibble = spawn(iKibble);
-  assertEquals(kibble.stats.hp.max, 289);
-  assertEquals(kibble.stats.attack.value(), 278);
-  assertEquals(kibble.stats.defense.value(), 193);
-  assertEquals(kibble.stats.specialAttack.value(), 135);
-  assertEquals(kibble.stats.specialDefense.value(), 171);
-  assertEquals(kibble.stats.speed.value(), 171);
-
-  const { attack } = kibble.stats;
-
-  attack.stage.modify(1);
-  assertEquals(attack.value(true), 417);
-
-  attack.stage.modify(5);
-  assertEquals(attack.value(true), 1112);
-
-  attack.stage.modify(-12);
-  assertEquals(attack.value(true), 69);
 });
