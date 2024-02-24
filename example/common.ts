@@ -19,7 +19,7 @@ export const iBulby: ICodemon = {
   ability: 0,
 };
 
-// https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2
+/** https://bulbapedia.bulbagarden.net/wiki/Stat#Example_2 */
 export const iKibble: ICodemon = {
   name: "Kibble",
   species: P.Species.Garchomp,
