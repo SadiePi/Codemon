@@ -32,7 +32,7 @@ export function flattenEffectGroupMessages<P extends BattleBuilderParams<P>, G e
   return into;
 }
 
-export function flattenActionMessages<P extends BattleBuilderParams<P>>(
+export function flattenBattleNodeMessages<P extends BattleBuilderParams<P>>(
   node: ActionReceipt<P>,
   into: BattleMessage<P>[] = []
 ) {
@@ -40,12 +40,12 @@ export function flattenActionMessages<P extends BattleBuilderParams<P>>(
     into.push(...node.messages);
     return into;
   }
-  for (const action of node.preactions) flattenActionMessages(action, into);
+  for (const action of node.preactions) flattenBattleNodeMessages(action, into);
   into.push(...node.messages);
   for (const receipt of node.targetEffects) flattenEffectGroupMessages(receipt, into);
   flattenEffectGroupMessages(node.sourceEffects, into);
   flattenEffectGroupMessages(node.battleEffects, into);
-  for (const action of node.reactions) flattenActionMessages(action, into);
+  for (const action of node.reactions) flattenBattleNodeMessages(action, into);
   return into;
 }
 
@@ -57,10 +57,10 @@ export function flattenRoundMessages<P extends BattleBuilderParams<P>>(
     into.push(...round.messages);
     return into;
   }
-  for (const action of round.preactions) flattenActionMessages(action, into);
-  for (const action of round.actions) flattenActionMessages(action, into);
+  for (const action of round.preactions) flattenBattleNodeMessages(action, into);
+  for (const action of round.actions) flattenBattleNodeMessages(action, into);
   into.push(...round.messages);
-  for (const action of round.reactions) flattenActionMessages(action, into);
+  for (const action of round.reactions) flattenBattleNodeMessages(action, into);
   return into;
 }
 

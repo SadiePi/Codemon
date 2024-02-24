@@ -1,7 +1,7 @@
 import C, {
   Codemon,
   flattenBattleMessages,
-  flattenActionMessages,
+  flattenBattleNodeMessages,
   spawn,
   flattenRoundMessages,
 } from "../../../codex/pokemon/mod.ts";
@@ -66,7 +66,7 @@ Deno.test({
     });
 
     battle.on("actionReceipt", receipt => {
-      console.log(flattenActionMessages(receipt));
+      console.log(flattenBattleNodeMessages(receipt));
     });
 
     battle.on("battleReceipt", receipt => {
