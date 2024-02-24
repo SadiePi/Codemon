@@ -1,6 +1,5 @@
-import C, { spawn } from "../../../codex/pokemon/mod.ts";
+import C, { spawn, flattenBattleNodeMessages } from "../../../codex/pokemon/mod.ts";
 import Traditional from "../../../src/battle/traditional.ts";
-import { flattenBattleNodeMessages } from "../../../src/mod.ts";
 import { iBulby } from "../../../example/common.ts";
 
 Deno.test("Attack - Tackle", async () => {
