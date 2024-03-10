@@ -1,4 +1,4 @@
-import { chance, Move, power, Codemon, MoveEntry } from "./mod.ts";
+import { chance, Move, power, MoveEntry, decide, choose } from "./mod.ts";
 import loader from "./loader.ts";
 
 // data translated from https://pokemon-uranium.fandom.com/wiki/New_Moves_and_Abilities
@@ -63,7 +63,9 @@ export const Expunge: Move = loader.register<Move>(U => ({
   pp: 5,
   accuracy: 70,
   category: "Special",
-  attack: power(110),
+  attack: power(110, (attack, { target }) => {
+    if (target.getSpecies().types.includes(U.Types.Nuclear)) attack.typeEffectiveness = 2;
+  }),
   target: { position: "Adjacent" },
   makesContact: true,
 }));
@@ -165,7 +167,7 @@ export const HalfLife: Move = loader.register<Move>(U => ({
   type: U.Types.Nuclear,
   pp: 20,
   category: "Special",
-  hp: c => (c instanceof Codemon ? c.stats.hp.current / 2 : 0),
+  hp: ({ target }) => target.stats.hp.current / 2,
   target: { position: "Adjacent" },
   makesContact: false,
 }));
@@ -178,11 +180,12 @@ export const InfernalBlade: Move = loader.register<Move>(U => ({
   pp: 10,
   accuracy: 95,
   category: "Physical",
-  attack: power(90),
+  attack: power(90, (attack, { target }) => {
+    if (target.getSpecies().types.includes(U.Types.Fairy)) attack.typeEffectiveness = 2;
+  }),
   target: { position: "Adjacent" },
   makesContact: true,
   status: chance(3 / 10, U.Statuses.Burn),
-  // TODO super effective against Fairy
 }));
 
 export const InstantCrush: Move = loader.register<Move>(U => ({
@@ -199,11 +202,11 @@ export const InstantCrush: Move = loader.register<Move>(U => ({
 
 export const LaserPulse: Move = loader.register(U => ({
   name: "Laser Pulse",
-  description: "The user attack with a laser that cycles between Fire, Electric and Ice types.",
+  description: "The user attacks with a laser that cycles between Fire, Electric and Ice types.",
   type: U.Types.Normal,
   pp: 20,
   category: "Special",
-  attack: power(90), // TODO choose between Fire, Electric and Ice
+  attack: power(90, attack => (attack.type = decide(choose(U.Types.Fire, U.Types.Electric, U.Types.Ice), undefined))), // TODO choose between Fire, Electric and Ice
   target: { position: "Adjacent" },
   makesContact: false,
 }));
