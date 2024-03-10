@@ -44,8 +44,8 @@ export const Bulbasaur: Species = loader.register(P => ({
     33: [P.Moves.DoubleEdge],
     36: [P.Moves.SolarBeam],
     breeding: [
-      [
-        [
+      {
+        parent: [
           P.Species.Slowpoke,
           P.Species.Slowbro,
           P.Species.Slowking,
@@ -57,10 +57,10 @@ export const Bulbasaur: Species = loader.register(P => ({
           P.Species.Avalugg,
           P.Species.Appletun,
         ],
-        P.Moves.Curse,
-      ],
-      [
-        [
+        move: P.Moves.Curse,
+      },
+      {
+        parent: [
           P.Species.Tangela,
           P.Species.Tangrowth,
           P.Species.Roselia,
@@ -79,14 +79,21 @@ export const Bulbasaur: Species = loader.register(P => ({
           P.Species.Morelull,
           P.Species.Shiinotic,
         ],
-        P.Moves.Ingrain,
-      ],
-      [
-        [P.Species.Lotad, P.Species.Lombre, P.Species.Ludicolo, P.Species.Seedot, P.Species.Nuzleaf, P.Species.Shiftry],
-        P.Moves.NaturePower,
-      ],
-      [
-        [
+        move: P.Moves.Ingrain,
+      },
+      {
+        parent: [
+          P.Species.Lotad,
+          P.Species.Lombre,
+          P.Species.Ludicolo,
+          P.Species.Seedot,
+          P.Species.Nuzleaf,
+          P.Species.Shiftry,
+        ],
+        move: P.Moves.NaturePower,
+      },
+      {
+        parent: [
           P.Species.Venusaur,
           P.Species.Oddish,
           P.Species.Gloom,
@@ -98,11 +105,14 @@ export const Bulbasaur: Species = loader.register(P => ({
           P.Species.Maractus,
           P.Species.Comfey,
         ],
-        P.Moves.PetalDance,
-      ],
-      [[P.Species.Squirtle, P.Species.Wartortle, P.Species.Blastoise, P.Species.Avalugg], P.Moves.SkullBash],
-      [
-        [
+        move: P.Moves.PetalDance,
+      },
+      {
+        parent: [P.Species.Squirtle, P.Species.Wartortle, P.Species.Blastoise, P.Species.Avalugg],
+        move: P.Moves.SkullBash,
+      },
+      {
+        parent: [
           P.Species.NidoranM,
           P.Species.Nidorino,
           P.Species.Nidoking,
@@ -116,8 +126,8 @@ export const Bulbasaur: Species = loader.register(P => ({
           P.Species.Amoonguss,
           P.Species.Salandit,
         ],
-        P.Moves.Toxic,
-      ],
+        move: P.Moves.Toxic,
+      },
     ],
     machine: [
       P.Moves.MagicalLeaf,

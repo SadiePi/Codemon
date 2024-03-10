@@ -19,7 +19,7 @@ export interface Learnset {
   [level: number]: Move[];
   machine?: Move[];
   evolution?: Move[];
-  breeding?: [Species[], Move][];
+  breeding?: { parent: Species[]; move: Move }[];
   tutoring?: Move[];
 }
 
