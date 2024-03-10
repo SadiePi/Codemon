@@ -21,7 +21,18 @@ export const Eevee: Species = loader.register(P => ({
   genders: weighted({ effect: P.Genders.Male, weight: 7 }, { effect: P.Genders.Female, weight: 1 }),
   evYields: { specialDefense: 1 },
   baseExperienceYield: 65,
-  evolutions: [], // we'll get to this later *shudders*
+  evolutions: [
+    { species: P.Species.Vaporeon, item: P.Items.WaterStone },
+    { species: P.Species.Jolteon, item: P.Items.ThunderStone },
+    { species: P.Species.Flareon, item: P.Items.FireStone },
+    { species: P.Species.Leafeon, item: P.Items.LeafStone },
+    // { species: P.Species.Leafeon, (levelup near Moss Rock) },
+    { species: P.Species.Glaceon, item: P.Items.IceStone },
+    // { species: P.Species.Glaceon, (levelup near Ice Rock) },
+    { species: P.Species.Espeon, friendship: 220, time: "day" }, // TODO trigger on levelup
+    { species: P.Species.Umbreon, friendship: 220, time: "night" }, // TODO trigger on levelup
+    { species: P.Species.Sylveon, friendship: 220, moveType: P.Types.Fairy }, // TODO trigger on levelup
+  ],
   experienceGroup: P.Experience.MedFast,
   catchRate: 45,
   eggCycles: 35, // (2805+1) / 257
