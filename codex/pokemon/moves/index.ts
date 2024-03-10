@@ -900,3 +900,4 @@ export * from "./wickedTorque.ts";
 export * from "./noxiousTorque.ts";
 export * from "./combatTorque.ts";
 export * from "./magicalTorque.ts";
+export * from "./alluringVoice.ts";

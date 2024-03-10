@@ -22,6 +22,7 @@ export const en_US: Locale = {
         effectiveness: ({ typeEffectiveness }) => {
           if (typeEffectiveness === 0) return `It's ${fmt.red("ineffective!")}`;
           if (typeEffectiveness < 1) return `It's ${fmt.yellow("not very effective...")}`;
+          if (typeEffectiveness === 1) return [];
           return `It's ${fmt.green("super effective!")}`;
         },
         damage: ({ context: { target }, total }) => {
@@ -43,7 +44,7 @@ export const en_US: Locale = {
         },
       },
       status: {
-        apply: ({ entry }) => entry.status.name,
+        apply: ({ entry, context: { target } }) => `Applied Status ${entry.status.name} to ${target.name}`,
       },
 
       hp: ({ context: { target }, difference }) => {
@@ -76,14 +77,21 @@ export const en_US: Locale = {
           return `Wait, what? How did that happen!? ${bug_notif}`;
         },
       },
-      reward: ({ context: { target } }) => `Coins were scattered on the ground near ${target.name}!`,
+      reward: ({ context: { target }, reward }) => {
+        if (reward.money) {
+          if (reward.money > 0) return `Money was scattered on the ground near ${target.name}!`;
+          if (reward.money < 0) return `Money was taken from ${target.name}!`;
+        }
+        if (reward.EVs) return `${target.name} got more powerful!`;
+        return [];
+      },
       eject: ({ context: { target } }) => `${target.name} was ejected from the battle!`,
       disable: ({ context: { target }, move }) => `${target.name} can no longer use ${move.effects.name}!`,
     },
   },
 
   move: {
-    use: ({ move }) => `${move.user} used ${move.effects.name}!`,
+    use: ({ move }) => `${move.user.name} used ${move.effects.name}!`,
   },
 };
 

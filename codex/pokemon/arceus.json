@@ -2092,7 +2092,8 @@
     "WickedTorque",
     "NoxiousTorque",
     "CombatTorque",
-    "MagicalTorque"
+    "MagicalTorque",
+    "AlluringVoice"
   ],
   "natures": [
     "Hardy",

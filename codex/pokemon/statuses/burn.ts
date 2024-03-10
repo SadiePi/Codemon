@@ -11,8 +11,6 @@ import {
 } from "../mod.ts";
 import loader from "../loader.ts";
 
-// TODO use Codemon events instead of battle events
-
 export const Burn: StatusEffect<T> = loader.register(P => ({
   name: "Burn",
   slot: "primary",
@@ -44,9 +42,7 @@ export const Burn: StatusEffect<T> = loader.register(P => ({
     };
 
     const inflictBurnRecoil = (action: Action<T>) => {
-      // confirm it's this codemon using an attacking move
       if (!(action.params.source instanceof MoveEntry)) return;
-      if (action.params.source.user !== target) return;
       if (!action.params.effect.attack) return;
 
       hurtByBurnThisRound = true;
@@ -81,17 +77,19 @@ export const Burn: StatusEffect<T> = loader.register(P => ({
       activate: () => {
         resetTurn();
         battle.on("round", resetTurn);
+        battle.on("roundEnd", burnIfDidntAttack);
+
         target.on("actionEnd", inflictBurnRecoil);
         target.on("action", warnOfHalvedAttack);
         target.on("inflictEffects", halveAttackDamage);
-        battle.on("roundEnd", burnIfDidntAttack);
       },
       deactivate: () => {
         battle.off("round", resetTurn);
+        battle.off("roundEnd", burnIfDidntAttack);
+
         target.off("actionEnd", inflictBurnRecoil);
         target.off("action", warnOfHalvedAttack);
         target.off("inflictEffects", halveAttackDamage);
-        battle.off("roundEnd", burnIfDidntAttack);
       },
       expiry: volatile(battle),
     };
