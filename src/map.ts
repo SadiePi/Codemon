@@ -57,14 +57,14 @@ export const gen1YKantoRoute1SpawnTile: Gen1SpawnTile = {
   probability: range(10, 25),
   params: weighted(
     {
-      effect: {
+      entry: {
         species: P.Species.Pidgey,
         level: range(2, 7),
       },
       weight: 7,
     },
     {
-      effect: {
+      entry: {
         species: P.Species.Rattata,
         level: range(2, 4),
       },

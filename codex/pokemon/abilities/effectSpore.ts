@@ -15,9 +15,9 @@ export const EffectSpore: Ability = loader.register(P => {
   const STATUS_DECIDER = chance(
     1 / 3,
     weighted(
-      { effect: P.Statuses.Poison, weight: 9 },
-      { effect: P.Statuses.Paralysis, weight: 10 },
-      { effect: P.Statuses.Sleep, weight: 11 }
+      { entry: P.Statuses.Poison, weight: 9 },
+      { entry: P.Statuses.Paralysis, weight: 10 },
+      { entry: P.Statuses.Sleep, weight: 11 }
     )
   );
 

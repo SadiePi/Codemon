@@ -174,7 +174,7 @@ export function choose<T, Context>(...choices: Decider<T, Context>[]): Decider<T
 }
 
 interface WeightedRandomEntry<T, Context> {
-  effect: Decider<T, Context>;
+  entry: Decider<T, Context>;
   weight: number;
 }
 /**
@@ -189,9 +189,9 @@ export function weighted<T, Context>(...entries: WeightedRandomEntry<T, Context>
     const total = entries.reduce((a, b) => a + b.weight, 0);
     const rand = Math.random() * total;
     let current = 0;
-    for (const { effect, weight } of entries) {
+    for (const { entry, weight } of entries) {
       current += weight;
-      if (rand < current) return effect;
+      if (rand < current) return entry;
     }
     throw new Error("Weighted random failed!");
   };

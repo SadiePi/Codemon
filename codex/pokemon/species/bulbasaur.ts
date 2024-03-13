@@ -18,7 +18,7 @@ export const Bulbasaur: Species = loader.register(P => ({
     normal: [P.Abilities.Overgrow],
     hidden: P.Abilities.Chlorophyll,
   },
-  genders: weighted({ effect: P.Genders.Male, weight: 7 }, { effect: P.Genders.Female, weight: 1 }),
+  genders: weighted({ entry: P.Genders.Male, weight: 7 }, { entry: P.Genders.Female, weight: 1 }),
   evYields: { specialAttack: 1 },
   baseExperienceYield: 64,
   evolutions: [{ species: P.Species.Ivysaur, level: 16 }],

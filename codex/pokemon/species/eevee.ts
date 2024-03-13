@@ -18,7 +18,7 @@ export const Eevee: Species = loader.register(P => ({
     normal: [P.Abilities.RunAway, P.Abilities.Adaptability],
     hidden: P.Abilities.Anticipation,
   },
-  genders: weighted({ effect: P.Genders.Male, weight: 7 }, { effect: P.Genders.Female, weight: 1 }),
+  genders: weighted({ entry: P.Genders.Male, weight: 7 }, { entry: P.Genders.Female, weight: 1 }),
   evYields: { specialDefense: 1 },
   baseExperienceYield: 65,
   evolutions: [
