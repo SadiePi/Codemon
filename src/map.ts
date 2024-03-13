@@ -17,7 +17,7 @@ export type SpawnType =
 
 export interface SpawnRegion {
   type: SpawnRegionType;
-  params: Decider<ICodemon, SpawnContext>;
+  spawns: Decider<ICodemon, SpawnContext>;
 }
 
 export interface SpawnContext {
@@ -35,12 +35,12 @@ export interface Gen1SpawnTile extends SpawnRegion {
 export type SpawnAttemptor<R extends SpawnRegion> = Decider<Codemon | undefined, R>;
 
 export const gen1TryTileStepSpawn: SpawnAttemptor<Gen1SpawnTile> = tile =>
-  chance(decide(tile.probability, undefined) / 255, () => spawn(tile.params, { type: tile.type }));
+  chance(decide(tile.probability, undefined) / 255, () => spawn(tile.spawns, { type: tile.type }));
 
 export const gen1KantoRBRoute1SpawnTile: Gen1SpawnTile = {
   type: "Grass",
   probability: range(10, 25),
-  params: choose(
+  spawns: choose(
     {
       species: P.Species.Pidgey,
       level: range(2, 5),
@@ -55,7 +55,7 @@ export const gen1KantoRBRoute1SpawnTile: Gen1SpawnTile = {
 export const gen1YKantoRoute1SpawnTile: Gen1SpawnTile = {
   type: "Grass",
   probability: range(10, 25),
-  params: weighted(
+  spawns: weighted(
     {
       entry: {
         species: P.Species.Pidgey,
@@ -78,5 +78,5 @@ export interface Gen2SpawnTile extends Gen1SpawnTile {}
 export const gen2KantoGS: Gen2SpawnTile = {
   type: "Grass",
   probability: range(10, 25),
-  params: choose(),
+  spawns: choose(),
 };
