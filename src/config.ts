@@ -33,6 +33,9 @@ export const config = {
     criticalMultiplier: 1.5,
     multitargetMultiplier: 0.75,
     stabMultiplier: 1.5,
+
+    maxEntries: 4,
+    maxDuplicateEntries: 1,
   },
   codemon: {
     limitDamageToRemainingHP: true,

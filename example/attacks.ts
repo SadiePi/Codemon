@@ -5,8 +5,7 @@ const bulby = spawn(iBulby);
 const garchomp = spawn({ species: P.Species.Garchomp });
 
 const battle = new TraditionalBattle([garchomp, bulby]);
-const tackle = bulby.moves[0];
-const plan = { combatant: bulby, source: tackle, targets: [garchomp] };
-const result = await battle.runPlan(plan);
+const tackle = bulby.moves.get(P.Moves.Tackle)!;
+const result = await battle.runPlan({ combatant: bulby, source: tackle, targets: [garchomp] });
 const messages = flattenBattleNodeMessages(result);
 messages.forEach(m => console.log(m));

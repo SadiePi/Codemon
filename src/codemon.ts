@@ -33,7 +33,15 @@ import {
   SourceEffectsReceipt,
 } from "./battle/core/mod.ts";
 import { Species, Ability, Gender, Type, Evolution, AbilitySelector, ExternalEvoReasons } from "./species.ts";
-import { AbilityEntry, DisableReceipt, EjectReceipt, Reward, RewardReceipt, SelfInflictReceipt } from "./mod.ts";
+import {
+  AbilityEntry,
+  DisableReceipt,
+  EjectReceipt,
+  MoveSet,
+  Reward,
+  RewardReceipt,
+  SelfInflictReceipt,
+} from "./mod.ts";
 import { CombatantEvents } from "./battle/core/events.ts";
 
 export function spawn(from: ICodemon): Codemon {
@@ -71,7 +79,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     this.setSpecies(this.species, false);
   }
 
-  public moves: MoveEntry[];
+  public moves: MoveSet;
   public stats: StatSet;
   public trainer: Trainer<T>;
 
@@ -98,13 +106,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
       ss.on("levelUp", () => this.checkForNewMoves());
     });
 
-    if (options.moves) {
-      const moves = decide(options.moves, context);
-      this.moves = moves?.map(move => new MoveEntry({ user: this, move: move })) ?? [];
-    } else {
-      // TODO NEXT autopopulate moves
-      this.moves = [];
-    }
+    this.moves = new MoveSet(this, decide(options.moves, context));
   }
 
   // abilities
@@ -159,14 +161,6 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     this._nature = this._originalNature;
   }
   // end nature
-
-  public learnMove(move: Move, slot?: number) {
-    const entry = new MoveEntry({ move: move, user: this });
-    slot = slot ?? this.moves.findIndex(move => move === undefined);
-    if (slot === -1) this.moves.push(entry);
-    else this.moves[slot] = entry;
-    return slot;
-  }
 
   // Name
   protected _name = "[Name uninitialized]";
@@ -576,7 +570,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
     const stats = this.stats.toString().replace("\n", "\n\t");
 
-    const moves = this.moves.map((m, i) => i + 1 + ". " + m.toString()).join("\n");
+    const moves = this.moves.entries.map((m, i) => i + 1 + ". " + m.toString()).join("\n");
 
     return `${identity}\n\t${stats}\n\t${moves}`;
   }

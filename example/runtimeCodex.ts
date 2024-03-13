@@ -34,7 +34,7 @@ const bulby = spawn({
 });
 
 const battle = new TraditionalBattle([bulby]);
-const tof = bulby.moves[0];
+const tof = bulby.moves.get(TwistOfFate)!;
 const result = await battle.runPlan({ combatant: bulby, source: tof, targets: [bulby] });
 if (!result.success) throw new Error("Move failed");
 flattenBattleNodeMessages(result).forEach(m => console.log(m));
