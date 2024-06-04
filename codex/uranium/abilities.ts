@@ -1,4 +1,5 @@
-import { Ability, Effects, MoveEntry, TraditionalBBP as T, TargetContext, permanent, proxy } from "./mod.ts";
+import { Ability, Effects, MoveEntry, TraditionalBBP as T, TargetContext, permanent, proxy, config } from "./mod.ts";
+import loader from "./loader.ts";
 
 export const Acceleration: Ability = {
   name: "Acceleration",
@@ -24,7 +25,33 @@ export const Acceleration: Ability = {
   },
 };
 
-export const Atomize = {} as Ability;
+export const Atomizate: Ability = loader.register(U => ({
+  name: "Atomizate",
+  description: "Normal-type moves become Nuclear-type moves and receive a 1.3x boost to base power",
+  slot: "ability",
+  apply: ({ self }) => {
+    function atomizateAndEmpowerNormalMoves(effect: Effects<T>, { source, target }: TargetContext<T>) {
+      if (!(source instanceof MoveEntry)) return;
+      if (source.effects.type !== U.Types.Normal) return;
+      if (!effect.attack) return;
+
+      effect.attack = proxy(effect.attack, attack => {
+        if (!attack) return;
+        attack.type = U.Types.Fairy;
+        attack.power *= 1.3;
+        attack.stab = target.getSpecies().types.includes(attack.type) ? config.moves.stabMultiplier : 1;
+      });
+    }
+
+    return {
+      name: Atomizate.name,
+      activate: () => self.on("inflictEffects", atomizateAndEmpowerNormalMoves),
+      deactivate: () => self.off("inflictEffects", atomizateAndEmpowerNormalMoves),
+      expiry: permanent,
+    };
+  },
+}));
+
 export const BloodLust = {} as Ability;
 export const Chernobyl = {} as Ability;
 export const DeepFreeze = {} as Ability;
