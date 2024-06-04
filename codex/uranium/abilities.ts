@@ -150,7 +150,7 @@ export const Energizate: Ability = loader.register(U => ({
 }));
 
 export const GeigerSense = {} as Ability;
-export const Infatuate = {} as Ability;
+export const Infuriate = {} as Ability;
 export const Lazy = {} as Ability;
 export const LeadSkin = {} as Ability;
 export const Petrify = {} as Ability;
