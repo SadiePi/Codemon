@@ -1,4 +1,15 @@
-import { Ability, Effects, MoveEntry, TraditionalBBP as T, TargetContext, permanent, proxy, config } from "./mod.ts";
+import U, {
+  Ability,
+  Effects,
+  MoveEntry,
+  TraditionalBBP as T,
+  TargetContext,
+  permanent,
+  proxy,
+  config,
+  effectAction,
+  chance,
+} from "./mod.ts";
 import loader from "./loader.ts";
 
 export const Acceleration: Ability = {
@@ -54,7 +65,36 @@ export const Atomizate: Ability = loader.register(U => ({
 
 export const BloodLust = {} as Ability;
 export const Chernobyl = {} as Ability;
-export const DeepFreeze = {} as Ability;
+
+export const DeepFreeze: Ability = {
+  name: "Deep Freeze",
+  description: "Contact with the Pokémon may freeze the attacker",
+  slot: "ability",
+  apply: ({ self }) => {
+    function maybeFreezeOnContact(_: Effects<T>, { source, action, battle }: TargetContext<T>) {
+      if (!(source instanceof MoveEntry)) return;
+      if (!source.effects.makesContact) return;
+      action.reactions.add(
+        effectAction({
+          battle,
+          targets: [action.params.user],
+          parent: action,
+          user: self,
+          effect: {
+            status: chance(3 / 10, U.Statuses.Freeze),
+          },
+        })
+      );
+    }
+    return {
+      name: DeepFreeze.name,
+      activate: () => self.on("receiveEffects", maybeFreezeOnContact),
+      deactivate: () => self.off("receiveEffects", maybeFreezeOnContact),
+      expiry: permanent,
+    };
+  },
+};
+
 export const Disenchant = {} as Ability;
 export const Elementalist = {} as Ability;
 export const Energizate = {} as Ability;
