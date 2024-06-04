@@ -96,7 +96,32 @@ export const DeepFreeze: Ability = {
 };
 
 export const Disenchant = {} as Ability;
-export const Elementalist = {} as Ability;
+
+export const Elementalist: Ability = loader.register(U => ({
+  name: "Elementalist",
+  description: "Powers up Fire, Electric, and Water-type moves",
+  slot: "ability",
+  apply: ({ self }) => {
+    function boostElementalMoves(effect: Effects<T>, { source }: TargetContext<T>) {
+      if (!(source instanceof MoveEntry)) return;
+      if (!effect.attack) return;
+      if (![U.Types.Fire, U.Types.Electric, U.Types.Water].includes(source.effects.type)) return;
+
+      effect.attack = proxy(effect.attack, attack => {
+        if (!attack) return;
+        attack.stab = config.moves.stabMultiplier;
+      });
+    }
+
+    return {
+      name: Elementalist.name,
+      activate: () => self.on("inflictEffects", boostElementalMoves),
+      deactivate: () => self.off("inflictEffects", boostElementalMoves),
+      expiry: permanent,
+    };
+  },
+}));
+
 export const Energizate = {} as Ability;
 export const GeigerSense = {} as Ability;
 export const Infatuate = {} as Ability;
