@@ -1,6 +1,29 @@
-import { Ability } from "./mod.ts";
+import { Ability, Effects, MoveEntry, TraditionalBBP as T, TargetContext, permanent, proxy } from "./mod.ts";
 
-export const Acceleration = {} as Ability;
+export const Acceleration: Ability = {
+  name: "Acceleration",
+  description: "Boosts the power of priority moves by 1.5x",
+  slot: "ability",
+  apply: ({ self }) => {
+    function boostPriorityPower(effect: Effects<T>, { source }: TargetContext<T>) {
+      if (!(source instanceof MoveEntry)) return;
+      if ((source.priority ?? 0) <= 0) return;
+      if (!effect.attack) return;
+
+      effect.attack = proxy(effect.attack, attack => {
+        if (attack) attack.power *= 1.5;
+      });
+    }
+
+    return {
+      name: Acceleration.name,
+      activate: () => self.on("inflictEffects", boostPriorityPower),
+      deactivate: () => self.off("inflictEffects", boostPriorityPower),
+      expiry: permanent,
+    };
+  },
+};
+
 export const Atomize = {} as Ability;
 export const BloodLust = {} as Ability;
 export const Chernobyl = {} as Ability;
