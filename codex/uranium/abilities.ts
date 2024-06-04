@@ -122,7 +122,33 @@ export const Elementalist: Ability = loader.register(U => ({
   },
 }));
 
-export const Energizate = {} as Ability;
+export const Energizate: Ability = loader.register(U => ({
+  name: "Energizate",
+  description: "Normal-type moves become Electric-type moves and receive a 1.3x boost to base power",
+  slot: "ability",
+  apply: ({ self }) => {
+    function energizateAndEmpowerNormalMoves(effect: Effects<T>, { source, target }: TargetContext<T>) {
+      if (!(source instanceof MoveEntry)) return;
+      if (source.effects.type !== U.Types.Normal) return;
+      if (!effect.attack) return;
+
+      effect.attack = proxy(effect.attack, attack => {
+        if (!attack) return;
+        attack.type = U.Types.Electric;
+        attack.power *= 1.3;
+        attack.stab = target.getSpecies().types.includes(attack.type) ? config.moves.stabMultiplier : 1;
+      });
+    }
+
+    return {
+      name: Energizate.name,
+      activate: () => self.on("inflictEffects", energizateAndEmpowerNormalMoves),
+      deactivate: () => self.off("inflictEffects", energizateAndEmpowerNormalMoves),
+      expiry: permanent,
+    };
+  },
+}));
+
 export const GeigerSense = {} as Ability;
 export const Infatuate = {} as Ability;
 export const Lazy = {} as Ability;
