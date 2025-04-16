@@ -42,7 +42,7 @@ export class PPScheme {
     return true;
   }
 
-  public restore(pp: number): number {
+  public restore(pp: number = Infinity): number {
     pp = pp ?? this._max - this._current;
     const prev = this._current;
     this._current += pp;
