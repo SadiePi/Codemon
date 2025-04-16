@@ -1,4 +1,4 @@
-import { Move, Codemon } from "../mod.ts";
+import { Move, config } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Psywave: Move = loader.register<Move>(P => ({
@@ -9,5 +9,5 @@ export const Psywave: Move = loader.register<Move>(P => ({
   category: "Special",
   pp: 15,
   makesContact: false,
-  hp: ({ action }) => Math.floor((action.params.user.stats.level * (Math.random() * 50)) / 100),
+  hp: ({ action }) => Math.floor((action.params.user.stats.level * (config.rng() * 50)) / 100),
 }));

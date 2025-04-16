@@ -1,4 +1,4 @@
-import { Action, Codemon, MoveEntry, StatusEffect, volatile, TraditionalBBP as T } from "../mod.ts";
+import { Action, Codemon, MoveEntry, StatusEffect, volatile, TraditionalBBP as T, config } from "../mod.ts";
 import loader from "../loader.ts";
 
 export const Paralysis: StatusEffect<T> = loader.register(P => ({
@@ -16,7 +16,7 @@ export const Paralysis: StatusEffect<T> = loader.register(P => ({
     const maybeDontMove = (action: Action<T>) => {
       if (!(action.params.source instanceof MoveEntry)) return;
       if (action.params.user !== target) return;
-      if (Math.random() < 0.25) {
+      if (config.rng() < 0.25) {
         action.message(`${target.name} couldn't move because ${target.gender.pronouns.subject}'s paralyzed!`);
         action.cancel = true;
       }

@@ -113,7 +113,7 @@ export class MoveEntry implements ActionSource<T> {
 
   public tryCriticalHit(): boolean {
     if (this.effects.category === "Status") return false;
-    const crit = Math.random();
+    const crit = config.rng();
     const stage = this.effects.criticalHitStage ?? 0;
     // TODO friendship, affection
     if (stage >= 3) return true;

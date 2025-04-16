@@ -216,7 +216,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
     //   const sourceAccuracy = combatant instanceof Codemon ? combatant.stats.accuracy.stage.multiplier() : 1;
     //   const targetEvasion = target instanceof Codemon ? target.stats.evasion.stage.multiplier() : 1;
     //   const accuracy = (effectAccuracy * sourceAccuracy) / targetEvasion;
-    //   if (Math.random() > accuracy) hit = false;
+    //   if (config.rng() > accuracy) hit = false;
     // }
 
     if (effects.attack) receipt.attack = this.receiveTraditionalAttack(effects.attack, context);
@@ -380,7 +380,7 @@ export class Codemon extends EventEmitter<CombatantEvents<T>> implements BaseCom
 
     const b = 65536 / Math.pow(255 / a, 0.1875);
     for (let check = 0; check < config.battle.traditional.shakeChecks; check++) {
-      const rand = Math.floor(65536 * Math.random());
+      const rand = Math.floor(65536 * config.rng());
       if (rand >= b) {
         return {
           success: true,

@@ -134,7 +134,7 @@ class PermanentStatEntry extends BattleStatEntry {
     super(stat, set, stagePower, args);
     if (!PermanentStats.includes(stat as PermanentStat))
       throw new Error(`PermanentStatEntry: ${stat} is not a PermanentStat. Owner is ${set.self.name}`);
-    this.individualValue = args.individualValue ?? Math.floor(Math.random() * config.stats.maxIV);
+    this.individualValue = args.individualValue ?? Math.floor(config.rng() * config.stats.maxIV);
     this.effortValue = args.effortValue ?? 0;
   }
 

@@ -48,6 +48,7 @@ export const config = {
   branding: {
     mon: "Codemon", // e.g. "Pokémon"
   },
+  rng: Math.random,
 
   struggle: {} as Move,
   wild: {} as Strategy<TraditionalBBP>,
