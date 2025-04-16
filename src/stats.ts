@@ -20,6 +20,7 @@ import { decide } from "./decision.ts";
 import { EventEmitter } from "./external.ts";
 import { config } from "./config.ts";
 import { sequentialAsync } from "./util.ts";
+import { StatEvents } from "./events.ts";
 
 /** All possible stats in the game */
 export const Stats = [...PermanentStats, ...BattleStats] as const;
@@ -236,13 +237,6 @@ type StatEntries = Record<PermanentStat, PermanentStatEntry> & Record<BattleStat
 type IStatEntries = Partial<Record<PermanentStat, IPermanentStatEntry>> & Partial<Record<BattleStat, IBattleStatEntry>>;
 
 export type IStatSet = IStatEntries & { level?: number; points?: number };
-
-export type StatEvents = {
-  stageChange: [stat: Stat, old: number, current: number];
-  stageReset: [stat: Stat, old: number];
-  levelUp: [receipt: LevelUpReceipt];
-  addExp: [receipt: AddExpReceipt];
-};
 
 export class StatSet extends EventEmitter<StatEvents> implements StatEntries {
   public hp: HPStatEntry;

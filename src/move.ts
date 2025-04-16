@@ -12,6 +12,7 @@ import { TraditionalBBP as T } from "./battle/traditional.ts";
 import { Codemon } from "./codemon.ts";
 import { config } from "./config.ts";
 import { Decider, decide, range } from "./decision.ts";
+import { MoveEvents } from "./events.ts";
 import { EventEmitter } from "./external.ts";
 import { Type } from "./species.ts";
 
@@ -137,8 +138,6 @@ interface MoveSearch {
   invert?: boolean;
 }
 
-// deno-lint-ignore ban-types
-export type MoveEvents = {};
 export class MoveSet extends EventEmitter<MoveEvents> {
   private _entries: MoveEntry[];
   public get entries() {
