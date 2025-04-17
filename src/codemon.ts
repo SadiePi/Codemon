@@ -20,8 +20,12 @@ import {
   TODO,
   Type,
 } from "./mod.ts";
-import { Actionable, Contestant } from "./contest/core/contest.ts";
-import { PBS, PkmnBattle } from "./contest/pokemon/battle/mod.ts";
+import { Contestant } from "./contest/core/contest.ts";
+import {
+  BattleMoveEntry,
+  PBS,
+  PkmnBattle,
+} from "./contest/pokemon/battle/mod.ts";
 import { SpawnContext } from "./map.ts";
 
 export function spawn(from: ICodemon): Codemon {
@@ -43,9 +47,9 @@ export type ICodemon = MultiDecider<
 >;
 
 export class Codemon extends Contestant<PBS> {
-  override getPlan(battle: PkmnBattle) {
+  override getPlan(_: PkmnBattle) {
     return {
-      actionable: new Actionable<PBS>(this),
+      actionable: new BattleMoveEntry(this),
       targets: [this],
     };
   }

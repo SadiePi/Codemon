@@ -55,13 +55,16 @@ export type ActionPlan<Schema extends ContestSchema<Schema>> = {
   actionable: Actionable<Schema>;
   targets: Schema["contestant"][];
 };
-export type ActionResult<Schema extends ContestSchema<Schema>> = {
+export type ActionContext<Schema extends ContestSchema<Schema>> = {
   plan: ActionPlan<Schema>;
 };
-export class Action<Schema extends ContestSchema<Schema>> {}
-export class Actionable<Schema extends ContestSchema<Schema>> {
+export type ActionResult<Schema extends ContestSchema<Schema>> = {
+  context: ActionContext<Schema>;
+};
+export abstract class Action<Schema extends ContestSchema<Schema>> {
+  abstract run(): ActionResult<Schema>;
+}
+export abstract class Actionable<Schema extends ContestSchema<Schema>> {
   constructor(public owner: Schema["contestant"]) {}
-  getAction(): Action<Schema> {
-    return new Action();
-  }
+  abstract getAction(context: ActionContext<Schema>): Action<Schema>;
 }

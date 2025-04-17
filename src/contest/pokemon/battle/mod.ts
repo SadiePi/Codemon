@@ -2,7 +2,9 @@ import { iBulby } from "../../../../example/common.ts";
 import { assertEquals } from "../../../../test/_common.ts";
 import { Codemon } from "../../../codemon.ts";
 import {
+  Action,
   Actionable,
+  ActionContext,
   ActionPlan,
   ActionResult,
   ContestSchema,
@@ -36,9 +38,20 @@ export class PkmnBattle extends TurnBasedContest<PBS> {
   }
 
   override runPlan(plan: ActionPlan<PBS>): ActionResult<PBS> {
-    const action = plan.actionable.getAction();
-    // ...
-    return { plan };
+    const context: ActionContext<PBS> = { plan };
+    const action = plan.actionable.getAction(context);
+    const result = action.run();
+    return result;
+  }
+}
+
+export class BattleMoveEntry extends Actionable<PBS> {
+  override getAction(context: ActionContext<PBS>) {
+    return new (class extends Action<PBS> {
+      override run(): ActionResult<PBS> {
+        return { context };
+      }
+    })();
   }
 }
 
