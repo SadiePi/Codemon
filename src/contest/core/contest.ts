@@ -7,17 +7,20 @@ type History<Schema extends ContestSchema<Schema>> = {
   data: Schema["historyData"];
 };
 
-export type ContestSchema<Schema extends ContestSchema<Schema>> = {
+export abstract class ContestSchema<Schema extends ContestSchema<Schema>> {
+  private constructor() {
+    throw new Error("Do not instantiate ContestSchema. It is for types only.");
+  }
+
   name: string;
+  contestant: Contestant<Schema>;
 
   contestResult: unknown;
   roundResult: unknown;
   historyData: unknown;
 
-  contestant: Contestant<Schema>;
-
   effects: Record<string, unknown>;
-};
+}
 
 export abstract class Contestant<Schema extends ContestSchema<Schema>>
   extends EventEmitter<ContestantEvents<Schema>> {
