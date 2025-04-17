@@ -1,4 +1,4 @@
-import { AssertionError, assert, iBulby } from "./_common.ts";
+import { assert, AssertionError, iBulby } from "./_common.ts";
 import P, { spawn } from "../codex/pokemon/mod.ts";
 
 Deno.test("Basics", () => {
@@ -10,11 +10,11 @@ Deno.test("Basics", () => {
   assert(bulby.nature === P.Natures.Quiet);
   assert(bulby.stats.level === 15);
   // TODO compare stats to expected values
-  assert(bulby.moves.length === 4);
-  assert(bulby.moves[0].effects === P.Moves.Tackle);
-  assert(bulby.moves[1].effects === P.Moves.RazorLeaf);
-  assert(bulby.moves[2].effects === P.Moves.StunSpore);
-  assert(bulby.moves[3].effects === P.Moves.SolarBeam);
+  assert(bulby.moves.entries.length === 4);
+  assert(bulby.moves.knows(P.Moves.Tackle));
+  assert(bulby.moves.knows(P.Moves.RazorLeaf));
+  assert(bulby.moves.knows(P.Moves.StunSpore));
+  assert(bulby.moves.knows(P.Moves.SolarBeam));
   assert(bulby.ability === P.Abilities.Overgrow);
 });
 
