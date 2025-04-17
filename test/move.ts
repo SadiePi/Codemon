@@ -1,19 +1,44 @@
-import { assertEquals, assertNotEquals } from "./_common.ts";
-import C, { Codemon, MoveEntry } from "../codex/pokemon/mod.ts";
+import { assertEquals } from "./_common.ts";
+import { PPScheme } from "../codex/pokemon/mod.ts";
 
-Deno.test("Tackle", () => {
-  const tackle = new MoveEntry({
-    user: {} as Codemon,
-    move: C.Moves.Tackle,
-  });
+Deno.test("PP Scheme", () => {
+  const pp = new PPScheme(10);
 
-  assertEquals(tackle.effects.type.immunities.length, 1, "Wrong immunity count");
-  assertEquals(tackle.effects.type.immunities[0].name, "Ghost", "Wrong immunity");
-  assertEquals(tackle.effects.type.weaknesses.length, 1, "Wrong weakness count");
-  assertEquals(tackle.effects.type.weaknesses[0].name, "Fighting", "Wrong weakness");
-  assertNotEquals(tackle.pp.boost(), 0, "Boost 1 failed");
-  assertNotEquals(tackle.pp.boost(), 0, "Boost 2 failed");
-  assertNotEquals(tackle.pp.boost(), 0, "Boost 3 failed");
-  assertEquals(tackle.pp.boost(), 0, "Boost 4 didn't fail");
-  assertEquals(tackle.pp.max, 56, `Max PP is ${tackle.pp.max}, not 56`);
+  assertEquals(pp.current, 10);
+  assertEquals(pp.max, 10);
+  assertEquals(pp.boosts, 0);
+
+  assertEquals(pp.use(), true);
+  assertEquals(pp.current, 9);
+
+  assertEquals(pp.use(5), true);
+  assertEquals(pp.current, 4);
+  assertEquals(pp.use(5), false);
+  assertEquals(pp.current, 4);
+
+  assertEquals(pp.restore(3), 3);
+  assertEquals(pp.current, 7);
+  assertEquals(pp.restore(5), 3);
+  assertEquals(pp.current, 10);
+  assertEquals(pp.restore(5), 0);
+  assertEquals(pp.current, 10);
+  assertEquals(pp.use(10), true);
+  assertEquals(pp.restore(), 10);
+
+  assertEquals(pp.canBoost(), true);
+  assertEquals(pp.boost(), 2);
+  assertEquals(pp.boosts, 1);
+  assertEquals(pp.max, 12);
+  assertEquals(pp.current, 12);
+  assertEquals(pp.use(1), true);
+  assertEquals(pp.boost(), 2);
+  assertEquals(pp.max, 14);
+  assertEquals(pp.current, 13);
+  assertEquals(pp.boost(), 2);
+  assertEquals(pp.max, 16);
+  assertEquals(pp.current, 15);
+  assertEquals(pp.canBoost(), false);
+  assertEquals(pp.boost(), 0);
+  assertEquals(pp.boosts, 3);
+  assertEquals(pp.max, 16);
 });
