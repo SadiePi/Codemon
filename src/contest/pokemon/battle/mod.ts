@@ -31,11 +31,11 @@ export class PkmnBattle extends TurnBasedContest<PBS> {
       c.getPlan(this)
     );
     // TODO sort
-    const results = plans.map((p) => this.runAction(p));
+    const results = plans.map((p) => this.runPlan(p));
     return { actions: results };
   }
 
-  override runAction(plan: ActionPlan<PBS>): ActionResult<PBS> {
+  override runPlan(plan: ActionPlan<PBS>): ActionResult<PBS> {
     const action = plan.actionable.getAction();
     // ...
     return { plan };

@@ -43,7 +43,7 @@ export abstract class TurnBasedContest<Schema extends ContestSchema<Schema>>
 
   abstract run(): Schema["contestResult"];
   abstract runRound(): Schema["roundResult"];
-  abstract runAction(plan: ActionPlan<Schema>): ActionResult<Schema>;
+  abstract runPlan(plan: ActionPlan<Schema>): ActionResult<Schema>;
 }
 
 export type Team<Schema extends ContestSchema<Schema>> = Schema["contestant"][];
