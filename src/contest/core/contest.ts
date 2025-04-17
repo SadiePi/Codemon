@@ -1,5 +1,5 @@
 import { EventEmitter } from "../../external.ts";
-import { ContestantEvents } from "./events.ts";
+import { ContestantEvents, ContestEvents } from "./events.ts";
 
 type History<Schema extends ContestSchema<Schema>> = {
   prev?: History<Schema>;
@@ -25,7 +25,7 @@ export abstract class Contestant<Schema extends ContestSchema<Schema>>
 }
 
 export abstract class TurnBasedContest<Schema extends ContestSchema<Schema>>
-  extends EventEmitter<ContestantEvents<Schema>> {
+  extends EventEmitter<ContestEvents<Schema>> {
   public abstract readonly type: Schema["name"];
   public teams: Team<Schema>[];
   public history: History<Schema>;
