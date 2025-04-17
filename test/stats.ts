@@ -101,7 +101,7 @@ Deno.test("Experience", async () => {
 
   // Modify experience
   const neededExp = kibble.stats.pointsToNextLevel;
-  let expReceipt = await kibble.stats.addPoints(neededExp);
+  let expReceipt = await kibble.stats.addExp(neededExp);
   assertEquals(kibble.stats.level, 3, "Level didn't increase");
   assertEquals(addExpEvents, 1, "Experience change event not triggered");
   assertEquals(expReceipt.levelUps.length, 1, "LevelUp not called");
@@ -110,7 +110,7 @@ Deno.test("Experience", async () => {
   console.log();
 
   const halfExp = kibble.stats.pointsToNextLevel / 2;
-  expReceipt = await kibble.stats.addPoints(halfExp);
+  expReceipt = await kibble.stats.addExp(halfExp);
   assertEquals(kibble.stats.level, 3, "Level increased");
   assertEquals(addExpEvents, 2, "Experience change event not triggered");
   assertEquals(levelUpEvents, 2, "Level up event triggered");
@@ -119,7 +119,7 @@ Deno.test("Experience", async () => {
   console.log();
 
   const moreExp = kibble.stats.group(10) - kibble.stats.points;
-  expReceipt = await kibble.stats.addPoints(moreExp);
+  expReceipt = await kibble.stats.addExp(moreExp);
   assertEquals(kibble.stats.level, 10, "Level isn't 10");
   assertEquals(addExpEvents, 3, "Experience change event not triggered");
   assertEquals(levelUpEvents, 9, "Level up events not triggered");
